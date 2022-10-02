@@ -1,7 +1,9 @@
 #!/bin/bash
 
 VANILLA_VERSION=1.19.2
-mkdir -p ../server/plugins
+ROOT_DIR="${ROOT_DIR:-../}"
+
+mkdir -p $ROOT_DIR/server/plugins
 
 echo "Getting Paper version..."
 
@@ -13,22 +15,22 @@ SERVER=$(curl -fsSL "https://papermc.io/api/v2/projects/paper/versions/${VANILLA
 
 echo "Downloading $SERVER..."
 
-curl -fsSL -o "../server/paper.jar" \
+curl -fsSL -o "$ROOT_DIR/server/paper.jar" \
   "https://papermc.io/api/v2/projects/paper/versions/${VANILLA_VERSION}/builds/${build}/downloads/${SERVER}" \
   -H "accept: application/java-archive"
 
 echo "Downloading PlugManX..."
 
-curl -fsSL -o "../server/plugins/PlugManX.jar" \
+curl -fsSL -o "$ROOT_DIR/server/plugins/PlugManX.jar" \
   "https://api.spiget.org/v2/resources/88135/download" \
   -H "accept: application/java-archive"
 
 echo "Downloading AutoReload..."
 
-curl -fsSL -o "../server/plugins/AutoReload.jar" \
+curl -fsSL -o "$ROOT_DIR/server/plugins/AutoReload.jar" \
   "https://api.spiget.org/v2/resources/50888/download" \
   -H "accept: application/java-archive"
 
 echo "Creating basic configuration..."
 
-echo "eula=true" > ../server/eula.txt
+echo "eula=true" > $ROOT_DIR/server/eula.txt
