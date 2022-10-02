@@ -1,2 +1,3 @@
 rootProject.name = "plugin-collection"
-include("plugins:economy", "plugins:menu", "shared")
+include("economy", "shared")
+project(":economy").projectDir = File("plugins/economy")

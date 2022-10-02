@@ -1,7 +1,8 @@
-plugins {
-	id("pickaria.plugin-conventions")
+repositories {
+	maven("https://jitpack.io")
 }
 
 dependencies {
-	implementation(project(":shared"))
+	compileOnly(project(":shared"))
+	compileOnly("com.github.MilkBowl:VaultAPI:1.7.1")
 }

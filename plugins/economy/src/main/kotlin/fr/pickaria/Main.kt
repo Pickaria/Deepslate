@@ -7,7 +7,5 @@ class Main: JavaPlugin() {
 		super.onEnable()
 
 		logger.info("Economy plugin loaded!")
-
-		test()
 	}
 }
