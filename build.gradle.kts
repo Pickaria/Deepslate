@@ -40,6 +40,16 @@ subprojects {
 
 	tasks.withType<ShadowJar> {
 		mergeServiceFiles()
-		destinationDirectory.set(file("$rootDir/server/plugins")) // Output to test server's plugins folder
+
+		val dest: String = when (System.getenv("DESTINATION_DIRECTORY")) {
+			"build" -> {
+				"$rootDir/build"
+			}
+			else -> {
+				"$rootDir/server/plugins"
+			}
+		}
+
+		destinationDirectory.set(file(dest)) // Output to test server's plugins folder
 	}
 }

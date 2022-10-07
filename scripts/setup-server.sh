@@ -1,7 +1,7 @@
 #!/bin/bash
 
 VANILLA_VERSION=1.19.2
-ROOT_DIR="${ROOT_DIR:-../}"
+ROOT_DIR=${1:-.}
 
 mkdir -p $ROOT_DIR/server/plugins
 
