@@ -1,4 +1,4 @@
-package fr.pickaria
+package fr.pickaria.economy
 
 import net.milkbowl.vault.economy.AbstractEconomy
 import net.milkbowl.vault.economy.EconomyResponse
