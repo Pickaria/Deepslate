@@ -34,4 +34,8 @@ class JobConfig(config: FileConfiguration) {
 				section.getInt("start_experience"),
 			)
 		}
+
+	val lastPaymentDelay = config.getLong("last_payment_delay")
+	val maxJobs = config.getInt("jobConfig.maxJobs")
+	val cooldown = config.getLong("cooldown")
 }

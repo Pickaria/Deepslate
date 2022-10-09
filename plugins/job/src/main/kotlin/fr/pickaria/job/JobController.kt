@@ -24,10 +24,6 @@ import kotlin.math.pow
 import kotlin.time.Duration.Companion.minutes
 import kotlin.time.DurationUnit
 
-// TODO: Get from config file
-internal const val MAX_JOBS = 1
-internal const val COOLDOWN = 1L
-
 class JobController(private val plugin: Main) : Listener {
 	private val bossBars: ConcurrentHashMap<Player, BossBar> = ConcurrentHashMap()
 	private val bossBarsTasks: ConcurrentHashMap<BossBar, BukkitTask> = ConcurrentHashMap()
@@ -59,7 +55,7 @@ class JobController(private val plugin: Main) : Listener {
 	fun jobCount(playerUuid: UUID): Int = Job.get(playerUuid).filter { it.active }.size
 
 	fun getCooldown(playerUuid: UUID, jobName: String): Int {
-		val previousDay = LocalDateTime.now().minusHours(COOLDOWN)
+		val previousDay = LocalDateTime.now().minusHours(jobConfig.cooldown)
 
 		val job = Job.get(playerUuid, jobName)
 		return if (job == null || !job.active) {

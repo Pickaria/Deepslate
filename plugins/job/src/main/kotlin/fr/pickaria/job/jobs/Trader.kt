@@ -12,7 +12,7 @@ import org.bukkit.event.inventory.InventoryType
 
 class Trader: Listener {
 	companion object {
-		private const val JOB_NAME = "farmer"
+		private const val JOB_NAME = "trader"
 		private val config = jobConfig.jobs[JOB_NAME]!!
 	}
 

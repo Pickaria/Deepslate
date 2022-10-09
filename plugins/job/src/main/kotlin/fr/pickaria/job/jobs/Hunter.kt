@@ -12,7 +12,7 @@ import org.bukkit.event.entity.EntityDeathEvent
 
 class Hunter : Listener {
 	companion object {
-		private const val JOB_NAME = "farmer"
+		private const val JOB_NAME = "hunter"
 		private val config = jobConfig.jobs[JOB_NAME]!!
 	}
 

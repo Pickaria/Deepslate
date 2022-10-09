@@ -12,7 +12,7 @@ import org.bukkit.event.block.BlockBreakEvent
 
 class Miner: Listener {
 	companion object {
-		private const val JOB_NAME = "farmer"
+		private const val JOB_NAME = "miner"
 		private val config = jobConfig.jobs[JOB_NAME]!!
 	}
 

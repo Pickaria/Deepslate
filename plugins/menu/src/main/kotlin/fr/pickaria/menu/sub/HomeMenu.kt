@@ -9,8 +9,10 @@ class HomeMenu(title: String, opener: HumanEntity?, previousMenu: BaseMenu?, siz
 	BaseMenu(title, opener, previousMenu, size) {
 
 	override fun initMenu() {
+		var x = 1
+
 		menuController.menus.forEach { (key, menu) ->
-			super.setMenuItem(0, 1, MenuItem(menu.icon, menu.title, menu.description)
+			super.setMenuItem(x++, 1, MenuItem(menu.icon, menu.title, menu.description)
 				.setCallback { event ->
 					menuController.openMenu(event.whoClicked, key, this)
 				}

@@ -10,7 +10,7 @@ import org.bukkit.entity.Player
 
 class JobCommand : CommandExecutor, TabCompleter {
 	companion object {
-		val SUB_COMMANDS = listOf("join", "leave", "top", "menu")
+		private val SUB_COMMANDS = listOf("join", "leave", "top", "menu")
 	}
 
 	override fun onCommand(sender: CommandSender, command: Command, label: String, args: Array<out String>): Boolean {
@@ -43,8 +43,8 @@ class JobCommand : CommandExecutor, TabCompleter {
 
 			when (args[0]) {
 				"join" -> {
-					if (jobController.jobCount(sender.uniqueId) >= MAX_JOBS) {
-						sender.sendMessage("§cVous ne pouvez pas avoir plus de $MAX_JOBS métier(s).")
+					if (jobController.jobCount(sender.uniqueId) >= jobConfig.maxJobs) {
+						sender.sendMessage("§cVous ne pouvez pas avoir plus de ${jobConfig.maxJobs} métier(s).")
 					} else if (jobController.hasJob(sender.uniqueId, job.key)) {
 						sender.sendMessage("§cVous exercez déjà ce métier.")
 					} else {

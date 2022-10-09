@@ -10,7 +10,7 @@ import org.bukkit.event.enchantment.EnchantItemEvent
 
 class Wizard: Listener {
 	companion object {
-		private const val JOB_NAME = "farmer"
+		private const val JOB_NAME = "wizard"
 		private val config = jobConfig.jobs[JOB_NAME]!!
 	}
 

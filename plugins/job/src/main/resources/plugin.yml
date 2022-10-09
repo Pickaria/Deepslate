@@ -9,8 +9,12 @@ commands:
   job:
     description: Rejoindre ou quitter un métier
     usage: /job <join|leave|top|menu> [métier]
-    permission: pickaria.command.job
+    permission: pickaria.job.command.job
   jobs:
     description: Rejoindre ou quitter un métier
     usage: /jobs <join|leave|top|menu> [métier]
-    permission: pickaria.command.job
+    permission: pickaria.job.command.job
+
+permissions:
+  pickaria.job.command.reload:
+    description: Can reload the job plugin

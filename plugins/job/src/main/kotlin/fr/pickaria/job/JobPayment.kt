@@ -9,13 +9,12 @@ import org.bukkit.entity.Player
 import org.bukkit.Bukkit.getLogger
 import kotlin.math.pow
 
-val lastPayment = mutableMapOf<Player, Long>()
-const val LAST_PAYMENT_DELAY = 200L
+private val lastPayment = mutableMapOf<Player, Long>()
 
 fun jobPayPlayer(player: Player, amount: Double): Boolean {
 	val now = System.currentTimeMillis() // This uses 32 bit, alert for future us
 
-	if (now - (lastPayment[player] ?: 0L) < LAST_PAYMENT_DELAY) {
+	if (now - (lastPayment[player] ?: 0L) < jobConfig.lastPaymentDelay) {
 		return false
 	}
 	lastPayment[player] = now
