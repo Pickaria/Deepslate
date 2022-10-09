@@ -25,10 +25,10 @@ curl -fsSL -o "$ROOT_DIR/server/plugins/PlugManX.jar" \
   "https://api.spiget.org/v2/resources/88135/download" \
   -H "accept: application/java-archive"
 
-echo "Downloading AutoReload..."
+echo "Downloading Vault..."
 
-curl -fsSL -o "$ROOT_DIR/server/plugins/AutoReload.jar" \
-  "https://api.spiget.org/v2/resources/50888/download" \
+curl -fsSL -o "$ROOT_DIR/server/plugins/Vault.jar" \
+  "https://api.spiget.org/v2/resources/34315/download" \
   -H "accept: application/java-archive"
 
 echo "Creating basic configuration..."

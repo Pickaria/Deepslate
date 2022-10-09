@@ -1,5 +1,6 @@
 package fr.pickaria.shared
 
+import fr.pickaria.shared.models.BankAccounts
 import org.jetbrains.exposed.dao.IntEntity
 import org.jetbrains.exposed.dao.IntEntityClass
 import org.jetbrains.exposed.dao.id.EntityID
@@ -9,20 +10,20 @@ import org.jetbrains.exposed.sql.SchemaUtils
 import org.jetbrains.exposed.sql.transactions.TransactionManager
 import org.jetbrains.exposed.sql.transactions.transaction
 
-fun openDatabase(path: String) {
+internal fun openDatabase(path: String): Database {
 	// DB_CLOSE_DELAY: Reuse connection
 	// AUTO_SERVER: Enable automatic mixed mode
-	Database.connect("jdbc:h2:$path;DB_CLOSE_DELAY=-1;AUTO_SERVER=TRUE", "org.h2.Driver")
+	val database = Database.connect("jdbc:h2:$path;DB_CLOSE_DELAY=-1;AUTO_SERVER=TRUE", "org.h2.Driver")
 
 	transaction {
-		SchemaUtils.create(StarWarsFilms)
+		SchemaUtils.create(StarWarsFilms, BankAccounts)
 	}
 
 	transaction {
 		SchemaUtils.statementsRequiredToActualizeScheme(
-			StarWarsFilms
+			StarWarsFilms, BankAccounts
 		) + SchemaUtils.addMissingColumnsStatements(
-			StarWarsFilms
+			StarWarsFilms, BankAccounts
 		)
 	}.forEach {
 		transaction {
@@ -33,7 +34,12 @@ fun openDatabase(path: String) {
 			}
 		}
 	}
+
+	return database
 }
+
+// This is a test implementation
+// TODO: Remove
 
 object StarWarsFilms : IntIdTable() {
 	val sequelId = integer("sequel_id").uniqueIndex()

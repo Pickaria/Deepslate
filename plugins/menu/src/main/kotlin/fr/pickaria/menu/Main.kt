@@ -10,13 +10,13 @@ import org.bukkit.plugin.java.JavaPlugin
 val menuController: MenuController = MenuController()
 const val DEFAULT_MENU = "home"
 
-class Main: JavaPlugin() {
+class Main : JavaPlugin() {
 	override fun onEnable() {
 		super.onEnable()
 
 		menuController.registerMenu(DEFAULT_MENU, HomeMenuFactory())
 
-		getCommand("menu")?.setExecutor(MenuCommand()) ?: logger.warning("Could not register menu command.")
+		getCommand("menu")?.setExecutor(MenuCommand()) ?: logger.warning("Could not register `menu` command.")
 
 		server.pluginManager.registerEvents(menuController, this)
 

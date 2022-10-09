@@ -6,7 +6,7 @@ author: Quozul
 depend: [PickariaShared]
 
 commands:
-  test:
-    description: Test
-    usage: /test
-    permission: pickaria.economy.command.test
+  money:
+    description: Money
+    usage: /money
+    permission: pickaria.economy.command.money
