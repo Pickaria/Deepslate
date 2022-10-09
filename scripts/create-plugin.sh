@@ -18,15 +18,6 @@ fi
 printf "\n\e[32;1mEnter plugin author name:\n\e[37;0m> "
 read plugin_author
 
-printf "\n\e[32;1mDoes it needs database access? [Y/n]:\n\e[37;0m> "
-while true; do
-    read -n1 yn
-    case $yn in
-        [Nn]* ) uses_shared=false; break;;
-        * ) uses_shared=true; break;;
-    esac
-done
-
 printf "\n\n\e[32;1mDoes it uses economy? [Y/n]:\n\e[37;0m> "
 while true; do
     read -n1 yn
@@ -52,16 +43,14 @@ main: fr.pickaria.$plugin_name.Main
 author: $plugin_author
 EOF
 
+printf "depends:\n  - PickariaShared\n" >> plugins/$plugin_name/src/main/resources/plugin.yml
+
 # Add dependencies to project
-if [ "$uses_shared" = true ] || [ "$uses_vault" = true ]
+if [ "$uses_vault" = true ]
 then
-  printf "depends: [" >> plugins/$plugin_name/src/main/resources/plugin.yml
+  echo "  - Vault" >> plugins/$plugin_name/src/main/resources/plugin.yml
 
-  if [ "$uses_shared" = true ] && [ "$uses_vault" = true ]
-  then
-    printf "PickariaShared, Vault" >> plugins/$plugin_name/src/main/resources/plugin.yml
-
-    cat > plugins/$plugin_name/build.gradle.kts << EOF
+  cat > plugins/$plugin_name/build.gradle.kts << EOF
 repositories {
 	maven("https://jitpack.io")
 }
@@ -71,33 +60,12 @@ dependencies {
 	compileOnly("com.github.MilkBowl:VaultAPI:1.7.1")
 }
 EOF
-  elif [ "$uses_shared" = true ]
-  then
-    printf "PickariaShared" >> plugins/$plugin_name/src/main/resources/plugin.yml
-
-    cat > plugins/$plugin_name/build.gradle.kts << EOF
-dependencies {
-	compileOnly(project(":shared"))
-}
-EOF
-  elif [ "$uses_vault" = true ]
-  then
-    printf "Vault" >> plugins/$plugin_name/src/main/resources/plugin.yml
-
-    cat > plugins/$plugin_name/build.gradle.kts << EOF
-repositories {
-	maven("https://jitpack.io")
-}
-
-dependencies {
-	compileOnly("com.github.MilkBowl:VaultAPI:1.7.1")
-}
-EOF
-  fi
-
-  echo "]" >> plugins/$plugin_name/src/main/resources/plugin.yml
 else
-  printf "" > plugins/$plugin_name/build.gradle.kts
+  cat > plugins/$plugin_name/build.gradle.kts << EOF
+dependencies {
+	compileOnly(project(":shared"))
+}
+EOF
 fi
 
 # Create Main class file

@@ -5,6 +5,10 @@ plugins {
 }
 
 dependencies {
+	implementation(kotlin("stdlib"))
+	implementation(kotlin("reflect"))
+	implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4")
+
 	implementation("org.jetbrains.exposed:exposed-core:$exposedVersion")
 	implementation("org.jetbrains.exposed:exposed-dao:$exposedVersion")
 	implementation("org.jetbrains.exposed:exposed-jdbc:$exposedVersion")

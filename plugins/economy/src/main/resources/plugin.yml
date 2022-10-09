@@ -3,7 +3,9 @@ version: 1.0
 api-version: 1.19
 main: fr.pickaria.economy.Main
 author: Quozul
-depend: [PickariaShared, Vault]
+depend:
+  - PickariaShared
+  - Vault
 
 commands:
   money:
