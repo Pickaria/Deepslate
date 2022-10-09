@@ -104,7 +104,7 @@ abstract class BaseMenu(
 			updateMenu()
 		} else if (slot == menuBackSlot) {
 			if (previousMenu != null) {
-				Main.menuController.openMenu(event.whoClicked, previousMenu)
+				menuController.openMenu(event.whoClicked, previousMenu)
 			} else {
 				event.whoClicked.closeInventory()
 			}

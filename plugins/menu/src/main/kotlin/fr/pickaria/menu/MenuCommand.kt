@@ -7,25 +7,16 @@ import org.bukkit.command.TabCompleter
 import org.bukkit.entity.Player
 
 class MenuCommand : CommandExecutor, TabCompleter {
-	companion object {
-		val DEFAULT_MENU = MenuEnum.HOME
-	}
-
 	override fun onCommand(sender: CommandSender, command: Command, label: String, args: Array<out String>): Boolean {
 		if (sender is Player) {
-			val menuEnum: MenuEnum = if (args.isNotEmpty()) {
-				try {
-					MenuEnum.valueOf(args[0].uppercase())
-				} catch (_: IllegalArgumentException) {
-					sender.sendMessage("§cCe menu n'existe pas.")
-					return true
-				}
+			val menu: String = if (args.isNotEmpty()) {
+				args[0]
 			} else {
 				DEFAULT_MENU
 			}
 
-			if (!Main.menuController.openMenu(sender, menuEnum, null)) {
-				sender.sendMessage("§cUne erreur est survenue lors de l'ouverture du menu.")
+			if (!menuController.openMenu(sender, menu, null)) {
+				sender.sendMessage("§cCe menu n'existe pas.")
 			}
 		}
 
@@ -39,8 +30,7 @@ class MenuCommand : CommandExecutor, TabCompleter {
 		args: Array<out String>
 	): MutableList<String> {
 		if (sender is Player) {
-			return MenuEnum.values()
-				.map { it.name.lowercase() }
+			return menuController.menuKeys
 				.filter { it.startsWith(args[0].lowercase()) }
 				.toMutableList()
 		}

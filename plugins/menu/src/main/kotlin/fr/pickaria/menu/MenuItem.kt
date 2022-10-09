@@ -1,6 +1,5 @@
 package fr.pickaria.menu
 
-import net.kyori.adventure.text.Component
 import org.bukkit.Material
 import org.bukkit.enchantments.Enchantment
 import org.bukkit.event.inventory.InventoryClickEvent
@@ -13,35 +12,11 @@ class MenuItem {
 	var callback: Consumer<InventoryClickEvent>? = null
 
 	constructor(material: Material, name: String, vararg lore: String) {
-		itemStack = ItemStack(material, 1)
-
-		itemStack.itemMeta = itemStack.itemMeta!!.apply {
-			this.displayName(Component.text(name))
-
-			lore.let {
-				this.lore(lore.map {
-					Component.text(it)
-				})
-			}
-		}
+		itemStack = createMenuItem(material, name, *lore)
 	}
 
 	constructor(material: Material?) {
 		itemStack = ItemStack(material!!, 1)
-	}
-
-	constructor(material: Material, name: String, lore: List<String>) {
-		itemStack = ItemStack(material, 1)
-
-		itemStack.itemMeta = itemStack.itemMeta!!.apply {
-			this.displayName(Component.text(name))
-
-			lore.let {
-				this.lore(lore.map {
-					Component.text(it)
-				})
-			}
-		}
 	}
 
 	/**

@@ -12,11 +12,9 @@ fun createMenuItem(material: Material?, name: String?, vararg lore: String): Ite
             this.displayName(Component.text(it))
         }
 
-        lore.let {
-            this.lore(lore.map {
-                Component.text(it)
-            })
-        }
+        this.lore(lore.map {
+            Component.text(it)
+        })
     }
 
     return itemStack

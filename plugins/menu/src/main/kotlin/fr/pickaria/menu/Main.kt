@@ -1,20 +1,20 @@
 package fr.pickaria.menu
 
+import fr.pickaria.menu.sub.HomeMenuFactory
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExecutorCoroutineDispatcher
 import kotlinx.coroutines.newSingleThreadContext
 import org.bukkit.plugin.java.JavaPlugin
 
-class Main: JavaPlugin() {
-	companion object {
-		lateinit var menuController: MenuController
-	}
+val menuController: MenuController = MenuController()
+const val DEFAULT_MENU = "home"
 
+class Main: JavaPlugin() {
 	override fun onEnable() {
 		super.onEnable()
 
-		menuController = MenuController(this)
+		menuController.registerMenu("home", HomeMenuFactory())
 
 		getCommand("menu")?.setExecutor(MenuCommand()) ?: logger.warning("Could not register menu command.")
 
