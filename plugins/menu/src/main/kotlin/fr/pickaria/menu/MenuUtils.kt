@@ -19,3 +19,19 @@ fun createMenuItem(material: Material?, name: String?, vararg lore: String): Ite
 
     return itemStack
 }
+
+fun createMenuItem(material: Material = Material.AIR, name: String?, lore: List<String>): ItemStack {
+    val itemStack = ItemStack(material, 1)
+
+    itemStack.itemMeta = itemStack.itemMeta?.apply {
+        name?.let {
+            this.displayName(Component.text(it))
+        }
+
+        this.lore(lore.map {
+            Component.text(it)
+        })
+    }
+
+    return itemStack
+}

@@ -14,7 +14,7 @@ class Main: JavaPlugin() {
 	override fun onEnable() {
 		super.onEnable()
 
-		menuController.registerMenu("home", HomeMenuFactory())
+		menuController.registerMenu(DEFAULT_MENU, HomeMenuFactory())
 
 		getCommand("menu")?.setExecutor(MenuCommand()) ?: logger.warning("Could not register menu command.")
 

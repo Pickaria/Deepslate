@@ -30,7 +30,7 @@ class MenuCommand : CommandExecutor, TabCompleter {
 		args: Array<out String>
 	): MutableList<String> {
 		if (sender is Player) {
-			return menuController.menuKeys
+			return menuController.menus.keys
 				.filter { it.startsWith(args[0].lowercase()) }
 				.toMutableList()
 		}

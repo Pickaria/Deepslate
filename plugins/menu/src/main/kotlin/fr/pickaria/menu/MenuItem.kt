@@ -15,6 +15,10 @@ class MenuItem {
 		itemStack = createMenuItem(material, name, *lore)
 	}
 
+	constructor(material: Material, name: String, lore: List<String>) {
+		itemStack = createMenuItem(material, name, lore)
+	}
+
 	constructor(material: Material?) {
 		itemStack = ItemStack(material!!, 1)
 	}

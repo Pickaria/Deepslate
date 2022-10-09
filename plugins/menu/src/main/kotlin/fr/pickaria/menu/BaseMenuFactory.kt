@@ -1,10 +1,13 @@
 package fr.pickaria.menu
 
+import net.kyori.adventure.text.Component
+import org.bukkit.Material
 import org.bukkit.entity.HumanEntity
 
-abstract class BaseMenuFactory(val title: String) {
+abstract class BaseMenuFactory(val title: String, val icon: Material = Material.AIR, vararg lore: String) {
+	val description = listOf(*lore)
+
 	abstract fun create(
-		title: String = this.title,
 		opener: HumanEntity? = null,
 		previousMenu: BaseMenu? = null,
 		size: Int = 54
