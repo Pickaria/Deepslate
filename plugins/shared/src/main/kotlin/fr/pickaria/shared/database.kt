@@ -1,6 +1,7 @@
 package fr.pickaria.shared
 
 import fr.pickaria.shared.models.BankAccounts
+import fr.pickaria.shared.models.Jobs
 import org.jetbrains.exposed.dao.IntEntity
 import org.jetbrains.exposed.dao.IntEntityClass
 import org.jetbrains.exposed.dao.id.EntityID
@@ -16,14 +17,16 @@ internal fun openDatabase(path: String): Database {
 	val database = Database.connect("jdbc:h2:$path;DB_CLOSE_DELAY=-1;AUTO_SERVER=TRUE", "org.h2.Driver")
 
 	transaction {
-		SchemaUtils.create(StarWarsFilms, BankAccounts)
+		SchemaUtils.create(
+			StarWarsFilms, BankAccounts, Jobs
+		)
 	}
 
 	transaction {
 		SchemaUtils.statementsRequiredToActualizeScheme(
-			StarWarsFilms, BankAccounts
+			StarWarsFilms, BankAccounts, Jobs
 		) + SchemaUtils.addMissingColumnsStatements(
-			StarWarsFilms, BankAccounts
+			StarWarsFilms, BankAccounts, Jobs
 		)
 	}.forEach {
 		transaction {

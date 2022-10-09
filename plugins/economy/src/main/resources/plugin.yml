@@ -7,6 +7,10 @@ depend: [PickariaShared, Vault]
 
 commands:
   money:
-    description: Money
+    description: Voir son solde bancaire
     usage: /money
-    permission: pickaria.economy.command.money
+    permission: pickaria.command.money
+  pay:
+    description: Payer un autre joueur
+    usage: /pay <joueur> <montant>
+    permission: pickaria.command.pay
