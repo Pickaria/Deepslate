@@ -1,0 +1,6 @@
+name: PickariaJob
+version: 1.0
+api-version: 1.19
+main: fr.pickaria.job.Main
+author: Quozul
+depends: [PickariaShared, Vault]
