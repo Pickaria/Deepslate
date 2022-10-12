@@ -6,7 +6,8 @@ jobs:
   miner: # This is the name stored in the database
     label: "Mineur"
     icon: IRON_PICKAXE
-    description: "Miner des minerais."
+    description:
+      - "Miner des minerais."
     experience_percentage: 1.075
     multiplier: 50
     revenue_increase: 1.05 # Default value

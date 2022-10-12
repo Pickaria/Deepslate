@@ -22,7 +22,9 @@ class JobMenu(title: String, opener: HumanEntity?, previousMenu: BaseMenu?, size
 
 		jobConfig.jobs.forEach { (key, job) ->
 			val lore = mutableListOf<String>()
-			lore.add("§7${job.description}")
+			job.description.forEach {
+				lore.add("§7${it}")
+			}
 
 			opener?.let { opener ->
 				Job.get(opener.uniqueId, key)?.let {
