@@ -1,6 +1,5 @@
 package fr.pickaria.job
 
-import fr.pickaria.menu.menuController
 import org.bukkit.plugin.java.JavaPlugin
 
 lateinit var jobController: JobController
@@ -19,8 +18,6 @@ class Main : JavaPlugin() {
 		val jobCommand = JobCommand()
 		getCommand("job")?.setExecutor(jobCommand) ?: server.logger.warning("Command job could not be registered")
 		getCommand("jobs")?.setExecutor(jobCommand) ?: server.logger.warning("Command job could not be registered")
-
-		menuController.registerMenu("job", JobsMenu.Factory())
 
 		logger.info("Job plugin loaded!")
 	}

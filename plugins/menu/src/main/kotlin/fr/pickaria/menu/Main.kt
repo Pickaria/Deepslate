@@ -14,13 +14,19 @@ class Main : JavaPlugin() {
 	override fun onEnable() {
 		super.onEnable()
 
-		menuController.registerMenu(DEFAULT_MENU, HomeMenu.Factory())
+		menuController.register(DEFAULT_MENU, HomeMenu.Factory())
 
 		getCommand("menu")?.setExecutor(MenuCommand()) ?: logger.warning("Could not register `menu` command.")
 
 		server.pluginManager.registerEvents(menuController, this)
 
 		logger.info("Menu plugin loaded!")
+	}
+
+	override fun onDisable() {
+		super.onDisable()
+
+		menuController.unregister(DEFAULT_MENU)
 	}
 }
 

@@ -1,7 +1,6 @@
 package fr.pickaria.menu.sub
 
 import fr.pickaria.menu.BaseMenu
-import fr.pickaria.menu.MenuItem
 import fr.pickaria.menu.menuController
 import org.bukkit.Material
 import org.bukkit.entity.HumanEntity
@@ -17,11 +16,16 @@ class HomeMenu(title: String, opener: HumanEntity?, previousMenu: BaseMenu?, siz
 		var x = 1
 
 		menuController.menus.forEach { (key, menu) ->
-			super.setMenuItem(x++, 1, MenuItem(menu.icon, menu.title, menu.description)
-				.setCallback { event ->
-					menuController.openMenu(event.whoClicked, key, this)
+			setMenuItem {
+				this.x = x++
+				y = 1
+				material = menu.icon
+				name = menu.title
+				lore = menu.description
+				callback = {
+					menuController.openMenu(it.whoClicked, key, this@HomeMenu)
 				}
-			)
+			}
 		}
 	}
 }

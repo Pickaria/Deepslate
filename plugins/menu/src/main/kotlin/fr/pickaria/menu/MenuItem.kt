@@ -8,38 +8,32 @@ import org.bukkit.inventory.ItemStack
 import java.util.function.Consumer
 
 class MenuItem {
-	var itemStack: ItemStack
-	var callback: Consumer<InventoryClickEvent>? = null
+	var name: String = ""
+	var x: Int = 0
+	var y: Int = 0
+	var material: Material = Material.AIR
+	var lore: List<String> = emptyList()
+	var callback: ((InventoryClickEvent) -> Unit)? = null
+	var isEnchanted: Boolean = false
+	private lateinit var itemStack: ItemStack
 
-	constructor(material: Material, name: String, vararg lore: String) {
-		itemStack = createMenuItem(material, name, *lore)
+	companion object {
+		inline fun build(block: MenuItem.() -> Unit) = MenuItem().apply(block).build()
 	}
 
-	constructor(material: Material, name: String, lore: List<String>) {
+	fun build(): MenuItem {
 		itemStack = createMenuItem(material, name, lore)
-	}
 
-	constructor(material: Material?) {
-		itemStack = ItemStack(material!!, 1)
-	}
+		if (isEnchanted) {
+			itemStack.addUnsafeEnchantment(Enchantment.MENDING, 1)
 
-	/**
-	 * Set the callback called when the MenuItem is clicked
-	 * @param callback
-	 * @return
-	 */
-	fun setCallback(callback: Consumer<InventoryClickEvent>): MenuItem {
-		this.callback = callback
-		return this
-	}
-
-	fun setEnchanted(): MenuItem {
-		itemStack.addUnsafeEnchantment(Enchantment.MENDING, 1)
-
-		itemStack.itemMeta = itemStack.itemMeta!!.apply {
-			this.itemFlags.plus(ItemFlag.HIDE_ENCHANTS)
+			itemStack.itemMeta = itemStack.itemMeta!!.apply {
+				this.itemFlags.plus(ItemFlag.HIDE_ENCHANTS)
+			}
 		}
 
 		return this
 	}
+
+	fun getItemStack() = this.itemStack
 }

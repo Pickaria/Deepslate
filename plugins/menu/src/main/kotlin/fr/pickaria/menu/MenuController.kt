@@ -1,5 +1,6 @@
 package fr.pickaria.menu
 
+import org.bukkit.Bukkit.getServer
 import org.bukkit.entity.HumanEntity
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
@@ -14,8 +15,20 @@ class MenuController : Listener {
 	val menus = ConcurrentHashMap<String, BaseMenu.Factory>()
 	private val openedMenus = ConcurrentHashMap<Inventory, BaseMenu>()
 
-	fun registerMenu(name: String, menu: BaseMenu.Factory) {
+	fun register(name: String, menu: BaseMenu.Factory) {
+		if (menus.containsKey(name)) {
+			getServer().logger.warning("Registering menu `$name` but is already registered.")
+		}
+
 		menus[name] = menu
+	}
+
+	fun unregister(name: String) {
+		if (!menus.containsKey(name)) {
+			getServer().logger.warning("Trying to unregister menu `$name` but is not registered.")
+		} else {
+			menus.remove(name)
+		}
 	}
 
 	fun openMenu(player: HumanEntity, menu: String, previousMenu: BaseMenu?): Boolean {

@@ -9,7 +9,6 @@ import org.bukkit.Material
 import org.bukkit.entity.HumanEntity
 import org.bukkit.event.inventory.InventoryClickEvent
 import org.bukkit.inventory.Inventory
-import java.util.function.Consumer
 
 abstract class BaseMenu(
 	title: String,
@@ -45,16 +44,18 @@ abstract class BaseMenu(
 
 	fun updateMenu() {
 		CoroutineScope(Dispatchers.Menus).launch {
-			val fill = MenuItem(fillMaterial)
+			val fill = MenuItem.build {
+				material = fillMaterial
+			}
 
 			inventory.clear()
 
 			initMenu()
 
 			for (i in page * pageSize until (page + 1) * pageSize) {
-				val menuItemStack: MenuItem = menuItemStacks[i] ?: fill
+				val menuItemStack = menuItemStacks[i] ?: fill
 				val slot = i - page * 45
-				inventory.setItem(slot, menuItemStack.itemStack)
+				inventory.setItem(slot, menuItemStack.getItemStack())
 			}
 
 			// Pagination items
@@ -86,13 +87,13 @@ abstract class BaseMenu(
 		}
 	}
 
-	private fun setMenuItem(pos: Int, menuItemStack: MenuItem): BaseMenu {
+	protected fun setMenuItem(block: MenuItem.() -> Unit): BaseMenu {
+		val menuItem = MenuItem.build(block)
+		val pos = menuItem.y * 9 + menuItem.x
 		if (pos > last) last = pos
-		menuItemStacks[pos] = menuItemStack
+		menuItemStacks[pos] = menuItem
 		return this
 	}
-
-	protected fun setMenuItem(x: Int, y: Int, menuItemStack: MenuItem): BaseMenu = setMenuItem(y * 9 + x, menuItemStack)
 
 	// Check for clicks on items
 	fun onInventoryClick(event: InventoryClickEvent) {
@@ -101,10 +102,9 @@ abstract class BaseMenu(
 		// verify current item is not null
 		if (clickedItem == null || clickedItem.type.isAir) return
 		val slot = event.rawSlot
-		val menuItemStack: MenuItem? = menuItemStacks[slot]
+		val menuItemStack = menuItemStacks[slot]
 		if (slot < pageSize && menuItemStack != null) {
-			val callback: Consumer<InventoryClickEvent>? = menuItemStack.callback
-			callback?.accept(event)
+			menuItemStack.callback?.invoke(event)
 			return
 		}
 
