@@ -107,10 +107,7 @@ To get a local copy up and running follow these steps.
       For Windows, download Temurin from [Adoptium](https://adoptium.net/)
 4. Once the JDK is set-up, open the _Gradle_ on the right of the IDE, and click on the _Reload All Gradle Projects_ button, this will download and index all the dependencies required by the plugins  
    ![reload-gradle-intellij.png](docs/images/reload-gradle-intellij.png)
-5. Now you can switch task in your IDE, select the _setup-server-[linux|windows]_ task.  
-   Choose the task according to your operating system, either Linux or Windows.  
-   Run the task by clicking the green arrow, this will download and setup a test server  
-   ![switch-task-intellij.png](docs/images/switch-task-intellij.png)
+5. Run the `setupServer` Gradle task to create a test server.
 6. Once everything is done, you can run the _start-server_ task, this will run the _shadow_ task first and start a test server on your computer.  
    While the server is running, you can run the _shadow_ task to compile the plugins, the jar files are automatically placed in the test server's plugins folder.
 </details>
@@ -139,8 +136,7 @@ To get a local copy up and running follow these steps.
    For Windows, download Temurin from [Adoptium](https://adoptium.net/)
 4. Once JDK is set-up and Gradle extension is installed, open the _Gradle_ tab on the left and click the _Reload All Gradle Projects_ button, this will download and index all the dependencies required by the plugins  
    ![reload-gradle-vscode.png](docs/images/reload-gradle-vscode.png)
-5. Now you can run the task in your IDE, click on _Terminal_ → _Run Task..._ and select the _setup-server_ task.  
-   The task will auto detect your operating system and install a test server.  
+5. Run the `setupServer` Gradle task to create a test server.
 6. Once everything is done, you can run the _start-server_ task to start the test server and run the _shadow_ task to compile the plugins, the jar files are automatically placed in the test server's plugins folder.
 </details>
 
@@ -156,10 +152,7 @@ To get a local copy up and running follow these steps.
    git clone git@github.com:Pickaria/plugin-collection.git
    ```
    If using SSH, remember to [add an SSH key](https://github.com/settings/keys) on your GitHub profile.
-2. Create the test server
-   ```shell
-   ./scripts/setup-server.sh
-   ```
+2. Run the `setupServer` Gradle task to create a test server.
 3. Set the `DESTINATION_DIRECTORY` environment variable to "build" or "plugins" (optional, defaults to "plugins")  
    This tells Gradle to put your plugins into the `$rootDir/build` directory or `$rootDir/server/plugins`
    If you set it to "build", you'll have to manually copy the files into the server's plugins directory
