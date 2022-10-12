@@ -1,5 +1,6 @@
 package fr.pickaria.job
 
+import fr.pickaria.menu.menuController
 import org.bukkit.plugin.java.JavaPlugin
 
 lateinit var jobController: JobController
@@ -11,6 +12,8 @@ class Main : JavaPlugin() {
 
 		saveDefaultConfig()
 
+		menuController.register("job", JobMenu.Factory())
+
 		jobConfig = JobConfig(this.config)
 
 		jobController = JobController(this)
@@ -20,5 +23,11 @@ class Main : JavaPlugin() {
 		getCommand("jobs")?.setExecutor(jobCommand) ?: server.logger.warning("Command job could not be registered")
 
 		logger.info("Job plugin loaded!")
+	}
+
+	override fun onDisable() {
+		super.onDisable()
+
+		menuController.unregister("job")
 	}
 }

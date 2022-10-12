@@ -8,11 +8,11 @@ import org.bukkit.inventory.ItemStack
 import java.util.function.Consumer
 
 class MenuItem {
-	var name: String = ""
+	var name: String? = null
 	var x: Int = 0
 	var y: Int = 0
 	var material: Material = Material.AIR
-	var lore: List<String> = emptyList()
+	var lore: List<String>? = null
 	var callback: ((InventoryClickEvent) -> Unit)? = null
 	var isEnchanted: Boolean = false
 	private lateinit var itemStack: ItemStack

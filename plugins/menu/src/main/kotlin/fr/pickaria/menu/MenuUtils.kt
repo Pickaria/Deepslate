@@ -12,15 +12,17 @@ fun createMenuItem(material: Material?, name: String?, vararg lore: String): Ite
             this.displayName(Component.text(it))
         }
 
-        this.lore(lore.map {
-            Component.text(it)
-        })
+        if (lore.isNotEmpty()) {
+            this.lore(lore.map {
+                Component.text(it)
+            })
+        }
     }
 
     return itemStack
 }
 
-fun createMenuItem(material: Material = Material.AIR, name: String?, lore: List<String>): ItemStack {
+fun createMenuItem(material: Material = Material.AIR, name: String? = null, lore: List<String>? = null): ItemStack {
     val itemStack = ItemStack(material, 1)
 
     itemStack.itemMeta = itemStack.itemMeta?.apply {
@@ -28,9 +30,11 @@ fun createMenuItem(material: Material = Material.AIR, name: String?, lore: List<
             this.displayName(Component.text(it))
         }
 
-        this.lore(lore.map {
-            Component.text(it)
-        })
+        lore?.let {
+            this.lore(lore.map {
+                Component.text(it)
+            })
+        }
     }
 
     return itemStack
