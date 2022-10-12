@@ -11,10 +11,10 @@ import org.bukkit.inventory.Inventory
 import java.util.concurrent.ConcurrentHashMap
 
 class MenuController : Listener {
-	val menus = ConcurrentHashMap<String, BaseMenuFactory>()
+	val menus = ConcurrentHashMap<String, BaseMenu.Factory>()
 	private val openedMenus = ConcurrentHashMap<Inventory, BaseMenu>()
 
-	fun registerMenu(name: String, menu: BaseMenuFactory) {
+	fun registerMenu(name: String, menu: BaseMenu.Factory) {
 		menus[name] = menu
 	}
 

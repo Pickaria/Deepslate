@@ -10,6 +10,10 @@ import org.bukkit.entity.Player
 class JobsMenu(title: String, opener: HumanEntity?, previousMenu: BaseMenu?, size: Int = 54) :
 	BaseMenu(title, opener, previousMenu, size) {
 
+	class Factory: BaseMenu.Factory("§6§lMétiers", Material.WOODEN_PICKAXE) {
+		override fun create(opener: HumanEntity?, previousMenu: BaseMenu?, size: Int): BaseMenu = JobsMenu(title, opener, previousMenu, size)
+	}
+
 	init {
 		fillMaterial = Material.GREEN_STAINED_GLASS_PANE
 	}

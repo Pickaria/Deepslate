@@ -12,12 +12,22 @@ import org.bukkit.inventory.Inventory
 import java.util.function.Consumer
 
 abstract class BaseMenu(
-	protected val title: String,
+	title: String,
 	protected val opener: HumanEntity? = null,
-	val previousMenu: BaseMenu? = null,
-	protected val size: Int = 54
+	private val previousMenu: BaseMenu? = null,
+	size: Int = 54
 ) {
 	val inventory: Inventory = Bukkit.createInventory(null, size, Component.text(title))
+
+	abstract class Factory(val title: String, val icon: Material = Material.AIR, vararg lore: String) {
+		val description = listOf(*lore)
+
+		abstract fun create(
+			opener: HumanEntity? = null,
+			previousMenu: BaseMenu? = null,
+			size: Int = 54
+		): BaseMenu
+	}
 
 	private val previousPageSlot = size - 7
 	private val menuBackSlot = size - 5
@@ -76,7 +86,7 @@ abstract class BaseMenu(
 		}
 	}
 
-	protected fun setMenuItem(pos: Int, menuItemStack: MenuItem): BaseMenu {
+	private fun setMenuItem(pos: Int, menuItemStack: MenuItem): BaseMenu {
 		if (pos > last) last = pos
 		menuItemStacks[pos] = menuItemStack
 		return this

@@ -1,6 +1,6 @@
 package fr.pickaria.menu
 
-import fr.pickaria.menu.sub.HomeMenuFactory
+import fr.pickaria.menu.sub.HomeMenu
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExecutorCoroutineDispatcher
@@ -14,7 +14,7 @@ class Main : JavaPlugin() {
 	override fun onEnable() {
 		super.onEnable()
 
-		menuController.registerMenu(DEFAULT_MENU, HomeMenuFactory())
+		menuController.registerMenu(DEFAULT_MENU, HomeMenu.Factory())
 
 		getCommand("menu")?.setExecutor(MenuCommand()) ?: logger.warning("Could not register `menu` command.")
 

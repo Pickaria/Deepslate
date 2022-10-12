@@ -20,7 +20,7 @@ class Main : JavaPlugin() {
 		getCommand("job")?.setExecutor(jobCommand) ?: server.logger.warning("Command job could not be registered")
 		getCommand("jobs")?.setExecutor(jobCommand) ?: server.logger.warning("Command job could not be registered")
 
-		menuController.registerMenu("job", JobMenuFactory())
+		menuController.registerMenu("job", JobsMenu.Factory())
 
 		logger.info("Job plugin loaded!")
 	}
