@@ -2,6 +2,9 @@ package fr.pickaria.job
 
 import fr.pickaria.job.jobs.*
 import fr.pickaria.shared.models.Job
+import net.kyori.adventure.text.Component
+import net.kyori.adventure.text.format.NamedTextColor
+import net.kyori.adventure.title.Title
 import org.bukkit.Bukkit
 import org.bukkit.Bukkit.getServer
 import org.bukkit.Sound
@@ -91,7 +94,7 @@ class JobController(private val plugin: Main) : Listener {
 	fun getLevelFromExperience(job: JobConfig.Configuration, experience: Int): Int {
 		var level = 0
 		var levelExperience = job.startExperience.toDouble()
-		while ((levelExperience + level * job.multiplier) < experience && level < 100) {
+		while ((levelExperience + level * job.multiplier) < experience && level < jobConfig.maxLevel) {
 			levelExperience *= job.experiencePercentage
 			level++
 		}
@@ -101,11 +104,17 @@ class JobController(private val plugin: Main) : Listener {
 	private fun addExperience(playerUuid: UUID, job: JobConfig.Configuration, exp: Int): JobErrorEnum {
 		return Job.get(playerUuid, job.key)?.let {
 			val previousLevel = getLevelFromExperience(job, it.experience)
+			val newLevel = getLevelFromExperience(job, it.experience + exp)
 			it.experience += exp
-			val newLevel = getLevelFromExperience(job, it.experience)
 
-			if (newLevel > previousLevel) {
-				JobErrorEnum.NEW_LEVEL
+			val isNewLevel = newLevel > previousLevel
+
+			return if (isNewLevel) {
+				if (newLevel >= jobConfig.maxLevel) {
+					JobErrorEnum.MAX_LEVEL_REACHED
+				} else {
+					JobErrorEnum.NEW_LEVEL
+				}
 			} else {
 				JobErrorEnum.NOTHING
 			}
@@ -143,6 +152,15 @@ class JobController(private val plugin: Main) : Listener {
 			if (it == JobErrorEnum.NEW_LEVEL) {
 				player.playSound(player.location, Sound.ENTITY_PLAYER_LEVELUP, 1.0f, 1.0f)
 				player.sendMessage("§7Vous montez niveau §6$level§7 dans le métier §6${job.label}§7.")
+			} else if (it == JobErrorEnum.MAX_LEVEL_REACHED) {
+				player.playSound(player.location, Sound.ENTITY_ENDER_DRAGON_DEATH, 1.0f, 1.0f)
+				player.sendMessage("§7Vous montez niveau §6$level§7 dans le métier §6${job.label}§7.")
+
+				val mainTitle = Component.text("Niveau maximum atteint", NamedTextColor.GOLD);
+				val subtitle = Component.text("Vous avez atteint le niveau maximum dans le métier ${job.label} !", NamedTextColor.GRAY);
+				val title = Title.title(mainTitle, subtitle);
+
+				player.showTitle(title);
 			}
 		}
 	}

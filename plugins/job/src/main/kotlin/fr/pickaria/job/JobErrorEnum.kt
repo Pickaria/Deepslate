@@ -9,4 +9,5 @@ enum class JobErrorEnum() {
 	JOB_LEFT,
 	NEW_LEVEL,
 	NOTHING,
+	MAX_LEVEL_REACHED,
 }

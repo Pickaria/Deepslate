@@ -29,6 +29,7 @@ class JobMenu(title: String, opener: HumanEntity?, previousMenu: BaseMenu?, size
 			opener?.let { opener ->
 				Job.get(opener.uniqueId, key)?.let {
 					val level = jobController.getLevelFromExperience(job, it.experience)
+					lore.add("§6Expérience totale :§7 ${it.experience}")
 					lore.add("§6Niveau :§7 $level")
 				}
 
