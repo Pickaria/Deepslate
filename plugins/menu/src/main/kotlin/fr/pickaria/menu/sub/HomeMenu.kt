@@ -5,11 +5,11 @@ import fr.pickaria.menu.menuController
 import org.bukkit.Material
 import org.bukkit.entity.HumanEntity
 
-class HomeMenu(title: String, opener: HumanEntity?, previousMenu: BaseMenu?, size: Int = 54) :
+class HomeMenu(title: String, opener: HumanEntity, previousMenu: BaseMenu?, size: Int = 54) :
 	BaseMenu(title, opener, previousMenu, size) {
 
 	class Factory: BaseMenu.Factory("§6§lAccueil", Material.GRASS_BLOCK) {
-		override fun create(opener: HumanEntity?, previousMenu: BaseMenu?, size: Int): BaseMenu = HomeMenu(title, opener, previousMenu, size)
+		override fun create(opener: HumanEntity, previousMenu: BaseMenu?, size: Int): BaseMenu = HomeMenu(title, opener, previousMenu, size)
 	}
 
 	override fun initMenu() {
