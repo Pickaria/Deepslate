@@ -26,11 +26,9 @@ class MenuItem {
 
 		if (isEnchanted) {
 			itemStack.addUnsafeEnchantment(Enchantment.MENDING, 1)
-
-			itemStack.itemMeta = itemStack.itemMeta!!.apply {
-				this.itemFlags.plus(ItemFlag.HIDE_ENCHANTS)
-			}
 		}
+
+		itemStack.addItemFlags(ItemFlag.HIDE_ENCHANTS, ItemFlag.HIDE_ATTRIBUTES)
 
 		return this
 	}

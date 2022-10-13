@@ -12,7 +12,7 @@ import org.bukkit.inventory.Inventory
 
 abstract class BaseMenu(
 	title: String,
-	protected val opener: HumanEntity? = null,
+	protected val opener: HumanEntity,
 	private val previousMenu: BaseMenu? = null,
 	size: Int = 54
 ) {
@@ -22,7 +22,7 @@ abstract class BaseMenu(
 		val description = listOf(*lore)
 
 		abstract fun create(
-			opener: HumanEntity? = null,
+			opener: HumanEntity,
 			previousMenu: BaseMenu? = null,
 			size: Int = 54
 		): BaseMenu

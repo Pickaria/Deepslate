@@ -39,4 +39,5 @@ class JobConfig(config: FileConfiguration) {
 	val maxJobs = config.getInt("max_jobs")
 	val maxLevel = config.getInt("max_level")
 	val cooldown = config.getLong("cooldown")
+	val cooldown = config.getLong("cooldown")
 }
