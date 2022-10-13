@@ -1,5 +1,11 @@
 name: PickariaShared
 version: 1.0
 api-version: 1.19
-main: Main
+main: fr.pickaria.shared.Main
 author: Quozul
+
+commands:
+  test:
+    description: Test
+    usage: /test
+    permission: pickaria.shared.command.test

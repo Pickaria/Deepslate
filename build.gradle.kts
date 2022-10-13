@@ -1,5 +1,3 @@
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
-import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 import groovy.json.JsonSlurper
 
 tasks.register("setupServer") {
@@ -54,9 +52,9 @@ tasks.register("setupServer") {
 }
 
 plugins {
-	kotlin("jvm") version "1.7.20" // or kotlin("multiplatform") or any other kotlin plugin
+	kotlin("jvm") version "1.7.20"
 	id("com.github.johnrengelman.shadow") version "7.1.2"
-	java
+	id("java")
 }
 
 java {
@@ -68,6 +66,22 @@ allprojects {
 	group = "fr.pickaria"
 	version = "1.0-SNAPSHOT"
 
+	apply {
+		plugin("kotlin")
+		plugin("com.github.johnrengelman.shadow")
+		plugin("java")
+	}
+
+	tasks {
+		compileKotlin {
+			kotlinOptions.jvmTarget = "17"
+		}
+	}
+
+	dependencies {
+		compileOnly("io.papermc.paper:paper-api:1.19.2-R0.1-SNAPSHOT")
+	}
+
 	repositories {
 		mavenCentral()
 		maven("https://oss.sonatype.org/content/groups/public/")
@@ -76,32 +90,28 @@ allprojects {
 }
 
 subprojects {
-	apply {
-		plugin("kotlin")
-		plugin("com.github.johnrengelman.shadow")
-	}
-
-	dependencies {
-		implementation(kotlin("stdlib"))
-		compileOnly("io.papermc.paper:paper-api:1.19.2-R0.1-SNAPSHOT")
-	}
-
-	tasks.withType<KotlinCompile> {
-		kotlinOptions.jvmTarget = "17"
-	}
-
-	tasks.withType<ShadowJar> {
-		mergeServiceFiles()
-
-		val dest: String = when (System.getenv("DESTINATION_DIRECTORY")) {
-			"build" -> {
-				"$rootDir/build"
+	// Remove Kotlin from all subprojects except 'shared'
+	tasks {
+		shadowJar {
+			if (this@subprojects.name != "shared") {
+				dependencies {
+					exclude(dependency("org.jetbrains.kotlin:.*"))
+				}
 			}
-			else -> {
-				"$rootDir/server/plugins"
+
+			mergeServiceFiles()
+
+			val dest: String = when (System.getenv("DESTINATION_DIRECTORY")) {
+				"build" -> {
+					"$rootDir/build"
+				}
+
+				else -> {
+					"$rootDir/server/plugins"
+				}
 			}
+
+			destinationDirectory.set(file(dest)) // Output to test server's plugins folder
 		}
-
-		destinationDirectory.set(file(dest)) // Output to test server's plugins folder
 	}
 }

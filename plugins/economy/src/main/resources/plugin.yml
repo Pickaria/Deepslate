@@ -1,6 +1,18 @@
 name: PickariaEconomy
 version: 1.0
 api-version: 1.19
-main: Main
+main: fr.pickaria.economy.Main
 author: Quozul
-depend: [PickariaShared]
+depend:
+  - PickariaShared
+  - Vault
+
+commands:
+  money:
+    description: Voir son solde bancaire
+    usage: /money
+    permission: pickaria.command.money
+  pay:
+    description: Payer un autre joueur
+    usage: /pay <joueur> <montant>
+    permission: pickaria.command.pay
