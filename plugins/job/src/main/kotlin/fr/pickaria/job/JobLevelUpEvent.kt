@@ -14,24 +14,18 @@ class JobLevelUpEvent internal constructor(
 	Event(), Cancellable {
 	private var isCancelled = false
 
-	override fun getHandlers(): HandlerList {
-		return HANDLERS
-	}
+	override fun getHandlers() = HANDLERS
 
-	override fun isCancelled(): Boolean {
-		return isCancelled
-	}
+	override fun isCancelled() = isCancelled
 
 	override fun setCancelled(isCancelled: Boolean) {
 		this.isCancelled = isCancelled
 	}
 
 	companion object {
-		val HANDLERS = HandlerList()
+		private val HANDLERS = HandlerList()
 
 		@JvmStatic
-		fun getHandlerList(): HandlerList {
-			return HANDLERS
-		}
+		fun getHandlerList() = HANDLERS
 	}
 }
