@@ -3,5 +3,5 @@ package fr.pickaria.job
 enum class LevelUpType {
 	NEW_LEVEL,
 	MAX_LEVEL_REACHED,
-	ASCEND_UNLOCKED,
+	ASCENT_UNLOCKED,
 }

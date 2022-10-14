@@ -40,7 +40,7 @@ class JobConfig(config: FileConfiguration) {
 	val maxLevel = config.getInt("max_level")
 	val cooldown = config.getLong("cooldown")
 
-	val ascendStartLevel = config.getInt("ascent.start_level")
+	val ascentStartLevel = config.getInt("ascent.start_level")
 	val pointEvery = config.getInt("ascent.point_every")
 	val pointAmount = config.getInt("ascent.point_amount")
 	val experienceIncrease = config.getDouble("ascent.experience_increase")

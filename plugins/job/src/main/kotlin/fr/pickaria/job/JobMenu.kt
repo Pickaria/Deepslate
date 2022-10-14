@@ -1,20 +1,28 @@
 package fr.pickaria.job
 
+import fr.pickaria.job.events.JobAscentEvent
 import fr.pickaria.menu.BaseMenu
+import fr.pickaria.menu.MenuLore
 import fr.pickaria.shared.models.Job
 import org.bukkit.Material
 import org.bukkit.entity.HumanEntity
 import org.bukkit.entity.Player
+import java.math.RoundingMode
+import java.text.DecimalFormat
 
 class JobMenu(title: String, opener: HumanEntity, previousMenu: BaseMenu?, size: Int = 54) :
 	BaseMenu(title, opener, previousMenu, size) {
 
-	class Factory: BaseMenu.Factory("§6§lMétiers", Material.WOODEN_PICKAXE) {
-		override fun create(opener: HumanEntity, previousMenu: BaseMenu?, size: Int): BaseMenu = JobMenu(title, opener, previousMenu, size)
+	class Factory(material: Material = Material.WOODEN_PICKAXE) : BaseMenu.Factory("§6§lMétiers", material) {
+		override fun create(opener: HumanEntity, previousMenu: BaseMenu?, size: Int): BaseMenu =
+			JobMenu(title, opener, previousMenu, size)
 	}
+
+	private val decimalFormat = DecimalFormat("#")
 
 	init {
 		fillMaterial = Material.GREEN_STAINED_GLASS_PANE
+		decimalFormat.roundingMode = RoundingMode.FLOOR
 	}
 
 	override fun initMenu() {
@@ -22,25 +30,39 @@ class JobMenu(title: String, opener: HumanEntity, previousMenu: BaseMenu?, size:
 			jobConfig.jobs[it.job]?.let { config -> config to it }
 		}.toMap()
 
-		var x = 4 - playerJobs.size / 2
-		val y = if (playerJobs.isEmpty()) {
+		val activeJobs = playerJobs.filter { (_, job) -> job.active }
+
+		var x = 4 - activeJobs.size / 2
+		val y = if (activeJobs.isEmpty()) {
 			2
 		} else {
 			3
 		}
 
-		playerJobs.forEach { (config, job) ->
-			if (job.active) {
-				val ascendPoints = jobController.getAscendPoints(job, config)
+		activeJobs.forEach { (config, job) ->
+			val ascentPoints = jobController.getAscentPoints(job, config)
 
-				config.let {
-					setMenuItem {
-						this.x = x++
-						this.y = 1
-						material = it.icon
-						name = "§7Métier actuel : ${config.label}"
-						lore = listOf("§7Points d'ascension à récupérer : §6$ascendPoints")
-						isEnchanted = ascendPoints > 0
+			val lore = MenuLore.build {
+				leftClick = if (ascentPoints > 0) "Clic-gauche pour effectuer une ascension" else null
+				keyValues = mapOf("Points d'ascension à récupérer" to ascentPoints)
+			}
+
+			setMenuItem {
+				this.x = x++
+				this.y = 1
+				material = config.icon
+				name = "§7Métier actuel : ${config.label}"
+				this.lore = lore
+				isEnchanted = ascentPoints > 0
+				if (ascentPoints > 0) {
+					callback = {
+						if (it.isLeftClick) {
+							job.ascentPoints += ascentPoints
+							job.experience = 0.0
+
+							JobAscentEvent(it.whoClicked as Player, config, ascentPoints).callEvent()
+							inventory.close()
+						}
 					}
 				}
 			}
@@ -48,36 +70,46 @@ class JobMenu(title: String, opener: HumanEntity, previousMenu: BaseMenu?, size:
 
 		x = 1
 
-		jobConfig.jobs.forEach { (key, job) ->
-			val lore = mutableListOf<String>()
-			job.description.forEach {
-				lore.add("§7${it}")
-			}
+		jobConfig.jobs.forEach { (key, config) ->
+			val job = playerJobs[config]
+			val isCurrentJob = job?.active == true
 
-			playerJobs[job]?.let { config ->
-				val level = jobController.getLevelFromExperience(job, config.experience)
-				lore.add("§6Expérience totale :§7 ${config.experience}")
-				lore.add("§6Niveau :§7 $level")
-			} ?: lore.add("§7Métier pas encore exercé")
+			val lore = MenuLore.build {
+				description = config.description
 
-			if (!jobController.hasJob(opener.uniqueId, key)) {
-				lore.add("Clic-gauche pour rejoindre le métier")
-			} else {
-				lore.add("Clic-droit pour quitter le métier")
+				job?.let {
+					val level = jobController.getLevelFromExperience(config, it.experience)
+
+					keyValues = mapOf(
+						"Expérience totale" to decimalFormat.format(it.experience),
+						"Niveau" to level,
+						"Points d'ascension" to it.ascentPoints,
+						"Bonus d'expérience" to "${decimalFormat.format(it.ascentPoints * jobConfig.experienceIncrease * 100)}%",
+						"Bonus de revenus" to "${decimalFormat.format(it.ascentPoints * jobConfig.moneyIncrease * 100)}%",
+					)
+				}
+
+				if (isCurrentJob) {
+					rightClick = "Clic-droit pour quitter le métier"
+				} else {
+					leftClick = "Clic-gauche pour rejoindre le métier"
+				}
 			}
 
 			setMenuItem {
 				this.x = x++
 				this.y = y
-				material = job.icon
-				name = job.label
+				material = config.icon
+				name = config.label
 				this.lore = lore
 				callback = {
-					with (it.whoClicked as Player) {
-						if (it.isLeftClick) {
+					with(it.whoClicked as Player) {
+						if (!isCurrentJob && it.isLeftClick) {
 							this.chat("/job join $key")
-						} else if (it.isRightClick) {
+							inventory.close()
+						} else if (isCurrentJob && it.isRightClick) {
 							this.chat("/job leave $key")
+							inventory.close()
 						}
 					}
 				}
