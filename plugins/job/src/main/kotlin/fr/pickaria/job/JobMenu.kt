@@ -1,6 +1,5 @@
 package fr.pickaria.job
 
-import fr.pickaria.job.events.JobAscentEvent
 import fr.pickaria.menu.BaseMenu
 import fr.pickaria.menu.MenuLore
 import fr.pickaria.shared.models.Job

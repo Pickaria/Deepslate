@@ -4,14 +4,8 @@ import fr.pickaria.job.events.JobAscentEvent
 import fr.pickaria.job.events.JobLevelUpEvent
 import fr.pickaria.job.jobs.*
 import fr.pickaria.shared.models.Job
-import net.kyori.adventure.text.Component
-import net.kyori.adventure.text.event.ClickEvent
-import net.kyori.adventure.text.format.NamedTextColor
-import net.kyori.adventure.text.format.TextColor
-import net.kyori.adventure.title.Title
 import org.bukkit.Bukkit
 import org.bukkit.Bukkit.getServer
-import org.bukkit.Sound
 import org.bukkit.boss.BarColor
 import org.bukkit.boss.BarStyle
 import org.bukkit.boss.BossBar
@@ -36,6 +30,7 @@ class JobController(private val plugin: Main) : Listener {
 	init {
 		getServer().pluginManager.run {
 			registerEvents(this@JobController, plugin)
+			registerEvents(JobListener(), plugin)
 
 			registerEvents(Miner(), plugin)
 			registerEvents(Hunter(), plugin)
@@ -50,47 +45,6 @@ class JobController(private val plugin: Main) : Listener {
 	@EventHandler
 	fun onPlayerQuit(event: PlayerQuitEvent) {
 		bossBars.remove(event.player)
-	}
-
-	@EventHandler
-	fun onJobLevelUp(event: JobLevelUpEvent) {
-		val player = event.player
-		val level = event.level
-		val label = event.job.label
-		val type = event.type
-
-		player.playSound(player.location, Sound.ENTITY_PLAYER_LEVELUP, 1.0f, 1.0f)
-		player.sendMessage("§7Vous montez niveau §6$level§7 dans le métier §6$label§7.")
-
-		if (type == LevelUpType.ASCENT_UNLOCKED) {
-			val mainTitle = Component.text("Ascension débloquée", NamedTextColor.GOLD)
-			val subtitle = Component.text("Vous avez débloqué l'ascension pour le métier $label !", NamedTextColor.GRAY)
-			val title = Title.title(mainTitle, subtitle)
-
-			player.showTitle(title)
-		} else if (type == LevelUpType.MAX_LEVEL_REACHED) {
-			val mainTitle = Component.text("Niveau maximum atteint", NamedTextColor.GOLD)
-			val subtitle = Component.text("Vous avez atteint le niveau maximum dans le métier $label !", NamedTextColor.GRAY)
-			val title = Title.title(mainTitle, subtitle)
-
-			player.showTitle(title)
-		}
-	}
-
-	@EventHandler
-	fun onJobAscent(event: JobAscentEvent) {
-		val player = event.player
-		val label = event.job.label
-		val ascentPoints = event.ascentPoints
-
-		val experienceBoost = jobConfig.experienceIncrease * ascentPoints * 100
-		val moneyBoost = jobConfig.moneyIncrease * ascentPoints * 100
-
-		player.playSound(player.location, Sound.ENTITY_PLAYER_LEVELUP, 1.0f, 1.0f)
-		player.sendMessage(
-			"§7Vous avez effectué une ascension et collecté §6$ascentPoints§7 points d'ascension dans le métier §6$label§7.\n" +
-			"§7Vous obtenez un bonus de §6$experienceBoost%§7 d'expérience ainsi que §6$moneyBoost%§7 de revenus supplémentaires."
-		)
 	}
 
 	/**
@@ -195,8 +149,8 @@ class JobController(private val plugin: Main) : Listener {
 	/**
 	 * Adds experience to a player's job and fire level up events if necessary.
 	 */
-	private fun addExperience(player: Player, job: JobConfig.Configuration, exp: Int): Pair<Int, Double> {
-		return Job.get(player.uniqueId, job.key)?.let {
+	private fun addExperience(player: Player, job: JobConfig.Configuration, exp: Int): Pair<Int, Double>? =
+		Job.get(player.uniqueId, job.key)?.let {
 			val experienceIncrease = exp + exp * it.ascentPoints * jobConfig.experienceIncrease
 
 			val previousLevel = getLevelFromExperience(job, it.experience)
@@ -219,14 +173,13 @@ class JobController(private val plugin: Main) : Listener {
 			}
 
 			(newLevel to it.experience + experienceIncrease)
-		} ?: (0 to 0.0)
-	}
+		}
 
 	/**
 	 * Adds experience and displays a boss bar with information.
 	 */
 	fun addExperienceAndAnnounce(player: Player, job: JobConfig.Configuration, exp: Int) {
-		addExperience(player, job, exp).also { (level, experience) ->
+		addExperience(player, job, exp)?.also { (level, experience) ->
 			val currentLevelExperience = getExperienceFromLevel(job, level - 1)
 			val nextLevelExperience = getExperienceFromLevel(job, level)
 			val levelDiff = abs(nextLevelExperience - currentLevelExperience)

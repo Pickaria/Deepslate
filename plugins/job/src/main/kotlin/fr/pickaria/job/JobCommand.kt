@@ -10,23 +10,16 @@ import org.bukkit.entity.Player
 
 class JobCommand : CommandExecutor, TabCompleter {
 	companion object {
-		private val SUB_COMMANDS = listOf(
-			"ascent",
-			"join",
-			"leave",
-			"menu",
-			"top",
-		)
+		private val SUB_COMMANDS = listOf("ascent", "join", "leave", "menu","top")
 	}
 
 	override fun onCommand(sender: CommandSender, command: Command, label: String, args: Array<out String>): Boolean {
 		if (sender is Player) {
 			if (args.isEmpty()) {
 				val message = if (jobController.jobCount(sender.uniqueId) == 0) {
-					"§cVous n'exercez actuellement pas de métier."
+				 	"§cVous n'exercez actuellement pas de métier."
 				} else {
-					val jobs =
-						Job.get(sender.uniqueId).filter { it.active }.mapNotNull { jobConfig.jobs[it.job]?.label }
+					val jobs = Job.get(sender.uniqueId).filter { it.active }.mapNotNull { jobConfig.jobs[it.job]?.label }
 					"§7Vous exercez le(s) métier(s) : ${jobs.joinToString(", ")}."
 				}
 				sender.sendMessage(message)
@@ -107,11 +100,9 @@ class JobCommand : CommandExecutor, TabCompleter {
 				1 -> SUB_COMMANDS.filter { it.startsWith(args[0]) }.toMutableList()
 
 				2 -> when (args[0]) {
-					// All jobs
 					"top", "join" -> jobConfig.jobs.keys.map { it.lowercase() }.filter { it.startsWith(args[1]) }
 						.toMutableList()
 
-					// Active jobs
 					"leave", "ascent" -> Job.get(sender.uniqueId)
 						.filter { it.active }
 						.map { it.job.lowercase() }
