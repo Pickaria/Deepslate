@@ -2,10 +2,6 @@ package fr.pickaria.shared
 
 import fr.pickaria.shared.models.BankAccounts
 import fr.pickaria.shared.models.Jobs
-import org.jetbrains.exposed.dao.IntEntity
-import org.jetbrains.exposed.dao.IntEntityClass
-import org.jetbrains.exposed.dao.id.EntityID
-import org.jetbrains.exposed.dao.id.IntIdTable
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.transactions.TransactionManager
 import org.jetbrains.exposed.sql.transactions.transaction
@@ -17,15 +13,15 @@ internal fun openDatabase(path: String): Database {
 
 	transaction {
 		SchemaUtils.create(
-			StarWarsFilms, BankAccounts, Jobs
+			BankAccounts, Jobs
 		)
 	}
 
 	transaction {
 		SchemaUtils.statementsRequiredToActualizeScheme(
-			StarWarsFilms, BankAccounts, Jobs
+			BankAccounts, Jobs
 		) + SchemaUtils.addMissingColumnsStatements(
-			StarWarsFilms, BankAccounts, Jobs
+			BankAccounts, Jobs
 		)
 	}.forEach {
 		transaction {
@@ -38,42 +34,4 @@ internal fun openDatabase(path: String): Database {
 	}
 
 	return database
-}
-
-// This is a test implementation
-// TODO: Remove
-
-object StarWarsFilms : IntIdTable() {
-	val sequelId = integer("sequel_id").uniqueIndex()
-	val name = varchar("name", 50)
-	val director = varchar("director", 50)
-}
-
-class StarWarsFilm(id: EntityID<Int>) : IntEntity(id) {
-	companion object : IntEntityClass<StarWarsFilm>(StarWarsFilms)
-
-	var sequelId by StarWarsFilms.sequelId
-	var name by StarWarsFilms.name
-	var director by StarWarsFilms.director
-}
-
-fun createMovie(name: String, sequelId: Int, director: String) = transaction {
-	Movie(
-		StarWarsFilm.new {
-			this.name = name
-			this.sequelId = sequelId
-			this.director = director
-		}
-	)
-}
-
-class Movie(private val movie: StarWarsFilm) {
-	val id: Int
-		get() = movie.id.value
-
-	var name: String
-		get() = movie.name
-		set(value) = transaction {
-			movie.name = value
-		}
 }

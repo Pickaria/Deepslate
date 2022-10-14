@@ -36,7 +36,12 @@ tasks.register("setupServer") {
 			"$rootDir/server/paper.jar"
 		)
 
-		// Download dependencoes
+		// Download dependencies
+		download(
+			"https://ci.dmulloy2.net/job/ProtocolLib/lastSuccessfulBuild/artifact/target/ProtocolLib.jar",
+			"$rootDir/server/plugins/ProtocolLib.jar"
+		)
+
 		for ((name, id) in dependencies) {
 			download(
 				"https://api.spiget.org/v2/resources/$id/download",
