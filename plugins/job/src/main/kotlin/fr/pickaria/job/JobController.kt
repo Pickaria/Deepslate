@@ -1,5 +1,7 @@
 package fr.pickaria.job
 
+import fr.pickaria.job.events.JobAscentEvent
+import fr.pickaria.job.events.JobLevelUpEvent
 import fr.pickaria.job.jobs.*
 import fr.pickaria.shared.models.Job
 import net.kyori.adventure.text.Component
@@ -58,7 +60,7 @@ class JobController(private val plugin: Main) : Listener {
 		player.playSound(player.location, Sound.ENTITY_PLAYER_LEVELUP, 1.0f, 1.0f)
 		player.sendMessage("§7Vous montez niveau §6$level§7 dans le métier §6$label§7.")
 
-		if (type == LevelUpType.ASCEND_UNLOCKED) {
+		if (type == LevelUpType.ASCENT_UNLOCKED) {
 			val mainTitle = Component.text("Ascension débloquée", NamedTextColor.GOLD)
 			val subtitle = Component.text("Vous avez débloqué l'ascension pour le métier $label !", NamedTextColor.GRAY)
 			val title = Title.title(mainTitle, subtitle)
@@ -72,6 +74,22 @@ class JobController(private val plugin: Main) : Listener {
 
 			player.showTitle(title)
 		}
+	}
+
+	@EventHandler
+	fun onJobAscent(event: JobAscentEvent) {
+		val player = event.player
+		val label = event.job.label
+		val ascentPoints = event.ascentPoints
+
+		val experienceBoost = jobConfig.experienceIncrease * ascentPoints * 100
+		val moneyBoost = jobConfig.moneyIncrease * ascentPoints * 100
+
+		player.playSound(player.location, Sound.ENTITY_PLAYER_LEVELUP, 1.0f, 1.0f)
+		player.sendMessage(
+			"§7Vous avez effectué une ascension et collecté §6$ascentPoints§7 points d'ascension dans le métier §6$label§7.\n" +
+			"§7Vous obtenez un bonus de §6$experienceBoost%§7 d'expérience ainsi que §6$moneyBoost%§7 de revenus supplémentaires."
+		)
 	}
 
 	/**
@@ -99,16 +117,16 @@ class JobController(private val plugin: Main) : Listener {
 	}
 
 	/**
-	 * Returns `0` if the player cannot ascend, otherwise returns `> 1`.
+	 * Returns `0` if the player cannot ascent, otherwise returns `> 1`.
 	 */
-	fun getAscendPoints(job: Job, config: JobConfig.Configuration): Int {
-		val level = getLevelFromExperience(config, job.experience)
-		return if (level > jobConfig.ascendStartLevel) {
-			(level - jobConfig.ascendStartLevel) / jobConfig.pointEvery * jobConfig.pointAmount + 1
-		} else {
-			0
+	fun getAscentPoints(job: Job, config: JobConfig.Configuration): Int =
+		getLevelFromExperience(config, job.experience).let {
+			if (it > jobConfig.ascentStartLevel) {
+				(it - jobConfig.ascentStartLevel) / jobConfig.pointEvery * jobConfig.pointAmount + 1
+			} else {
+				0
+			}
 		}
-	}
 
 	/**
 	 * Sets the current job as `active` and updates the `last used` field.
@@ -132,7 +150,7 @@ class JobController(private val plugin: Main) : Listener {
 	/**
 	 * Get the amount of experience required for a specific job level.
 	 */
-	private fun getExperienceFromLevel(job: JobConfig.Configuration, level: Int) =
+	private fun getExperienceFromLevel(job: JobConfig.Configuration, level: Int): Int =
 		if (level >= 0) {
 			ceil(job.startExperience * job.experiencePercentage.pow(level) + level * job.multiplier).toInt()
 		} else {
@@ -143,7 +161,7 @@ class JobController(private val plugin: Main) : Listener {
 	 * Returns the level from a job configuration and experience.
 	 * Use with caution as it contains a while loop.
 	 */
-	fun getLevelFromExperience(job: JobConfig.Configuration, experience: Int): Int {
+	fun getLevelFromExperience(job: JobConfig.Configuration, experience: Double): Int {
 		var level = 0
 		var levelExperience = job.startExperience.toDouble()
 		while ((levelExperience + level * job.multiplier) < experience && level < jobConfig.maxLevel) {
@@ -156,29 +174,31 @@ class JobController(private val plugin: Main) : Listener {
 	/**
 	 * Adds experience to a player's job and fire level up events if necessary.
 	 */
-	private fun addExperience(player: Player, job: JobConfig.Configuration, exp: Int): Pair<Int, Int> {
+	private fun addExperience(player: Player, job: JobConfig.Configuration, exp: Int): Pair<Int, Double> {
 		return Job.get(player.uniqueId, job.key)?.let {
+			val experienceIncrease = exp + exp * it.ascentPoints * jobConfig.experienceIncrease
+
 			val previousLevel = getLevelFromExperience(job, it.experience)
-			val newLevel = getLevelFromExperience(job, it.experience + exp)
-			it.experience += exp
+			val newLevel = getLevelFromExperience(job, it.experience + experienceIncrease)
+
+			it.experience += experienceIncrease
 
 			val isNewLevel = newLevel > previousLevel
 
 			if (isNewLevel) {
-				val type = if (newLevel == jobConfig.ascendStartLevel) {
-					LevelUpType.ASCEND_UNLOCKED
+				val type = if (newLevel == jobConfig.ascentStartLevel) {
+					LevelUpType.ASCENT_UNLOCKED
 				} else if (newLevel >= jobConfig.maxLevel) {
 					LevelUpType.MAX_LEVEL_REACHED
 				} else {
 					LevelUpType.NEW_LEVEL
 				}
 
-				val event = JobLevelUpEvent(player, type, job, newLevel)
-				event.callEvent()
+				JobLevelUpEvent(player, type, job, newLevel).callEvent()
 			}
 
-			(newLevel to it.experience + exp)
-		} ?: (0 to 0)
+			(newLevel to it.experience + experienceIncrease)
+		} ?: (0 to 0.0)
 	}
 
 	/**
@@ -198,7 +218,7 @@ class JobController(private val plugin: Main) : Listener {
 				bossBar
 			}
 
-			bossBar.setTitle("${job.label} | Niveau $level ($experience / $nextLevelExperience)")
+			bossBar.setTitle("${job.label} | Niveau $level (${experience.toInt()} / $nextLevelExperience)")
 			bossBar.isVisible = true
 			bossBar.progress = (diff / levelDiff.toDouble()).coerceAtLeast(0.0).coerceAtMost(1.0)
 

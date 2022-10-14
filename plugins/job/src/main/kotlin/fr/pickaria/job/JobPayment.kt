@@ -11,7 +11,7 @@ import kotlin.math.pow
 
 private val lastPayment = mutableMapOf<Player, Long>()
 
-fun jobPayPlayer(player: Player, amount: Double): Boolean {
+private fun jobPayPlayer(player: Player, amount: Double): Boolean {
 	val now = System.currentTimeMillis() // This uses 32 bit, alert for future us
 
 	if (now - (lastPayment[player] ?: 0L) < jobConfig.lastPaymentDelay) {
@@ -31,11 +31,14 @@ fun jobPayPlayer(player: Player, amount: Double): Boolean {
 	}
 }
 
-fun jobPayPlayer(player: Player, amount: Double, job: JobConfig.Configuration, experienceToGive: Int = 0) {
-	val experience = Job.get(player.uniqueId, job.key)?.experience ?: 0
-	val level = jobController.getLevelFromExperience(job, experience)
+fun jobPayPlayer(player: Player, amount: Double, config: JobConfig.Configuration, experienceToGive: Int = 0) {
+	Job.get(player.uniqueId, config.key)?.let {
+		val level = jobController.getLevelFromExperience(config, it.experience)
+		val amountToPay = amount * config.revenueIncrease.pow(level)
+		val amountIncrease = amountToPay + amountToPay * it.ascentPoints * jobConfig.moneyIncrease
 
-	if (jobPayPlayer(player, amount * job.revenueIncrease.pow(level)) && experienceToGive > 0) {
-		jobController.addExperienceAndAnnounce(player, job, experienceToGive)
+		if (jobPayPlayer(player, amountIncrease) && experienceToGive > 0) {
+			jobController.addExperienceAndAnnounce(player, config, experienceToGive)
+		}
 	}
 }

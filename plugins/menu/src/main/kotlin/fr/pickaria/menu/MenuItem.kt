@@ -28,7 +28,9 @@ class MenuItem {
 			itemStack.addUnsafeEnchantment(Enchantment.MENDING, 1)
 		}
 
-		itemStack.addItemFlags(ItemFlag.HIDE_ENCHANTS, ItemFlag.HIDE_ATTRIBUTES)
+		if (!material.isAir) {
+			itemStack.addItemFlags(ItemFlag.HIDE_ENCHANTS, ItemFlag.HIDE_ATTRIBUTES)
+		}
 
 		return this
 	}

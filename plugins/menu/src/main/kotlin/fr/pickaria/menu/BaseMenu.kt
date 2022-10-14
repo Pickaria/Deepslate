@@ -43,47 +43,45 @@ abstract class BaseMenu(
 	abstract fun initMenu()
 
 	fun updateMenu() {
-		CoroutineScope(Dispatchers.Menus).launch {
-			val fill = MenuItem.build {
-				material = fillMaterial
-			}
+		val fill = MenuItem.build {
+			material = fillMaterial
+		}
 
-			inventory.clear()
+		inventory.clear()
 
-			initMenu()
+		initMenu()
 
-			for (i in page * pageSize until (page + 1) * pageSize) {
-				val menuItemStack = menuItemStacks[i] ?: fill
-				val slot = i - page * 45
-				inventory.setItem(slot, menuItemStack.getItemStack())
-			}
+		for (i in page * pageSize until (page + 1) * pageSize) {
+			val menuItemStack = menuItemStacks[i] ?: fill
+			val slot = i - page * 45
+			inventory.setItem(slot, menuItemStack.getItemStack())
+		}
 
-			// Pagination items
-			if (page > 0) {
-				inventory.setItem(
-					previousPageSlot,
-					createMenuItem(Material.ARROW, "Page précédente", "Clic-gauche pour retourner à la page précédente")
-				)
-			}
+		// Pagination items
+		if (page > 0) {
+			inventory.setItem(
+				previousPageSlot,
+				createMenuItem(Material.ARROW, "Page précédente", "Clic-gauche pour retourner à la page précédente")
+			)
+		}
 
-			previousMenu?.let {
-				inventory.setItem(
-					menuBackSlot,
-					createMenuItem(Material.ARROW, "Retour", "Clic-gauche pour retourner au menu précédent")
-				)
-			} ?: run {
-				inventory.setItem(
-					menuBackSlot,
-					createMenuItem(Material.BARRIER, "Fermer", "Clic-gauche pour fermer le menu.")
-				)
-			}
+		previousMenu?.let {
+			inventory.setItem(
+				menuBackSlot,
+				createMenuItem(Material.ARROW, "Retour", "Clic-gauche pour retourner au menu précédent")
+			)
+		} ?: run {
+			inventory.setItem(
+				menuBackSlot,
+				createMenuItem(Material.BARRIER, "Fermer", "Clic-gauche pour fermer le menu.")
+			)
+		}
 
-			if (last >= (page + 1) * pageSize) {
-				inventory.setItem(
-					nextPageSlot,
-					createMenuItem(Material.ARROW, "Page suivante", "Clic-gauche pour aller à la page suivante")
-				)
-			}
+		if (last >= (page + 1) * pageSize) {
+			inventory.setItem(
+				nextPageSlot,
+				createMenuItem(Material.ARROW, "Page suivante", "Clic-gauche pour aller à la page suivante")
+			)
 		}
 	}
 

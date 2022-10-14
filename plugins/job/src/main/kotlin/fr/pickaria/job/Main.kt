@@ -1,6 +1,7 @@
 package fr.pickaria.job
 
 import fr.pickaria.menu.menuController
+import org.bukkit.Material
 import org.bukkit.plugin.java.JavaPlugin
 
 lateinit var jobController: JobController

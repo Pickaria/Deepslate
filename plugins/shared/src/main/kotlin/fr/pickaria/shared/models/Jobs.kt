@@ -10,7 +10,7 @@ import java.util.*
 internal object Jobs : Table() {
 	val playerUuid = uuid("player_uuid")
 	val job = varchar("job", 16)
-	val experience = integer("experience").default(0)
+	val experience = double("experience").default(0.0)
 	val lastUsed = datetime("last_used").default(LocalDateTime.now())
 	val active = bool("active").default(false)
 	val ascentPoints = integer("ascent_points").default(0)
@@ -50,7 +50,7 @@ class Job(private val row: ResultRow) {
 	val job: String
 		get() = row[Jobs.job]
 
-	var experience: Int
+	var experience: Double
 		get() = row[Jobs.experience]
 		set(value) = transaction {
 			Jobs.update({ whereClause() }) {
