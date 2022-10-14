@@ -18,7 +18,9 @@ class JobMenu(title: String, opener: HumanEntity, previousMenu: BaseMenu?, size:
 	}
 
 	override fun initMenu() {
-		val playerJobs = Job.get(opener.uniqueId).associateBy { it.job }
+		val playerJobs = Job.get(opener.uniqueId).mapNotNull {
+			jobConfig.jobs[it.job]?.let { config -> config to it }
+		}.toMap()
 
 		var x = 4 - playerJobs.size / 2
 		val y = if (playerJobs.isEmpty()) {
@@ -27,18 +29,18 @@ class JobMenu(title: String, opener: HumanEntity, previousMenu: BaseMenu?, size:
 			3
 		}
 
-		playerJobs.forEach { (key, job) ->
+		playerJobs.forEach { (config, job) ->
 			if (job.active) {
-				val config = jobConfig.jobs[key]
+				val ascendPoints = jobController.getAscendPoints(job, config)
 
-				config?.let {
+				config.let {
 					setMenuItem {
 						this.x = x++
 						this.y = 1
 						material = it.icon
-						name = "Métier actuel"
-						lore = listOf("§7${config.label}", "§6Récompense en attente de récupération")
-						isEnchanted = true
+						name = "§7Métier actuel : ${config.label}"
+						lore = listOf("§7Points d'ascension à récupérer : §6$ascendPoints")
+						isEnchanted = ascendPoints > 0
 					}
 				}
 			}
@@ -47,15 +49,14 @@ class JobMenu(title: String, opener: HumanEntity, previousMenu: BaseMenu?, size:
 		x = 1
 
 		jobConfig.jobs.forEach { (key, job) ->
-
 			val lore = mutableListOf<String>()
 			job.description.forEach {
 				lore.add("§7${it}")
 			}
 
-			playerJobs[key]?.let {
-				val level = jobController.getLevelFromExperience(job, it.experience)
-				lore.add("§6Expérience totale :§7 ${it.experience}")
+			playerJobs[job]?.let { config ->
+				val level = jobController.getLevelFromExperience(job, config.experience)
+				lore.add("§6Expérience totale :§7 ${config.experience}")
 				lore.add("§6Niveau :§7 $level")
 			} ?: lore.add("§7Métier pas encore exercé")
 

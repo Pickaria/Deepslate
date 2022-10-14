@@ -21,9 +21,7 @@ import java.time.LocalDateTime
 import java.time.temporal.ChronoUnit
 import java.util.*
 import java.util.concurrent.ConcurrentHashMap
-import kotlin.math.abs
-import kotlin.math.ceil
-import kotlin.math.pow
+import kotlin.math.*
 import kotlin.time.Duration.Companion.minutes
 import kotlin.time.DurationUnit
 
@@ -50,6 +48,31 @@ class JobController(private val plugin: Main) : Listener {
 		bossBars.remove(event.player)
 	}
 
+	@EventHandler
+	fun onJobLevelUp(event: JobLevelUpEvent) {
+		val player = event.player
+		val level = event.level
+		val label = event.job.label
+		val type = event.type
+
+		player.playSound(player.location, Sound.ENTITY_PLAYER_LEVELUP, 1.0f, 1.0f)
+		player.sendMessage("§7Vous montez niveau §6$level§7 dans le métier §6$label§7.")
+
+		if (type == LevelUpType.ASCEND_UNLOCKED) {
+			val mainTitle = Component.text("Ascension débloquée", NamedTextColor.GOLD)
+			val subtitle = Component.text("Vous avez débloqué l'ascension pour le métier $label !", NamedTextColor.GRAY)
+			val title = Title.title(mainTitle, subtitle)
+
+			player.showTitle(title)
+		} else if (type == LevelUpType.MAX_LEVEL_REACHED) {
+			val mainTitle = Component.text("Niveau maximum atteint", NamedTextColor.GOLD)
+			val subtitle = Component.text("Vous avez atteint le niveau maximum dans le métier $label !", NamedTextColor.GRAY)
+			val title = Title.title(mainTitle, subtitle)
+
+			player.showTitle(title)
+		}
+	}
+
 	fun hasJob(playerUuid: UUID, jobName: String): Boolean {
 		val job = Job.get(playerUuid, jobName)
 		return job?.active == true
@@ -65,6 +88,15 @@ class JobController(private val plugin: Main) : Listener {
 			0
 		} else {
 			previousDay.until(job.lastUsed, ChronoUnit.MINUTES).minutes.toInt(DurationUnit.MINUTES)
+		}
+	}
+
+	fun getAscendPoints(job: Job, config: JobConfig.Configuration): Int {
+		val level = getLevelFromExperience(config, job.experience)
+		return if (level > jobConfig.ascendStartLevel) {
+			(level - jobConfig.ascendStartLevel) / jobConfig.pointEvery * jobConfig.pointAmount + 1
+		} else {
+			0
 		}
 	}
 
@@ -101,28 +133,31 @@ class JobController(private val plugin: Main) : Listener {
 		return level
 	}
 
-	private fun addExperience(playerUuid: UUID, job: JobConfig.Configuration, exp: Int): JobErrorEnum {
-		return Job.get(playerUuid, job.key)?.let {
+	private fun addExperience(player: Player, job: JobConfig.Configuration, exp: Int) {
+		Job.get(player.uniqueId, job.key)?.let {
 			val previousLevel = getLevelFromExperience(job, it.experience)
 			val newLevel = getLevelFromExperience(job, it.experience + exp)
 			it.experience += exp
 
 			val isNewLevel = newLevel > previousLevel
 
-			return if (isNewLevel) {
-				if (newLevel >= jobConfig.maxLevel) {
-					JobErrorEnum.MAX_LEVEL_REACHED
+			if (isNewLevel) {
+				val type = if (newLevel == jobConfig.ascendStartLevel) {
+					LevelUpType.ASCEND_UNLOCKED
+				} else if (newLevel >= jobConfig.maxLevel) {
+					LevelUpType.MAX_LEVEL_REACHED
 				} else {
-					JobErrorEnum.NEW_LEVEL
+					LevelUpType.NEW_LEVEL
 				}
-			} else {
-				JobErrorEnum.NOTHING
+
+				val event = JobLevelUpEvent(player, type, job, newLevel)
+				event.callEvent()
 			}
-		} ?: JobErrorEnum.NOTHING
+		}
 	}
 
-	fun addExperienceAndAnnounce(player: Player, job: JobConfig.Configuration, exp: Int): JobErrorEnum {
-		return addExperience(player.uniqueId, job, exp).also {
+	fun addExperienceAndAnnounce(player: Player, job: JobConfig.Configuration, exp: Int) {
+		addExperience(player, job, exp).also {
 			val experience = Job.get(player.uniqueId, job.key)?.experience ?: 0
 			val level = getLevelFromExperience(job, experience)
 			val currentLevelExperience = getExperienceFromLevel(job, level - 1)
@@ -148,20 +183,6 @@ class JobController(private val plugin: Main) : Listener {
 					bossBar.isVisible = false
 				}
 			}.runTaskLater(plugin, 80)
-
-			if (it == JobErrorEnum.NEW_LEVEL) {
-				player.playSound(player.location, Sound.ENTITY_PLAYER_LEVELUP, 1.0f, 1.0f)
-				player.sendMessage("§7Vous montez niveau §6$level§7 dans le métier §6${job.label}§7.")
-			} else if (it == JobErrorEnum.MAX_LEVEL_REACHED) {
-				player.playSound(player.location, Sound.ENTITY_ENDER_DRAGON_DEATH, 1.0f, 1.0f)
-				player.sendMessage("§7Vous montez niveau §6$level§7 dans le métier §6${job.label}§7.")
-
-				val mainTitle = Component.text("Niveau maximum atteint", NamedTextColor.GOLD);
-				val subtitle = Component.text("Vous avez atteint le niveau maximum dans le métier ${job.label} !", NamedTextColor.GRAY);
-				val title = Title.title(mainTitle, subtitle);
-
-				player.showTitle(title);
-			}
 		}
 	}
 }
