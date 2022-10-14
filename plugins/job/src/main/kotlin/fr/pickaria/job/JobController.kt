@@ -73,13 +73,19 @@ class JobController(private val plugin: Main) : Listener {
 		}
 	}
 
-	fun hasJob(playerUuid: UUID, jobName: String): Boolean {
-		val job = Job.get(playerUuid, jobName)
-		return job?.active == true
-	}
+	/**
+	 * Checks if the player is currently using the given job.
+	 */
+	fun hasJob(playerUuid: UUID, jobName: String) = Job.get(playerUuid, jobName)?.active == true
 
+	/**
+	 * Returns the amount of active jobs a player has.
+	 */
 	fun jobCount(playerUuid: UUID): Int = Job.get(playerUuid).filter { it.active }.size
 
+	/**
+	 * Returns the time in minutes before the player can leave the given job.
+	 */
 	fun getCooldown(playerUuid: UUID, jobName: String): Int {
 		val previousDay = LocalDateTime.now().minusHours(jobConfig.cooldown)
 
@@ -91,6 +97,9 @@ class JobController(private val plugin: Main) : Listener {
 		}
 	}
 
+	/**
+	 * Returns `0` if the player cannot ascend, otherwise returns `> 1`.
+	 */
 	fun getAscendPoints(job: Job, config: JobConfig.Configuration): Int {
 		val level = getLevelFromExperience(config, job.experience)
 		return if (level > jobConfig.ascendStartLevel) {
@@ -100,21 +109,28 @@ class JobController(private val plugin: Main) : Listener {
 		}
 	}
 
+	/**
+	 * Sets the current job as `active` and updates the `last used` field.
+	 */
 	fun joinJob(playerUuid: UUID, jobName: String) {
 		Job.get(playerUuid, jobName)?.apply {
 			active = true
 			lastUsed = LocalDateTime.now()
-		} ?: run {
-			Job.create(playerUuid, jobName, true)
-		}
+		} ?: Job.create(playerUuid, jobName, true)
 	}
 
+	/**
+	 * Sets the given job as not active.
+	 */
 	fun leaveJob(playerUuid: UUID, jobName: String) {
 		Job.get(playerUuid, jobName)?.apply {
 			active = false
 		}
 	}
 
+	/**
+	 * Get the amount of experience required for a specific job level.
+	 */
 	private fun getExperienceFromLevel(job: JobConfig.Configuration, level: Int): Int {
 		return if (level >= 0) {
 			ceil(job.startExperience * job.experiencePercentage.pow(level) + level * job.multiplier).toInt()
@@ -123,6 +139,10 @@ class JobController(private val plugin: Main) : Listener {
 		}
 	}
 
+	/**
+	 * Returns the level from a job configuration and experience.
+	 * Use with caution as it contains a while loop.
+	 */
 	fun getLevelFromExperience(job: JobConfig.Configuration, experience: Int): Int {
 		var level = 0
 		var levelExperience = job.startExperience.toDouble()
@@ -133,8 +153,11 @@ class JobController(private val plugin: Main) : Listener {
 		return level
 	}
 
-	private fun addExperience(player: Player, job: JobConfig.Configuration, exp: Int) {
-		Job.get(player.uniqueId, job.key)?.let {
+	/**
+	 * Adds experience to a player's job and fire level up events if necessary.
+	 */
+	private fun addExperience(player: Player, job: JobConfig.Configuration, exp: Int): Pair<Int, Int> {
+		return Job.get(player.uniqueId, job.key)?.let {
 			val previousLevel = getLevelFromExperience(job, it.experience)
 			val newLevel = getLevelFromExperience(job, it.experience + exp)
 			it.experience += exp
@@ -153,13 +176,16 @@ class JobController(private val plugin: Main) : Listener {
 				val event = JobLevelUpEvent(player, type, job, newLevel)
 				event.callEvent()
 			}
-		}
+
+			(newLevel to it.experience + exp)
+		} ?: (0 to 0)
 	}
 
+	/**
+	 * Adds experience and displays a boss bar with information.
+	 */
 	fun addExperienceAndAnnounce(player: Player, job: JobConfig.Configuration, exp: Int) {
-		addExperience(player, job, exp).also {
-			val experience = Job.get(player.uniqueId, job.key)?.experience ?: 0
-			val level = getLevelFromExperience(job, experience)
+		addExperience(player, job, exp).also { (level, experience) ->
 			val currentLevelExperience = getExperienceFromLevel(job, level - 1)
 			val nextLevelExperience = getExperienceFromLevel(job, level)
 			val levelDiff = abs(nextLevelExperience - currentLevelExperience)
