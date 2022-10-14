@@ -1,8 +1,5 @@
 package fr.pickaria.menu
 
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import net.kyori.adventure.text.Component
 import org.bukkit.Bukkit
 import org.bukkit.Material
@@ -102,7 +99,12 @@ abstract class BaseMenu(
 		val slot = event.rawSlot
 		val menuItemStack = menuItemStacks[slot]
 		if (slot < pageSize && menuItemStack != null) {
-			menuItemStack.callback?.invoke(event)
+			if (event.isLeftClick) {
+				menuItemStack.leftClick?.invoke(event)
+			}
+			if (event.isRightClick) {
+				menuItemStack.rightClick?.invoke(event)
+			}
 			return
 		}
 

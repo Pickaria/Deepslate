@@ -55,14 +55,9 @@ class JobMenu(title: String, opener: HumanEntity, previousMenu: BaseMenu?, size:
 				this.lore = lore
 				isEnchanted = ascentPoints > 0
 				if (ascentPoints > 0) {
-					callback = {
-						if (it.isLeftClick) {
-							job.ascentPoints += ascentPoints
-							job.experience = 0.0
-
-							JobAscentEvent(it.whoClicked as Player, config, ascentPoints).callEvent()
-							inventory.close()
-						}
+					leftClick = {
+						jobController.ascentJob(it.whoClicked as Player, config, job, ascentPoints)
+						inventory.close()
 					}
 				}
 			}
@@ -80,13 +75,17 @@ class JobMenu(title: String, opener: HumanEntity, previousMenu: BaseMenu?, size:
 				job?.let {
 					val level = jobController.getLevelFromExperience(config, it.experience)
 
-					keyValues = mapOf(
-						"Expérience totale" to decimalFormat.format(it.experience),
-						"Niveau" to level,
-						"Points d'ascension" to it.ascentPoints,
-						"Bonus d'expérience" to "${decimalFormat.format(it.ascentPoints * jobConfig.experienceIncrease * 100)}%",
-						"Bonus de revenus" to "${decimalFormat.format(it.ascentPoints * jobConfig.moneyIncrease * 100)}%",
-					)
+					keyValues = if (it.ascentPoints > 0) {
+						mapOf(
+							"Niveau" to "$level",
+							"Bonus d'expérience" to "+${decimalFormat.format(it.ascentPoints * jobConfig.experienceIncrease * 100)}%",
+							"Bonus de revenus" to "+${decimalFormat.format(it.ascentPoints * jobConfig.moneyIncrease * 100)}%",
+						)
+					} else {
+						mapOf(
+							"Niveau" to "$level",
+						)
+					}
 				}
 
 				if (isCurrentJob) {
@@ -102,15 +101,17 @@ class JobMenu(title: String, opener: HumanEntity, previousMenu: BaseMenu?, size:
 				material = config.icon
 				name = config.label
 				this.lore = lore
-				callback = {
-					with(it.whoClicked as Player) {
-						if (!isCurrentJob && it.isLeftClick) {
-							this.chat("/job join $key")
-							inventory.close()
-						} else if (isCurrentJob && it.isRightClick) {
-							this.chat("/job leave $key")
-							inventory.close()
-						}
+
+				leftClick = {
+					if (!isCurrentJob) {
+						(it.whoClicked as Player).chat("/job join $key")
+						inventory.close()
+					}
+				}
+				rightClick = {
+					if (isCurrentJob) {
+						(it.whoClicked as Player).chat("/job leave $key")
+						inventory.close()
 					}
 				}
 			}
