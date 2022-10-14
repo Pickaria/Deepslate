@@ -66,7 +66,8 @@ class JobController(private val plugin: Main) : Listener {
 			player.showTitle(title)
 		} else if (type == LevelUpType.MAX_LEVEL_REACHED) {
 			val mainTitle = Component.text("Niveau maximum atteint", NamedTextColor.GOLD)
-			val subtitle = Component.text("Vous avez atteint le niveau maximum dans le métier $label !", NamedTextColor.GRAY)
+			val subtitle =
+				Component.text("Vous avez atteint le niveau maximum dans le métier $label !", NamedTextColor.GRAY)
 			val title = Title.title(mainTitle, subtitle)
 
 			player.showTitle(title)
@@ -131,13 +132,12 @@ class JobController(private val plugin: Main) : Listener {
 	/**
 	 * Get the amount of experience required for a specific job level.
 	 */
-	private fun getExperienceFromLevel(job: JobConfig.Configuration, level: Int): Int {
-		return if (level >= 0) {
+	private fun getExperienceFromLevel(job: JobConfig.Configuration, level: Int) =
+		if (level >= 0) {
 			ceil(job.startExperience * job.experiencePercentage.pow(level) + level * job.multiplier).toInt()
 		} else {
 			0
 		}
-	}
 
 	/**
 	 * Returns the level from a job configuration and experience.
