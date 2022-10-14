@@ -27,7 +27,7 @@ class HomeMenu(title: String, opener: HumanEntity, previousMenu: BaseMenu?, size
 				material = menu.icon
 				name = menu.title
 				lore = menu.description
-				callback = {
+				leftClick = {
 					menuController.openMenu(it.whoClicked, key, this@HomeMenu)
 				}
 			}

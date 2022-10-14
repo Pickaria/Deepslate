@@ -5,7 +5,9 @@ import fr.pickaria.job.events.JobLevelUpEvent
 import fr.pickaria.job.jobs.*
 import fr.pickaria.shared.models.Job
 import net.kyori.adventure.text.Component
+import net.kyori.adventure.text.event.ClickEvent
 import net.kyori.adventure.text.format.NamedTextColor
+import net.kyori.adventure.text.format.TextColor
 import net.kyori.adventure.title.Title
 import org.bukkit.Bukkit
 import org.bukkit.Bukkit.getServer
@@ -68,8 +70,7 @@ class JobController(private val plugin: Main) : Listener {
 			player.showTitle(title)
 		} else if (type == LevelUpType.MAX_LEVEL_REACHED) {
 			val mainTitle = Component.text("Niveau maximum atteint", NamedTextColor.GOLD)
-			val subtitle =
-				Component.text("Vous avez atteint le niveau maximum dans le métier $label !", NamedTextColor.GRAY)
+			val subtitle = Component.text("Vous avez atteint le niveau maximum dans le métier $label !", NamedTextColor.GRAY)
 			val title = Title.title(mainTitle, subtitle)
 
 			player.showTitle(title)
@@ -121,12 +122,32 @@ class JobController(private val plugin: Main) : Listener {
 	 */
 	fun getAscentPoints(job: Job, config: JobConfig.Configuration): Int =
 		getLevelFromExperience(config, job.experience).let {
-			if (it > jobConfig.ascentStartLevel) {
+			if (it >= jobConfig.ascentStartLevel) {
 				(it - jobConfig.ascentStartLevel) / jobConfig.pointEvery * jobConfig.pointAmount + 1
 			} else {
 				0
 			}
 		}
+
+	fun ascentJob(player: Player, jobName: String): Boolean =
+		Job.get(player.uniqueId, jobName)?.let { job ->
+			jobConfig.jobs[jobName]?.let { config ->
+				val ascentPoints = jobController.getAscentPoints(job, config)
+				if (ascentPoints > 0) {
+					ascentJob(player, config, job, ascentPoints)
+					true
+				} else {
+					false
+				}
+			} ?: false
+		} ?: false
+
+	fun ascentJob(player: Player, config: JobConfig.Configuration, job: Job, ascentPoints: Int) {
+		job.ascentPoints += ascentPoints
+		job.experience = 0.0
+
+		JobAscentEvent(player, config, ascentPoints).callEvent()
+	}
 
 	/**
 	 * Sets the current job as `active` and updates the `last used` field.

@@ -13,7 +13,8 @@ class MenuItem {
 	var y: Int = 0
 	var material: Material = Material.AIR
 	var lore: List<String> = emptyList()
-	var callback: ((InventoryClickEvent) -> Unit)? = null
+	var rightClick: ((InventoryClickEvent) -> Unit)? = null
+	var leftClick: ((InventoryClickEvent) -> Unit)? = null
 	var isEnchanted: Boolean = false
 	private lateinit var itemStack: ItemStack
 
