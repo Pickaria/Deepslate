@@ -13,6 +13,7 @@ internal object Jobs : Table() {
 	val experience = integer("experience").default(0)
 	val lastUsed = datetime("last_used").default(LocalDateTime.now())
 	val active = bool("active").default(false)
+	val ascentPoints = integer("ascent_points").default(0)
 
 	override val primaryKey = PrimaryKey(playerUuid, job)
 }
@@ -70,6 +71,14 @@ class Job(private val row: ResultRow) {
 		set(value) = transaction {
 			Jobs.update({ whereClause() }) {
 				it[Jobs.lastUsed] = value
+			}
+		}
+
+	var ascentPoints: Int
+		get() = row[Jobs.ascentPoints]
+		set(value) = transaction {
+			Jobs.update({ whereClause() }) {
+				it[Jobs.ascentPoints] = value
 			}
 		}
 }

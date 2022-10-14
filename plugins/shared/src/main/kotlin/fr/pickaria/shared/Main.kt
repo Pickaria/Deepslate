@@ -14,8 +14,6 @@ class Main : JavaPlugin() {
 
 		database = openDatabase(dataFolder.absolutePath + "/database")
 
-		getCommand("test")?.setExecutor(TestCommand()) ?: logger.warning("Could not register `test` command.")
-
 		logger.info("Shared plugin loaded!")
 	}
 

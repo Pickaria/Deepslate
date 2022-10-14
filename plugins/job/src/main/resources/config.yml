@@ -3,6 +3,15 @@ max_jobs: 1
 max_level: 100
 cooldown: 1 # Time before a player can leave their job in hours
 
+# At level 100, the player can claim 5 ascent points, thus getting 5% more experience and 0.05% more money
+ascent:
+  start_level: 50 # At which level the player can start an ascent
+  # The player gain [point_amount] ascent points every [point_every] jobs levels
+  point_every: 10
+  point_amount: 1
+  experience_increase: 0.01 # For each ascent point claimed, the player will have an experience boost of 1%
+  money_increase: 0.001 # Same but for money reward
+
 jobs:
   miner: # This is the name stored in the database
     label: "Mineur"
