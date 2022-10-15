@@ -10,8 +10,7 @@ class JobAscentEvent internal constructor(
 	val player: Player,
 	val job: JobConfig.Configuration,
 	val ascentPoints: Int
-) :
-	Event(), Cancellable {
+) : Event(), Cancellable {
 	private var isCancelled = false
 
 	override fun getHandlers() = HANDLERS

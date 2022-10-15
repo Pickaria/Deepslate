@@ -52,8 +52,8 @@ class JobMenu(title: String, opener: HumanEntity, previousMenu: BaseMenu?, size:
 				material = config.icon
 				name = "§7Métier actuel : ${config.label}"
 				this.lore = lore
-				isEnchanted = ascentPoints > 0
 				if (ascentPoints > 0) {
+					isEnchanted = true
 					leftClick = {
 						jobController.ascentJob(it.whoClicked as Player, config, job, ascentPoints)
 						inventory.close()
@@ -66,7 +66,7 @@ class JobMenu(title: String, opener: HumanEntity, previousMenu: BaseMenu?, size:
 
 		jobConfig.jobs.forEach { (key, config) ->
 			val job = playerJobs[config]
-			val isCurrentJob = job?.active == true
+			val isCurrentJob = job?.active ?: false
 
 			val lore = MenuLore.build {
 				description = config.description

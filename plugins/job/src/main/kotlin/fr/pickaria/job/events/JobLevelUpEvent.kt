@@ -12,8 +12,7 @@ class JobLevelUpEvent internal constructor(
 	val type: LevelUpType,
 	val job: JobConfig.Configuration,
 	val level: Int
-) :
-	Event(), Cancellable {
+) : Event(), Cancellable {
 	private var isCancelled = false
 
 	override fun getHandlers() = HANDLERS
