@@ -19,7 +19,7 @@ internal class ChatFormat: Listener {
 	}
 
 	@EventHandler
-	fun onAsyncPlayerChat(e: AsyncChatEvent) {
-		e.renderer(renderer)
+	fun onAsyncChat(event: AsyncChatEvent) {
+		event.renderer(renderer)
 	}
 }

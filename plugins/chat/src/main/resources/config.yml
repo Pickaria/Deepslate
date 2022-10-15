@@ -1,5 +1,12 @@
-# Placeholders available:
+# Example of player prefix using https://docs.adventure.kyori.net/minimessage/index.html
+# <gray>[<hover:show_text:"Owner"><red>O</hover><gray>]<reset>
 
 chat_format: '<gray> » <white>' # The display name including prefix will be appended before and the message will be appended after
 join: '<gray>[</gray><gold>+</gold><gray>]</gray> <white>' # The display name will be appended after
 quit: '<gray>[</gray><red>-</red><gray>]</gray> <white>'
+
+#§r                §k||§r §6§lPickaria§r §f—§7 §7$time §k||§r§r
+#        §7Semi-RP §f|§7 Towny §f|§7 Economy §f|§7 Jobs
+motd:
+  - '<reset>                     <obfuscated>||</obfuscated> <gold><bold>Pickaria</bold></gold> <white>-<gray> <time> <obfuscated>||</obfuscated>'
+  - '<gradient:#5e4fa2:#f79459:red>███████████████████████████████</gradient>'

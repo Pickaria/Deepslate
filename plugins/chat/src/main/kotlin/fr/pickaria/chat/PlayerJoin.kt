@@ -16,6 +16,6 @@ internal class PlayerJoin : Listener {
 
 	@EventHandler
 	fun onPlayerQuit(event: PlayerQuitEvent) {
-		event.quitMessage(chatConfig.join.append(event.player.displayName()))
+		event.quitMessage(chatConfig.quit.append(event.player.displayName()))
 	}
 }

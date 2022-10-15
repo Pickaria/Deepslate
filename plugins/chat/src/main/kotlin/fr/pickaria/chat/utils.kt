@@ -11,8 +11,3 @@ internal fun getPlayerDisplayName(player: Player) =
 			.append(Component.text(" "))
 			.append(player.name().color(NamedTextColor.WHITE))
 	} ?: player.displayName()
-
-internal fun getPlayerName(player: Player) =
-	chat?.let {
-		player.name
-	} ?: player.name
