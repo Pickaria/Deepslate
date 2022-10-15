@@ -1,5 +1,6 @@
 package fr.pickaria.teleport
 
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder
 import net.md_5.bungee.api.ChatColor
 import net.md_5.bungee.api.chat.ClickEvent
 import net.md_5.bungee.api.chat.TextComponent
@@ -14,7 +15,12 @@ class TeleportController(private val plugin: JavaPlugin) {
 	val map = mutableMapOf<Player, Pair<Player, Boolean>>()
 
 	fun cooldownTeleport(player: Player, location: Location) {
-		player.sendMessage("§7Téléportation dans ${TELEPORT_COOLDOWN / 20} secondes.")
+		val message = miniMessage.deserialize(
+			teleportConfig.teleportCooldownMessage,
+			Placeholder.unparsed("cooldown", (TELEPORT_COOLDOWN / 20).toString())
+		)
+
+		player.sendMessage(message)
 
 		location.add(0.5, 0.0, 0.5)
 

@@ -3,7 +3,7 @@ version: 1.0
 api-version: 1.19
 main: fr.pickaria.teleport.Main
 author: Alina99, Quozul
-depends:
+depend:
   - PickariaShared
 
 commands:

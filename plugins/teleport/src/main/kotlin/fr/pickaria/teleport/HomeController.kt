@@ -9,21 +9,11 @@ import java.util.*
 class HomeController : Listener {
 	fun getHomeNames(uniqueId: UUID): List<String> = Home.get(uniqueId).map { it.name }
 
-	fun getHomeByName(uniqueId: UUID, name: String): Location? {
-		val home = Home.get(uniqueId, name)
-
-		return if (home != null) {
-			val world = try {
-				Bukkit.getWorld(home.world)
-			} catch (_: NullPointerException) {
-				null
-			}
-
-			return Location(world, home.x.toDouble(), home.y.toDouble(), home.z.toDouble())
-		} else {
-			null
+	fun getHomeByName(uniqueId: UUID, name: String): Location? =
+		Home.get(uniqueId, name)?.let {
+			val world = Bukkit.getWorld(it.world)
+			Location(world, it.x.toDouble(), it.y.toDouble(), it.z.toDouble())
 		}
-	}
 
 	fun removeHome(uniqueId: UUID, name: String): Boolean =
 		Home.get(uniqueId, name)?.let {
@@ -32,6 +22,13 @@ class HomeController : Listener {
 		} ?: false
 
 	fun addHome(uniqueId: UUID, homeName: String, location: Location) {
-		Home.create(uniqueId, homeName, location.world.uid, location.x.toInt(), location.y.toInt(), location.z.toInt())
+		Home.get(uniqueId, homeName)?.apply {
+			world = location.world.uid
+			x = location.x.toInt()
+			y = location.y.toInt()
+			z = location.z.toInt()
+		} ?: run {
+			Home.create(uniqueId, homeName, location.world.uid, location.x.toInt(), location.y.toInt(), location.z.toInt())
+		}
 	}
 }
