@@ -19,13 +19,18 @@ printf "\n\e[32;1mEnter plugin author name:\n\e[37;0m> "
 read plugin_author
 
 printf "\n\n\e[32;1mDoes it uses economy? [Y/n]:\n\e[37;0m> "
-while true; do
-    read -n1 yn
-    case $yn in
-        [Nn]* ) uses_vault=false; break;;
-        * ) uses_vault=true; break;;
-    esac
-done
+read -n1 yn
+case $yn in
+    [Nn]* ) uses_vault=false;;
+    * ) uses_vault=true;;
+esac
+
+printf "\n\n\e[32;1mDoes it uses protocol? [Y/n]:\n\e[37;0m> "
+read -n1 yn
+case $yn in
+    [Nn]* ) uses_protocol_lib=false;;
+    * ) uses_protocol_lib=true;;
+esac
 
 printf "\n"
 
@@ -43,10 +48,26 @@ main: fr.pickaria.$plugin_name.Main
 author: $plugin_author
 EOF
 
-printf "depends:\n  - PickariaShared\n" >> plugins/$plugin_name/src/main/resources/plugin.yml
+printf "depend:\n  - PickariaShared\n" >> plugins/$plugin_name/src/main/resources/plugin.yml
 
 # Add dependencies to project
-if [ "$uses_vault" = true ]
+if [ "$uses_vault" = true ] && [ "$uses_protocol_lib" = true ]
+then
+  printf "  - Vault\n  - ProtocolLib\n" >> plugins/$plugin_name/src/main/resources/plugin.yml
+
+  cat > plugins/$plugin_name/build.gradle.kts << EOF
+repositories {
+	maven("https://jitpack.io")
+	maven("https://repo.dmulloy2.net/repository/public/")
+}
+
+dependencies {
+	compileOnly(project(":shared"))
+	compileOnly("com.github.MilkBowl:VaultAPI:1.7.1")
+	compileOnly("com.comphenix.protocol:ProtocolLib:5.0.0-SNAPSHOT")
+}
+EOF
+elif [ "$uses_vault" = true ]
 then
   echo "  - Vault" >> plugins/$plugin_name/src/main/resources/plugin.yml
 
@@ -58,6 +79,20 @@ repositories {
 dependencies {
 	compileOnly(project(":shared"))
 	compileOnly("com.github.MilkBowl:VaultAPI:1.7.1")
+}
+EOF
+elif [ "$uses_protocol_lib" = true ]
+then
+  echo "  - ProtocolLib" >> plugins/$plugin_name/src/main/resources/plugin.yml
+
+  cat > plugins/$plugin_name/build.gradle.kts << EOF
+repositories {
+	maven("https://repo.dmulloy2.net/repository/public/")
+}
+
+dependencies {
+	compileOnly(project(":shared"))
+	compileOnly("com.comphenix.protocol:ProtocolLib:5.0.0-SNAPSHOT")
 }
 EOF
 else

@@ -1,6 +1,5 @@
 package fr.pickaria.job
 
-import fr.pickaria.economy.economy
 import fr.pickaria.shared.models.Job
 import net.kyori.adventure.text.Component
 import net.milkbowl.vault.economy.EconomyResponse

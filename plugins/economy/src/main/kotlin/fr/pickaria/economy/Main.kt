@@ -5,7 +5,7 @@ import org.bukkit.Bukkit
 import org.bukkit.plugin.ServicePriority
 import org.bukkit.plugin.java.JavaPlugin
 
-lateinit var economy: Economy
+internal lateinit var economy: Economy
 
 class Main : JavaPlugin() {
 	override fun onEnable() {

@@ -22,22 +22,27 @@ tasks.register("setupServer") {
 	}
 
 	doLast {
+		println("Creating folder structure...")
 		mkdir("$rootDir/server")
 		mkdir("$rootDir/server/plugins")
 
 		// Download Paper
+		println("Fetching paper version...")
 		val response = json("https://papermc.io/api/v2/projects/paper/versions/${vanillaVersion}")
 		val build = (response["builds"] as List<*>).last()
 
 		val json = json("https://papermc.io/api/v2/projects/paper/versions/${vanillaVersion}/builds/${build}")
 		val server = ((json["downloads"] as Map<*, *>)["application"] as Map<*, *>)["name"] as String
+
+		println("Downloading $server...")
 		download(
 			"https://papermc.io/api/v2/projects/paper/versions/${vanillaVersion}/builds/${build}/downloads/${server}",
 			"$rootDir/server/paper.jar"
 		)
 
-		// Download dependencoes
+		// Download dependencies
 		for ((name, id) in dependencies) {
+			println("Downloading $name...")
 			download(
 				"https://api.spiget.org/v2/resources/$id/download",
 				"$rootDir/server/plugins/$name.jar"
@@ -45,9 +50,12 @@ tasks.register("setupServer") {
 		}
 
 		// Accept EULA
+		println("Accepting EULA...")
 		val eula = file("$rootDir/server/eula.txt")
 		eula.createNewFile()
 		eula.writeText("eula=true")
+
+		println("Server ready!")
 	}
 }
 
