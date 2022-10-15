@@ -1,7 +1,10 @@
 package fr.pickaria.shop
 
+import fr.pickaria.shared.setupEconomy
 import org.bukkit.Bukkit
 import org.bukkit.plugin.java.JavaPlugin
+
+internal val economy = setupEconomy()!!
 
 class Main : JavaPlugin() {
 	override fun onEnable() {

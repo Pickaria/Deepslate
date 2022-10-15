@@ -1,64 +1,81 @@
 package fr.pickaria.shop
 
-import net.kyori.adventure.text.Component
-import org.bukkit.Bukkit
 import org.bukkit.Material
-import org.bukkit.command.Command
-import org.bukkit.command.CommandExecutor
-import org.bukkit.command.CommandSender
+import org.bukkit.OfflinePlayer
+import org.bukkit.block.Chest
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
-import org.bukkit.event.inventory.InventoryOpenEvent
-import org.bukkit.event.inventory.InventoryType
-import org.bukkit.event.inventory.TradeSelectEvent
+import org.bukkit.event.inventory.*
+import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.inventory.ItemStack
-import org.bukkit.inventory.MerchantRecipe
 import kotlin.math.floor
 
 class TestMenu : Listener {
+	var chest: Chest? = null
+
 	@EventHandler
 	fun onTradeSelected(event: TradeSelectEvent) {
-		event.whoClicked.sendMessage("${event.index}")
+		val recipe = event.merchant.getRecipe(event.index)
+		val price = recipe.ingredients.first().amount
+
+		economy.withdrawPlayer(event.whoClicked as OfflinePlayer, price.toDouble())
+		chest!!.inventory.removeItemAnySlot(recipe.result)
+		event.whoClicked.inventory.addItem(recipe.result)
+
+		createChestMerchant(event.whoClicked as Player, chest!!.inventory)
 	}
 
 	@EventHandler
-	fun onChestOpened(event: InventoryOpenEvent) {
-		if (event.player.isOnGround && event.inventory.type == InventoryType.CHEST) {
-			val merchant = Bukkit.createMerchant(Component.text("Shop"))
+	fun onInventoryDrag(event: InventoryClickEvent) {
+		event.clickedInventory?.let { inventory ->
+			if (inventory.type === InventoryType.MERCHANT) {
+				if (event.slot == 2) {
+					// Sell current item
+					inventory.getItem(0)?.let {
+						chest!!.inventory.addItem(it)
+						economy.depositPlayer(event.whoClicked as OfflinePlayer, it.amount.toDouble())
+						inventory.clear()
+						inventory.contents = emptyArray()
+						createChestMerchant(event.whoClicked as Player, chest!!.inventory)
+					}
+				} else if (event.slot == 0) {
+					if (event.action == InventoryAction.PLACE_ALL) {
+						event.cursor?.let {
+							val price = (floor(Math.random() * 64) + 1).toInt()
 
-			val recipes = event.inventory.contents
-				.filterNotNull()
-				.map {
-					it.clone().apply {
-						amount = 1
+							val contents = inventory.contents
+
+							contents[0] = it
+							contents[1] = ItemStack(Material.SUNFLOWER, price)
+
+							inventory.contents = contents
+
+							it.amount = 0
+						}
+					} else if (event.action == InventoryAction.PICKUP_ALL) {
+						event.cursor = inventory.getItem(0)
+						inventory.clear()
 					}
 				}
-				.filter {
-					!it.type.isAir
-				}
-				.toSet()
 
-			merchant.recipes = recipes.mapNotNull {
-				if (!it.type.isAir) {
-					val merchantRecipe = MerchantRecipe(it, Integer.MAX_VALUE)
-					merchantRecipe.uses = Integer.MIN_VALUE
-					merchantRecipe.addIngredient(
-						ItemStack(
-							Material.ECHO_SHARD,
-							(floor(Math.random() * 64) + 1).toInt()
-						)
-					)
-
-					merchantRecipe
-				} else {
-					null
-				}
+				event.isCancelled = true
 			}
+		}
+	}
 
-			event.player.openMerchant(merchant, true)
-
-			event.isCancelled = true
+	@EventHandler
+	fun onChestOpened(event: PlayerInteractEvent) {
+		chest = event.clickedBlock?.let { block ->
+			if (!event.player.isSneaking && block.type == Material.CHEST && block.state is Chest) {
+				(block.state as? Chest)?.let {
+					createChestMerchant(event.player, it.inventory)
+					event.isCancelled = true
+					it
+				}
+			} else {
+				null
+			}
 		}
 	}
 }
