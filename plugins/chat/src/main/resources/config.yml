@@ -1,0 +1,5 @@
+# Placeholders available:
+
+chat_format: '<gray> » <white>' # The display name including prefix will be appended before and the message will be appended after
+join: '<gray>[</gray><gold>+</gold><gray>]</gray> <white>' # The display name will be appended after
+quit: '<gray>[</gray><red>-</red><gray>]</gray> <white>'
