@@ -1,0 +1,45 @@
+name: PickariaTeleport
+version: 1.0
+api-version: 1.19
+main: fr.pickaria.teleport.Main
+author: Alina99, Quozul
+depends:
+  - PickariaShared
+
+commands:
+  tprandom:
+    description: Vous téléporte aléatoirement sur la carte
+    usage: /tprandom
+    aliases:
+      - rtp
+      - tpr
+  sethome:
+    description: Créé un point de téléportation
+    usage: /sethome [home]
+  home:
+    description: Vous téléporte à un point de téléportation
+    usage: /home [home]
+  delhome:
+    description: Supprime un point de téléportation
+    usage: /delhome [home]
+  tpa:
+    description: Demande de teleportation vers un joueur
+    usage: /tpa <joueur>
+  tpahere:
+    description: Demande de teleportation d'un joueur sur vous
+    usage: /tpahere <joueur>
+  tpaccept:
+    description: Accepter une demande de teleportation
+    usage: /tpaccept
+    aliases:
+      - tpoui
+      - tpyes
+  tpdeny:
+    description: Refuser une demande de teleportation
+    usage: /tpdeny
+    aliases:
+      - tpno
+      - tpnon
+  tpcancel:
+    description: Annuler une demande de teleportation
+    usage: /tpcancel
