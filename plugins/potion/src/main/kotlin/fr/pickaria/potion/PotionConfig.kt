@@ -53,7 +53,7 @@ class PotionConfig(config: FileConfiguration) {
 			Component.text(""),
 			Component.text("Si consommée :", NamedTextColor.DARK_PURPLE)
 				.decoration(TextDecoration.ITALIC, TextDecoration.State.FALSE),
-			Component.text(effectName, NamedTextColor.BLUE)
+			Component.text("+$power% $effectName", NamedTextColor.BLUE)
 				.decoration(TextDecoration.ITALIC, TextDecoration.State.FALSE),
 		)
 
