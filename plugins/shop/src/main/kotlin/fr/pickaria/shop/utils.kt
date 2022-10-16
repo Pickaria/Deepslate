@@ -1,12 +1,10 @@
 package fr.pickaria.shop
 
-import net.kyori.adventure.key.Key
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
 import net.kyori.adventure.text.format.TextDecoration
 import org.bukkit.Bukkit
 import org.bukkit.Material
-import org.bukkit.OfflinePlayer
 import org.bukkit.enchantments.Enchantment
 import org.bukkit.entity.Player
 import org.bukkit.inventory.Inventory
@@ -23,21 +21,15 @@ fun createPickarite(amount: Int): ItemStack {
 		addEnchant(Enchantment.MENDING, 1, true)
 		addItemFlags(ItemFlag.HIDE_ENCHANTS)
 		displayName(
-			Component.text("Éclat de Pickarite", NamedTextColor.LIGHT_PURPLE, TextDecoration.OBFUSCATED)
+			Component.text("Éclat de Pickarite", NamedTextColor.LIGHT_PURPLE)
 				.decoration(TextDecoration.ITALIC, TextDecoration.State.FALSE)
 		)
-		/*lore(
+		lore(
 			listOf(
 				Component.text("Fragment ancien issu de la", NamedTextColor.GRAY)
 					.decoration(TextDecoration.ITALIC, TextDecoration.State.FALSE),
 				Component.text("création du monde de Pickaria.", NamedTextColor.GRAY)
 					.decoration(TextDecoration.ITALIC, TextDecoration.State.FALSE)
-			)
-		)*/
-		lore(
-			listOf(
-				Component.text("???", NamedTextColor.GRAY)
-					.decoration(TextDecoration.ITALIC, TextDecoration.State.FALSE),
 			)
 		)
 	}
