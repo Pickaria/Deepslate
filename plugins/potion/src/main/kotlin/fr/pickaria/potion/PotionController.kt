@@ -10,11 +10,11 @@ import java.time.Duration
 import java.time.Instant
 
 class PotionController(private val plugin: JavaPlugin) {
-	private val activePotionEffects = mutableMapOf<PotionType, PotionData>()
+	private val activePotionEffects = mutableMapOf<PotionConfig.Configuration, PotionData>()
 
 	private val runnable: Runnable = Runnable {
 		val now = Instant.now()
-		val effectsToRemove = mutableListOf<PotionType>()
+		val effectsToRemove = mutableListOf<PotionConfig.Configuration>()
 
 		activePotionEffects.forEach { (effect, data) ->
 			val difference = Duration.between(data.startedAt, now).seconds
@@ -36,15 +36,15 @@ class PotionController(private val plugin: JavaPlugin) {
 		Bukkit.getScheduler().runTaskTimerAsynchronously(plugin, runnable, 0, 20)
 	}
 
-	internal fun addPotionEffect(effect: PotionType, activator: Player) {
+	internal fun addPotionEffect(config: PotionConfig.Configuration, activator: Player) {
 		val now = Instant.now()
 		val audience = Audience.audience(activator)
-		val bossBar = BossBar.bossBar(Component.text(effect.label), 0F, effect.bossBarColor, BossBar.Overlay.PROGRESS)
+		val bossBar = BossBar.bossBar(Component.text(config.description), 0F, config.bossBarColor, BossBar.Overlay.PROGRESS)
 		audience.showBossBar(bossBar)
 
-		activePotionEffects[effect] = PotionData(
+		activePotionEffects[config] = PotionData(
 			now,
-			now.plusSeconds(effect.duration),
+			now.plusSeconds(config.duration),
 			audience,
 			bossBar
 		)
