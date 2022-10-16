@@ -54,7 +54,7 @@ enum class Artefact(
 		Component.text("Pioche chanceuse", NamedTextColor.GOLD)
 			.decoration(TextDecoration.ITALIC, TextDecoration.State.FALSE),
 		listOf(
-			Component.text("À une chance faible de faire apparaitre", NamedTextColor.GRAY)
+			Component.text("A faible chance de faire apparaitre", NamedTextColor.GRAY)
 				.decoration(TextDecoration.ITALIC, TextDecoration.State.FALSE),
 			Component.text("un minerai en plus à chaque bloc cassé.", NamedTextColor.GRAY)
 				.decoration(TextDecoration.ITALIC, TextDecoration.State.FALSE),
