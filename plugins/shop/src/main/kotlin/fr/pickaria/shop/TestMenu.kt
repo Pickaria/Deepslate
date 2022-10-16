@@ -1,15 +1,14 @@
 package fr.pickaria.shop
 
+import io.papermc.paper.event.player.PlayerPurchaseEvent
 import org.bukkit.Material
 import org.bukkit.OfflinePlayer
 import org.bukkit.block.Chest
-import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.inventory.*
 import org.bukkit.event.player.PlayerInteractEvent
-import org.bukkit.inventory.ItemStack
-import kotlin.math.floor
+import org.bukkit.potion.PotionEffect
 
 class TestMenu : Listener {
 	var chest: Chest? = null
@@ -17,50 +16,17 @@ class TestMenu : Listener {
 	@EventHandler
 	fun onTradeSelected(event: TradeSelectEvent) {
 		val recipe = event.merchant.getRecipe(event.index)
-		val price = recipe.ingredients.first().amount
 
-		economy.withdrawPlayer(event.whoClicked as OfflinePlayer, price.toDouble())
-		chest!!.inventory.removeItemAnySlot(recipe.result)
-		event.whoClicked.inventory.addItem(recipe.result)
-
-		createChestMerchant(event.whoClicked as Player, chest!!.inventory)
+		// Force set the item into the trade view
+		event.inventory.setItem(0, recipe.ingredients.first())
 	}
 
 	@EventHandler
-	fun onInventoryDrag(event: InventoryClickEvent) {
-		event.clickedInventory?.let { inventory ->
-			if (inventory.type === InventoryType.MERCHANT) {
-				if (event.slot == 2) {
-					// Sell current item
-					inventory.getItem(0)?.let {
-						chest!!.inventory.addItem(it)
-						economy.depositPlayer(event.whoClicked as OfflinePlayer, it.amount.toDouble())
-						inventory.clear()
-						inventory.contents = emptyArray()
-						createChestMerchant(event.whoClicked as Player, chest!!.inventory)
-					}
-				} else if (event.slot == 0) {
-					if (event.action == InventoryAction.PLACE_ALL) {
-						event.cursor?.let {
-							val price = (floor(Math.random() * 64) + 1).toInt()
-
-							val contents = inventory.contents
-
-							contents[0] = it
-							contents[1] = ItemStack(Material.SUNFLOWER, price)
-
-							inventory.contents = contents
-
-							it.amount = 0
-						}
-					} else if (event.action == InventoryAction.PICKUP_ALL) {
-						event.cursor = inventory.getItem(0)
-						inventory.clear()
-					}
-				}
-
-				event.isCancelled = true
-			}
+	fun onPlayerTrade(event: PlayerPurchaseEvent) {
+		event.trade.let {
+			val price = it.ingredients[0].amount
+			economy.withdrawPlayer(event.player as OfflinePlayer, price.toDouble())
+			chest!!.inventory.removeItemAnySlot(it.result)
 		}
 	}
 
@@ -76,6 +42,13 @@ class TestMenu : Listener {
 			} else {
 				null
 			}
+		}
+	}
+
+	@EventHandler
+	fun onInventoryClose(event: InventoryCloseEvent) {
+		if (event.inventory.type === InventoryType.MERCHANT) {
+			event.inventory.clear()
 		}
 	}
 }
