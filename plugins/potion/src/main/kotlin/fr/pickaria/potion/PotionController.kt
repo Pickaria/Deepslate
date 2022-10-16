@@ -4,12 +4,13 @@ import net.kyori.adventure.audience.Audience
 import net.kyori.adventure.bossbar.BossBar
 import net.kyori.adventure.text.Component
 import org.bukkit.Bukkit
+import org.bukkit.configuration.ConfigurationSection
 import org.bukkit.entity.Player
 import org.bukkit.plugin.java.JavaPlugin
 import java.time.Duration
 import java.time.Instant
 
-class PotionController(private val plugin: JavaPlugin) {
+class PotionController(plugin: JavaPlugin) {
 	private val activePotionEffects = mutableMapOf<PotionConfig.Configuration, PotionData>()
 
 	private val runnable: Runnable = Runnable {
@@ -49,4 +50,13 @@ class PotionController(private val plugin: JavaPlugin) {
 			bossBar
 		)
 	}
+
+	fun registerNewPotion(key: String, section: ConfigurationSection): PotionConfig.Configuration =
+		potionConfig.registerNewPotion(key, section).let {
+			potionConfig.potions[key] = it
+			it
+		}
+
+	fun hasActivePotionEffect(config: PotionConfig.Configuration): Boolean =
+		activePotionEffects.containsKey(config)
 }

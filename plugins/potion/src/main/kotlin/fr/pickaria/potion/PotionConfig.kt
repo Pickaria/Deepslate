@@ -4,8 +4,9 @@ import net.kyori.adventure.bossbar.BossBar
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
 import net.kyori.adventure.text.format.TextDecoration
-import org.bukkit.Bukkit
+import org.bukkit.Bukkit.getLogger
 import org.bukkit.Color
+import org.bukkit.configuration.ConfigurationSection
 import org.bukkit.configuration.file.FileConfiguration
 
 class PotionConfig(config: FileConfiguration) {
@@ -31,47 +32,51 @@ class PotionConfig(config: FileConfiguration) {
 			BossBar.Color.WHITE -> Color.WHITE
 		}
 
-	val potions: Map<String, Configuration> = config.getConfigurationSection("potions")!!
+	internal fun registerNewPotion(key: String, section: ConfigurationSection): Configuration {
+		getLogger().info("Loading potion '$key'")
+
+		val color = section.getString("color")!!
+		val bossBarColor = BossBar.Color.valueOf(color)
+		val potionColor = getColor(bossBarColor)
+
+		val duration = section.getLong("duration")
+		val minutes = duration / 60
+		val seconds = duration % 60
+
+		val description = section.getString("description")!!
+		val effectName = section.getString("effect_name")!!
+		val power = section.getInt("power")
+
+		val lore = listOf<Component>(
+			Component.text("$description ($minutes:$seconds)", NamedTextColor.BLUE)
+				.decoration(TextDecoration.ITALIC, TextDecoration.State.FALSE),
+			Component.text(""),
+			Component.text("Si consommée :", NamedTextColor.DARK_PURPLE)
+				.decoration(TextDecoration.ITALIC, TextDecoration.State.FALSE),
+			Component.text(effectName, NamedTextColor.BLUE)
+				.decoration(TextDecoration.ITALIC, TextDecoration.State.FALSE),
+		)
+
+		val label = Component.text(section.getString("label")!!, NamedTextColor.WHITE)
+			.decoration(TextDecoration.ITALIC, TextDecoration.State.FALSE)
+
+		return Configuration(
+			key,
+			label,
+			potionColor,
+			bossBarColor,
+			duration,
+			description,
+			power,
+			lore,
+		)
+	}
+
+	internal val potions: MutableMap<String, Configuration> = config.getConfigurationSection("potions")!!
 		.getKeys(false)
 		.associateWith {
-			Bukkit.getLogger().info("Loading potion '$it'")
-
 			val section = config.getConfigurationSection("potions.$it")!!
-
-			val color = section.getString("color")!!
-			val bossBarColor = BossBar.Color.valueOf(color)
-			val potionColor = getColor(bossBarColor)
-
-			val duration = section.getLong("duration")
-			val minutes = duration / 60
-			val seconds = duration % 60
-
-			val description = section.getString("description")!!
-			val effectName = section.getString("effect_name")!!
-			val power = section.getInt("power")
-
-			val lore = listOf<Component>(
-				Component.text("$description ($minutes:$seconds)", NamedTextColor.BLUE)
-					.decoration(TextDecoration.ITALIC, TextDecoration.State.FALSE),
-				Component.text(""),
-				Component.text("Si consommée :", NamedTextColor.DARK_PURPLE)
-					.decoration(TextDecoration.ITALIC, TextDecoration.State.FALSE),
-				Component.text(effectName, NamedTextColor.BLUE)
-					.decoration(TextDecoration.ITALIC, TextDecoration.State.FALSE),
-			)
-
-			val label = Component.text(section.getString("label")!!, NamedTextColor.WHITE)
-				.decoration(TextDecoration.ITALIC, TextDecoration.State.FALSE)
-
-			Configuration(
-				it,
-				label,
-				potionColor,
-				bossBarColor,
-				duration,
-				description,
-				power,
-				lore,
-			)
+			registerNewPotion(it, section)
 		}
+		.toMutableMap()
 }

@@ -12,6 +12,23 @@ ascent:
   experience_increase: 0.01 # For each ascent point claimed, the player will have an experience boost of 1%
   money_increase: 0.001 # Same but for money reward
 
+# Only enabled if PickariaPotion is on the server
+job_experience_boost_potion:
+  label: 'Potion de Métier' # Display name of the item
+  color: YELLOW # Must be a boss bar supported color
+  duration: 15 # Duration in seconds
+
+  # Will be displayed as:
+  #
+  # "Boost d'expérience
+  #
+  # When Applied:
+  # +100% expérience de métier"
+  description: 'Boost d''expérience'
+  effect_name: 'expérience de métier'
+  power: 200 # Power in percentage
+
+
 jobs:
   miner: # This is the name stored in the database
     label: "Mineur"

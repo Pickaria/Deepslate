@@ -9,6 +9,9 @@ depend:
   - PickariaEconomy
   - PickariaMenu
 
+softdepend:
+  - PickariaPotion
+
 commands:
   job:
     description: Rejoindre ou quitter un métier
