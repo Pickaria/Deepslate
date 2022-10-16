@@ -18,10 +18,10 @@ class Main : JavaPlugin() {
 		namespace = NamespacedKey(this, "potion")
 		potionConfig = PotionConfig(this.config)
 
-		val test = PotionListener()
+		val potionListener = PotionListener()
 
-		getCommand("potion")?.setExecutor(test)
-		server.pluginManager.registerEvents(test, this)
+		getCommand("potion")?.setExecutor(potionListener)
+		server.pluginManager.registerEvents(potionListener, this)
 
 		potionController = PotionController(this)
 
