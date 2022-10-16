@@ -1,8 +1,5 @@
 package fr.pickaria.menu
 
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import net.kyori.adventure.text.Component
 import org.bukkit.Bukkit
 import org.bukkit.Material
@@ -12,7 +9,7 @@ import org.bukkit.inventory.Inventory
 
 abstract class BaseMenu(
 	title: String,
-	protected val opener: HumanEntity? = null,
+	protected val opener: HumanEntity,
 	private val previousMenu: BaseMenu? = null,
 	size: Int = 54
 ) {
@@ -22,7 +19,7 @@ abstract class BaseMenu(
 		val description = listOf(*lore)
 
 		abstract fun create(
-			opener: HumanEntity? = null,
+			opener: HumanEntity,
 			previousMenu: BaseMenu? = null,
 			size: Int = 54
 		): BaseMenu
@@ -43,47 +40,45 @@ abstract class BaseMenu(
 	abstract fun initMenu()
 
 	fun updateMenu() {
-		CoroutineScope(Dispatchers.Menus).launch {
-			val fill = MenuItem.build {
-				material = fillMaterial
-			}
+		val fill = MenuItem.build {
+			material = fillMaterial
+		}
 
-			inventory.clear()
+		inventory.clear()
 
-			initMenu()
+		initMenu()
 
-			for (i in page * pageSize until (page + 1) * pageSize) {
-				val menuItemStack = menuItemStacks[i] ?: fill
-				val slot = i - page * 45
-				inventory.setItem(slot, menuItemStack.getItemStack())
-			}
+		for (i in page * pageSize until (page + 1) * pageSize) {
+			val menuItemStack = menuItemStacks[i] ?: fill
+			val slot = i - page * 45
+			inventory.setItem(slot, menuItemStack.getItemStack())
+		}
 
-			// Pagination items
-			if (page > 0) {
-				inventory.setItem(
-					previousPageSlot,
-					createMenuItem(Material.ARROW, "Page précédente", "Clic-gauche pour retourner à la page précédente")
-				)
-			}
+		// Pagination items
+		if (page > 0) {
+			inventory.setItem(
+				previousPageSlot,
+				createMenuItem(Material.ARROW, "Page précédente", "Clic-gauche pour retourner à la page précédente")
+			)
+		}
 
-			previousMenu?.let {
-				inventory.setItem(
-					menuBackSlot,
-					createMenuItem(Material.ARROW, "Retour", "Clic-gauche pour retourner au menu précédent")
-				)
-			} ?: run {
-				inventory.setItem(
-					menuBackSlot,
-					createMenuItem(Material.BARRIER, "Fermer", "Clic-gauche pour fermer le menu.")
-				)
-			}
+		previousMenu?.let {
+			inventory.setItem(
+				menuBackSlot,
+				createMenuItem(Material.ARROW, "Retour", "Clic-gauche pour retourner au menu précédent")
+			)
+		} ?: run {
+			inventory.setItem(
+				menuBackSlot,
+				createMenuItem(Material.BARRIER, "Fermer", "Clic-gauche pour fermer le menu.")
+			)
+		}
 
-			if (last >= (page + 1) * pageSize) {
-				inventory.setItem(
-					nextPageSlot,
-					createMenuItem(Material.ARROW, "Page suivante", "Clic-gauche pour aller à la page suivante")
-				)
-			}
+		if (last >= (page + 1) * pageSize) {
+			inventory.setItem(
+				nextPageSlot,
+				createMenuItem(Material.ARROW, "Page suivante", "Clic-gauche pour aller à la page suivante")
+			)
 		}
 	}
 
@@ -104,7 +99,12 @@ abstract class BaseMenu(
 		val slot = event.rawSlot
 		val menuItemStack = menuItemStacks[slot]
 		if (slot < pageSize && menuItemStack != null) {
-			menuItemStack.callback?.invoke(event)
+			if (event.isLeftClick) {
+				menuItemStack.leftClick?.invoke(event)
+			}
+			if (event.isRightClick) {
+				menuItemStack.rightClick?.invoke(event)
+			}
 			return
 		}
 

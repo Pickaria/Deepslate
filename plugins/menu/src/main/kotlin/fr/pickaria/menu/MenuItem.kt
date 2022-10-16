@@ -5,7 +5,6 @@ import org.bukkit.enchantments.Enchantment
 import org.bukkit.event.inventory.InventoryClickEvent
 import org.bukkit.inventory.ItemFlag
 import org.bukkit.inventory.ItemStack
-import java.util.function.Consumer
 
 class MenuItem {
 	var name: String = ""
@@ -13,7 +12,8 @@ class MenuItem {
 	var y: Int = 0
 	var material: Material = Material.AIR
 	var lore: List<String> = emptyList()
-	var callback: ((InventoryClickEvent) -> Unit)? = null
+	var rightClick: ((InventoryClickEvent) -> Unit)? = null
+	var leftClick: ((InventoryClickEvent) -> Unit)? = null
 	var isEnchanted: Boolean = false
 	private lateinit var itemStack: ItemStack
 
@@ -26,10 +26,10 @@ class MenuItem {
 
 		if (isEnchanted) {
 			itemStack.addUnsafeEnchantment(Enchantment.MENDING, 1)
+		}
 
-			itemStack.itemMeta = itemStack.itemMeta!!.apply {
-				this.itemFlags.plus(ItemFlag.HIDE_ENCHANTS)
-			}
+		if (!material.isAir) {
+			itemStack.addItemFlags(ItemFlag.HIDE_ENCHANTS, ItemFlag.HIDE_ATTRIBUTES)
 		}
 
 		return this

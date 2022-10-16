@@ -10,14 +10,14 @@ import org.bukkit.entity.Player
 
 class JobCommand : CommandExecutor, TabCompleter {
 	companion object {
-		private val SUB_COMMANDS = listOf("join", "leave", "top", "menu")
+		private val SUB_COMMANDS = listOf("ascent", "join", "leave", "menu","top")
 	}
 
 	override fun onCommand(sender: CommandSender, command: Command, label: String, args: Array<out String>): Boolean {
 		if (sender is Player) {
 			if (args.isEmpty()) {
 				val message = if (jobController.jobCount(sender.uniqueId) == 0) {
-					 "§cVous n'exercez actuellement pas de métier."
+				 	"§cVous n'exercez actuellement pas de métier."
 				} else {
 					val jobs = Job.get(sender.uniqueId).filter { it.active }.mapNotNull { jobConfig.jobs[it.job]?.label }
 					"§7Vous exercez le(s) métier(s) : ${jobs.joinToString(", ")}."
@@ -27,7 +27,7 @@ class JobCommand : CommandExecutor, TabCompleter {
 			}
 
 			if (args[0] == "menu") {
-				menuController.openMenu(sender, "jobs", null)
+				menuController.openMenu(sender, "job", null)
 				return true
 			}
 
@@ -58,6 +58,7 @@ class JobCommand : CommandExecutor, TabCompleter {
 						}
 					}
 				}
+
 				"leave" -> {
 					if (!jobController.hasJob(sender.uniqueId, job.key)) {
 						sender.sendMessage("§cVous n'exercez pas ce métier.")
@@ -72,6 +73,13 @@ class JobCommand : CommandExecutor, TabCompleter {
 						}
 					}
 				}
+
+				"ascent" -> {
+					if (!jobController.ascentJob(sender, job.key)) {
+						sender.sendMessage("§7Vous ne pouvez pas effectuer une ascension pour le métier ${job.label}.")
+					}
+				}
+
 				"top" -> {
 					// TODO: Remake top command
 				}
@@ -90,15 +98,20 @@ class JobCommand : CommandExecutor, TabCompleter {
 		if (sender is Player) {
 			return when (args.size) {
 				1 -> SUB_COMMANDS.filter { it.startsWith(args[0]) }.toMutableList()
+
 				2 -> when (args[0]) {
 					"top", "join" -> jobConfig.jobs.keys.map { it.lowercase() }.filter { it.startsWith(args[1]) }
 						.toMutableList()
-					"leave" -> Job.get(sender.uniqueId)
+
+					"leave", "ascent" -> Job.get(sender.uniqueId)
 						.filter { it.active }
 						.map { it.job.lowercase() }
+						.filter { it.startsWith(args[1]) }
 						.toMutableList()
+
 					else -> mutableListOf()
 				}
+
 				else -> mutableListOf()
 			}
 		}
