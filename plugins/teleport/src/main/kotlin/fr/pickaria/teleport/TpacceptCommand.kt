@@ -1,5 +1,6 @@
 package fr.pickaria.teleport
 
+import net.kyori.adventure.text.minimessage.MiniMessage
 import org.bukkit.command.Command
 import org.bukkit.command.CommandExecutor
 import org.bukkit.command.CommandSender
@@ -13,17 +14,22 @@ class TpacceptCommand : CommandExecutor {
 			teleportController.map[sender]?.let {
 				if (it.second) {
 					teleportController.cooldownTeleport(sender, it.first.location)
-					sender.sendMessage("§6Demande de téléportation acceptée.")
-					it.first.sendMessage("§6Demande de téléportation acceptée.")
+					val messageSender = miniMessage.deserialize(teleportConfig.teleportAcceptMessage)
+					sender.sendMessage(messageSender)
+					val messageTarget = miniMessage.deserialize(teleportConfig.teleportAcceptMessage)
+					it.first.sendMessage(messageTarget)
 				} else {
 					teleportController.cooldownTeleport(it.first, sender.location)
-					sender.sendMessage("§6Demande de téléportation acceptée.")
-					it.first.sendMessage("§6Demande de téléportation acceptée.")
+					val messageSender = miniMessage.deserialize(teleportConfig.teleportAcceptMessage)
+					sender.sendMessage(messageSender)
+					val messageTarget = miniMessage.deserialize(teleportConfig.teleportAcceptMessage)
+					it.first.sendMessage(messageTarget)
 				}
 
 				teleportController.map.remove(sender)
 			} ?: run {
-				sender.sendMessage("§cAucune demande de téléportation en cours.")
+				val message = miniMessage.deserialize(teleportConfig.teleportNotpMessage)
+				sender.sendMessage(message)
 			}
 		}
 

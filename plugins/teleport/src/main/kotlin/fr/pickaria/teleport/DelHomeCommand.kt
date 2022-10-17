@@ -17,9 +17,11 @@ class DelHomeCommand : CommandExecutor, TabCompleter {
 			}
 
 			if (homeController.removeHome(sender.uniqueId, homeName)) {
-				sender.sendMessage("§7Ce point de téléportation a été supprimé.")
+				val message = miniMessage.deserialize(teleportConfig.homeDeleteMessage)
+				sender.sendMessage(message)
 			} else {
-				sender.sendMessage("§cCe point de téléportation n'existe pas.")
+				val message = miniMessage.deserialize(teleportConfig.homeNotexistMessage)
+				sender.sendMessage(message)
 			}
 		}
 		return true

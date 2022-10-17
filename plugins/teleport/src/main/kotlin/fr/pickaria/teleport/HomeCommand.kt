@@ -23,12 +23,14 @@ class HomeCommand : CommandExecutor, TabCompleter {
 			val location = homeController.getHomeByName(sender.uniqueId, homeName)
 			if (location != null) {
 				if (location.block.type.isOccluding) {
-					sender.sendMessage("§cCe point de teleportation n'est pas sécurisé, vous ne pouvez pas y être téléporté.")
+					val message = miniMessage.deserialize(teleportConfig.homeNotsafeError)
+					sender.sendMessage(message)
 				} else {
 					teleportController.cooldownTeleport(sender, location)
 				}
 			} else {
-				sender.sendMessage("§cCe point de teleportation n'existe pas.")
+				val message = miniMessage.deserialize(teleportConfig.homeNotexistMessage)
+				sender.sendMessage(message)
 			}
 		}
 

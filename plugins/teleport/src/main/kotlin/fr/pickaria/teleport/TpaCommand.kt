@@ -1,5 +1,7 @@
 package fr.pickaria.teleport
 
+import net.kyori.adventure.text.minimessage.MiniMessage
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder
 import org.bukkit.Bukkit.getPlayer
 
 import org.bukkit.command.Command
@@ -11,14 +13,19 @@ import org.bukkit.entity.Player
 class TpaCommand : CommandExecutor {
 
 	override fun onCommand(sender: CommandSender, command: Command, label: String, args: Array<out String>): Boolean {
+
 		if (sender is Player) {
 			getPlayer(args[0])?.let {
 				if (teleportController.map.contains(it)) {
-					sender.sendMessage("§cUne demande est déjà en cours pour ce joueur.")
+					val message = miniMessage.deserialize(teleportConfig.teleportAlreadyError)
+					sender.sendMessage(message)
 				} else
 					if (teleportController.createTpRequest(it, sender, false)) {
-						sender.sendMessage("§7Demande de téléportation envoyée à §6${it.name}§7.")
-						teleportController.sendTpRequestMessage(it, "§6${sender.name}§7 souhaite se téléporter à vous.")
+						val messageSender = miniMessage.deserialize(teleportConfig.teleportSentMessage)
+							sender.sendMessage(messageSender)
+						val messageTarget = miniMessage.deserialize(teleportConfig.teleportYouMessage,
+							Placeholder.unparsed("sender",sender.name))
+						teleportController.sendTpRequestMessage(it,messageTarget )
 					}
 			}
 		}

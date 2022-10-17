@@ -1,9 +1,6 @@
 package fr.pickaria.teleport
 
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder
-import net.md_5.bungee.api.ChatColor
-import net.md_5.bungee.api.chat.ClickEvent
-import net.md_5.bungee.api.chat.TextComponent
 import org.bukkit.Location
 import org.bukkit.entity.Player
 import org.bukkit.plugin.java.JavaPlugin
@@ -11,13 +8,13 @@ import org.bukkit.scheduler.BukkitRunnable
 
 
 class TeleportController(private val plugin: JavaPlugin) {
-	val TELEPORT_COOLDOWN = 100L // TODO: Put in config file
+	val TELEPORTCOOLDOWN = 100L
 	val map = mutableMapOf<Player, Pair<Player, Boolean>>()
 
 	fun cooldownTeleport(player: Player, location: Location) {
 		val message = miniMessage.deserialize(
 			teleportConfig.teleportCooldownMessage,
-			Placeholder.unparsed("cooldown", (TELEPORT_COOLDOWN / 20).toString())
+			Placeholder.unparsed("cooldown", (TELEPORTCOOLDOWN / 20).toString())
 		)
 
 		player.sendMessage(message)
@@ -27,9 +24,10 @@ class TeleportController(private val plugin: JavaPlugin) {
 		object : BukkitRunnable() {
 			override fun run() {
 				player.teleport(location)
-				player.sendMessage("§7Vous avez été téléporté.")
+				val message = miniMessage.deserialize(teleportConfig.teleportSummonedMessage)
+				player.sendMessage(message)
 			}
-		}.runTaskLater(plugin, TELEPORT_COOLDOWN)
+		}.runTaskLater(plugin, TELEPORTCOOLDOWN)
 	}
 
 	/**
@@ -37,7 +35,7 @@ class TeleportController(private val plugin: JavaPlugin) {
 	 */
 	fun createTpRequest(sender: Player, recipient: Player, direction: Boolean = true): Boolean {
 		return if (recipient == sender) {
-			sender.sendMessage("§cVous ne pouvez pas vous teleporter à vous-même.")
+			sender.sendMessage(miniMessage.deserialize(teleportConfig.teleportSelfError))
 			false
 		} else {
 			map[sender] = recipient to direction
@@ -45,23 +43,10 @@ class TeleportController(private val plugin: JavaPlugin) {
 		}
 	}
 
-	fun sendTpRequestMessage(sender: Player, message: String) {
-		val component = TextComponent(message)
+	fun sendTpRequestMessage(sender: Player, message: net.kyori.adventure.text.Component) {
+		sender.sendMessage(message)
+			val messageCommand = miniMessage.deserialize(teleportConfig.teleportCommandMessage)
+					sender.sendMessage(messageCommand)
 
-		val acceptComponent = TextComponent("[ACCEPTER]")
-		acceptComponent.setColor(ChatColor.GOLD)
-		acceptComponent.setClickEvent(ClickEvent(ClickEvent.Action.RUN_COMMAND, "/tpyes"))
-
-		val denyComponent = TextComponent("[REFUSER]")
-		denyComponent.setColor(ChatColor.RED)
-		denyComponent.setClickEvent(ClickEvent(ClickEvent.Action.RUN_COMMAND, "/tpno"))
-
-		component.addExtra("\n > ")
-		component.addExtra(acceptComponent)
-		component.addExtra(" ou ")
-		component.addExtra(denyComponent)
-		component.addExtra(" <")
-
-		sender.spigot().sendMessage(component)
+		}
 	}
-}

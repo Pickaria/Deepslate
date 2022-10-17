@@ -1,5 +1,6 @@
 package fr.pickaria.teleport
 
+import net.kyori.adventure.text.minimessage.MiniMessage
 import org.bukkit.command.Command
 import org.bukkit.command.CommandExecutor
 import org.bukkit.command.CommandSender
@@ -11,9 +12,11 @@ class TpdenyCommand : CommandExecutor {
 		if (sender is Player) {
 			teleportController.map[sender]?.let {
 				teleportController.map.remove(sender)
-				it.first.sendMessage("§7Votre demande à été refusée ")
+				val message = miniMessage.deserialize(teleportConfig.teleportDenyMessage)
+				it.first.sendMessage(message)
 			} ?: run {
-				sender.sendMessage("§cAucune demande de téléportation en cours")
+				val message = miniMessage.deserialize(teleportConfig.teleportNotpMessage)
+				sender.sendMessage(message)
 			}
 		}
 

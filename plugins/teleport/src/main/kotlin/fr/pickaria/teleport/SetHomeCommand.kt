@@ -16,7 +16,8 @@ class SetHomeCommand : CommandExecutor, TabCompleter {
 			val location = sender.location
 
 			if (location.block.type.isOccluding) {
-				sender.sendMessage("§cCe point de teleportation n'est pas sécurisé, vous ne pouvez pas créer un point ici.")
+				val message = miniMessage.deserialize(teleportConfig.homeNotsafecreateError)
+				sender.sendMessage(message)
 				return true
 			}
 
@@ -27,7 +28,8 @@ class SetHomeCommand : CommandExecutor, TabCompleter {
 			}
 
 			homeController.addHome(sender.uniqueId, homeName, location)
-			sender.sendMessage("§7Point de téléportation créé.")
+			val message = miniMessage.deserialize(teleportConfig.homeCreateMessage)
+			sender.sendMessage(message)
 		}
 
 		return true

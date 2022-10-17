@@ -1,1 +1,18 @@
 teleport_cooldown_message: '<gray>Téléportation dans <gold><cooldown><gray> secondes.'
+teleport_you_message: '<gold><sender><gray> souhaite se téléporter à vous'
+teleport_they_message: '<gold><sender><gray> souhaite vous téléporter à lui/elle'
+teleport_command_message: '<gold><click:run_command:/tpyes>[ACCEPTER]<gray> OU <red><click:run_command:/tpdeny>[REFUSER]'
+teleport_already_error: '<red>Ce joueur possède déjà une téléportation'
+teleport_sent_message: '<gray>Demande de téléportation envoyée.'
+teleport_accept_message: '<gray>Demande de téléportation acceptée.'
+teleport_deny_message: '<gray>Demande de téléportation refusée.'
+teleport_notp_message: "<red>Aucune demande de téléportation n'est en cours"
+teleport_summoned_message: '<gray>Vous avez été téléporté.'
+teleport_self_error: '<red>Vous ne pouvez pas vous téléporter vous même.'
+home_create_message: '<gray>Point de téléportation créé.'
+home_delete_message: '<gray>Ce point de téléportation a été supprimé.'
+home_notexist_message: "<red>Ce point de teleportation n'existe pas."
+home_notsafetp_error: "<red>Ce point de teleportation n'est pas sécurisé, vous ne pouvez pas y être téléporté."
+home_notsafecreate_error: "<red>Ce point de teleportation n'est pas sécurisé, vous ne pouvez pas créer un point ici."
+rtp_notenough_error: "<red>Vous n'avez pas assez d'argent."
+rtp_error: "<red>Une erreur s'est produite."

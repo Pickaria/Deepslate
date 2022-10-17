@@ -54,13 +54,15 @@ class RandomCommand : CommandExecutor {
 					if (withdrawResponse.type == EconomyResponse.ResponseType.SUCCESS) {
 						teleportPlayer(sender)
 					} else {
-						sender.sendMessage("§cUne erreur s'est produite.")
+						val message = miniMessage.deserialize(teleportConfig.rtpError)
+						sender.sendMessage(message)
 					}
 				} else if (!containsTag) {
 					teleportPlayer(sender)
 					sender.addScoreboardTag(TAG)
 				} else {
-					sender.sendMessage("§cVous n'avez pas assez d'argent.")
+					val message = miniMessage.deserialize(teleportConfig.rtpNotenoughError)
+					sender.sendMessage(message)
 				}
 			}
 		}
