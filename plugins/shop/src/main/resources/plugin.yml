@@ -12,5 +12,3 @@ commands:
     usage: /test
   x:
     usage: /x
-  shop:
-    usage: /shop

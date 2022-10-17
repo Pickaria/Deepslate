@@ -1,12 +1,17 @@
 package fr.pickaria.artefact
 
+import org.bukkit.NamespacedKey
 import org.bukkit.plugin.java.JavaPlugin
+
+internal lateinit var namespace: NamespacedKey
 
 class Main : JavaPlugin() {
 	override fun onEnable() {
 		super.onEnable()
 
-		val test = ArtefactCommand(this)
+		namespace = NamespacedKey(this, "artefact")
+
+		val test = ArtefactCommand()
 		getCommand("artefact")?.setExecutor(test)
 		server.pluginManager.registerEvents(test, this)
 

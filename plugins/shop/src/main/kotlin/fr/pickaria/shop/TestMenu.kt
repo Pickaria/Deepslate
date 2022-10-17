@@ -1,5 +1,7 @@
 package fr.pickaria.shop
 
+import com.destroystokyo.paper.event.inventory.PrepareResultEvent
+import fr.pickaria.artefact.getArtefact
 import io.papermc.paper.event.player.PlayerPurchaseEvent
 import net.kyori.adventure.key.Key
 import net.kyori.adventure.sound.Sound
@@ -11,6 +13,7 @@ import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.inventory.*
 import org.bukkit.event.player.PlayerInteractEvent
+import org.bukkit.inventory.GrindstoneInventory
 import org.bukkit.potion.PotionEffect
 import org.bukkit.potion.PotionEffectType
 
@@ -45,7 +48,16 @@ class TestMenu : Listener {
 					createChestMerchant(player, it.inventory)
 
 					player.playSound(Sound.sound(Key.key("block.ender_chest.open"), Sound.Source.MASTER, 1f, 1f))
-					player.addPotionEffect(PotionEffect(PotionEffectType.BLINDNESS, Integer.MAX_VALUE, 1, true, false, false))
+					player.addPotionEffect(
+						PotionEffect(
+							PotionEffectType.BLINDNESS,
+							Integer.MAX_VALUE,
+							1,
+							true,
+							false,
+							false
+						)
+					)
 					player.world.spawnParticle(Particle.END_ROD, player.location, 100, 3.0, 3.0, 3.0, 0.0)
 
 					event.isCancelled = true
@@ -53,6 +65,16 @@ class TestMenu : Listener {
 				}
 			} else {
 				null
+			}
+		}
+	}
+
+	@EventHandler
+	fun onPrepareResult(event: PrepareResultEvent) {
+		if (event.inventory.type == InventoryType.GRINDSTONE) {
+			val inventory = (event.inventory as GrindstoneInventory)
+			inventory.upperItem?.let { getArtefact(it) }?.let {
+				event.result = createPickarite(it.value)
 			}
 		}
 	}

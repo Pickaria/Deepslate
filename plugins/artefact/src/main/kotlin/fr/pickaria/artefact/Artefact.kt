@@ -10,6 +10,7 @@ enum class Artefact(
 	val material: Material,
 	val displayName: Component,
 	val lore: List<Component>,
+	val value: Int = 1,
 	val color: Color? = null,
 ) {
 	FIRE_BOOTS(
@@ -22,6 +23,7 @@ enum class Artefact(
 			Component.text("lorsque son porteur se déplace.", NamedTextColor.GRAY)
 				.decoration(TextDecoration.ITALIC, TextDecoration.State.FALSE),
 		),
+		1,
 		Color.RED,
 	),
 
@@ -35,6 +37,7 @@ enum class Artefact(
 			Component.text("repérer par les monstres.", NamedTextColor.GRAY)
 				.decoration(TextDecoration.ITALIC, TextDecoration.State.FALSE),
 		),
+		10,
 		Color.BLACK,
 	),
 
@@ -46,6 +49,7 @@ enum class Artefact(
 			Component.text("Gèle les attaquants.", NamedTextColor.GRAY)
 				.decoration(TextDecoration.ITALIC, TextDecoration.State.FALSE),
 		),
+		5,
 		Color.AQUA,
 	),
 
@@ -59,5 +63,6 @@ enum class Artefact(
 			Component.text("un minerai en plus à chaque bloc cassé.", NamedTextColor.GRAY)
 				.decoration(TextDecoration.ITALIC, TextDecoration.State.FALSE),
 		),
+		15,
 	),
 }
