@@ -118,11 +118,13 @@ class TestMenu : Listener {
 	 */
 	@EventHandler
 	fun onInventoryClose(event: InventoryCloseEvent) {
-		if (event.inventory.type === InventoryType.MERCHANT || event.inventory.type == InventoryType.GRINDSTONE) {
+		if (event.inventory.type === InventoryType.MERCHANT) {
 			event.inventory.clear()
 			event.player.removePotionEffect(PotionEffectType.BLINDNESS)
 			event.player.playSound(Sound.sound(Key.key("block.amethyst_block.chime"), Sound.Source.MASTER, 1f, 1f))
 			event.player.playSound(Sound.sound(Key.key("block.ender_chest.close"), Sound.Source.MASTER, 1f, 1f))
+		} else if (event.inventory.type == InventoryType.GRINDSTONE) {
+			(event.inventory as GrindstoneInventory).result = null
 		}
 	}
 }
