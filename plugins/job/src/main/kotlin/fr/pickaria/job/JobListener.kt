@@ -2,6 +2,7 @@ package fr.pickaria.job
 
 import fr.pickaria.job.events.JobAscentEvent
 import fr.pickaria.job.events.JobLevelUpEvent
+import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
 import org.bukkit.Sound
 import org.bukkit.event.EventHandler
@@ -19,11 +20,10 @@ class JobListener : Listener {
 		player.sendMessage("§7Vous montez niveau §6$level§7 dans le métier §6$label§7.")
 
 		if (type == LevelUpType.ASCENT_UNLOCKED) {
-			val title = TitleBuilder()
-				.mainTitle("Ascension débloquée", NamedTextColor.GOLD)
-				.subTitle("Vous avez débloqué l'ascension pour le métier $label !", NamedTextColor.GRAY)
-				.build()
-
+			val title = TitleBuilder {
+				mainTitle = Component.text("Ascension débloquée", NamedTextColor.GOLD)
+				subTitle = Component.text("Vous avez débloqué l'ascension pour le métier $label !", NamedTextColor.GRAY)
+			}.build()
 			player.showTitle(title)
 		} else if (type == LevelUpType.MAX_LEVEL_REACHED) {
 			val title = TitleBuilder()
