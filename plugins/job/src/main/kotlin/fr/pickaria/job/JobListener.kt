@@ -4,7 +4,6 @@ import fr.pickaria.job.events.JobAscentEvent
 import fr.pickaria.job.events.JobLevelUpEvent
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
-import net.kyori.adventure.title.Title
 import org.bukkit.Sound
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
@@ -21,15 +20,17 @@ class JobListener : Listener {
 		player.sendMessage("§7Vous montez niveau §6$level§7 dans le métier §6$label§7.")
 
 		if (type == LevelUpType.ASCENT_UNLOCKED) {
-			val mainTitle = Component.text("Ascension débloquée", NamedTextColor.GOLD)
-			val subtitle = Component.text("Vous avez débloqué l'ascension pour le métier $label !", NamedTextColor.GRAY)
-			val title = Title.title(mainTitle, subtitle)
+			val title = TitleBuilder {
+				mainTitle = Component.text("Ascension débloquée", NamedTextColor.GOLD)
+				subTitle = Component.text("Vous avez débloqué l'ascension pour le métier $label !", NamedTextColor.GRAY)
+			}.build()
 
 			player.showTitle(title)
 		} else if (type == LevelUpType.MAX_LEVEL_REACHED) {
-			val mainTitle = Component.text("Niveau maximum atteint", NamedTextColor.GOLD)
-			val subtitle = Component.text("Vous avez atteint le niveau maximum dans le métier $label !", NamedTextColor.GRAY)
-			val title = Title.title(mainTitle, subtitle)
+			val title = TitleBuilder()
+				.mainTitle("Niveau maximum atteint", NamedTextColor.GOLD)
+				.subTitle("Vous avez atteint le niveau maximum dans le métier $label !", NamedTextColor.GRAY)
+				.build()
 
 			player.showTitle(title)
 		}
