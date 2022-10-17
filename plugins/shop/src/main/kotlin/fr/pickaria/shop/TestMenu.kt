@@ -20,6 +20,10 @@ import org.bukkit.potion.PotionEffectType
 class TestMenu : Listener {
 	var chest: Chest? = null
 
+	// TODO: Get list of items to sell from a config file instead of a chest
+	// TODO: Set price of each items in the config file
+	// TODO: Identify inventories without using `event.inventory.type == InventoryType.XXX`
+
 	@EventHandler
 	fun onTradeSelected(event: TradeSelectEvent) {
 		val recipe = event.merchant.getRecipe(event.index)
@@ -67,21 +71,54 @@ class TestMenu : Listener {
 				null
 			}
 		}
+
+		// TODO: Add effects when player opens Grindstone
 	}
 
+	/**
+	 * Sets Pickarite as a result of Grindstone if the deposited item is an artefact
+	 */
 	@EventHandler
 	fun onPrepareResult(event: PrepareResultEvent) {
 		if (event.inventory.type == InventoryType.GRINDSTONE) {
 			val inventory = (event.inventory as GrindstoneInventory)
+			// TODO: Handle lowerItem
+			// TODO: Add sound
 			inventory.upperItem?.let { getArtefact(it) }?.let {
 				event.result = createPickarite(it.value)
 			}
 		}
 	}
 
+	private fun isPickupAction(action: InventoryAction): Boolean =
+		action == InventoryAction.PICKUP_ALL ||
+		action == InventoryAction.PICKUP_HALF ||
+		action == InventoryAction.PICKUP_ONE ||
+		action == InventoryAction.PICKUP_SOME
+
+	/**
+	 * Pickup Pickarite from Grindstone.
+	 * Deposit money on the player's account and clear the inventory.
+	 */
+	@EventHandler
+	fun onInventoryClick(event: InventoryClickEvent) {
+		if (event.inventory.type == InventoryType.GRINDSTONE && isPickupAction(event.action)) {
+			event.currentItem?.let {
+				if (isPickarite(it)) {
+					economy.depositPlayer(event.whoClicked as OfflinePlayer, it.amount.toDouble())
+					event.inventory.clear()
+					event.isCancelled = true
+				}
+			}
+		}
+	}
+
+	/**
+	 * Prevents items from being dropped by the custom inventories.
+	 */
 	@EventHandler
 	fun onInventoryClose(event: InventoryCloseEvent) {
-		if (event.inventory.type === InventoryType.MERCHANT) {
+		if (event.inventory.type === InventoryType.MERCHANT || event.inventory.type == InventoryType.GRINDSTONE) {
 			event.inventory.clear()
 			event.player.removePotionEffect(PotionEffectType.BLINDNESS)
 			event.player.playSound(Sound.sound(Key.key("block.amethyst_block.chime"), Sound.Source.MASTER, 1f, 1f))

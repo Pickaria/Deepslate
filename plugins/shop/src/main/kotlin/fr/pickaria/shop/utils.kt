@@ -11,6 +11,7 @@ import org.bukkit.inventory.Inventory
 import org.bukkit.inventory.ItemFlag
 import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.MerchantRecipe
+import org.bukkit.persistence.PersistentDataType
 import kotlin.math.floor
 import kotlin.math.min
 
@@ -32,10 +33,16 @@ fun createPickarite(amount: Int): ItemStack {
 					.decoration(TextDecoration.ITALIC, TextDecoration.State.FALSE)
 			)
 		)
+
+		persistentDataContainer.set(namespace, PersistentDataType.BYTE, 1)
 	}
 
 	return itemStack
 }
+
+fun isPickarite(item: ItemStack): Boolean =
+	item.itemMeta.persistentDataContainer.get(namespace, PersistentDataType.BYTE)?.let { it == (1).toByte() } ?: false
+
 
 fun createChestMerchant(player: Player, inventory: Inventory) {
 	val money = economy.getBalance(player)
