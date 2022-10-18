@@ -84,8 +84,22 @@ class TestMenu : Listener {
 			val inventory = (event.inventory as GrindstoneInventory)
 			// TODO: Handle lowerItem
 			// TODO: Add sound
+			var totalValue = 0
+			var isArtefact = false
+
 			inventory.upperItem?.let { getArtefact(it) }?.let {
-				event.result = createPickarite(it.value)
+				totalValue += it.value
+				isArtefact = true
+			}
+			inventory.lowerItem?.let { getArtefact(it) }?.let {
+				totalValue += it.value
+				isArtefact = true
+			}
+
+			if (totalValue in 1..64) {
+				event.result = createPickarite(totalValue)
+			} else if (isArtefact) {
+				event.result = null
 			}
 		}
 	}
@@ -103,9 +117,15 @@ class TestMenu : Listener {
 	@EventHandler
 	fun onInventoryClick(event: InventoryClickEvent) {
 		if (event.inventory.type == InventoryType.GRINDSTONE && isPickupAction(event.action)) {
-			event.currentItem?.let {
-				if (isPickarite(it)) {
-					economy.depositPlayer(event.whoClicked as OfflinePlayer, it.amount.toDouble())
+			event.currentItem?.let { itemStack ->
+				if (isPickarite(itemStack)) {
+					economy.depositPlayer(event.whoClicked as OfflinePlayer, itemStack.amount.toDouble())
+
+					event.whoClicked.playSound(Sound.sound(Key.key("block.amethyst_cluster.break"), Sound.Source.MASTER, 1f, 1f))
+					event.inventory.location?.let {
+						it.world.spawnParticle(Particle.END_ROD, it, 100, 3.0, 3.0, 3.0, 0.0)
+					}
+
 					event.inventory.clear()
 					event.isCancelled = true
 				}
