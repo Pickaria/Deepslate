@@ -24,10 +24,25 @@ enum class Artefact(
 			Component.text("lorsque son porteur se déplace.", NamedTextColor.GRAY)
 				.decoration(TextDecoration.ITALIC, TextDecoration.State.FALSE),
 		),
-		EnchantmentTarget.ARMOR_FEET,
+		EnchantmentTarget.ARMOR,
 		ItemRarity.COMMON,
 		1,
 		Color.RED,
+	),
+
+	SNOWFLAKE_COSMETICS(
+		Component.text("Particules glacées", NamedTextColor.RED)
+			.decoration(TextDecoration.ITALIC, TextDecoration.State.FALSE),
+		listOf(
+			Component.text("Fait apparaitre des flocons", NamedTextColor.GRAY)
+				.decoration(TextDecoration.ITALIC, TextDecoration.State.FALSE),
+			Component.text("lorsque son porteur se déplace.", NamedTextColor.GRAY)
+				.decoration(TextDecoration.ITALIC, TextDecoration.State.FALSE),
+		),
+		EnchantmentTarget.ARMOR,
+		ItemRarity.COMMON,
+		1,
+		Color.AQUA,
 	),
 
 	STEALTH(

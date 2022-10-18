@@ -11,11 +11,17 @@ import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.inventory.InventoryAction
 import org.bukkit.event.inventory.InventoryClickEvent
+import org.bukkit.event.inventory.InventoryMoveItemEvent
 import org.bukkit.event.inventory.InventoryType
 import org.bukkit.inventory.GrindstoneInventory
+import org.bukkit.inventory.ItemStack
 
-class GrindstoneListeners: Listener {
-	// TODO: Add effects when player opens Grindstone
+class GrindstoneListeners : Listener {
+	private fun getResult(itemStack: ItemStack?): ItemStack? = itemStack?.let {
+		if (it.amount == 1) getArtefact(it) else null
+	}?.let {
+		createPickarite(it.value)
+	}
 
 	/**
 	 * Sets Pickarite as a result of Grindstone if the deposited item is an artefact
@@ -24,33 +30,27 @@ class GrindstoneListeners: Listener {
 	fun onPrepareResult(event: PrepareResultEvent) {
 		if (event.inventory.type == InventoryType.GRINDSTONE) {
 			val inventory = (event.inventory as GrindstoneInventory)
-			// TODO: Handle lowerItem
-			// TODO: Add sound
-			var totalValue = 0
-			var isArtefact = false
 
-			inventory.upperItem?.let { getArtefact(it) }?.let {
-				totalValue += it.value * (inventory.upperItem?.amount ?: 1)
-				isArtefact = true
-			}
-			inventory.lowerItem?.let { getArtefact(it) }?.let {
-				totalValue += it.value * (inventory.lowerItem?.amount ?: 1)
-				isArtefact = true
+			val upper = getResult(inventory.upperItem)
+			val lower = getResult(inventory.lowerItem)
+
+			val result: ItemStack? = if (inventory.upperItem == inventory.lowerItem && inventory.upperItem != null) {
+				// If both items are the same
+				upper
+			} else if ((inventory.upperItem != null).xor(inventory.lowerItem != null)) {
+				// If one of the items is different
+				upper ?: lower
+			} else {
+				// Else, if both items are null
+				null
 			}
 
-			if (totalValue in 1..64) {
-				event.result = createPickarite(totalValue)
-			} else if (isArtefact) {
-				event.result = null
+			result?.let {
+				event.inventory.location?.world?.playSound(Sound.sound(Key.key("block.amethyst_cluster.place"), Sound.Source.MASTER, 1f, 1f))
+				event.result = it
 			}
 		}
 	}
-
-	private fun isPickupAction(action: InventoryAction): Boolean =
-		action == InventoryAction.PICKUP_ALL ||
-				action == InventoryAction.PICKUP_HALF ||
-				action == InventoryAction.PICKUP_ONE ||
-				action == InventoryAction.PICKUP_SOME
 
 	/**
 	 * Pickup Pickarite from Grindstone.
@@ -58,7 +58,7 @@ class GrindstoneListeners: Listener {
 	 */
 	@EventHandler
 	fun onInventoryClick(event: InventoryClickEvent) {
-		if (event.inventory.type == InventoryType.GRINDSTONE && isPickupAction(event.action)) {
+		if (event.inventory.type == InventoryType.GRINDSTONE && event.slotType == InventoryType.SlotType.RESULT) {
 			event.currentItem?.let { itemStack ->
 				if (isPickarite(itemStack)) {
 					economy.depositPlayer(event.whoClicked as OfflinePlayer, itemStack.amount.toDouble())
@@ -69,6 +69,7 @@ class GrindstoneListeners: Listener {
 					}
 
 					event.inventory.clear()
+					event.currentItem?.amount = 0
 					event.isCancelled = true
 				}
 			}
