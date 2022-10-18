@@ -4,14 +4,11 @@ import com.destroystokyo.paper.event.inventory.PrepareResultEvent
 import fr.pickaria.shared.GlowEnchantment
 import net.kyori.adventure.key.Key
 import net.kyori.adventure.sound.Sound
-import org.bukkit.Bukkit
 import org.bukkit.Particle
-import org.bukkit.enchantments.Enchantment
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.inventory.InventoryClickEvent
 import org.bukkit.event.inventory.InventoryType
-import org.bukkit.inventory.ItemFlag
 import org.bukkit.inventory.SmithingInventory
 import org.bukkit.persistence.PersistentDataType
 
@@ -47,12 +44,19 @@ internal class SmithingListeners : Listener {
 			val inventory = (event.inventory as SmithingInventory)
 
 			if (event.slotType == InventoryType.SlotType.RESULT) {
-				event.cursor = event.currentItem
-				inventory.clear()
+				event.currentItem?.let {
+					if (isArtefact(it)) {
+						// TODO: HAndle shift-click
+						event.cursor = event.currentItem
+						inventory.clear()
 
-				event.whoClicked.playSound(Sound.sound(Key.key("block.smithing_table.use"), Sound.Source.MASTER, 1f, 1f))
-				event.inventory.location?.let {
-					it.world.spawnParticle(Particle.END_ROD, it.toCenterLocation(), 30, 1.0, 1.0, 1.0, 0.0)
+						event.whoClicked.playSound(
+							Sound.sound(Key.key("block.smithing_table.use"), Sound.Source.MASTER, 1f, 1f)
+						)
+						event.inventory.location?.let { loc ->
+							loc.world.spawnParticle(Particle.END_ROD, loc.toCenterLocation(), 30, 1.0, 1.0, 1.0, 0.0)
+						}
+					}
 				}
 			}
 		}

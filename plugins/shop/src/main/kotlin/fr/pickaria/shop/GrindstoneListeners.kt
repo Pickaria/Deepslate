@@ -4,14 +4,11 @@ import com.destroystokyo.paper.event.inventory.PrepareResultEvent
 import fr.pickaria.artefact.getArtefact
 import net.kyori.adventure.key.Key
 import net.kyori.adventure.sound.Sound
-import org.bukkit.Bukkit
 import org.bukkit.OfflinePlayer
 import org.bukkit.Particle
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
-import org.bukkit.event.inventory.InventoryAction
 import org.bukkit.event.inventory.InventoryClickEvent
-import org.bukkit.event.inventory.InventoryMoveItemEvent
 import org.bukkit.event.inventory.InventoryType
 import org.bukkit.inventory.GrindstoneInventory
 import org.bukkit.inventory.ItemStack

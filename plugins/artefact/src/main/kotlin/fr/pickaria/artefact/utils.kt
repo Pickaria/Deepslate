@@ -5,7 +5,6 @@ import org.bukkit.inventory.EquipmentSlot
 import org.bukkit.inventory.ItemStack
 import org.bukkit.persistence.PersistentDataType
 
-
 fun getArtefact(itemStack: ItemStack): Artefact? =
 	itemStack.itemMeta?.persistentDataContainer?.get(namespace, PersistentDataType.STRING)?.let {
 		try {
@@ -14,6 +13,8 @@ fun getArtefact(itemStack: ItemStack): Artefact? =
 			null
 		}
 	}
+
+fun isArtefact(itemStack: ItemStack): Boolean = getArtefact(itemStack) != null
 
 internal fun getWornArtefacts(player: Player): Map<EquipmentSlot, Artefact> = mutableMapOf<EquipmentSlot, Artefact>().apply {
 	player.inventory.let { inv ->

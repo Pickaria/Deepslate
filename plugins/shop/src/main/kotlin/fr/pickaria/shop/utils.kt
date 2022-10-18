@@ -40,7 +40,7 @@ internal fun createPickarite(amount: Int): ItemStack {
 }
 
 internal fun isPickarite(item: ItemStack): Boolean =
-	item.itemMeta.persistentDataContainer.get(namespace, PersistentDataType.BYTE)?.let { it == (1).toByte() } ?: false
+	item.itemMeta?.persistentDataContainer?.get(namespace, PersistentDataType.BYTE)?.let { it == (1).toByte() } ?: false
 
 
 internal fun createChestMerchant(player: Player, inventory: Inventory) {
