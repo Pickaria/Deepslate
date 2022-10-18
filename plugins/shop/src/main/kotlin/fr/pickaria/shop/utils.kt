@@ -1,15 +1,14 @@
 package fr.pickaria.shop
 
 import fr.pickaria.artefact.getArtefact
+import fr.pickaria.shared.GlowEnchantment
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
 import net.kyori.adventure.text.format.TextDecoration
 import org.bukkit.Bukkit
 import org.bukkit.Material
-import org.bukkit.enchantments.Enchantment
 import org.bukkit.entity.Player
 import org.bukkit.inventory.Inventory
-import org.bukkit.inventory.ItemFlag
 import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.MerchantRecipe
 import org.bukkit.persistence.PersistentDataType
@@ -20,8 +19,7 @@ internal fun createPickarite(amount: Int): ItemStack {
 	val itemStack = ItemStack(Material.ECHO_SHARD, amount)
 
 	itemStack.itemMeta = itemStack.itemMeta.apply {
-		addEnchant(Enchantment.MENDING, 1, true)
-		addItemFlags(ItemFlag.HIDE_ENCHANTS)
+		addEnchant(GlowEnchantment.instance, 1, true)
 		displayName(
 			Component.text("Éclat de Pickarite", NamedTextColor.LIGHT_PURPLE)
 				.decoration(TextDecoration.ITALIC, TextDecoration.State.FALSE)

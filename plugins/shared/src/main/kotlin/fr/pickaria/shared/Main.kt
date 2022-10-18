@@ -11,6 +11,8 @@ class Main : JavaPlugin() {
 
 		database = openDatabase(dataFolder.absolutePath + "/database")
 
+		GlowEnchantment.register(this)
+
 		logger.info("Shared plugin loaded!")
 	}
 }

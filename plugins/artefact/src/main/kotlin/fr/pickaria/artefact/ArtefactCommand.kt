@@ -1,5 +1,6 @@
 package fr.pickaria.artefact
 
+import fr.pickaria.shared.GlowEnchantment
 import io.papermc.paper.inventory.ItemRarity
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
@@ -38,9 +39,8 @@ internal class ArtefactCommand : CommandExecutor, Listener, TabCompleter {
 					itemMeta.addItemFlags(ItemFlag.HIDE_DYE)
 				}
 
-				itemMeta.addEnchant(Enchantment.VANISHING_CURSE, 1, true)
+				itemMeta.addEnchant(GlowEnchantment.instance, 1, true)
 				itemMeta.persistentDataContainer.set(namespace, PersistentDataType.STRING, artefact.name)
-				itemMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS)
 				itemMeta.displayName(
 					Component.text("Réceptacle d'artefact", artefact.rarity.color)
 						.decoration(TextDecoration.ITALIC, TextDecoration.State.FALSE)

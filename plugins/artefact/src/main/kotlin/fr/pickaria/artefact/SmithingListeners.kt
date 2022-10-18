@@ -1,6 +1,7 @@
 package fr.pickaria.artefact
 
 import com.destroystokyo.paper.event.inventory.PrepareResultEvent
+import fr.pickaria.shared.GlowEnchantment
 import net.kyori.adventure.key.Key
 import net.kyori.adventure.sound.Sound
 import org.bukkit.Bukkit
@@ -27,8 +28,7 @@ internal class SmithingListeners : Listener {
 						if (artefact.target.includes(it)) {
 							val result = it.clone()
 							result.itemMeta = result.itemMeta.apply {
-								addEnchant(Enchantment.VANISHING_CURSE, 1, true)
-								addItemFlags(ItemFlag.HIDE_ENCHANTS)
+								addEnchant(GlowEnchantment.instance, 1, true)
 								lore(inventory.inputMineral!!.lore())
 								persistentDataContainer.set(namespace, PersistentDataType.STRING, artefact.name)
 							}
