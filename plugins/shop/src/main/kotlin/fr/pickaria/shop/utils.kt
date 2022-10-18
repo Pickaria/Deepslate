@@ -16,7 +16,7 @@ import org.bukkit.persistence.PersistentDataType
 import kotlin.math.floor
 import kotlin.math.min
 
-fun createPickarite(amount: Int): ItemStack {
+internal fun createPickarite(amount: Int): ItemStack {
 	val itemStack = ItemStack(Material.ECHO_SHARD, amount)
 
 	itemStack.itemMeta = itemStack.itemMeta.apply {
@@ -41,11 +41,11 @@ fun createPickarite(amount: Int): ItemStack {
 	return itemStack
 }
 
-fun isPickarite(item: ItemStack): Boolean =
+internal fun isPickarite(item: ItemStack): Boolean =
 	item.itemMeta.persistentDataContainer.get(namespace, PersistentDataType.BYTE)?.let { it == (1).toByte() } ?: false
 
 
-fun createChestMerchant(player: Player, inventory: Inventory) {
+internal fun createChestMerchant(player: Player, inventory: Inventory) {
 	val money = economy.getBalance(player)
 
 	val merchant = Bukkit.createMerchant(

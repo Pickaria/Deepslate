@@ -15,7 +15,7 @@ import org.bukkit.inventory.GrindstoneInventory
 import org.bukkit.potion.PotionEffect
 import org.bukkit.potion.PotionEffectType
 
-class ShopListeners : Listener {
+internal class ShopListeners : Listener {
 	var chest: Chest? = null
 
 	// TODO: Get list of items to sell from a config file instead of a chest

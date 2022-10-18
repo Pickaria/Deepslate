@@ -5,6 +5,8 @@ main: fr.pickaria.shop.Main
 author: Quozul
 depend:
   - PickariaShared
+  - PickariaArtefact
+  - PickariaPotion
   - Vault
 
 commands:

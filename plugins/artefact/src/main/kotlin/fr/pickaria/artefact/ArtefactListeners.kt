@@ -14,7 +14,7 @@ import org.bukkit.event.player.PlayerMoveEvent
 import org.bukkit.inventory.EquipmentSlot
 import org.bukkit.inventory.ItemStack
 
-class ArtefactListeners: Listener {
+internal class ArtefactListeners: Listener {
 	@EventHandler
 	fun onEntityTarget(event: EntityTargetEvent) {
 		event.target?.let {

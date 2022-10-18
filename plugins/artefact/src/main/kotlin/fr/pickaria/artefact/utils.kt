@@ -15,7 +15,7 @@ fun getArtefact(itemStack: ItemStack): Artefact? =
 		}
 	}
 
-fun getWornArtefacts(player: Player): Map<EquipmentSlot, Artefact> = mutableMapOf<EquipmentSlot, Artefact>().apply {
+internal fun getWornArtefacts(player: Player): Map<EquipmentSlot, Artefact> = mutableMapOf<EquipmentSlot, Artefact>().apply {
 	player.inventory.let { inv ->
 		inv.helmet?.let { getArtefact(it) }?.let { put(EquipmentSlot.HEAD, it) }
 		inv.chestplate?.let { getArtefact(it) }?.let { put(EquipmentSlot.CHEST, it) }

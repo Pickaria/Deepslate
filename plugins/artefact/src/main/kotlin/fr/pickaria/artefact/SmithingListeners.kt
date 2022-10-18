@@ -14,7 +14,7 @@ import org.bukkit.inventory.ItemFlag
 import org.bukkit.inventory.SmithingInventory
 import org.bukkit.persistence.PersistentDataType
 
-class SmithingListeners : Listener {
+internal class SmithingListeners : Listener {
 	@EventHandler
 	fun onPrepareResult(event: PrepareResultEvent) {
 		if (event.inventory.type == InventoryType.SMITHING) {

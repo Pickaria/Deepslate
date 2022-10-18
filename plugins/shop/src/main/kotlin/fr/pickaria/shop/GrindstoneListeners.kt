@@ -16,7 +16,7 @@ import org.bukkit.event.inventory.InventoryType
 import org.bukkit.inventory.GrindstoneInventory
 import org.bukkit.inventory.ItemStack
 
-class GrindstoneListeners : Listener {
+internal class GrindstoneListeners : Listener {
 	private fun getResult(itemStack: ItemStack?): ItemStack? = itemStack?.let {
 		if (it.amount == 1) getArtefact(it) else null
 	}?.let {
