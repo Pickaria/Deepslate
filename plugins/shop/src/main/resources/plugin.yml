@@ -12,5 +12,6 @@ depend:
 commands:
   test:
     usage: /test
-  x:
-    usage: /x
+  place:
+    usage: /place
+    description: Place un nouveau magasin à l'endroit où se situe le joueur.

@@ -15,6 +15,7 @@ class Main : JavaPlugin() {
 		namespace = NamespacedKey(this, "pickarite")
 
 		getCommand("test")?.setExecutor(TestCommand()) ?: server.logger.warning("Command `test` could not be registered")
+		getCommand("place")?.setExecutor(PlaceShopCommand()) ?: server.logger.warning("Command `place` could not be registered")
 
 		Bukkit.getServer().pluginManager.registerEvents(ShopListeners(), this)
 		Bukkit.getServer().pluginManager.registerEvents(GrindstoneListeners(), this)

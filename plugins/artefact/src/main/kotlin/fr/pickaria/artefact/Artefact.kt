@@ -30,21 +30,6 @@ enum class Artefact(
 		Color.RED,
 	),
 
-	SNOWFLAKE_COSMETICS(
-		Component.text("Particules glacées", NamedTextColor.RED)
-			.decoration(TextDecoration.ITALIC, TextDecoration.State.FALSE),
-		listOf(
-			Component.text("Fait apparaitre des flocons", NamedTextColor.GRAY)
-				.decoration(TextDecoration.ITALIC, TextDecoration.State.FALSE),
-			Component.text("lorsque son porteur se déplace.", NamedTextColor.GRAY)
-				.decoration(TextDecoration.ITALIC, TextDecoration.State.FALSE),
-		),
-		EnchantmentTarget.ARMOR,
-		ItemRarity.COMMON,
-		1,
-		Color.AQUA,
-	),
-
 	STEALTH(
 		Component.text("Armure de furtivité", NamedTextColor.DARK_PURPLE)
 			.decoration(TextDecoration.ITALIC, TextDecoration.State.FALSE),

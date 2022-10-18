@@ -1,5 +1,7 @@
 package fr.pickaria.shop
 
+import fr.pickaria.artefact.Artefact
+import fr.pickaria.artefact.createArtefact
 import fr.pickaria.artefact.getArtefact
 import fr.pickaria.shared.GlowEnchantment
 import net.kyori.adventure.text.Component
@@ -8,12 +10,10 @@ import net.kyori.adventure.text.format.TextDecoration
 import org.bukkit.Bukkit
 import org.bukkit.Material
 import org.bukkit.entity.Player
-import org.bukkit.inventory.Inventory
 import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.MerchantRecipe
 import org.bukkit.persistence.PersistentDataType
 import kotlin.math.floor
-import kotlin.math.min
 
 internal fun createPickarite(amount: Int): ItemStack {
 	val itemStack = ItemStack(Material.ECHO_SHARD, amount)
@@ -43,32 +43,30 @@ internal fun isPickarite(item: ItemStack): Boolean =
 	item.itemMeta?.persistentDataContainer?.get(namespace, PersistentDataType.BYTE)?.let { it == (1).toByte() } ?: false
 
 
-internal fun createChestMerchant(player: Player, inventory: Inventory) {
+internal fun createChestMerchant(player: Player) {
 	val money = economy.getBalance(player)
 
-	val merchant = Bukkit.createMerchant(
-		Component.text("Marché de Pickaria")
-	)
+	val merchant = Bukkit.createMerchant(Component.text("Marché de Pickaria"))
 
-	val recipes = inventory.contents
-		.filterNotNull()
-		.filter {
-			!it.type.isAir
-		}
-		.toSet()
+	// TODO: Get list of items to sell from a config file instead of a chest
+	// TODO: Set price of each items in the config file
+	val recipes = setOf(
+		createArtefact(Artefact.FLAME_COSMETICS),
+		createArtefact(Artefact.STEALTH),
+		createArtefact(Artefact.ICE_THORNS),
+		createArtefact(Artefact.LUCKY),
+	)
 
 	merchant.recipes = recipes.map {
 		val price: Int = getArtefact(it)?.value ?: (floor(Math.random() * 64) + 1).toInt()
 
-		// Maximum the player can buy or maximum amount in stock
-		val canBuy = min(floor(money / price).toInt(), it.amount)
-		val merchantRecipe = MerchantRecipe(it.clone().apply { amount = 1 }, canBuy).apply {
+		// Maximum the player can buy
+		val canBuy = floor(money / price).toInt()
+
+		MerchantRecipe(it.clone().apply { amount = 1 }, canBuy).apply {
 			uses = 0
+			addIngredient(createPickarite(price))
 		}
-
-		merchantRecipe.addIngredient(createPickarite(price.toInt()))
-
-		merchantRecipe
 	}
 
 	player.openMerchant(merchant, true)

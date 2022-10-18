@@ -76,8 +76,6 @@ internal class ArtefactListeners: Listener {
 
 			if (artefact == Artefact.FLAME_COSMETICS) {
 				event.player.world.spawnParticle(Particle.FLAME, loc, 2, 0.1, 0.1, 0.1, 0.01)
-			} else if (artefact == Artefact.SNOWFLAKE_COSMETICS) {
-				event.player.world.spawnParticle(Particle.EXPLOSION_NORMAL, loc, 2, 0.1, 0.1, 0.1, 0.01)
 			}
 		}
 	}
