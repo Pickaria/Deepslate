@@ -16,7 +16,8 @@ class Main : JavaPlugin() {
 
 		getCommand("test")?.setExecutor(TestCommand()) ?: server.logger.warning("Command `test` could not be registered")
 
-		Bukkit.getServer().pluginManager.registerEvents(TestMenu(), this)
+		Bukkit.getServer().pluginManager.registerEvents(ShopListeners(), this)
+		Bukkit.getServer().pluginManager.registerEvents(GrindstoneListeners(), this)
 
 		logger.info("Shop plugin loaded!")
 	}
