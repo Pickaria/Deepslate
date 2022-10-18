@@ -11,9 +11,9 @@ class Main : JavaPlugin() {
 
 		namespace = NamespacedKey(this, "artefact")
 
-		val test = ArtefactCommand()
-		getCommand("artefact")?.setExecutor(test)
-		server.pluginManager.registerEvents(test, this)
+		getCommand("artefact")?.setExecutor(ArtefactCommand())
+		server.pluginManager.registerEvents(ArtefactListeners(), this)
+		server.pluginManager.registerEvents(SmithingListeners(), this)
 
 		logger.info("Artefact plugin loaded!")
 	}

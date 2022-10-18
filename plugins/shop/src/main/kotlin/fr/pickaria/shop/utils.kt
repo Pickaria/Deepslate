@@ -1,5 +1,6 @@
 package fr.pickaria.shop
 
+import fr.pickaria.artefact.getArtefact
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
 import net.kyori.adventure.text.format.TextDecoration
@@ -59,7 +60,7 @@ fun createChestMerchant(player: Player, inventory: Inventory) {
 		.toSet()
 
 	merchant.recipes = recipes.map {
-		val price = floor(Math.random() * 64) + 1
+		val price: Int = getArtefact(it)?.value ?: (floor(Math.random() * 64) + 1).toInt()
 
 		// Maximum the player can buy or maximum amount in stock
 		val canBuy = min(floor(money / price).toInt(), it.amount)

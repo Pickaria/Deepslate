@@ -4,6 +4,7 @@ import com.destroystokyo.paper.event.inventory.PrepareResultEvent
 import fr.pickaria.artefact.getArtefact
 import net.kyori.adventure.key.Key
 import net.kyori.adventure.sound.Sound
+import org.bukkit.Bukkit
 import org.bukkit.OfflinePlayer
 import org.bukkit.Particle
 import org.bukkit.event.EventHandler
@@ -29,11 +30,11 @@ class GrindstoneListeners: Listener {
 			var isArtefact = false
 
 			inventory.upperItem?.let { getArtefact(it) }?.let {
-				totalValue += it.value
+				totalValue += it.value * (inventory.upperItem?.amount ?: 1)
 				isArtefact = true
 			}
 			inventory.lowerItem?.let { getArtefact(it) }?.let {
-				totalValue += it.value
+				totalValue += it.value * (inventory.lowerItem?.amount ?: 1)
 				isArtefact = true
 			}
 
@@ -64,7 +65,7 @@ class GrindstoneListeners: Listener {
 
 					event.whoClicked.playSound(Sound.sound(Key.key("block.amethyst_cluster.break"), Sound.Source.MASTER, 1f, 1f))
 					event.inventory.location?.let {
-						it.world.spawnParticle(Particle.END_ROD, it, 100, 3.0, 3.0, 3.0, 0.0)
+						it.world.spawnParticle(Particle.END_ROD, it.toCenterLocation(), 30, 1.0, 1.0, 1.0, 0.0)
 					}
 
 					event.inventory.clear()
