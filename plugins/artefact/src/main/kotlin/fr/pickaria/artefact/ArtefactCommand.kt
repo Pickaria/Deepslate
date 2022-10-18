@@ -11,9 +11,9 @@ internal class ArtefactCommand : CommandExecutor, Listener, TabCompleter {
 	override fun onCommand(sender: CommandSender, command: Command, label: String, args: Array<out String>?): Boolean {
 		if (sender is Player) {
 			args?.getOrNull(0)?.let {
-				Artefact.valueOf(it.uppercase())
+				Artefact.valueOf(it.uppercase()).getConfig()
 			}?.let { artefact ->
-				sender.inventory.addItem(createArtefact(artefact))
+				sender.inventory.addItem(createArtefactReceptacle(artefact))
 			}
 		}
 

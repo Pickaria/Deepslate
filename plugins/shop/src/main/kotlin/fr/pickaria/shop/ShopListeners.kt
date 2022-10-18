@@ -3,6 +3,7 @@ package fr.pickaria.shop
 import io.papermc.paper.event.player.PlayerPurchaseEvent
 import net.kyori.adventure.key.Key
 import net.kyori.adventure.sound.Sound
+import org.bukkit.Bukkit
 import org.bukkit.Material
 import org.bukkit.OfflinePlayer
 import org.bukkit.Particle
@@ -17,13 +18,19 @@ import org.bukkit.potion.PotionEffect
 import org.bukkit.potion.PotionEffectType
 
 internal class ShopListeners : Listener {
+	companion object {
+		private val openPotionEffectType = PotionEffectType.BLINDNESS
+		private val openPotionEffect = PotionEffect(openPotionEffectType, Integer.MAX_VALUE, 1, true, false, false)
+
+	}
+
 	@EventHandler
 	fun onTradeSelected(event: TradeSelectEvent) {
 		val recipe = event.merchant.getRecipe(event.index)
 
 		// Force set the item into the trade view
 		event.inventory.setItem(0, recipe.ingredients.first())
-		event.whoClicked.playSound(Sound.sound(Key.key("block.large_amethyst_bud.place"), Sound.Source.MASTER, 1f, 1f))
+		event.whoClicked.playSound(shopConfig.tradeSelectSound)
 	}
 
 	@EventHandler
@@ -31,7 +38,7 @@ internal class ShopListeners : Listener {
 		event.trade.let {
 			val price = it.ingredients[0].amount
 			economy.withdrawPlayer(event.player as OfflinePlayer, price.toDouble())
-			event.player.playSound(Sound.sound(Key.key("block.large_amethyst_bud.break"), Sound.Source.MASTER, 1f, 1f))
+			event.player.playSound(shopConfig.tradeSound)
 		}
 	}
 
@@ -47,11 +54,9 @@ internal class ShopListeners : Listener {
 					if (!player.isSneaking) {
 						createChestMerchant(player)
 
-						player.playSound(Sound.sound(Key.key("block.ender_chest.open"), Sound.Source.MASTER, 1f, 1f))
-						player.addPotionEffect(
-							PotionEffect(PotionEffectType.BLINDNESS, Integer.MAX_VALUE, 1, true, false, false)
-						)
-						player.world.spawnParticle(Particle.END_ROD, player.location, 100, 3.0, 3.0, 3.0, 0.0)
+						player.playSound(shopConfig.openSound)
+						player.addPotionEffect(openPotionEffect)
+						player.world.spawnParticle(Particle.END_ROD, block.location, 30, 1.0, 1.0, 1.0, 0.0)
 
 						event.isCancelled = true
 					}
@@ -68,9 +73,8 @@ internal class ShopListeners : Listener {
 		// TODO: Identify inventories without using `event.inventory.type == InventoryType.XXX`
 		if (event.inventory.type === InventoryType.MERCHANT) {
 			event.inventory.clear()
-			event.player.removePotionEffect(PotionEffectType.BLINDNESS)
-			event.player.playSound(Sound.sound(Key.key("block.amethyst_block.chime"), Sound.Source.MASTER, 1f, 1f))
-			event.player.playSound(Sound.sound(Key.key("block.ender_chest.close"), Sound.Source.MASTER, 1f, 1f))
+			event.player.removePotionEffect(openPotionEffectType)
+			event.player.playSound(shopConfig.closeSound)
 		} else if (event.inventory.type == InventoryType.GRINDSTONE) {
 			(event.inventory as GrindstoneInventory).result = null
 		}

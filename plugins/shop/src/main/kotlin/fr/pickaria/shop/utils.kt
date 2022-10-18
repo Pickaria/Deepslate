@@ -1,15 +1,12 @@
 package fr.pickaria.shop
 
-import fr.pickaria.artefact.Artefact
-import fr.pickaria.artefact.createArtefact
-import fr.pickaria.artefact.getArtefact
+import fr.pickaria.artefact.createArtefactReceptacle
+import fr.pickaria.artefact.getArtefactConfig
 import fr.pickaria.shared.GlowEnchantment
-import net.kyori.adventure.text.Component
-import net.kyori.adventure.text.format.NamedTextColor
-import net.kyori.adventure.text.format.TextDecoration
 import org.bukkit.Bukkit
 import org.bukkit.Material
 import org.bukkit.entity.Player
+import org.bukkit.event.inventory.InventoryType
 import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.MerchantRecipe
 import org.bukkit.persistence.PersistentDataType
@@ -20,18 +17,8 @@ internal fun createPickarite(amount: Int): ItemStack {
 
 	itemStack.itemMeta = itemStack.itemMeta.apply {
 		addEnchant(GlowEnchantment.instance, 1, true)
-		displayName(
-			Component.text("Éclat de Pickarite", NamedTextColor.LIGHT_PURPLE)
-				.decoration(TextDecoration.ITALIC, TextDecoration.State.FALSE)
-		)
-		lore(
-			listOf(
-				Component.text("Fragment ancien issu de la", NamedTextColor.GRAY)
-					.decoration(TextDecoration.ITALIC, TextDecoration.State.FALSE),
-				Component.text("création du monde de Pickaria.", NamedTextColor.GRAY)
-					.decoration(TextDecoration.ITALIC, TextDecoration.State.FALSE)
-			)
-		)
+		displayName(shopConfig.pickariteLabel)
+		lore(shopConfig.pickariteLore)
 
 		persistentDataContainer.set(namespace, PersistentDataType.BYTE, 1)
 	}
@@ -46,28 +33,28 @@ internal fun isPickarite(item: ItemStack): Boolean =
 internal fun createChestMerchant(player: Player) {
 	val money = economy.getBalance(player)
 
-	val merchant = Bukkit.createMerchant(Component.text("Marché de Pickaria"))
+	val merchant = Bukkit.createMerchant(shopConfig.shopName)
 
-	// TODO: Get list of items to sell from a config file instead of a chest
-	// TODO: Set price of each items in the config file
-	val recipes = setOf(
-		createArtefact(Artefact.FLAME_COSMETICS),
-		createArtefact(Artefact.STEALTH),
-		createArtefact(Artefact.ICE_THORNS),
-		createArtefact(Artefact.LUCKY),
-	)
+	val artefacts = artefactConfig?.artefacts ?: mapOf()
 
-	merchant.recipes = recipes.map {
-		val price: Int = getArtefact(it)?.value ?: (floor(Math.random() * 64) + 1).toInt()
+	merchant.recipes = artefacts.map { (_, config) ->
+		val item = createArtefactReceptacle(config)
+		val price: Int = getArtefactConfig(item)?.value ?: (floor(Math.random() * 64) + 1).toInt()
 
 		// Maximum the player can buy
 		val canBuy = floor(money / price).toInt()
 
-		MerchantRecipe(it.clone().apply { amount = 1 }, canBuy).apply {
+		MerchantRecipe(item.clone().apply { amount = 1 }, canBuy).apply {
 			uses = 0
 			addIngredient(createPickarite(price))
 		}
 	}
 
-	player.openMerchant(merchant, true)
+	val view = player.openMerchant(merchant, true)
+
+	view?.topInventory?.let {
+		if( it.type == InventoryType.MERCHANT) {
+			it.holder
+		}
+	}
 }

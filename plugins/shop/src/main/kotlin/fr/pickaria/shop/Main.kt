@@ -1,17 +1,29 @@
 package fr.pickaria.shop
 
+import fr.pickaria.artefact.ArtefactConfig
 import fr.pickaria.shared.setupEconomy
+import net.kyori.adventure.text.minimessage.MiniMessage
 import org.bukkit.Bukkit
 import org.bukkit.NamespacedKey
 import org.bukkit.plugin.java.JavaPlugin
 
 internal val economy = setupEconomy()!!
 internal lateinit var namespace: NamespacedKey
+internal val miniMessage = MiniMessage.miniMessage()
+internal lateinit var shopConfig: ShopConfig
+internal val artefactConfig: ArtefactConfig? = try {
+	Bukkit.getServicesManager().getRegistration(ArtefactConfig::class.java)?.provider
+} catch (_: NoClassDefFoundError) {
+	null
+}
 
 class Main : JavaPlugin() {
 	override fun onEnable() {
 		super.onEnable()
 
+		saveDefaultConfig()
+
+		shopConfig = ShopConfig(this.config)
 		namespace = NamespacedKey(this, "pickarite")
 
 		getCommand("test")?.setExecutor(TestCommand()) ?: server.logger.warning("Command `test` could not be registered")

@@ -15,11 +15,13 @@ import org.bukkit.inventory.EquipmentSlot
 import org.bukkit.inventory.ItemStack
 
 internal class ArtefactListeners: Listener {
+	// TODO: Check that artefact is in the correct slot, ie. an artefact on boots held in hand should not have any effect
+
 	@EventHandler
 	fun onEntityTarget(event: EntityTargetEvent) {
 		event.target?.let {
 			if (it is Player) {
-				if (getWornArtefacts(it).containsValue(Artefact.STEALTH)) {
+				if (isWearingArtefact(it, Artefact.STEALTH)) {
 					event.isCancelled = true
 				}
 			}
@@ -30,7 +32,7 @@ internal class ArtefactListeners: Listener {
 	fun onEntityDamageByEntity(event: EntityDamageByEntityEvent) {
 		event.entity.let { player ->
 			if (player is Player) {
-				if (getWornArtefacts(player).containsValue(Artefact.ICE_THORNS)) {
+				if (isWearingArtefact(player, Artefact.ICE_THORNS)) {
 					val damager: Entity? = if (event.damager is Projectile) {
 						val shooter = (event.damager as Projectile).shooter
 						if (shooter is Entity) {
@@ -53,7 +55,7 @@ internal class ArtefactListeners: Listener {
 
 	@EventHandler
 	fun onBlockBreak(event: BlockBreakEvent) {
-		if (getWornArtefacts(event.player).containsValue(Artefact.LUCKY)) {
+		if (isWearingArtefact(event.player, Artefact.LUCKY)) {
 			if (Math.random() < 0.1) {
 				event.block.world.dropItemNaturally(event.block.location, ItemStack(Material.DIAMOND, 1))
 			}
@@ -74,7 +76,7 @@ internal class ArtefactListeners: Listener {
 				EquipmentSlot.HEAD -> event.player.eyeLocation
 			}
 
-			if (artefact == Artefact.FLAME_COSMETICS) {
+			if (isWearingArtefact(event.player, Artefact.FLAME_COSMETICS)) {
 				event.player.world.spawnParticle(Particle.FLAME, loc, 2, 0.1, 0.1, 0.1, 0.01)
 			}
 		}

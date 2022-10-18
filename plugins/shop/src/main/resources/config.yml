@@ -1,0 +1,15 @@
+pickarite:
+  label: '<light_purple>Éclat de Pickarite'
+  lore:
+    - '<gray>Fragment ancestral issu de la'
+    - '<gray>création du monde de Pickaria.'
+
+shop_name: 'Marché de Pickaria'
+
+sounds:
+  trade_select: block.large_amethyst_bud.place
+  trade: block.large_amethyst_bud.break
+  open: block.ender_chest.open
+  close: block.ender_chest.close
+  grind_place: block.amethyst_cluster.place
+  grind: block.amethyst_cluster.break
