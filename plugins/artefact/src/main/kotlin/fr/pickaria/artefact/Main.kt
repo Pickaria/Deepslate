@@ -24,7 +24,6 @@ class Main : JavaPlugin() {
 		artefactNamespace = NamespacedKey(this, "artefact")
 		receptacleNamespace = NamespacedKey(this, "receptacle")
 
-		getCommand("artefact")?.setExecutor(ArtefactCommand())
 		server.pluginManager.registerEvents(ArtefactListeners(), this)
 		server.pluginManager.registerEvents(SmithingListeners(), this)
 

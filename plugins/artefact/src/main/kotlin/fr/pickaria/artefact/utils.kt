@@ -4,7 +4,6 @@ import fr.pickaria.shared.GlowEnchantment
 import io.papermc.paper.inventory.ItemRarity
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.TextDecoration
-import org.bukkit.Bukkit
 import org.bukkit.Material
 import org.bukkit.entity.Player
 import org.bukkit.inventory.EquipmentSlot

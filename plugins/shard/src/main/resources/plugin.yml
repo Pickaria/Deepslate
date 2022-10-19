@@ -6,12 +6,9 @@ author: Quozul
 depend:
   - PickariaShared
   - PickariaArtefact
-  - PickariaPotion
   - Vault
 
 commands:
-  test:
-    usage: /test
   place:
     usage: /place
     description: Place un nouveau magasin à l'endroit où se situe le joueur.

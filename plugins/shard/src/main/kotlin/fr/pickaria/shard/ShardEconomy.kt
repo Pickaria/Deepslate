@@ -65,37 +65,7 @@ internal class ShardEconomy: AbstractEconomy() {
 			true
 		} ?: false
 
-	// World methods
-
-	override fun createPlayerAccount(player: OfflinePlayer?, worldName: String?): Boolean {
-		TODO("Not yet implemented")
-	}
-
-	override fun depositPlayer(player: OfflinePlayer?, worldName: String?, amount: Double): EconomyResponse {
-		TODO("Not yet implemented")
-	}
-
-	override fun withdrawPlayer(player: OfflinePlayer?, worldName: String?, amount: Double): EconomyResponse {
-		TODO("Not yet implemented")
-	}
-
-	override fun has(player: OfflinePlayer?, worldName: String?, amount: Double): Boolean {
-		TODO("Not yet implemented")
-	}
-
-	override fun hasAccount(player: OfflinePlayer?, worldName: String?): Boolean {
-		TODO("Not yet implemented")
-	}
-
-	override fun getBalance(player: OfflinePlayer?, world: String?): Double {
-		TODO("Not yet implemented")
-	}
-
 	// Bank methods
-
-	override fun createBank(name: String?, player: OfflinePlayer?): EconomyResponse {
-		TODO("Not yet implemented")
-	}
 
 	override fun deleteBank(name: String?): EconomyResponse {
 		TODO("Not yet implemented")
@@ -117,11 +87,11 @@ internal class ShardEconomy: AbstractEconomy() {
 		TODO("Not yet implemented")
 	}
 
-	override fun isBankOwner(name: String?, player: OfflinePlayer?): EconomyResponse {
+	override fun getBanks(): MutableList<String> {
 		TODO("Not yet implemented")
 	}
 
-	override fun getBanks(): MutableList<String> {
+	override fun isBankMember(name: String?, player: OfflinePlayer?): EconomyResponse {
 		TODO("Not yet implemented")
 	}
 
@@ -199,10 +169,6 @@ internal class ShardEconomy: AbstractEconomy() {
 
 	@Deprecated("Deprecated in Java")
 	override fun createPlayerAccount(playerName: String?, worldName: String?): Boolean {
-		TODO("Not yet implemented")
-	}
-
-	override fun isBankMember(name: String?, player: OfflinePlayer?): EconomyResponse {
 		TODO("Not yet implemented")
 	}
 }

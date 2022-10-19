@@ -32,11 +32,11 @@ Bibliothèque, ajoute des potions customisées au serveur via fichier de configu
 Chaque plugin peut ajouter de nouvelles potions et savoir quand un effet est appliqué.
 
 # Shard
-Ajoute un magasin qui permet d'échanger des artefacts et des potions contre de la Pickarite.
+Ajoute un magasin qui permet d'échanger des artefacts contre des éclats.  
+Les artefacts peuvent être recyclés dans la meule contre des éclats.
 
 ## Dépendances
 - Artefact
-- Potion
 
 # Shared
 Plugin requis par tous les autres.

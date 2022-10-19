@@ -1,7 +1,6 @@
 package fr.pickaria.shard
 
 import io.papermc.paper.event.player.PlayerPurchaseEvent
-import org.bukkit.Bukkit
 import org.bukkit.Material
 import org.bukkit.OfflinePlayer
 import org.bukkit.Particle
@@ -11,7 +10,6 @@ import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.inventory.*
 import org.bukkit.event.player.PlayerInteractEvent
-import org.bukkit.inventory.GrindstoneInventory
 import org.bukkit.persistence.PersistentDataType
 import org.bukkit.potion.PotionEffect
 import org.bukkit.potion.PotionEffectType
