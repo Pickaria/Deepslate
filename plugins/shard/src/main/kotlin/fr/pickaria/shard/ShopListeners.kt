@@ -1,9 +1,6 @@
-package fr.pickaria.shop
+package fr.pickaria.shard
 
 import io.papermc.paper.event.player.PlayerPurchaseEvent
-import net.kyori.adventure.key.Key
-import net.kyori.adventure.sound.Sound
-import org.bukkit.Bukkit
 import org.bukkit.Material
 import org.bukkit.OfflinePlayer
 import org.bukkit.Particle

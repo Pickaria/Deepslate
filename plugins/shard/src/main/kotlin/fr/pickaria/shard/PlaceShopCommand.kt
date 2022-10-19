@@ -1,4 +1,4 @@
-package fr.pickaria.shop
+package fr.pickaria.shard
 
 import org.bukkit.Material
 import org.bukkit.block.EnderChest

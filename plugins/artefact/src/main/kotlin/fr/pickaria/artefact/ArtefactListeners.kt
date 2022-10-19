@@ -66,7 +66,7 @@ internal class ArtefactListeners: Listener {
 	fun onPlayerMove(event: PlayerMoveEvent) {
 		val wornArtefacts = getWornArtefacts(event.player)
 
-		wornArtefacts.forEach { (slot, artefact) ->
+		wornArtefacts.forEach { (slot, _) ->
 			val loc = when (slot) {
 				EquipmentSlot.HAND -> event.player.eyeLocation
 				EquipmentSlot.OFF_HAND -> event.player.eyeLocation

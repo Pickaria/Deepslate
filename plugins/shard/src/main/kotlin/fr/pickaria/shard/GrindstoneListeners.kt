@@ -1,4 +1,4 @@
-package fr.pickaria.shop
+package fr.pickaria.shard
 
 import com.destroystokyo.paper.event.inventory.PrepareResultEvent
 import fr.pickaria.artefact.getArtefactConfig

@@ -1,4 +1,4 @@
-package fr.pickaria.shop
+package fr.pickaria.shard
 
 import net.kyori.adventure.key.Key
 import net.kyori.adventure.sound.Sound

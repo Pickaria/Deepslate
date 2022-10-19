@@ -1,4 +1,4 @@
-package fr.pickaria.shop
+package fr.pickaria.shard
 
 import fr.pickaria.artefact.ArtefactConfig
 import fr.pickaria.shared.setupEconomy

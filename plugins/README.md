@@ -31,12 +31,12 @@ Bibliothèque, permet la création de menus interactifs.
 Bibliothèque, ajoute des potions customisées au serveur via fichier de configuration.  
 Chaque plugin peut ajouter de nouvelles potions et savoir quand un effet est appliqué.
 
-# Shared
-Plugin requis par tous les autres.
-
-# Shop
+# Shard
 Ajoute un magasin qui permet d'échanger des artefacts et des potions contre de la Pickarite.
 
 ## Dépendances
 - Artefact
 - Potion
+
+# Shared
+Plugin requis par tous les autres.
