@@ -5,8 +5,13 @@ import fr.pickaria.menu.menuController
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
 import net.kyori.adventure.text.format.TextDecoration
+import fr.pickaria.shard.createShardItem
+import fr.pickaria.shard.getShardBalance
 import org.bukkit.Material
+import org.bukkit.OfflinePlayer
 import org.bukkit.entity.HumanEntity
+import org.bukkit.inventory.ItemStack
+import org.bukkit.inventory.meta.BundleMeta
 
 class HomeMenu(title: Component, opener: HumanEntity, previousMenu: BaseMenu?) :
 	BaseMenu(title, opener, previousMenu, size = 54) {
@@ -20,6 +25,27 @@ class HomeMenu(title: Component, opener: HumanEntity, previousMenu: BaseMenu?) :
 	}
 
 	override fun initMenu() {
+		val itemStack = setMenuItem {
+			this.x = 8
+			this.y = 0
+			material = Material.BUNDLE
+			name = "§r§6Sacoche de Pickarite"
+		}.getItemStack()
+
+		val bundle = itemStack.itemMeta as BundleMeta
+
+		var balance = getShardBalance(opener as OfflinePlayer)
+		val items = mutableListOf<ItemStack>()
+
+		for (i in 0 until balance step 64) {
+			val amount = if (balance > 64) 64 else balance
+			items.add(createShardItem(amount))
+			balance -= 64
+		}
+
+		bundle.setItems(items)
+		itemStack.itemMeta = bundle
+
 		var x = 1
 		var y = 1
 

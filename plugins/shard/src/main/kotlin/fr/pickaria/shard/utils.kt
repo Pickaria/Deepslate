@@ -5,6 +5,7 @@ import fr.pickaria.artefact.getArtefactConfig
 import fr.pickaria.shared.GlowEnchantment
 import org.bukkit.Bukkit
 import org.bukkit.Material
+import org.bukkit.OfflinePlayer
 import org.bukkit.entity.Player
 import org.bukkit.event.inventory.InventoryType
 import org.bukkit.inventory.ItemStack
@@ -12,7 +13,10 @@ import org.bukkit.inventory.MerchantRecipe
 import org.bukkit.persistence.PersistentDataType
 import kotlin.math.floor
 
-internal fun createPickarite(amount: Int): ItemStack {
+/**
+ * Creates a new shard ItemStack.
+ */
+fun createShardItem(amount: Int): ItemStack {
 	val itemStack = ItemStack(Material.ECHO_SHARD, amount)
 
 	itemStack.itemMeta = itemStack.itemMeta.apply {
@@ -26,12 +30,18 @@ internal fun createPickarite(amount: Int): ItemStack {
 	return itemStack
 }
 
-internal fun isPickarite(item: ItemStack): Boolean =
-	item.itemMeta?.persistentDataContainer?.get(namespace, PersistentDataType.BYTE)?.let { it == (1).toByte() } ?: false
-
+/**
+ * Returns true if the provided ItemStack is a valid shard.
+ */
+internal fun isShardItem(item: ItemStack): Boolean =
+	item.itemMeta?.let{
+		val isShard = it.persistentDataContainer.get(namespace, PersistentDataType.BYTE) == (1).toByte()
+		val isEnchanted = it.hasEnchants() && it.enchants.contains(GlowEnchantment.instance)
+		isShard && isEnchanted
+	} ?: false
 
 internal fun createChestMerchant(player: Player) {
-	val money = economy.getBalance(player)
+	val money = getShardBalance(player)
 
 	val merchant = Bukkit.createMerchant(shopConfig.shopName)
 
@@ -42,11 +52,11 @@ internal fun createChestMerchant(player: Player) {
 		val price: Int = getArtefactConfig(item)?.value ?: (floor(Math.random() * 64) + 1).toInt()
 
 		// Maximum the player can buy
-		val canBuy = floor(money / price).toInt()
+		val canBuy = money / price
 
 		MerchantRecipe(item.clone().apply { amount = 1 }, canBuy).apply {
 			uses = 0
-			addIngredient(createPickarite(price))
+			addIngredient(createShardItem(price))
 		}
 	}
 
@@ -58,3 +68,8 @@ internal fun createChestMerchant(player: Player) {
 		}
 	}
 }
+
+/**
+ * Returns the amount of Shards a player has, defaults to 0.
+ */
+fun getShardBalance(player: OfflinePlayer): Int = economy.getBalance(player).toInt()

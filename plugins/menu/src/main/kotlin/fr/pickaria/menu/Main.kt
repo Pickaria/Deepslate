@@ -1,6 +1,8 @@
 package fr.pickaria.menu
 
 import fr.pickaria.menu.sub.HomeMenu
+import fr.pickaria.shared.setupEconomy
+import net.milkbowl.vault.economy.Economy
 import org.bukkit.plugin.java.JavaPlugin
 
 val menuController: MenuController = MenuController()

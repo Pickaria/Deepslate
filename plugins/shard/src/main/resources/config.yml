@@ -5,6 +5,8 @@ pickarite:
     - '<gray>création du monde de Pickaria.'
 
 shop_name: 'Marché de Pickaria'
+currency_name_singular: 'Éclat de Pickarite'
+currency_name_plural: 'Éclats de Pickarite'
 
 sounds:
   trade_select: block.large_amethyst_bud.place

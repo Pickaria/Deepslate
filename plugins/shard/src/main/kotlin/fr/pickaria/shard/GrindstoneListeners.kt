@@ -2,8 +2,9 @@ package fr.pickaria.shard
 
 import com.destroystokyo.paper.event.inventory.PrepareResultEvent
 import fr.pickaria.artefact.getArtefactConfig
-import org.bukkit.OfflinePlayer
 import org.bukkit.Particle
+import org.bukkit.entity.Player
+import org.bukkit.event.Event
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.inventory.InventoryClickEvent
@@ -15,11 +16,11 @@ internal class GrindstoneListeners : Listener {
 	private fun getResult(itemStack: ItemStack?): ItemStack? = itemStack?.let {
 		if (it.amount == 1) getArtefactConfig(it) else null
 	}?.let {
-		createPickarite(it.value)
+		createShardItem(it.value)
 	}
 
 	/**
-	 * Sets Pickarite as a result of Grindstone if the deposited item is an artefact
+	 * Sets Shards as a result of Grindstone if the deposited item is an artefact.
 	 */
 	@EventHandler
 	fun onPrepareResult(event: PrepareResultEvent) {
@@ -48,25 +49,37 @@ internal class GrindstoneListeners : Listener {
 	}
 
 	/**
-	 * Pickup Pickarite from Grindstone.
+	 * Pickup Shards from Grindstone and prevent Shards from ending in player's inventory.
 	 * Deposit money on the player's account and clear the inventory.
 	 */
 	@EventHandler
 	fun onInventoryClick(event: InventoryClickEvent) {
-		if (event.inventory.type == InventoryType.GRINDSTONE && event.slotType == InventoryType.SlotType.RESULT) {
-			event.currentItem?.let { itemStack ->
-				if (isPickarite(itemStack)) {
-					economy.depositPlayer(event.whoClicked as OfflinePlayer, itemStack.amount.toDouble())
+		event.currentItem?.let { item ->
+			if (isShardItem(item)) {
+				val inventory = event.inventory
 
-					event.whoClicked.playSound(shopConfig.grindSound)
-					event.inventory.location?.let {
+				if (inventory.type == InventoryType.GRINDSTONE && event.slotType == InventoryType.SlotType.RESULT) {
+					val player = event.whoClicked as Player
+
+					// Add Pickarite to account and clears the Grindstone's inventory
+					economy.depositPlayer(player, item.amount.toDouble())
+					inventory.clear()
+
+					// Just some feedback
+					player.playSound(shopConfig.grindSound)
+					inventory.location?.let {
 						it.world.spawnParticle(Particle.END_ROD, it.toCenterLocation(), 30, 1.0, 1.0, 1.0, 0.0)
 					}
-
-					event.inventory.clear()
-					event.currentItem?.amount = 0
-					event.isCancelled = true
 				}
+
+				// Remove Shards from player's inventory
+				if (inventory.type == InventoryType.PLAYER) {
+					item.amount = 0
+				}
+
+				// Prevent the item from being moved
+				event.result = Event.Result.DENY
+				event.isCancelled = true
 			}
 		}
 	}
