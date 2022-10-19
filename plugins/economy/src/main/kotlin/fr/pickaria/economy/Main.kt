@@ -6,16 +6,20 @@ import org.bukkit.plugin.ServicePriority
 import org.bukkit.plugin.java.JavaPlugin
 
 internal lateinit var economy: Economy
+internal lateinit var economyConfig: EconomyConfig
 
 class Main : JavaPlugin() {
 	override fun onEnable() {
 		super.onEnable()
 
-		logger.info("Economy plugin loaded!")
-
+		saveDefaultConfig()
+		economyConfig = EconomyConfig(this.config)
 		setupEconomy()
 
 		getCommand("money")?.setExecutor(MoneyCommand()) ?: logger.warning("Could not register `money` command.")
+		getCommand("pay")?.setExecutor(PayCommand()) ?: logger.warning("Could not register `pay` command.")
+
+		logger.info("Economy plugin loaded!")
 	}
 
 	private fun setupEconomy(): Boolean {

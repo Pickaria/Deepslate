@@ -1,12 +1,14 @@
 package fr.pickaria.economy
 
 import fr.pickaria.shared.models.BankAccount
-import net.milkbowl.vault.economy.Economy
+import net.milkbowl.vault.economy.AbstractEconomy
 import net.milkbowl.vault.economy.EconomyResponse
 import org.bukkit.OfflinePlayer
 import java.text.DecimalFormat
 
-class PickariaEconomy : Economy {
+class PickariaEconomy : AbstractEconomy() {
+	private val formatter = DecimalFormat("0.00")
+
 	// Constants methods
 
 	override fun getName(): String = "Pickaria economy"
@@ -15,18 +17,18 @@ class PickariaEconomy : Economy {
 
 	override fun format(amount: Double): String =
 		if (amount <= 1.0) {
-			"${DecimalFormat("0.00").format(amount)} ${currencyNameSingular()}"
+			"${formatter.format(amount)} ${currencyNameSingular()}"
 		} else {
-			"${DecimalFormat("0.00").format(amount)} ${currencyNamePlural()}"
+			"${formatter.format(amount)} ${currencyNamePlural()}"
 		}
 
 	override fun isEnabled(): Boolean = true
 
 	override fun hasBankSupport(): Boolean = false
 
-	override fun currencyNamePlural(): String = "$"
+	override fun currencyNamePlural(): String = economyConfig.currencyNamePlural
 
-	override fun currencyNameSingular(): String = "$"
+	override fun currencyNameSingular(): String = economyConfig.currencyNameSingular
 
 	// Logic methods
 
@@ -39,7 +41,7 @@ class PickariaEconomy : Economy {
 		BankAccount.get(player.uniqueId)?.balance ?: 0.0
 
 	override fun has(player: OfflinePlayer, amount: Double): Boolean =
-		getBalance(player) > amount
+		getBalance(player) >= amount
 
 	override fun withdrawPlayer(player: OfflinePlayer, amount: Double): EconomyResponse =
 		player.uniqueId.let {
@@ -70,37 +72,7 @@ class PickariaEconomy : Economy {
 			true
 		} ?: false
 
-	// World methods
-
-	override fun createPlayerAccount(player: OfflinePlayer?, worldName: String?): Boolean {
-		TODO("Not yet implemented")
-	}
-
-	override fun depositPlayer(player: OfflinePlayer?, worldName: String?, amount: Double): EconomyResponse {
-		TODO("Not yet implemented")
-	}
-
-	override fun withdrawPlayer(player: OfflinePlayer?, worldName: String?, amount: Double): EconomyResponse {
-		TODO("Not yet implemented")
-	}
-
-	override fun has(player: OfflinePlayer?, worldName: String?, amount: Double): Boolean {
-		TODO("Not yet implemented")
-	}
-
-	override fun hasAccount(player: OfflinePlayer?, worldName: String?): Boolean {
-		TODO("Not yet implemented")
-	}
-
-	override fun getBalance(player: OfflinePlayer?, world: String?): Double {
-		TODO("Not yet implemented")
-	}
-
 	// Bank methods
-
-	override fun createBank(name: String?, player: OfflinePlayer?): EconomyResponse {
-		TODO("Not yet implemented")
-	}
 
 	override fun deleteBank(name: String?): EconomyResponse {
 		TODO("Not yet implemented")
