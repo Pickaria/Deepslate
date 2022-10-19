@@ -151,7 +151,17 @@ class JobController(private val plugin: Main) : Listener {
 	 */
 	private fun addExperience(player: Player, job: JobConfig.Configuration, exp: Int): Pair<Int, Double>? =
 		Job.get(player.uniqueId, job.key)?.let {
-			val experienceIncrease = exp + exp * it.ascentPoints * jobConfig.experienceIncrease
+			val potionBoost = jobConfig.potion?.let { potion ->
+				val active = potionController?.hasActivePotionEffect(potion) ?: false
+
+				if (active) {
+					potion.power / 100
+				} else {
+					1
+				}
+			} ?: 1
+
+			val experienceIncrease = (exp + exp * it.ascentPoints * jobConfig.experienceIncrease) * potionBoost
 
 			val previousLevel = getLevelFromExperience(job, it.experience)
 			val newLevel = getLevelFromExperience(job, it.experience + experienceIncrease)

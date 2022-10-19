@@ -45,4 +45,9 @@ class JobConfig(config: FileConfiguration) {
 	val pointAmount = config.getInt("ascent.point_amount")
 	val experienceIncrease = config.getDouble("ascent.experience_increase")
 	val moneyIncrease = config.getDouble("ascent.money_increase")
+
+	val potion = potionController?.registerNewPotion(
+		"job_experience_boost_potion",
+		config.getConfigurationSection("job_experience_boost_potion")!!
+	)
 }

@@ -1,13 +1,20 @@
 package fr.pickaria.job
 
 import fr.pickaria.menu.menuController
+import fr.pickaria.potion.PotionController
 import fr.pickaria.shared.setupEconomy
 import net.milkbowl.vault.economy.Economy
+import org.bukkit.Bukkit.getServicesManager
 import org.bukkit.plugin.java.JavaPlugin
 
-lateinit var jobController: JobController
+internal lateinit var jobController: JobController
 internal lateinit var jobConfig: JobConfig
 internal lateinit var economy: Economy
+internal val potionController: PotionController? = try {
+	getServicesManager().getRegistration(PotionController::class.java)?.provider
+} catch (_: NoClassDefFoundError) {
+	null
+}
 
 class Main : JavaPlugin() {
 	override fun onEnable() {
