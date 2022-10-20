@@ -1,5 +1,6 @@
 package fr.pickaria.economy
 
+import net.kyori.adventure.text.minimessage.MiniMessage
 import net.milkbowl.vault.economy.Economy
 import org.bukkit.Bukkit
 import org.bukkit.plugin.ServicePriority
@@ -7,6 +8,7 @@ import org.bukkit.plugin.java.JavaPlugin
 
 internal lateinit var economy: Economy
 internal lateinit var economyConfig: EconomyConfig
+internal val miniMessage: MiniMessage = MiniMessage.miniMessage();
 
 class Main : JavaPlugin() {
 	override fun onEnable() {

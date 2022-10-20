@@ -1,5 +1,6 @@
 package fr.pickaria.economy
 
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder
 import net.milkbowl.vault.economy.EconomyResponse
 import org.bukkit.Bukkit.getLogger
 import org.bukkit.Bukkit.getServer
@@ -19,26 +20,26 @@ class PayCommand : CommandExecutor, TabCompleter {
 			}
 
 			if (recipient == sender) {
-				sender.sendMessage("§cVous ne pouvez pas envoyer de l'argent à vous-même.")
+				sender.sendMessage(economyConfig.cantSendToYourself)
 				return true
 			}
 
 			if (!recipient.isOnline && !recipient.hasPlayedBefore()) {
-				sender.sendMessage("§cCe joueur n'est jamais venu sur le serveur.")
+				sender.sendMessage(economyConfig.playerDoesNotExist)
 				return true
 			}
 
 			val amount = try {
 				args[1].toDouble()
 			} catch (_: NumberFormatException) {
-				sender.sendMessage("§cLa valeur que vous avez entrée n'est pas un nombre.")
+				sender.sendMessage(economyConfig.amountIsNan)
 				return true
 			} catch (_: ArrayIndexOutOfBoundsException) {
 				return false
 			}
 
 			if (amount <= 0.01) {
-				sender.sendMessage("§cLe montant doit être supérieur à 0.01.")
+				sender.sendMessage(economyConfig.lessThanMinimumAmount)
 				return true
 			}
 
@@ -49,27 +50,32 @@ class PayCommand : CommandExecutor, TabCompleter {
 					val depositResponse = economy.depositPlayer(recipient, withdrawResponse.amount)
 
 					if (depositResponse.type != EconomyResponse.ResponseType.SUCCESS) {
-						sender.sendMessage("§cLe destinataire n'a pas pu recevoir l'argent.")
+						sender.sendMessage(economyConfig.receiveError)
 
 						// Try to refund
 						val refund = economy.depositPlayer(sender, withdrawResponse.amount)
 						if (refund.type == EconomyResponse.ResponseType.FAILURE) {
 							getLogger().severe("Can't refund player, withdrew amount: ${withdrawResponse.amount}")
-							sender.sendMessage("§4Une erreur est survenue lors du remboursement, contactez un administrateur.")
+							sender.sendMessage(economyConfig.refundError)
 						}
 					} else {
 						val format = economy.format(depositResponse.amount)
-						sender.sendMessage("§7Le destinataire a bien reçu §6${format}§7.")
+						sender.sendMessage(miniMessage.deserialize(economyConfig.sendSuccess, Placeholder.unparsed("amount", format)))
 
 						if (recipient.isOnline) {
-							(recipient as Player).sendMessage("§6${sender.name} §7vous a envoyé §6${format}§7.")
+							val message = miniMessage.deserialize(
+								economyConfig.sendSuccess,
+								Placeholder.component("sender", sender.displayName()),
+								Placeholder.unparsed("amount", format),
+							)
+							(recipient as Player).sendMessage(message)
 						}
 					}
 				} else {
-					sender.sendMessage("§cUne erreur est survenue lors de la transaction.")
+					sender.sendMessage(economyConfig.sendError)
 				}
 			} else {
-				sender.sendMessage("§cVous n'avez pas assez d'argent.")
+				sender.sendMessage(economyConfig.notEnoughMoney)
 			}
 		}
 
@@ -81,8 +87,7 @@ class PayCommand : CommandExecutor, TabCompleter {
 		command: Command,
 		alias: String,
 		args: Array<out String>
-	): MutableList<String> {
-		return if (args.size == 1) {
+	): MutableList<String> = if (args.size == 1) {
 			getServer().onlinePlayers.filter {
 				it.name.startsWith(args[0]) && sender !== it
 			}.map {
@@ -91,5 +96,4 @@ class PayCommand : CommandExecutor, TabCompleter {
 		} else {
 			mutableListOf()
 		}
-	}
 }
