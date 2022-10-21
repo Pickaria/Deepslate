@@ -1,6 +1,5 @@
 package fr.pickaria.economy
 
-import fr.pickaria.shared.toComponent
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder
 import net.milkbowl.vault.economy.EconomyResponse
 import org.bukkit.Bukkit.getLogger
