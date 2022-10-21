@@ -18,4 +18,9 @@ internal class EconomyConfig(config: FileConfiguration) {
 	val balanceMessage = config.getString("balance_message")!!
 	val sendSuccess = config.getString("send_success")!!
 	val receiveSuccess = config.getString("receive_success")!!
+
+	val notMuchPages = miniMessage.deserialize(config.getString("header")!!)
+	val header = config.getString("header")!!
+	val row = config.getString("row")!!
+	val footer = config.getString("footer")!!
 }

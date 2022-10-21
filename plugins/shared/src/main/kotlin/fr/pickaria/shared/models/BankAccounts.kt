@@ -30,6 +30,18 @@ class BankAccount(private val row: ResultRow) {
 				(BankAccounts.playerUuid eq playerId) and (BankAccounts.accountName eq account)
 			}.firstOrNull()
 		}?.let { BankAccount(it) }
+
+		// Case-specific functions
+		fun top(page: Int = 0, account: String = DEFAULT_ACCOUNT, limit: Int = 6): List<BankAccount> = transaction {
+			val offset = (page * limit).toLong()
+
+			BankAccounts.select { BankAccounts.accountName eq account }
+				.orderBy(BankAccounts.balance, SortOrder.DESC)
+				.limit(limit, offset)
+				.map {
+					BankAccount(it)
+				}
+		}
 	}
 
 	private val whereClause =

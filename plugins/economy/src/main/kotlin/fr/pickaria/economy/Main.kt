@@ -19,7 +19,19 @@ class Main : JavaPlugin() {
 		setupEconomy()
 
 		getCommand("money")?.setExecutor(MoneyCommand()) ?: logger.warning("Could not register `money` command.")
+		getCommand("balance")?.setExecutor(MoneyCommand()) ?: logger.warning("Could not register `balance` command.")
+		getCommand("bal")?.setExecutor(MoneyCommand()) ?: logger.warning("Could not register `bal` command.")
+
 		getCommand("pay")?.setExecutor(PayCommand()) ?: logger.warning("Could not register `pay` command.")
+
+		if (economy is PickariaEconomy) {
+			getCommand("balancetop")?.setExecutor(BalanceTopCommand())
+				?: logger.warning("Could not register `balancetop` command.")
+			getCommand("baltop")?.setExecutor(BalanceTopCommand())
+				?: logger.warning("Could not register `baltop` command.")
+		} else {
+			logger.info("Pickaria is not handling economy, balance top feature is disabled.")
+		}
 
 		logger.info("Economy plugin loaded!")
 	}

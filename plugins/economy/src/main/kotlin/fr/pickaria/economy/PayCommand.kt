@@ -64,7 +64,7 @@ class PayCommand : CommandExecutor, TabCompleter {
 
 						if (recipient.isOnline) {
 							val message = miniMessage.deserialize(
-								economyConfig.sendSuccess,
+								economyConfig.receiveSuccess,
 								Placeholder.component("sender", sender.displayName()),
 								Placeholder.unparsed("amount", format),
 							)
