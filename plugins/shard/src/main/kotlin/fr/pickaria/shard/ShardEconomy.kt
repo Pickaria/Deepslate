@@ -3,6 +3,7 @@ package fr.pickaria.shard
 import fr.pickaria.shared.models.BankAccount
 import net.milkbowl.vault.economy.AbstractEconomy
 import net.milkbowl.vault.economy.EconomyResponse
+import net.milkbowl.vault.economy.EconomyResponse.ResponseType
 import org.bukkit.OfflinePlayer
 import java.text.DecimalFormat
 
@@ -45,8 +46,8 @@ internal class ShardEconomy: AbstractEconomy() {
 			}
 		}?.let {
 			it.balance -= amount
-			EconomyResponse(0.0, it.balance, EconomyResponse.ResponseType.SUCCESS, "")
-		} ?: EconomyResponse(0.0, 0.0, EconomyResponse.ResponseType.FAILURE, "")
+			EconomyResponse(0.0, it.balance, ResponseType.SUCCESS, "")
+		} ?: EconomyResponse(0.0, 0.0, ResponseType.FAILURE, "")
 
 	override fun depositPlayer(player: OfflinePlayer, amount: Double): EconomyResponse =
 		player.uniqueId.let {
@@ -57,8 +58,8 @@ internal class ShardEconomy: AbstractEconomy() {
 			}
 		}?.let {
 			it.balance += amount
-			EconomyResponse(0.0, it.balance, EconomyResponse.ResponseType.SUCCESS, "")
-		} ?: EconomyResponse(0.0, 0.0, EconomyResponse.ResponseType.FAILURE, "")
+			EconomyResponse(0.0, it.balance, ResponseType.SUCCESS, "")
+		} ?: EconomyResponse(0.0, 0.0, ResponseType.FAILURE, "")
 
 	override fun createPlayerAccount(player: OfflinePlayer): Boolean =
 		BankAccount.create(player.uniqueId, SHARD_ACCOUNT_NAME)?.let {
@@ -67,33 +68,28 @@ internal class ShardEconomy: AbstractEconomy() {
 
 	// Bank methods
 
-	override fun deleteBank(name: String?): EconomyResponse {
-		TODO("Not yet implemented")
-	}
+	override fun createBank(name: String?, player: String?): EconomyResponse =
+		EconomyResponse(0.0, 0.0, ResponseType.NOT_IMPLEMENTED, "We do not support bank accounts!")
 
-	override fun bankBalance(name: String?): EconomyResponse {
-		TODO("Not yet implemented")
-	}
+	override fun deleteBank(name: String?): EconomyResponse =
+		EconomyResponse(0.0, 0.0, ResponseType.NOT_IMPLEMENTED, "We do not support bank accounts!")
 
-	override fun bankHas(name: String?, amount: Double): EconomyResponse {
-		TODO("Not yet implemented")
-	}
+	override fun bankBalance(name: String?): EconomyResponse =
+		EconomyResponse(0.0, 0.0, ResponseType.NOT_IMPLEMENTED, "We do not support bank accounts!")
 
-	override fun bankWithdraw(name: String?, amount: Double): EconomyResponse {
-		TODO("Not yet implemented")
-	}
+	override fun bankHas(name: String?, amount: Double): EconomyResponse =
+		EconomyResponse(0.0, 0.0, ResponseType.NOT_IMPLEMENTED, "We do not support bank accounts!")
 
-	override fun bankDeposit(name: String?, amount: Double): EconomyResponse {
-		TODO("Not yet implemented")
-	}
+	override fun bankWithdraw(name: String?, amount: Double): EconomyResponse =
+		EconomyResponse(0.0, 0.0, ResponseType.NOT_IMPLEMENTED, "We do not support bank accounts!")
 
-	override fun getBanks(): MutableList<String> {
-		TODO("Not yet implemented")
-	}
+	override fun bankDeposit(name: String?, amount: Double): EconomyResponse =
+		EconomyResponse(0.0, 0.0, ResponseType.NOT_IMPLEMENTED, "We do not support bank accounts!")
 
-	override fun isBankMember(name: String?, player: OfflinePlayer?): EconomyResponse {
-		TODO("Not yet implemented")
-	}
+	override fun getBanks(): MutableList<String> = mutableListOf()
+
+	override fun isBankMember(name: String?, player: OfflinePlayer?): EconomyResponse =
+		EconomyResponse(0.0, 0.0, ResponseType.NOT_IMPLEMENTED, "We do not support bank accounts!")
 
 	// Deprecated methods
 
@@ -144,11 +140,6 @@ internal class ShardEconomy: AbstractEconomy() {
 
 	@Deprecated("Deprecated in Java")
 	override fun depositPlayer(playerName: String?, worldName: String?, amount: Double): EconomyResponse {
-		TODO("Not yet implemented")
-	}
-
-	@Deprecated("Deprecated in Java")
-	override fun createBank(name: String?, player: String?): EconomyResponse {
 		TODO("Not yet implemented")
 	}
 
