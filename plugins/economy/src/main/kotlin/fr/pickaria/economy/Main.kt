@@ -7,7 +7,6 @@ import org.bukkit.plugin.ServicePriority
 import org.bukkit.plugin.java.JavaPlugin
 
 internal lateinit var economy: Economy
-internal lateinit var economyConfig: EconomyConfig
 internal val miniMessage: MiniMessage = MiniMessage.miniMessage();
 
 class Main : JavaPlugin() {
@@ -15,7 +14,8 @@ class Main : JavaPlugin() {
 		super.onEnable()
 
 		saveDefaultConfig()
-		economyConfig = EconomyConfig(this.config)
+		Config.setConfig(this.config)
+
 		setupEconomy()
 
 		getCommand("money")?.setExecutor(MoneyCommand()) ?: logger.warning("Could not register `money` command.")

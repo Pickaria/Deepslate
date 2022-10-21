@@ -11,7 +11,7 @@ class MoneyCommand : CommandExecutor {
 		if (sender is Player) {
 			val balance = economy.format(economy.getBalance(sender))
 			val placeholder = Placeholder.unparsed("balance", balance)
-			val message = miniMessage.deserialize(economyConfig.balanceMessage, placeholder)
+			val message = miniMessage.deserialize(Config.balanceMessage, placeholder)
 			sender.sendMessage(message)
 			return true
 		}

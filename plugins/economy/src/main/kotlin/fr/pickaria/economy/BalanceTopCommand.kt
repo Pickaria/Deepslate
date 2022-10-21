@@ -32,7 +32,7 @@ class BalanceTopCommand : CommandExecutor {
 			val component = Component.text()
 				.append(
 					miniMessage.deserialize(
-						economyConfig.header,
+						Config.header,
 						Placeholder.component("page", Component.text(page + 1)),
 						Placeholder.component("max", Component.text(maxPage + 1)),
 					)
@@ -45,7 +45,7 @@ class BalanceTopCommand : CommandExecutor {
 					.append(Component.newline())
 					.append(
 						miniMessage.deserialize(
-							economyConfig.row,
+							Config.row,
 							Placeholder.component("position", Component.text(index + 1 + pageStart)),
 							Placeholder.component("player", Component.text(player.name ?: "N/A")),
 							Placeholder.component("balance", Component.text(economy.format(account.balance))),
@@ -58,7 +58,7 @@ class BalanceTopCommand : CommandExecutor {
 					.append(Component.newline())
 					.append(
 						miniMessage.deserialize(
-							economyConfig.footer,
+							Config.footer,
 							TagResolver.resolver(
 								"next-page",
 								Tag.styling(ClickEvent.runCommand("/baltop ${page + 1}"))
@@ -70,7 +70,7 @@ class BalanceTopCommand : CommandExecutor {
 
 			sender.sendMessage(component)
 		} else {
-			sender.sendMessage(economyConfig.notMuchPages)
+			sender.sendMessage(Config.notMuchPages)
 		}
 
 		return true

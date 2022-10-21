@@ -27,9 +27,9 @@ class PickariaEconomy : AbstractEconomy() {
 
 	override fun hasBankSupport(): Boolean = false
 
-	override fun currencyNamePlural(): String = economyConfig.currencyNamePlural
+	override fun currencyNamePlural(): String = Config.currencyNamePlural
 
-	override fun currencyNameSingular(): String = economyConfig.currencyNameSingular
+	override fun currencyNameSingular(): String = Config.currencyNameSingular
 
 	// Logic methods
 
