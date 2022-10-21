@@ -7,7 +7,6 @@ import net.kyori.adventure.text.minimessage.tag.Tag
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver
 import org.bukkit.Bukkit
-import org.bukkit.Bukkit.getServer
 import org.bukkit.command.Command
 import org.bukkit.command.CommandExecutor
 import org.bukkit.command.CommandSender
@@ -24,27 +23,20 @@ class BalanceTopCommand : CommandExecutor {
 			0
 		}
 
-		val min = page * PAGE_SIZE
-		val players = getServer().offlinePlayers
-
-		if (min > players.size) {
-			sender.sendMessage(economyConfig.notMuchPages)
-			return true
-		}
-
+		val pageStart = page * PAGE_SIZE
 		val top = BankAccount.top(page, limit = PAGE_SIZE)
+		val count = BankAccount.count()
+		val maxPage = count / PAGE_SIZE
 
-		val maxPage = top.size / PAGE_SIZE
-		val component = Component.text()
-
-		if (maxPage >= page) {
-			component.append(
-				miniMessage.deserialize(
-					economyConfig.header,
-					Placeholder.component("page", Component.text(page + 1)),
-					Placeholder.component("max", Component.text(maxPage + 1)),
+		if (top.isNotEmpty()) {
+			val component = Component.text()
+				.append(
+					miniMessage.deserialize(
+						economyConfig.header,
+						Placeholder.component("page", Component.text(page + 1)),
+						Placeholder.component("max", Component.text(maxPage + 1)),
+					)
 				)
-			)
 
 			top.forEachIndexed { index, account ->
 				val player = Bukkit.getOfflinePlayer(account.playerUuid)
@@ -54,14 +46,14 @@ class BalanceTopCommand : CommandExecutor {
 					.append(
 						miniMessage.deserialize(
 							economyConfig.row,
-							Placeholder.component("position", Component.text(index + 1 + min)),
+							Placeholder.component("position", Component.text(index + 1 + pageStart)),
 							Placeholder.component("player", Component.text(player.name ?: "N/A")),
 							Placeholder.component("balance", Component.text(economy.format(account.balance))),
 						)
 					)
 			}
 
-			if (maxPage != page) {
+			if (count > pageStart + PAGE_SIZE) {
 				component
 					.append(Component.newline())
 					.append(
@@ -75,11 +67,11 @@ class BalanceTopCommand : CommandExecutor {
 						)
 					)
 			}
-		} else {
-			component.append(economyConfig.notMuchPages)
-		}
 
-		sender.sendMessage(component)
+			sender.sendMessage(component)
+		} else {
+			sender.sendMessage(economyConfig.notMuchPages)
+		}
 
 		return true
 	}
