@@ -13,7 +13,9 @@ fun String.toSnakeCase(): String = camelRegex.replace(this) {
 
 abstract class ConfigProvider {
 	var section: ConfigurationSection? = null
-	val deserializer: MiniMessageDeserializer = MiniMessageDeserializer()
+	val miniMessage: MiniMessageDeserializer by lazy {
+		MiniMessageDeserializer()
+	}
 
 	inline operator fun <reified T> getValue(thisRef: ConfigProvider, property: KProperty<*>): T =
 		with(property.name.toSnakeCase()) {
