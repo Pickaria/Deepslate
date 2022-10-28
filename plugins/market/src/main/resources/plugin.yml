@@ -1,0 +1,12 @@
+name: PickariaMarket
+version: 1.0
+api-version: 1.19
+main: fr.pickaria.market.Main
+author: Quozul
+depend:
+  - PickariaShared
+  - Vault
+
+commands:
+  value:
+    usage: /value
