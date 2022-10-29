@@ -27,12 +27,34 @@ internal class CreateBuyOrderCommand : CommandExecutor, TabCompleter {
 			val material: Material = args.getOrNull(0)?.let {
 				Material.getMaterial(it.uppercase())
 			} ?: run {
-				sender.sendMessage(Component.text("Ce matériaux n'est pas achetable.", NamedTextColor.RED))
+				sender.sendMessage(Component.text("Ce matériau n'est pas achetable.", NamedTextColor.RED))
 				return false
 			}
 
+			val isNotSelling = Order.get(material, OrderType.SELL).isEmpty()
 
-			val maxPrice = args.getOrNull(1)?.let {
+			if (isNotSelling) {
+				sender.sendMessage(Component.text("Ce matériau n'est pas en stocks.", NamedTextColor.RED))
+				return true
+			}
+
+			val quantity = args.getOrNull(1)?.let {
+				try {
+					it.toInt()
+				} catch (_: NumberFormatException) {
+					val message = Component.text("La quantité que vous avez entrée est incorrecte.", NamedTextColor.RED)
+					sender.sendMessage(message)
+					return true
+				}
+			} ?: 1
+
+			if (quantity <= 0) {
+				val message = Component.text("La quantité que vous avez entrée est incorrecte.", NamedTextColor.RED)
+				sender.sendMessage(message)
+				return true
+			}
+
+			val maxPrice = args.getOrNull(2)?.let {
 				try {
 					it.toDouble()
 				} catch (_: NumberFormatException) {
@@ -50,30 +72,16 @@ internal class CreateBuyOrderCommand : CommandExecutor, TabCompleter {
 				return false
 			}
 
-			val quantity = args.getOrNull(2)?.let {
-				try {
-					it.toInt()
-				} catch (_: NumberFormatException) {
-					val message = Component.text("La quantité que vous avez entré est incorrecte.", NamedTextColor.RED)
-					sender.sendMessage(message)
-					return true
-				}
-			} ?: 1
-
-			if (quantity <= 0) {
-				val message = Component.text("La quantité que vous avez entré est incorrecte.", NamedTextColor.RED)
-				sender.sendMessage(message)
-				return true
-			}
-
 			val order = Order.create(sender, material, OrderType.BUY, quantity, maxPrice)
 
 			if (order != null) {
 				val message = Component.text("Ordre d'achat n°", NamedTextColor.GRAY)
 					.append(Component.text(order.id, NamedTextColor.GOLD))
-					.append(Component.text(" créé.", NamedTextColor.GRAY))
+					.append(Component.text(" placé.", NamedTextColor.GRAY))
 
 				sender.sendMessage(message)
+
+				buy(sender, material, maxPrice, quantity)
 			}
 		}
 
@@ -89,17 +97,17 @@ internal class CreateBuyOrderCommand : CommandExecutor, TabCompleter {
 		if (sender is Player) {
 			return when (args.size) {
 				1 -> {
-					MATERIALS.filter { it.startsWith(args[0]) }
+					Order.getMaterials().map { it.name.lowercase() }.filter { it.startsWith(args[0]) }
 				}
 
 				2 -> {
-					Material.getMaterial(args[0].uppercase())?.let { material ->
-						Order.getPrices(material).toList().map { it.toString() }
-					} ?: listOf()
+					listOf("1", "16", "32", "64")
 				}
 
 				3 -> {
-					listOf("1", "16", "32", "64")
+					Material.getMaterial(args[0].uppercase())?.let { material ->
+						Order.getPrices(material).toList().map { it.toString() }
+					} ?: listOf()
 				}
 
 				else -> listOf()

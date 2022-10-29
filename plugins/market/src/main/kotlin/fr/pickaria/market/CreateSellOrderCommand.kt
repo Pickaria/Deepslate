@@ -84,7 +84,7 @@ internal class CreateSellOrderCommand : CommandExecutor, TabCompleter {
 
 				val message = Component.text("Ordre de vente n°", NamedTextColor.GRAY)
 					.append(Component.text(order.id, NamedTextColor.GOLD))
-					.append(Component.text(" créé.", NamedTextColor.GRAY))
+					.append(Component.text(" placé.", NamedTextColor.GRAY))
 
 				sender.sendMessage(message)
 			}

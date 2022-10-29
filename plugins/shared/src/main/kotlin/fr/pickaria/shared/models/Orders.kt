@@ -27,7 +27,13 @@ internal val DEFAULT_MATERIAL = Material.BARRIER
 
 class Order private constructor(private val row: ResultRow) {
 	companion object {
-		fun create(seller: OfflinePlayer, material: Material, orderType: OrderType, amount: Int = 1, price: Double = 1.0) = transaction {
+		fun create(
+			seller: OfflinePlayer,
+			material: Material,
+			orderType: OrderType,
+			amount: Int = 1,
+			price: Double = 1.0
+		): Order? = transaction {
 			Orders.insert {
 				it[this.seller] = seller.uniqueId
 				it[this.material] = material.name
@@ -42,16 +48,29 @@ class Order private constructor(private val row: ResultRow) {
 		/**
 		 * Get one sell order by id.
 		 */
-		fun get(id: Int) = transaction {
+		fun get(id: Int): Order = transaction {
 			Order { Orders.id eq id }
 		}
 
 		/**
-		 * Get all specific material's sell orders.
+		 * Get all specific material's orders.
 		 */
 		fun get(material: Material): List<Order> = transaction {
 			Orders.select {
 				Orders.material eq material.name
+			}.map {
+				Order(it)
+			}
+		}
+
+		/**
+		 * Get all specific material's orders with given type.
+		 */
+		fun get(material: Material, type: OrderType): List<Order> = transaction {
+			Orders.select {
+				(Orders.material eq material.name) and
+				(Orders.amount greater 0) and
+				(Orders.type eq type)
 			}.map {
 				Order(it)
 			}
@@ -81,7 +100,7 @@ class Order private constructor(private val row: ResultRow) {
 		/**
 		 * Get all sell orders of a player.
 		 */
-		fun get(seller: OfflinePlayer) = transaction {
+		fun get(seller: OfflinePlayer): List<Order> = transaction {
 			Orders.select {
 				Orders.seller eq seller.uniqueId
 			}.map {
@@ -99,10 +118,59 @@ class Order private constructor(private val row: ResultRow) {
 
 			Orders
 				.slice(maxPrice, minPrice, avgPrice)
-				.select { (Orders.material eq material.name) and (Orders.type eq OrderType.SELL) }
+				.select {
+					(Orders.material eq material.name) and
+							(Orders.amount greater 0) and
+							(Orders.type eq OrderType.SELL)
+				}
 				.first()
 				.let {
-					Triple(it[maxPrice] ?: 1.0, it[minPrice] ?: 1.0, it[avgPrice]?.toDouble() ?: 1.0)
+					Triple(it[maxPrice] ?: 0.0, it[minPrice] ?: 0.0, it[avgPrice]?.toDouble() ?: 0.0)
+				}
+		}
+
+		/**
+		 * Find buy orders with a given minimum price, sorted by cheaper last.
+		 */
+		fun findBuyOrders(material: Material, minimumPrice: Double): List<Order> = transaction {
+			Orders
+				.select {
+					(Orders.material eq material.name) and
+							(Orders.price greaterEq minimumPrice) and
+							(Orders.amount greater 0) and
+							(Orders.type eq OrderType.BUY)
+				}
+				.orderBy(Orders.price, SortOrder.DESC)
+				.map { Order(it) }
+		}
+
+		/**
+		 * Find sell orders with a given maximum price, sorted by cheaper last.
+		 */
+		fun findSellOrders(material: Material, maximumPrice: Double): List<Order> = transaction {
+			Orders
+				.select {
+					(Orders.material eq material.name) and
+							(Orders.price lessEq maximumPrice) and
+							(Orders.amount greater 0) and
+							(Orders.type eq OrderType.SELL)
+				}
+				.orderBy(Orders.price, SortOrder.DESC)
+				.map { Order(it) }
+		}
+
+		/**
+		 * Get all materials currently being sold.
+		 */
+		fun getMaterials(): List<Material> = transaction {
+			Orders.slice(Orders.material)
+				.select {
+					(Orders.type eq OrderType.SELL) and
+						(Orders.amount greater 0)
+				}
+				.groupBy(Orders.material)
+				.mapNotNull {
+					Material.getMaterial(it[Orders.material])
 				}
 		}
 	}
@@ -137,6 +205,11 @@ class Order private constructor(private val row: ResultRow) {
 	val price: Double
 		get() = row[Orders.price]
 
-	val amount: Int
+	var amount: Int
 		get() = row[Orders.amount]
+		set(value) = transaction {
+			Orders.update({ whereClause() }) {
+				it[Orders.amount] = value
+			}
+		}
 }
