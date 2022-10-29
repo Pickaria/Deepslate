@@ -24,7 +24,7 @@ class MenuItem {
 
 	fun build(): MenuItem {
 		if (itemStack == null) {
-			itemStack = createMenuItem(material, component, lore).apply {
+			itemStack = createMenuItem(material, name, lore).apply {
 				if (isEnchanted) {
 					addUnsafeEnchantment(Enchantment.MENDING, 1)
 				}

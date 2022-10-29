@@ -5,15 +5,18 @@ import fr.pickaria.menu.MenuLore
 import fr.pickaria.shared.models.Order
 import fr.pickaria.shared.models.OrderType
 import net.kyori.adventure.text.Component
+import net.kyori.adventure.text.format.NamedTextColor
+import net.kyori.adventure.text.format.TextDecoration
 import org.bukkit.Material
 import org.bukkit.entity.HumanEntity
 
-internal class OrderListingMenu(title: String, opener: HumanEntity, previousMenu: BaseMenu? = null, size: Int = 54) :
-	BaseMenu(title, opener, previousMenu, size) {
+internal class OrderListingMenu(title: Component, opener: HumanEntity, previousMenu: BaseMenu? = null) :
+	BaseMenu(title, opener, previousMenu, size = 54) {
 
-	internal class Factory(material: Material = Material.EMERALD) : BaseMenu.Factory("§6§lMarché", material) {
-		override fun create(opener: HumanEntity, previousMenu: BaseMenu?, size: Int): BaseMenu =
-			OrderListingMenu(title, opener, previousMenu, size)
+	internal class Factory(material: Material = Material.EMERALD) :
+		BaseMenu.Factory(Component.text("Marché", NamedTextColor.GOLD, TextDecoration.BOLD), material) {
+		override fun create(opener: HumanEntity, previousMenu: BaseMenu?): BaseMenu =
+			OrderListingMenu(title, opener, previousMenu)
 	}
 
 	override fun initMenu() {
@@ -35,7 +38,7 @@ internal class OrderListingMenu(title: String, opener: HumanEntity, previousMenu
 					leftClick = "Clic-gauche pour voir les options d'achat"
 					rightClick = "Clic-gauche pour voir les options de vente"
 				}
-				component = Component.translatable(order.material.translationKey())
+				name = Component.translatable(order.material.translationKey())
 			}
 		}
 	}
