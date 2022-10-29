@@ -74,26 +74,16 @@ internal class CreateBuyOrderCommand : CommandExecutor, TabCompleter {
 				return false
 			}
 
-			val order = Order.create(sender, material, OrderType.BUY, quantity, maxPrice)
+			var boughtAmount = buy(sender, material, maxPrice, quantity)
+			val item = ItemStack(material)
 
-			if (order != null) {
-				val message = Component.text("Ordre d'achat n°", NamedTextColor.GRAY)
-					.append(Component.text(order.id, NamedTextColor.GOLD))
-					.append(Component.text(" placé.", NamedTextColor.GRAY))
-
-				sender.sendMessage(message)
-
-				var boughtAmount = buy(sender, material, maxPrice, quantity)
-				val item = ItemStack(material)
-
-				while (boughtAmount > 0) {
-					val amount = min(boughtAmount, 64)
-					sender.inventory.addItem(item.asQuantity(amount)).forEach { (_, it) ->
-						// Drop items that cannot be added
-						sender.world.dropItem(sender.location, it)
-					}
-					boughtAmount -= 64
+			while (boughtAmount > 0) {
+				val amount = min(boughtAmount, 64)
+				sender.inventory.addItem(item.asQuantity(amount)).forEach { (_, it) ->
+					// Drop items that cannot be added
+					sender.world.dropItem(sender.location, it)
 				}
+				boughtAmount -= 64
 			}
 		}
 

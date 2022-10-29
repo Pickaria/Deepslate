@@ -196,6 +196,12 @@ class Order private constructor(private val row: ResultRow) {
 
 	private val whereClause = { Orders.id eq this.id }
 
+	fun delete() {
+		transaction {
+			Orders.deleteWhere { whereClause() }
+		}
+	}
+
 	val id: Int
 		get() = row[Orders.id]
 
