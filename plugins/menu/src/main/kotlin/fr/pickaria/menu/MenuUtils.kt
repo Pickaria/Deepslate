@@ -5,8 +5,8 @@ import net.kyori.adventure.text.format.TextDecoration
 import org.bukkit.Material
 import org.bukkit.inventory.ItemStack
 
-fun createMenuItem(material: Material = Material.AIR, name: Component? = null, lore: List<Component>? = null): ItemStack {
-    val itemStack = ItemStack(material, 1)
+fun createMenuItem(material: Material = Material.AIR, name: Component? = null, lore: List<Component>? = null, amount: Int = 1): ItemStack {
+    val itemStack = ItemStack(material, amount)
 
     itemStack.itemMeta = itemStack.itemMeta?.apply {
         name?.let {

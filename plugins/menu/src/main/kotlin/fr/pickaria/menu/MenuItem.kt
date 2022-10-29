@@ -17,6 +17,7 @@ class MenuItem {
 	var leftClick: ((InventoryClickEvent) -> Unit)? = null
 	var isEnchanted: Boolean = false
 	var itemStack: ItemStack? = null
+	var amount: Int = 1
 
 	companion object {
 		inline fun build(block: MenuItem.() -> Unit) = MenuItem().apply(block).build()
@@ -24,7 +25,7 @@ class MenuItem {
 
 	fun build(): MenuItem {
 		if (itemStack == null) {
-			itemStack = createMenuItem(material, name, lore).apply {
+			itemStack = createMenuItem(material, name, lore, amount).apply {
 				if (isEnchanted) {
 					addUnsafeEnchantment(Enchantment.MENDING, 1)
 				}

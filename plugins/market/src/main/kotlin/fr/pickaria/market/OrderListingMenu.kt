@@ -1,7 +1,9 @@
 package fr.pickaria.market
 
+import fr.pickaria.market.menu.BuyMenu
 import fr.pickaria.menu.BaseMenu
 import fr.pickaria.menu.MenuLore
+import fr.pickaria.menu.menuController
 import fr.pickaria.shared.models.Order
 import fr.pickaria.shared.models.OrderType
 import net.kyori.adventure.text.Component
@@ -39,6 +41,13 @@ internal class OrderListingMenu(title: Component, opener: HumanEntity, previousM
 					rightClick = "Clic-gauche pour voir les options de vente"
 				}
 				name = Component.translatable(order.material.translationKey())
+				leftClick = {
+					val title = Component.text("Acheter ", NamedTextColor.GRAY)
+						.append(Component.translatable(order.material.translationKey(), NamedTextColor.GOLD))
+						.decorate(TextDecoration.BOLD)
+					val menu = BuyMenu(order.material, title, opener, this@OrderListingMenu)
+					menuController.openMenu(opener, menu)
+				}
 			}
 		}
 	}

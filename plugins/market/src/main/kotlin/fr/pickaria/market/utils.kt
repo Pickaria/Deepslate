@@ -20,17 +20,24 @@ internal fun buy(player: Player, material: Material, maximumPrice: Double, amoun
 	// Total amount of money spent to acquire the given material
 	var totalSpent = 0.0
 
-	// Whether the player ended up not having enough money
-	var notEnoughMoney = false
-
 	val orders = Order.findSellOrders(material, maximumPrice)
 
 	// Stores the data to notify sellers
 	val notifications: MutableMap<OfflinePlayer, Pair<Int, Double>> = mutableMapOf()
 
+	// Maximum amount of material the player can buy with their balance
+	val maximumCanAfford = (economy.getBalance(player) / maximumPrice).toInt()
+
+	// Whether the player ended up not having enough money
+	var notEnoughMoney = maximumCanAfford == 0
+
 	for (order in orders) {
 		// How much material can be bought from this order
-		val buyingAmount = min(amount - boughtAmount, order.amount)
+		val buyingAmount = minOf(amount - boughtAmount, order.amount, maximumCanAfford)
+
+		if (buyingAmount == 0) {
+			continue
+		}
 
 		// Total amount of money to spend
 		val price = buyingAmount * order.price
@@ -64,7 +71,7 @@ internal fun buy(player: Player, material: Material, maximumPrice: Double, amoun
 		}
 	}
 
-	if (notEnoughMoney) {
+	if (notEnoughMoney && boughtAmount < amount) {
 		val message = Component.text("Vous n'avez pas assez d'argent.", NamedTextColor.RED)
 		player.sendMessage(message)
 	}
