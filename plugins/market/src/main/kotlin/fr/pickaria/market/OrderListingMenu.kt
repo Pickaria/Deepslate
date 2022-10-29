@@ -2,7 +2,8 @@ package fr.pickaria.market
 
 import fr.pickaria.menu.BaseMenu
 import fr.pickaria.menu.MenuLore
-import fr.pickaria.shared.models.SellOrder
+import fr.pickaria.shared.models.Order
+import fr.pickaria.shared.models.OrderType
 import net.kyori.adventure.text.Component
 import org.bukkit.Material
 import org.bukkit.entity.HumanEntity
@@ -18,7 +19,7 @@ internal class OrderListingMenu(title: String, opener: HumanEntity, previousMenu
 	override fun initMenu() {
 		var x = 0
 
-		SellOrder.get().forEach { order ->
+		Order.get(OrderType.SELL).forEach { order ->
 			setMenuItem {
 				this.x = x++
 				this.y = 0

@@ -10,5 +10,8 @@ depend:
 
 commands:
   sell:
-    usage: /sell <price> [quantity]
+    usage: /sell <listing price> [quantity]
     description: Creates a sell order for the item in player's hand.
+  buy:
+    usage: /buy <material> [maximum price] [quantity]
+    description: Creates a buy order.

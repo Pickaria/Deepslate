@@ -16,6 +16,7 @@ class Main : JavaPlugin() {
 		}
 
 		getCommand("sell")?.setExecutor(CreateSellOrderCommand())
+		getCommand("buy")?.setExecutor(CreateBuyOrderCommand())
 		menuController.register("shop", OrderListingMenu.Factory())
 
 		logger.info("Market plugin loaded!")

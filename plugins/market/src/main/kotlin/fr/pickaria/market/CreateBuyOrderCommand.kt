@@ -4,31 +4,35 @@ import fr.pickaria.shared.models.Order
 import fr.pickaria.shared.models.OrderType
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
+import org.bukkit.Material
 import org.bukkit.command.Command
 import org.bukkit.command.CommandExecutor
 import org.bukkit.command.CommandSender
 import org.bukkit.command.TabCompleter
 import org.bukkit.entity.Player
-import kotlin.math.min
 
 
-internal class CreateSellOrderCommand : CommandExecutor, TabCompleter {
+internal class CreateBuyOrderCommand : CommandExecutor, TabCompleter {
+	companion object {
+		val MATERIALS = Material.values().map { it.name.lowercase() }
+	}
+
 	override fun onCommand(sender: CommandSender, command: Command, label: String, args: Array<out String>): Boolean {
 		if (sender is Player) {
 			if (args.isEmpty()) {
-				sender.sendMessage(Component.text("Vous devez entrer un prix unitaire.", NamedTextColor.RED))
+				sender.sendMessage(Component.text("Vous devez entrer l'objet que vous souhaiter acheter.", NamedTextColor.RED))
 				return true
 			}
 
-			val item = sender.inventory.itemInMainHand
-
-			if (item.hasItemMeta()) {
-				val message = Component.text("Cet objet ne peut pas être vendu.", NamedTextColor.RED)
-				sender.sendMessage(message)
-				return true
+			val material: Material = args.getOrNull(0)?.let {
+				Material.getMaterial(it.uppercase())
+			} ?: run {
+				sender.sendMessage(Component.text("Ce matériaux n'est pas achetable.", NamedTextColor.RED))
+				return false
 			}
 
-			val price = args.getOrNull(0)?.let {
+
+			val maxPrice = args.getOrNull(1)?.let {
 				try {
 					it.toDouble()
 				} catch (_: NumberFormatException) {
@@ -37,16 +41,16 @@ internal class CreateSellOrderCommand : CommandExecutor, TabCompleter {
 					return true
 				}
 			} ?: run {
-				sender.sendMessage(Component.text("Vous devez entrer un prix unitaire.", NamedTextColor.RED))
-				return false
+				val (maxPrice, _, _) = Order.getPrices(material)
+				maxPrice
 			}
 
-			if (price < 1.0) {
+			if (maxPrice < 1.0) {
 				sender.sendMessage(Component.text("Le prix doit être supérieur à 1.0.", NamedTextColor.RED))
 				return false
 			}
 
-			val quantity = args.getOrNull(1)?.let {
+			val quantity = args.getOrNull(2)?.let {
 				try {
 					it.toInt()
 				} catch (_: NumberFormatException) {
@@ -54,7 +58,7 @@ internal class CreateSellOrderCommand : CommandExecutor, TabCompleter {
 					sender.sendMessage(message)
 					return true
 				}
-			} ?: item.amount
+			} ?: 1
 
 			if (quantity <= 0) {
 				val message = Component.text("La quantité que vous avez entré est incorrecte.", NamedTextColor.RED)
@@ -62,27 +66,10 @@ internal class CreateSellOrderCommand : CommandExecutor, TabCompleter {
 				return true
 			}
 
-			if (!sender.inventory.containsAtLeast(item, quantity)) {
-				val message = Component.text("Vous n'avez pas autant de ")
-					.append(Component.translatable(item.type.translationKey()))
-					.append(Component.text(" dans votre inventaire."))
-					.color(NamedTextColor.RED)
-				sender.sendMessage(message)
-
-				return true
-			}
-
-			val order = Order.create(sender, item.type, OrderType.SELL, quantity, price)
+			val order = Order.create(sender, material, OrderType.BUY, quantity, maxPrice)
 
 			if (order != null) {
-				var removedAmount = 0
-				do {
-					val amountToRemove = min(quantity - removedAmount, 64)
-					sender.inventory.removeItem(item.asQuantity(amountToRemove))
-					removedAmount += amountToRemove
-				} while (removedAmount < quantity)
-
-				val message = Component.text("Ordre de vente n°", NamedTextColor.GRAY)
+				val message = Component.text("Ordre d'achat n°", NamedTextColor.GRAY)
 					.append(Component.text(order.id, NamedTextColor.GOLD))
 					.append(Component.text(" créé.", NamedTextColor.GRAY))
 
@@ -100,20 +87,19 @@ internal class CreateSellOrderCommand : CommandExecutor, TabCompleter {
 		args: Array<out String>
 	): List<String> {
 		if (sender is Player) {
-			val item = sender.inventory.itemInMainHand.asOne()
-
-			if (item.type.isAir || item.hasItemMeta()) {
-				return listOf()
-			}
-
 			return when (args.size) {
 				1 -> {
-					Order.getPrices(item.type).toList().map { it.toString() }
+					MATERIALS.filter { it.startsWith(args[0]) }
 				}
 
 				2 -> {
-					val count = sender.inventory.filter { it?.asOne() == item }.sumOf { it.amount }
-					listOf("1", "16", "32", "64", count.toString())
+					Material.getMaterial(args[0].uppercase())?.let { material ->
+						Order.getPrices(material).toList().map { it.toString() }
+					} ?: listOf()
+				}
+
+				3 -> {
+					listOf("1", "16", "32", "64")
 				}
 
 				else -> listOf()
