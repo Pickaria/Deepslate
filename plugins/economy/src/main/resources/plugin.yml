@@ -12,7 +12,23 @@ commands:
     description: Voir son solde bancaire
     usage: /money
     permission: pickaria.command.money
+  bal:
+    description: Voir son solde bancaire
+    usage: /money
+    permission: pickaria.command.money
+  balance:
+    description: Voir son solde bancaire
+    usage: /money
+    permission: pickaria.command.money
   pay:
     description: Payer un autre joueur
     usage: /pay <joueur> <montant>
     permission: pickaria.command.pay
+  baltop:
+    description: Affiche la liste des joueurs les plus riches
+    usage: /baltop [page]
+    permission: pickaria.command.baltop
+  balancetop:
+    description: Affiche la liste des joueurs les plus riches
+    usage: /baltop [page]
+    permission: pickaria.command.baltop
