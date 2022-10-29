@@ -33,7 +33,7 @@ class MenuController : Listener {
 
 	fun openMenu(player: HumanEntity, menu: String, previousMenu: BaseMenu?): Boolean {
 		return menus[menu]?.let {
-			openMenu(player, it.create(player, previousMenu, 54))
+			openMenu(player, it.create(player, previousMenu))
 			true
 		} ?: run {
 			false

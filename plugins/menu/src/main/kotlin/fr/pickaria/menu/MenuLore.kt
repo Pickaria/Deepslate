@@ -1,5 +1,7 @@
 package fr.pickaria.menu
 
+import net.kyori.adventure.text.Component
+
 class MenuLore {
 	var rightClick: String? = null
 	var leftClick: String? = null
@@ -10,7 +12,7 @@ class MenuLore {
 		inline fun build(block: MenuLore.() -> Unit) = MenuLore().apply(block).build()
 	}
 
-	fun build(): List<String> {
+	fun build(): List<Component> {
 		val lore: MutableList<String> = mutableListOf()
 
 		description.forEach {
@@ -32,6 +34,6 @@ class MenuLore {
 		leftClick?.let { lore.add(it) }
 		rightClick?.let { lore.add(it) }
 
-		return lore
+		return lore.map { Component.text(it) }
 	}
 }

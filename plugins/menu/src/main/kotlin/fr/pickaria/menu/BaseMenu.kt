@@ -8,20 +8,17 @@ import org.bukkit.event.inventory.InventoryClickEvent
 import org.bukkit.inventory.Inventory
 
 abstract class BaseMenu(
-	title: String,
+	title: Component,
 	protected val opener: HumanEntity,
 	private val previousMenu: BaseMenu? = null,
 	size: Int = 54
 ) {
-	val inventory: Inventory = Bukkit.createInventory(null, size, Component.text(title))
+	val inventory: Inventory = Bukkit.createInventory(null, size, title)
 
-	abstract class Factory(val title: String, val icon: Material = Material.AIR, vararg lore: String) {
-		val description = listOf(*lore)
-
+	abstract class Factory(val title: Component, val icon: Material = Material.AIR, val description: List<Component> = listOf()) {
 		abstract fun create(
 			opener: HumanEntity,
 			previousMenu: BaseMenu? = null,
-			size: Int = 54
 		): BaseMenu
 	}
 
@@ -58,26 +55,26 @@ abstract class BaseMenu(
 		if (page > 0) {
 			inventory.setItem(
 				previousPageSlot,
-				createMenuItem(Material.ARROW, "Page précédente", "Clic-gauche pour retourner à la page précédente")
+				createMenuItem(Material.ARROW, Component.text("Page précédente"), listOf(Component.text("Clic-gauche pour retourner à la page précédente")))
 			)
 		}
 
 		previousMenu?.let {
 			inventory.setItem(
 				menuBackSlot,
-				createMenuItem(Material.ARROW, "Retour", "Clic-gauche pour retourner au menu précédent")
+				createMenuItem(Material.ARROW, Component.text("Retour"), listOf(Component.text("Clic-gauche pour retourner au menu précédent")))
 			)
 		} ?: run {
 			inventory.setItem(
 				menuBackSlot,
-				createMenuItem(Material.BARRIER, "Fermer", "Clic-gauche pour fermer le menu.")
+				createMenuItem(Material.BARRIER, Component.text("Fermer"), listOf(Component.text("Clic-gauche pour fermer le menu.")))
 			)
 		}
 
 		if (last >= (page + 1) * pageSize) {
 			inventory.setItem(
 				nextPageSlot,
-				createMenuItem(Material.ARROW, "Page suivante", "Clic-gauche pour aller à la page suivante")
+				createMenuItem(Material.ARROW, Component.text("Page suivante"), listOf(Component.text("Clic-gauche pour aller à la page suivante")))
 			)
 		}
 	}

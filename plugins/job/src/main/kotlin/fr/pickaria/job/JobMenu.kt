@@ -3,18 +3,22 @@ package fr.pickaria.job
 import fr.pickaria.menu.BaseMenu
 import fr.pickaria.menu.MenuLore
 import fr.pickaria.shared.models.Job
+import net.kyori.adventure.text.Component
+import net.kyori.adventure.text.format.NamedTextColor
+import net.kyori.adventure.text.format.TextDecoration
 import org.bukkit.Material
 import org.bukkit.entity.HumanEntity
 import org.bukkit.entity.Player
 import java.math.RoundingMode
 import java.text.DecimalFormat
 
-class JobMenu(title: String, opener: HumanEntity, previousMenu: BaseMenu?, size: Int = 54) :
-	BaseMenu(title, opener, previousMenu, size) {
+class JobMenu(title: Component, opener: HumanEntity, previousMenu: BaseMenu?) :
+	BaseMenu(title, opener, previousMenu, size = 54) {
 
-	class Factory(material: Material = Material.WOODEN_PICKAXE) : BaseMenu.Factory("§6§lMétiers", material) {
-		override fun create(opener: HumanEntity, previousMenu: BaseMenu?, size: Int): BaseMenu =
-			JobMenu(title, opener, previousMenu, size)
+	class Factory(material: Material = Material.WOODEN_PICKAXE) :
+		BaseMenu.Factory(Component.text("Métiers", NamedTextColor.GOLD, TextDecoration.BOLD), material) {
+		override fun create(opener: HumanEntity, previousMenu: BaseMenu?): BaseMenu =
+			JobMenu(title, opener, previousMenu)
 	}
 
 	private val decimalFormat = DecimalFormat("#")
@@ -50,7 +54,7 @@ class JobMenu(title: String, opener: HumanEntity, previousMenu: BaseMenu?, size:
 				this.x = x++
 				this.y = 1
 				material = config.icon
-				name = "§7Métier actuel : ${config.label}"
+				name = Component.text("Métier actuel : ${config.label}", NamedTextColor.GRAY)
 				this.lore = lore
 				if (ascentPoints > 0) {
 					isEnchanted = true
@@ -98,7 +102,7 @@ class JobMenu(title: String, opener: HumanEntity, previousMenu: BaseMenu?, size:
 				this.x = x++
 				this.y = y
 				material = config.icon
-				name = config.label
+				name = Component.text(config.label)
 				this.lore = lore
 
 				leftClick = {
