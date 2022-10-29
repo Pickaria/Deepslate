@@ -5,5 +5,6 @@ repositories {
 dependencies {
 	compileOnly(project(":shared"))
 	compileOnly(project(":menu"))
+	compileOnly(project(":economy"))
 	compileOnly("com.github.MilkBowl:VaultAPI:1.7.1")
 }

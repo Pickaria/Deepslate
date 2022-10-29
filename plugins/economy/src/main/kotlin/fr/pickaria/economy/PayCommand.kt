@@ -1,5 +1,6 @@
 package fr.pickaria.economy
 
+import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder
 import org.bukkit.Bukkit.getServer
 import org.bukkit.command.Command

@@ -10,6 +10,8 @@ import org.bukkit.command.CommandExecutor
 import org.bukkit.command.CommandSender
 import org.bukkit.command.TabCompleter
 import org.bukkit.entity.Player
+import org.bukkit.inventory.ItemStack
+import kotlin.math.min
 
 
 internal class CreateBuyOrderCommand : CommandExecutor, TabCompleter {
@@ -81,7 +83,17 @@ internal class CreateBuyOrderCommand : CommandExecutor, TabCompleter {
 
 				sender.sendMessage(message)
 
-				buy(sender, material, maxPrice, quantity)
+				var boughtAmount = buy(sender, material, maxPrice, quantity)
+				val item = ItemStack(material)
+
+				while (boughtAmount > 0) {
+					val amount = min(boughtAmount, 64)
+					sender.inventory.addItem(item.asQuantity(amount)).forEach { (_, it) ->
+						// Drop items that cannot be added
+						sender.world.dropItem(sender.location, it)
+					}
+					boughtAmount -= 64
+				}
 			}
 		}
 

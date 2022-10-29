@@ -84,7 +84,10 @@ class Order private constructor(private val row: ResultRow) {
 
 			Orders
 				.slice(Orders.material, sumAmount, maxPrice, minPrice, avgPrice)
-				.select { Orders.type eq type }
+				.select {
+					(Orders.type eq type) and
+					(Orders.amount greater 0)
+				}
 				.groupBy(Orders.material)
 				.map {
 					Listing(
@@ -125,7 +128,7 @@ class Order private constructor(private val row: ResultRow) {
 				}
 				.first()
 				.let {
-					Triple(it[maxPrice] ?: 0.0, it[minPrice] ?: 0.0, it[avgPrice]?.toDouble() ?: 0.0)
+					Triple(it[maxPrice] ?: 1.0, it[minPrice] ?: 1.0, it[avgPrice]?.toDouble() ?: 1.0)
 				}
 		}
 
