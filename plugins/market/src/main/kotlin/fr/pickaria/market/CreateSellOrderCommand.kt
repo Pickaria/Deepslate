@@ -12,6 +12,14 @@ import org.bukkit.entity.Player
 import kotlin.math.min
 
 
+/*
+ * /sell <minimum sell price> [quantity]
+ *
+ * Creates a sell order for the item in the main hand of the player.
+ * If no price is specified, the minimum price of the current listings will be used.
+ *  -> If the material has no listing, the player will be asked to enter a price.
+ * If no quantity is specified, the size of the stack in hand will be used.
+ */
 internal class CreateSellOrderCommand : CommandExecutor, TabCompleter {
 	override fun onCommand(sender: CommandSender, command: Command, label: String, args: Array<out String>): Boolean {
 		if (sender is Player) {
@@ -36,8 +44,8 @@ internal class CreateSellOrderCommand : CommandExecutor, TabCompleter {
 				val isSelling = Order.get(material, OrderType.SELL).isNotEmpty()
 
 				if (isSelling) {
-					val (maxPrice, _, _) = Order.getPrices(material)
-					maxPrice
+					val (_, minPrice, _) = Order.getPrices(material)
+					minPrice
 				} else {
 					sender.sendMessage(Component.text("Vous devez entrer un prix unitaire pour vendre cet objet.", NamedTextColor.RED))
 					return false

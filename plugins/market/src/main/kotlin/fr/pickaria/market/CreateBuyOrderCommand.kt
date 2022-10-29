@@ -14,11 +14,17 @@ import org.bukkit.inventory.ItemStack
 import kotlin.math.min
 
 
+/*
+ * /buy <material> [quantity] [maximum buy price]
+ *
+ * Trys to buy as much as possible of the given material with the given price as a maximum.
+ * If the item is not currently listed, the command will fail.
+ * If no price is specified, the maximum price of the current listings will be used.
+ * If the quantity is not specified, `1` will be used.
+ *
+ * TODO: Save listing for later use.
+ */
 internal class CreateBuyOrderCommand : CommandExecutor, TabCompleter {
-	companion object {
-		val MATERIALS = Material.values().map { it.name.lowercase() }
-	}
-
 	override fun onCommand(sender: CommandSender, command: Command, label: String, args: Array<out String>): Boolean {
 		if (sender is Player) {
 			if (args.isEmpty()) {
