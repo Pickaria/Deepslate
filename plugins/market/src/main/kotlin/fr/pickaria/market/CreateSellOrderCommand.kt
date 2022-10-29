@@ -15,14 +15,10 @@ import kotlin.math.min
 internal class CreateSellOrderCommand : CommandExecutor, TabCompleter {
 	override fun onCommand(sender: CommandSender, command: Command, label: String, args: Array<out String>): Boolean {
 		if (sender is Player) {
-			if (args.isEmpty()) {
-				sender.sendMessage(Component.text("Vous devez entrer un prix unitaire.", NamedTextColor.RED))
-				return true
-			}
-
 			val item = sender.inventory.itemInMainHand
+			val material = item.type
 
-			if (item.hasItemMeta()) {
+			if (material.isAir || item.hasItemMeta()) {
 				val message = Component.text("Cet objet ne peut pas être vendu.", NamedTextColor.RED)
 				sender.sendMessage(message)
 				return true
@@ -37,12 +33,19 @@ internal class CreateSellOrderCommand : CommandExecutor, TabCompleter {
 					return true
 				}
 			} ?: run {
-				sender.sendMessage(Component.text("Vous devez entrer un prix unitaire.", NamedTextColor.RED))
-				return false
+				val isSelling = Order.get(material, OrderType.SELL).isNotEmpty()
+
+				if (isSelling) {
+					val (maxPrice, _, _) = Order.getPrices(material)
+					maxPrice
+				} else {
+					sender.sendMessage(Component.text("Vous devez entrer un prix unitaire pour vendre cet objet.", NamedTextColor.RED))
+					return false
+				}
 			}
 
 			if (price < 1.0) {
-				sender.sendMessage(Component.text("Le prix doit être supérieur à 1.0.", NamedTextColor.RED))
+				sender.sendMessage(Component.text("Le prix doit être supérieur ou égal à 1.0.", NamedTextColor.RED))
 				return false
 			}
 
@@ -64,7 +67,7 @@ internal class CreateSellOrderCommand : CommandExecutor, TabCompleter {
 
 			if (!sender.inventory.containsAtLeast(item, quantity)) {
 				val message = Component.text("Vous n'avez pas autant de ")
-					.append(Component.translatable(item.type.translationKey()))
+					.append(Component.translatable(material.translationKey()))
 					.append(Component.text(" dans votre inventaire."))
 					.color(NamedTextColor.RED)
 				sender.sendMessage(message)
@@ -72,15 +75,19 @@ internal class CreateSellOrderCommand : CommandExecutor, TabCompleter {
 				return true
 			}
 
-			val order = Order.create(sender, item.type, OrderType.SELL, quantity, price)
+			val order = Order.create(sender, material, OrderType.SELL, quantity, price)
 
 			if (order != null) {
-				var removedAmount = 0
-				do {
-					val amountToRemove = min(quantity - removedAmount, 64)
-					sender.inventory.removeItem(item.asQuantity(amountToRemove))
-					removedAmount += amountToRemove
-				} while (removedAmount < quantity)
+				if (quantity <= 64) {
+					item.amount -= quantity
+				} else {
+					var removedAmount = 0
+					do {
+						val amountToRemove = min(quantity - removedAmount, 64)
+						sender.inventory.removeItem(item.asQuantity(amountToRemove))
+						removedAmount += amountToRemove
+					} while (removedAmount < quantity)
+				}
 
 				val message = Component.text("Ordre de vente n°", NamedTextColor.GRAY)
 					.append(Component.text(order.id, NamedTextColor.GOLD))
@@ -101,14 +108,15 @@ internal class CreateSellOrderCommand : CommandExecutor, TabCompleter {
 	): List<String> {
 		if (sender is Player) {
 			val item = sender.inventory.itemInMainHand.asOne()
+			val material = item.type
 
-			if (item.type.isAir || item.hasItemMeta()) {
+			if (material.isAir || item.hasItemMeta()) {
 				return listOf()
 			}
 
 			return when (args.size) {
 				1 -> {
-					Order.getPrices(item.type).toList().map { it.toString() }
+					Order.getPrices(material).toList().map { it.toString() }
 				}
 
 				2 -> {

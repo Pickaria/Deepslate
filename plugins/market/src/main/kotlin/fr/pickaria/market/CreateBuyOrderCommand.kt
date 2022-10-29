@@ -70,7 +70,7 @@ internal class CreateBuyOrderCommand : CommandExecutor, TabCompleter {
 			}
 
 			if (maxPrice < 1.0) {
-				sender.sendMessage(Component.text("Le prix doit être supérieur à 1.0.", NamedTextColor.RED))
+				sender.sendMessage(Component.text("Le prix doit être supérieur ou égal à 1.0.", NamedTextColor.RED))
 				return false
 			}
 
