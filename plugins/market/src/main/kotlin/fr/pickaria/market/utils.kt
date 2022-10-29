@@ -3,7 +3,9 @@ package fr.pickaria.market
 import fr.pickaria.shared.models.Order
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
+import net.milkbowl.vault.economy.EconomyResponse
 import org.bukkit.Material
+import org.bukkit.OfflinePlayer
 import org.bukkit.entity.Player
 import kotlin.math.min
 
@@ -19,9 +21,18 @@ internal fun buy(player: Player, material: Material, maximumPrice: Double, amoun
 
 	for (order in orders) {
 		val buyingAmount = min(amount - boughtAmount, order.amount)
+
+		val price = buyingAmount * order.price
+		if (!economy.has(player, price)) {
+			break
+		}
+
 		boughtAmount += buyingAmount
 		order.amount -= buyingAmount
-		totalSpent += order.price * buyingAmount
+		totalSpent += price
+
+		economy.withdrawPlayer(player, price)
+		economy.depositPlayer(order.seller, price)
 
 		if (boughtAmount >= amount) {
 			break
