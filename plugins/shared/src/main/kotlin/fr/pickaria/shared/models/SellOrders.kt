@@ -6,6 +6,7 @@ import org.bukkit.OfflinePlayer
 import org.bukkit.inventory.ItemStack
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
+import org.jetbrains.exposed.sql.SqlExpressionBuilder.times
 import org.jetbrains.exposed.sql.transactions.transaction
 
 internal object SellOrders : Table() {
@@ -34,15 +35,17 @@ class SellOrder private constructor(private val row: ResultRow) {
 		/**
 		 * Get one sell order by id.
 		 */
-		fun get(id: Int) = SellOrder { SellOrders.id eq id }
+		fun get(id: Int) = transaction {
+			SellOrder { SellOrders.id eq id }
+		}
 
 		/**
 		 * Get all specific item's sell orders placed by a player.
 		 */
-		fun get(seller: OfflinePlayer, item: ItemStack): List<SellOrder> {
+		fun get(seller: OfflinePlayer, item: ItemStack): List<SellOrder> = transaction {
 			val bytes = item.serializeAsBytes()
 
-			return SellOrders.select {
+			SellOrders.select {
 				(SellOrders.seller eq seller.uniqueId) and (SellOrders.item eq bytes)
 			}.map {
 				SellOrder(it)
@@ -52,10 +55,10 @@ class SellOrder private constructor(private val row: ResultRow) {
 		/**
 		 * Get all specific item's sell orders.
 		 */
-		fun get(item: ItemStack): List<SellOrder> {
+		fun get(item: ItemStack): List<SellOrder> = transaction {
 			val bytes = item.serializeAsBytes()
 
-			return SellOrders.select {
+			SellOrders.select {
 				SellOrders.item eq bytes
 			}.map {
 				SellOrder(it)
@@ -65,26 +68,56 @@ class SellOrder private constructor(private val row: ResultRow) {
 		/**
 		 * Get all specific material's sell orders.
 		 */
-		fun get(material: Material): List<SellOrder> {
+		fun get(material: Material): List<SellOrder> = transaction {
 			val item = ItemStack(material).serializeAsBytes()
 
-			return SellOrders.select {
+			SellOrders.select {
 				SellOrders.item eq item
 			}.map {
 				SellOrder(it)
 			}
 		}
 
+		fun get(): List<Order> = transaction {
+			val maxPrice = SellOrders.price.max()
+			val minPrice = SellOrders.price.min()
+			val avgPrice = SellOrders.price.avg()
+			val sumAmount = SellOrders.amount.sum()
+
+			SellOrders
+				.slice(SellOrders.item, sumAmount, maxPrice, minPrice, avgPrice)
+				.selectAll()
+				.groupBy(SellOrders.item)
+				.map {
+					Order(
+						ItemStack.deserializeBytes(it[SellOrders.item]),
+						it[sumAmount] ?: 0,
+						it[maxPrice] ?: 0.0,
+						it[minPrice] ?: 0.0,
+						it[avgPrice]?.toDouble() ?: 0.0,
+					)
+				}
+		}
+
 		/**
 		 * Get all sell orders of a player.
 		 */
-		fun get(seller: OfflinePlayer) =
+		fun get(seller: OfflinePlayer) = transaction {
 			SellOrders.select {
 				SellOrders.seller eq seller.uniqueId
 			}.map {
 				SellOrder(it)
 			}
+		}
 	}
+
+	data class Order(
+		val item: ItemStack,
+		val amount: Int,
+		val maximumPrice: Double,
+		val minimumPrice: Double,
+		val averagePrice: Double,
+	)
 
 	private constructor(whereClause: SqlExpressionBuilder.() -> Op<Boolean>) : this(
 		transaction {

@@ -7,6 +7,7 @@ import org.bukkit.command.Command
 import org.bukkit.command.CommandExecutor
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
+import kotlin.math.min
 
 
 internal class CreateSellOrderCommand : CommandExecutor {
@@ -24,7 +25,7 @@ internal class CreateSellOrderCommand : CommandExecutor {
 				try {
 					it.toDouble()
 				} catch (_: NumberFormatException) {
-					val message = Component.text("Le prix que vous avez entré est incorrect.",NamedTextColor.RED)
+					val message = Component.text("Le prix que vous avez entré est incorrect.", NamedTextColor.RED)
 					sender.sendMessage(message)
 					return true
 				}
@@ -37,19 +38,19 @@ internal class CreateSellOrderCommand : CommandExecutor {
 				try {
 					it.toInt()
 				} catch (_: NumberFormatException) {
-					val message = Component.text("La quantité que vous avez entré est incorrecte.",NamedTextColor.RED)
+					val message = Component.text("La quantité que vous avez entré est incorrecte.", NamedTextColor.RED)
 					sender.sendMessage(message)
 					return true
 				}
 			} ?: item.amount
 
 			if (quantity <= 0) {
-				val message = Component.text("La quantité que vous avez entré est incorrecte.",NamedTextColor.RED)
+				val message = Component.text("La quantité que vous avez entré est incorrecte.", NamedTextColor.RED)
 				sender.sendMessage(message)
 				return true
 			}
 
-			if (!sender.inventory.contains(item, quantity)) {
+			if (!sender.inventory.containsAtLeast(item, quantity)) {
 				val message = Component.text("Vous n'avez pas autant de ")
 					.append(Component.translatable(item.type.translationKey()))
 					.append(Component.text(" dans votre inventaire."))
@@ -61,11 +62,17 @@ internal class CreateSellOrderCommand : CommandExecutor {
 
 			val order = SellOrder.create(sender, item.asQuantity(quantity), price)
 
-			order?.let {
-				sender.inventory.remove(item)
+			if (order != null) {
+				var removedAmount = 0
+				do {
+					val amountToRemove = min(quantity - removedAmount, 64)
+					sender.inventory.removeItem(item.asQuantity(amountToRemove))
+					removedAmount += amountToRemove
+					sender.sendMessage("$amountToRemove / $removedAmount < $quantity")
+				} while (removedAmount < quantity)
 
-				val message = Component.text("Ordre de vente n°",NamedTextColor.GRAY)
-					.append(Component.text(it.id, NamedTextColor.GOLD))
+				val message = Component.text("Ordre de vente n°", NamedTextColor.GRAY)
+					.append(Component.text(order.id, NamedTextColor.GOLD))
 					.append(Component.text(" créé.", NamedTextColor.GRAY))
 
 				sender.sendMessage(message)

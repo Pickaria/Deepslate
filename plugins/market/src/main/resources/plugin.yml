@@ -5,6 +5,7 @@ main: fr.pickaria.market.Main
 author: Quozul
 depend:
   - PickariaShared
+  - PickariaMenu
   - Vault
 
 commands:
