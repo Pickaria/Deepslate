@@ -1,36 +1,21 @@
 package fr.pickaria.menu
 
 import net.kyori.adventure.text.Component
+import net.kyori.adventure.text.format.TextDecoration
 import org.bukkit.Material
 import org.bukkit.inventory.ItemStack
 
-fun createMenuItem(material: Material?, name: String?, vararg lore: String): ItemStack {
-    val itemStack = ItemStack(material!!, 1)
-
-    itemStack.itemMeta = itemStack.itemMeta!!.apply{
-        name?.let {
-            this.displayName(Component.text(it))
-        }
-
-        this.lore(lore.map {
-            Component.text(it)
-        })
-    }
-
-    return itemStack
-}
-
-fun createMenuItem(material: Material = Material.AIR, name: String? = null, lore: List<String>): ItemStack {
+fun createMenuItem(material: Material = Material.AIR, name: Component? = null, lore: List<Component>? = null): ItemStack {
     val itemStack = ItemStack(material, 1)
 
     itemStack.itemMeta = itemStack.itemMeta?.apply {
         name?.let {
-            this.displayName(Component.text(it))
+            this.displayName(it.decoration(TextDecoration.ITALIC, TextDecoration.State.FALSE))
         }
 
-        this.lore(lore.map {
-            Component.text(it)
-        })
+        lore?.let {
+            this.lore(it)
+        }
     }
 
     return itemStack
