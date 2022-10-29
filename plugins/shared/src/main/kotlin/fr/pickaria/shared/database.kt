@@ -2,6 +2,7 @@ package fr.pickaria.shared
 
 import fr.pickaria.shared.models.BankAccounts
 import fr.pickaria.shared.models.Jobs
+import fr.pickaria.shared.models.SellOrders
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.transactions.TransactionManager
 import org.jetbrains.exposed.sql.transactions.transaction
@@ -13,15 +14,15 @@ internal fun openDatabase(path: String): Database {
 
 	transaction {
 		SchemaUtils.create(
-			BankAccounts, Jobs
+			BankAccounts, Jobs, SellOrders
 		)
 	}
 
 	transaction {
 		SchemaUtils.statementsRequiredToActualizeScheme(
-			BankAccounts, Jobs
+			BankAccounts, Jobs, SellOrders
 		) + SchemaUtils.addMissingColumnsStatements(
-			BankAccounts, Jobs
+			BankAccounts, Jobs, SellOrders
 		)
 	}.forEach {
 		transaction {

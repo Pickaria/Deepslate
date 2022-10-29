@@ -8,5 +8,6 @@ depend:
   - Vault
 
 commands:
-  value:
-    usage: /value
+  sell:
+    usage: /sell <price> [quantity]
+    description: Creates a sell order for the item in player's hand.

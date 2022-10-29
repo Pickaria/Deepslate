@@ -6,7 +6,7 @@ class Main : JavaPlugin() {
 	override fun onEnable() {
 		super.onEnable()
 
-		getCommand("value")?.setExecutor(GetValueCommand())
+		getCommand("sell")?.setExecutor(CreateSellOrderCommand())
 
 		logger.info("Market plugin loaded!")
 	}
