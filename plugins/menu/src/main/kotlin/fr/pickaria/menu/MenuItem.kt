@@ -16,25 +16,25 @@ class MenuItem {
 	var rightClick: ((InventoryClickEvent) -> Unit)? = null
 	var leftClick: ((InventoryClickEvent) -> Unit)? = null
 	var isEnchanted: Boolean = false
-	private lateinit var itemStack: ItemStack
+	var itemStack: ItemStack? = null
 
 	companion object {
 		inline fun build(block: MenuItem.() -> Unit) = MenuItem().apply(block).build()
 	}
 
 	fun build(): MenuItem {
-		itemStack = createMenuItem(material, name, lore)
+		if (itemStack == null) {
+			itemStack = createMenuItem(material, component, lore).apply {
+				if (isEnchanted) {
+					addUnsafeEnchantment(Enchantment.MENDING, 1)
+				}
 
-		if (isEnchanted) {
-			itemStack.addUnsafeEnchantment(Enchantment.MENDING, 1)
-		}
-
-		if (!material.isAir) {
-			itemStack.addItemFlags(ItemFlag.HIDE_ENCHANTS, ItemFlag.HIDE_ATTRIBUTES)
+				if (!material.isAir) {
+					addItemFlags(ItemFlag.HIDE_ENCHANTS, ItemFlag.HIDE_ATTRIBUTES)
+				}
+			}
 		}
 
 		return this
 	}
-
-	fun getItemStack() = this.itemStack
 }

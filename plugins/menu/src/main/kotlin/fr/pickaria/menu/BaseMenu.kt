@@ -48,7 +48,7 @@ abstract class BaseMenu(
 		for (i in page * pageSize until (page + 1) * pageSize) {
 			val menuItemStack = menuItemStacks[i] ?: fill
 			val slot = i - page * 45
-			inventory.setItem(slot, menuItemStack.getItemStack())
+			inventory.setItem(slot, menuItemStack.itemStack)
 		}
 
 		// Pagination items

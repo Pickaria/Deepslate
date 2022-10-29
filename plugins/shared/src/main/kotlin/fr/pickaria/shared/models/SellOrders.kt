@@ -6,7 +6,6 @@ import org.bukkit.OfflinePlayer
 import org.bukkit.inventory.ItemStack
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
-import org.jetbrains.exposed.sql.SqlExpressionBuilder.times
 import org.jetbrains.exposed.sql.transactions.transaction
 
 internal object SellOrders : Table() {
@@ -108,6 +107,21 @@ class SellOrder private constructor(private val row: ResultRow) {
 			}.map {
 				SellOrder(it)
 			}
+		}
+
+		fun getPrices(item: ItemStack): Triple<Double, Double, Double> = transaction {
+			val maxPrice = SellOrders.price.max()
+			val minPrice = SellOrders.price.min()
+			val avgPrice = SellOrders.price.avg()
+			val bytes = item.serializeAsBytes()
+
+			SellOrders
+				.slice(maxPrice, minPrice, avgPrice)
+				.select { SellOrders.item eq bytes }
+				.first()
+				.let {
+					Triple(it[maxPrice] ?: 1.0, it[minPrice] ?: 1.0, it[avgPrice]?.toDouble() ?: 1.0)
+				}
 		}
 	}
 

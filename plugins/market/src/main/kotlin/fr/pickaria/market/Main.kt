@@ -20,4 +20,9 @@ class Main : JavaPlugin() {
 
 		logger.info("Market plugin loaded!")
 	}
+
+	override fun onDisable() {
+		super.onDisable()
+		menuController.unregister("shop")
+	}
 }

@@ -18,25 +18,26 @@ internal class OrderListingMenu(title: String, opener: HumanEntity, previousMenu
 	override fun initMenu() {
 		var x = 0
 
-		SellOrder.get().forEach {
-			val material = it.item.type
+		SellOrder.get().forEach { order ->
+			val lore = MenuLore.build {
+				keyValues = mapOf(
+					"Quantité en vente" to order.amount,
+					"Capitalisation boursière" to economy.format(order.amount * order.averagePrice),
+					"Achat immédiat" to economy.format(order.maximumPrice),
+					"Vente immédiate" to economy.format(order.minimumPrice),
+					"Prix moyen" to economy.format(order.averagePrice),
+				)
+				leftClick = "Clic-gauche pour voir les options d'achat"
+				rightClick = "Clic-gauche pour voir les options de vente"
+			}.map { Component.text(it) }
+
+			order.item.lore(lore)
 
 			setMenuItem {
 				this.x = x++
 				this.y = 0
-				this.material = material
-				component = Component.translatable(material.translationKey())
-				lore = MenuLore.build {
-					keyValues = mapOf(
-						"Quantité en vente" to it.amount,
-						"Capitalisation boursière" to economy.format(it.amount * it.averagePrice),
-						"Achat immédiat" to economy.format(it.maximumPrice),
-						"Vente immédiate" to economy.format(it.minimumPrice),
-						"Prix moyen" to economy.format(it.averagePrice),
-					)
-					leftClick = "Clic-gauche pour voir les options d'achat"
-					rightClick = "Clic-gauche pour voir les options de vente"
-				}
+				itemStack = order.item
+				component = Component.translatable(order.item.type.translationKey())
 			}
 		}
 	}

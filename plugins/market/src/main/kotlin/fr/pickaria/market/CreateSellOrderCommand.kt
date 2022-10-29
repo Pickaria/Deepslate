@@ -6,11 +6,12 @@ import net.kyori.adventure.text.format.NamedTextColor
 import org.bukkit.command.Command
 import org.bukkit.command.CommandExecutor
 import org.bukkit.command.CommandSender
+import org.bukkit.command.TabCompleter
 import org.bukkit.entity.Player
 import kotlin.math.min
 
 
-internal class CreateSellOrderCommand : CommandExecutor {
+internal class CreateSellOrderCommand : CommandExecutor, TabCompleter {
 	override fun onCommand(sender: CommandSender, command: Command, label: String, args: Array<out String>): Boolean {
 		if (sender is Player) {
 			if (args.isEmpty()) {
@@ -18,8 +19,13 @@ internal class CreateSellOrderCommand : CommandExecutor {
 				return true
 			}
 
-
 			val item = sender.inventory.itemInMainHand
+
+			if (item.hasItemMeta()) {
+				val message = Component.text("Cet objet ne peut pas être vendu.", NamedTextColor.RED)
+				sender.sendMessage(message)
+				return true
+			}
 
 			val price = args.getOrNull(0)?.let {
 				try {
@@ -31,6 +37,11 @@ internal class CreateSellOrderCommand : CommandExecutor {
 				}
 			} ?: run {
 				sender.sendMessage(Component.text("Vous devez entrer un prix unitaire.", NamedTextColor.RED))
+				return false
+			}
+
+			if (price < 1.0) {
+				sender.sendMessage(Component.text("Le prix doit être supérieur à 1.0.", NamedTextColor.RED))
 				return false
 			}
 
@@ -68,7 +79,6 @@ internal class CreateSellOrderCommand : CommandExecutor {
 					val amountToRemove = min(quantity - removedAmount, 64)
 					sender.inventory.removeItem(item.asQuantity(amountToRemove))
 					removedAmount += amountToRemove
-					sender.sendMessage("$amountToRemove / $removedAmount < $quantity")
 				} while (removedAmount < quantity)
 
 				val message = Component.text("Ordre de vente n°", NamedTextColor.GRAY)
@@ -80,5 +90,35 @@ internal class CreateSellOrderCommand : CommandExecutor {
 		}
 
 		return true
+	}
+
+	override fun onTabComplete(
+		sender: CommandSender,
+		command: Command,
+		label: String,
+		args: Array<out String>
+	): MutableList<String> {
+		if (sender is Player) {
+			val item = sender.inventory.itemInMainHand.asOne()
+
+			if (item.type.isAir || item.hasItemMeta()) {
+				return mutableListOf()
+			}
+
+			return when (args.size) {
+				1 -> {
+					SellOrder.getPrices(item).toList().map { it.toString() }.toMutableList()
+				}
+
+				2 -> {
+					val count = sender.inventory.filter { it?.asOne() == item }.sumOf { it.amount }
+					mutableListOf("1", "16", "32", "64", count.toString())
+				}
+
+				else -> mutableListOf()
+			}
+		}
+
+		return mutableListOf()
 	}
 }
