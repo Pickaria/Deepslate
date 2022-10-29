@@ -71,7 +71,7 @@ internal class CreateSellOrderCommand : CommandExecutor, TabCompleter {
 				return true
 			}
 
-			val order = SellOrder.create(sender, item.asQuantity(quantity), price)
+			val order = SellOrder.create(sender, item.type, quantity, price)
 
 			if (order != null) {
 				var removedAmount = 0
@@ -97,28 +97,28 @@ internal class CreateSellOrderCommand : CommandExecutor, TabCompleter {
 		command: Command,
 		label: String,
 		args: Array<out String>
-	): MutableList<String> {
+	): List<String> {
 		if (sender is Player) {
 			val item = sender.inventory.itemInMainHand.asOne()
 
 			if (item.type.isAir || item.hasItemMeta()) {
-				return mutableListOf()
+				return listOf()
 			}
 
 			return when (args.size) {
 				1 -> {
-					SellOrder.getPrices(item).toList().map { it.toString() }.toMutableList()
+					SellOrder.getPrices(item.type).toList().map { it.toString() }
 				}
 
 				2 -> {
 					val count = sender.inventory.filter { it?.asOne() == item }.sumOf { it.amount }
-					mutableListOf("1", "16", "32", "64", count.toString())
+					listOf("1", "16", "32", "64", count.toString())
 				}
 
-				else -> mutableListOf()
+				else -> listOf()
 			}
 		}
 
-		return mutableListOf()
+		return listOf()
 	}
 }
