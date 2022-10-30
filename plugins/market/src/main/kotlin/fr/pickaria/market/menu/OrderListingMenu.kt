@@ -6,12 +6,14 @@ import fr.pickaria.market.economy
 import fr.pickaria.market.getPrices
 import fr.pickaria.menu.BaseMenu
 import fr.pickaria.menu.MenuLore
+import fr.pickaria.menu.createMenuItem
 import fr.pickaria.menu.menuController
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
 import net.kyori.adventure.text.format.TextDecoration
 import org.bukkit.Material
 import org.bukkit.entity.HumanEntity
+import org.bukkit.event.inventory.InventoryClickEvent
 
 internal class OrderListingMenu(title: Component, opener: HumanEntity, previousMenu: BaseMenu? = null) :
 	BaseMenu(title, opener, previousMenu, size = 54) {
@@ -24,6 +26,11 @@ internal class OrderListingMenu(title: Component, opener: HumanEntity, previousM
 
 	override fun initMenu() {
 		var x = 0
+
+		inventory.setItem(
+			45,
+			createMenuItem(Material.PAPER, Component.text("Mes ordres"), listOf(Component.text("Clic-gauche pour voir ses ordres")))
+		)
 
 		Order.getListings(OrderType.SELL).forEach { order ->
 			val (sellPrice, buyPrice) = getPrices(order.averagePrice)
@@ -59,6 +66,15 @@ internal class OrderListingMenu(title: Component, opener: HumanEntity, previousM
 					menuController.openMenu(opener, menu)
 				}
 			}
+		}
+	}
+
+	override fun onInventoryClick(event: InventoryClickEvent) {
+		super.onInventoryClick(event)
+
+		if (event.rawSlot == 45) {
+			val menu = OwnOrdersMenu(Component.text("Mes ordres"), opener, this@OrderListingMenu)
+			menuController.openMenu(opener, menu)
 		}
 	}
 }

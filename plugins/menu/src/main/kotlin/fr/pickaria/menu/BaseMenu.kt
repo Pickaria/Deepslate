@@ -88,7 +88,7 @@ abstract class BaseMenu(
 	}
 
 	// Check for clicks on items
-	fun onInventoryClick(event: InventoryClickEvent) {
+	open fun onInventoryClick(event: InventoryClickEvent) {
 		val clickedItem = event.currentItem
 
 		// verify current item is not null

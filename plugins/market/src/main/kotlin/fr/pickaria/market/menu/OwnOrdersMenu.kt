@@ -10,13 +10,11 @@ import org.bukkit.Material
 import org.bukkit.OfflinePlayer
 import org.bukkit.entity.HumanEntity
 import org.bukkit.entity.Player
-import kotlin.math.min
 
 class OwnOrdersMenu(title: Component, opener: HumanEntity, previousMenu: BaseMenu? = null) :
 	BaseMenu(title, opener, previousMenu, size = 54) {
 
-	class Factory :
-		BaseMenu.Factory(Component.text("Mes ordres"), Material.CHEST, listOf()) {
+	class Factory : BaseMenu.Factory(Component.text("Mes ordres"), Material.PAPER, listOf()) {
 		override fun create(opener: HumanEntity, previousMenu: BaseMenu?): BaseMenu =
 			OwnOrdersMenu(title, opener, previousMenu)
 	}
@@ -49,7 +47,6 @@ class OwnOrdersMenu(title: Component, opener: HumanEntity, previousMenu: BaseMen
 					(it.whoClicked as Player).chat("/cancel ${order.id}")
 					updateMenu()
 				}
-				amount = min(order.amount, order.material.maxStackSize)
 			}
 		}
 	}
