@@ -29,7 +29,7 @@ class HomeMenu(title: Component, opener: HumanEntity, previousMenu: BaseMenu?) :
 			this.x = 8
 			this.y = 0
 			material = Material.BUNDLE
-			name = "§r§6Sacoche de Pickarite"
+			name = Component.text("Sacoche de Pickarite", NamedTextColor.GOLD)
 		}.getItemStack()
 
 		val bundle = itemStack.itemMeta as BundleMeta

@@ -19,7 +19,7 @@ internal class ShopListeners : Listener {
 	companion object {
 		private val openPotionEffectType = PotionEffectType.BLINDNESS
 		private val openPotionEffect = PotionEffect(openPotionEffectType, Integer.MAX_VALUE, 1, true, false, false)
-		private val menus: MutableList<InventoryView> = mutableListOf()
+		private val menus: MutableList<InventoryView> = mutableListOf() // FIXME: Possible memory leak
 	}
 
 	@EventHandler
