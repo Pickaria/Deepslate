@@ -13,7 +13,7 @@ import org.bukkit.entity.Player
 
 
 /*
- * /buy <material> [quantity] [maximum buy price]
+ * /buy <material> [quantity = 1] [maximum buy price = market price]
  *
  * Trys to buy as much as possible of the given material with the given price as a maximum.
  * If the item is not currently listed, the command will fail.
@@ -68,12 +68,10 @@ internal class CreateBuyOrderCommand : CommandExecutor, TabCompleter {
 					sender.sendMessage(message)
 					return true
 				}
-			} ?: run {
-				Order.getMaximumPrice(material)
-			}
+			} ?: getPrices(material).second
 
-			if (maxPrice < 1.0) {
-				sender.sendMessage(Component.text("Le prix doit être supérieur ou égal à 1.0.", NamedTextColor.RED))
+			if (maxPrice < Config.minimumPrice) {
+				sender.sendMessage(Component.text("Le prix doit être supérieur ou égal à ${Config.minimumPrice}.", NamedTextColor.RED))
 				return false
 			}
 

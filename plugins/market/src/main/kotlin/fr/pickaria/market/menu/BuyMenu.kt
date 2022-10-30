@@ -27,7 +27,6 @@ internal class BuyMenu(private val material: Material, title: Component, opener:
 
 			val player = opener as OfflinePlayer
 
-
 			setMenuItem {
 				this.x = x
 				y = 1

@@ -128,11 +128,19 @@ internal fun giveItems(player: Player, material: Material, amountToGive: Int) {
 	val item = ItemStack(material)
 
 	while (restToGive > 0) {
-		val amount = min(restToGive, 64)
+		val amount = min(restToGive, material.maxStackSize)
 		player.inventory.addItem(item.asQuantity(amount)).forEach { (_, it) ->
 			// Drop items that cannot be added
 			player.world.dropItem(player.location, it)
 		}
-		restToGive -= 64
+		restToGive -= material.maxStackSize
 	}
+}
+
+/**
+ * Returns a pair containing the sell price and the buy price.
+ */
+internal fun getPrices(material: Material): Pair<Double, Double> {
+	val average = Order.getAveragePrice(material)
+	return min(average * Config.sellPercentage, Config.minimumPrice) to average * Config.buyPercentage
 }

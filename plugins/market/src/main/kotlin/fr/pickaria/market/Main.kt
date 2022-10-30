@@ -11,6 +11,9 @@ class Main : JavaPlugin() {
 	override fun onEnable() {
 		super.onEnable()
 
+		saveDefaultConfig()
+		Config.setConfig(this.config)
+
 		setupEconomy()?.let {
 			economy = it
 		}
@@ -26,6 +29,6 @@ class Main : JavaPlugin() {
 
 	override fun onDisable() {
 		super.onDisable()
-		menuController.unregister("shop")
+		menuController.unregister("market")
 	}
 }
