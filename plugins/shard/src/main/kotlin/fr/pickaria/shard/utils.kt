@@ -8,6 +8,7 @@ import org.bukkit.Material
 import org.bukkit.OfflinePlayer
 import org.bukkit.entity.Player
 import org.bukkit.event.inventory.InventoryType
+import org.bukkit.inventory.InventoryView
 import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.MerchantRecipe
 import org.bukkit.persistence.PersistentDataType
@@ -34,13 +35,13 @@ fun createShardItem(amount: Int): ItemStack {
  * Returns true if the provided ItemStack is a valid shard.
  */
 internal fun isShardItem(item: ItemStack): Boolean =
-	item.itemMeta?.let{
+	item.itemMeta?.let {
 		val isShard = it.persistentDataContainer.get(namespace, PersistentDataType.BYTE) == (1).toByte()
 		val isEnchanted = it.hasEnchants() && it.enchants.contains(GlowEnchantment.instance)
 		isShard && isEnchanted
 	} ?: false
 
-internal fun createChestMerchant(player: Player) {
+internal fun createChestMerchant(player: Player): InventoryView? {
 	val money = getShardBalance(player)
 
 	val merchant = Bukkit.createMerchant(shopConfig.shopName)
@@ -63,10 +64,12 @@ internal fun createChestMerchant(player: Player) {
 	val view = player.openMerchant(merchant, true)
 
 	view?.topInventory?.let {
-		if( it.type == InventoryType.MERCHANT) {
+		if (it.type == InventoryType.MERCHANT) {
 			it.holder
 		}
 	}
+
+	return view
 }
 
 /**

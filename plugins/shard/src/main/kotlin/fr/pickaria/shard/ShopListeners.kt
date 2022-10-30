@@ -10,6 +10,7 @@ import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.inventory.*
 import org.bukkit.event.player.PlayerInteractEvent
+import org.bukkit.inventory.InventoryView
 import org.bukkit.persistence.PersistentDataType
 import org.bukkit.potion.PotionEffect
 import org.bukkit.potion.PotionEffectType
@@ -18,7 +19,7 @@ internal class ShopListeners : Listener {
 	companion object {
 		private val openPotionEffectType = PotionEffectType.BLINDNESS
 		private val openPotionEffect = PotionEffect(openPotionEffectType, Integer.MAX_VALUE, 1, true, false, false)
-
+		private val menus: MutableList<InventoryView> = mutableListOf()
 	}
 
 	@EventHandler
@@ -27,29 +28,38 @@ internal class ShopListeners : Listener {
 
 		// Force set the item into the trade view
 		val ingredient = recipe.ingredients.first()
-		val price = ingredient.amount.toDouble()
-		if (economy.has(event.whoClicked as OfflinePlayer, price)) {
-			event.inventory.setItem(0, ingredient)
-			event.whoClicked.playSound(shopConfig.tradeSelectSound)
-			// FIXME: Reopen inventory to update `maxUses`?
-		} else {
-			// If the player doesn't have enough money, prevent the trade and clears previous trade
-			event.inventory.setItem(0, null)
-			event.result = Event.Result.DENY
-			event.isCancelled = true
+
+		if (isShardItem(ingredient) && menus.contains(event.view)) {
+			val price = ingredient.amount.toDouble()
+
+			if (economy.has(event.whoClicked as OfflinePlayer, price)) {
+				event.inventory.setItem(0, ingredient)
+				event.whoClicked.playSound(shopConfig.tradeSelectSound)
+				// FIXME: Reopen inventory to update `maxUses`?
+			} else {
+				// If the player doesn't have enough money, prevent the trade and clears previous trade
+				event.inventory.setItem(0, null)
+				event.result = Event.Result.DENY
+				event.isCancelled = true
+			}
 		}
 	}
 
 	@EventHandler
 	fun onPlayerTrade(event: PlayerPurchaseEvent) {
 		event.trade.let {
-			val price = it.ingredients[0].amount.toDouble()
-			if (economy.has(event.player, price)) {
-				economy.withdrawPlayer(event.player, price)
-				event.player.playSound(shopConfig.tradeSound)
-			} else {
-				// If the player doesn't have enough money, prevent the trade
-				event.isCancelled = true
+			val ingredient = it.ingredients.first()
+
+			if (isShardItem(ingredient)) {
+				val price = ingredient.amount.toDouble()
+
+				if (economy.has(event.player, price)) {
+					economy.withdrawPlayer(event.player, price)
+					event.player.playSound(shopConfig.tradeSound)
+				} else {
+					// If the player doesn't have enough money, prevent the trade
+					event.isCancelled = true
+				}
 			}
 		}
 	}
@@ -66,13 +76,15 @@ internal class ShopListeners : Listener {
 					val player = event.player
 
 					if (!player.isSneaking) {
-						createChestMerchant(player)
+						createChestMerchant(player)?.let {
+							menus.add(it)
 
-						player.playSound(shopConfig.openSound)
-						player.addPotionEffect(openPotionEffect)
-						player.world.spawnParticle(Particle.END_ROD, block.location, 30, 1.0, 1.0, 1.0, 0.0)
+							player.playSound(shopConfig.openSound)
+							player.addPotionEffect(openPotionEffect)
+							player.world.spawnParticle(Particle.END_ROD, block.location, 30, 1.0, 1.0, 1.0, 0.0)
 
-						event.isCancelled = true
+							event.isCancelled = true
+						}
 					}
 				}
 			}
@@ -84,8 +96,7 @@ internal class ShopListeners : Listener {
 	 */
 	@EventHandler
 	fun onInventoryClick(event: InventoryClickEvent) {
-		// TODO: Identify inventories without using `event.inventory.type == InventoryType.XXX`
-		if (event.clickedInventory?.type === InventoryType.MERCHANT && event.slotType != InventoryType.SlotType.RESULT) {
+		if (event.clickedInventory?.type === InventoryType.MERCHANT && menus.contains(event.view) && event.slotType != InventoryType.SlotType.RESULT) {
 			event.result = Event.Result.DENY
 			event.isCancelled = true
 		}
@@ -96,11 +107,11 @@ internal class ShopListeners : Listener {
 	 */
 	@EventHandler
 	fun onInventoryClose(event: InventoryCloseEvent) {
-		// TODO: Identify inventories without using `event.inventory.type == InventoryType.XXX`
-		if (event.inventory.type === InventoryType.MERCHANT) {
+		if (event.inventory.type === InventoryType.MERCHANT && menus.contains(event.view)) {
 			event.inventory.clear()
 			event.player.removePotionEffect(openPotionEffectType)
 			event.player.playSound(shopConfig.closeSound)
+			menus.remove(event.view)
 		}
 	}
 }
