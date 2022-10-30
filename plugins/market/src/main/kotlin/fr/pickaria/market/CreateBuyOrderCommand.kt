@@ -71,8 +71,7 @@ internal class CreateBuyOrderCommand : CommandExecutor, TabCompleter {
 					return true
 				}
 			} ?: run {
-				val (maxPrice, _, _) = Order.getPrices(material)
-				maxPrice
+				Order.getMaximumPrice(material)
 			}
 
 			if (maxPrice < 1.0) {
@@ -80,17 +79,9 @@ internal class CreateBuyOrderCommand : CommandExecutor, TabCompleter {
 				return false
 			}
 
-			var boughtAmount = buy(sender, material, maxPrice, quantity)
-			val item = ItemStack(material)
-
-			while (boughtAmount > 0) {
-				val amount = min(boughtAmount, 64)
-				sender.inventory.addItem(item.asQuantity(amount)).forEach { (_, it) ->
-					// Drop items that cannot be added
-					sender.world.dropItem(sender.location, it)
-				}
-				boughtAmount -= 64
-			}
+			// TODO: Create buy order
+			val boughtAmount = buy(sender, material, maxPrice, quantity)
+			giveItems(sender, material, boughtAmount)
 		}
 
 		return true

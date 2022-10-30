@@ -19,7 +19,7 @@ internal class BuyMenu(private val material: Material, title: Component, opener:
 	}
 
 	override fun initMenu() {
-		val (price, _, _) = Order.getPrices(material)
+		val price = Order.getMaximumPrice(material)
 		val unitPrice = economy.format(price)
 
 		listOf(1 to 1, 16 to 3, 32 to 5, 64 to 7).forEach { (amount, x) ->

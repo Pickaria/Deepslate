@@ -12,6 +12,16 @@ commands:
   sell:
     usage: /sell <minimum sell price> [quantity]
     description: Creates a sell order for the item in player's hand.
+    permission: pickaria.market.sell
   buy:
     usage: /buy <material> [quantity] [maximum buy price]
     description: Creates a buy order.
+    permission: pickaria.market.buy
+  cancel:
+    usage: /cancel <order id>
+    description: Cancels an order only if the command's sender created id.
+    permission: pickaria.market.cancel
+  market:
+    usage: /market
+    description: Open the market menu.
+    permission: pickaria.market.market

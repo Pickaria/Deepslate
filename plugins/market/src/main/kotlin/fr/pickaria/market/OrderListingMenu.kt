@@ -24,7 +24,7 @@ internal class OrderListingMenu(title: Component, opener: HumanEntity, previousM
 	override fun initMenu() {
 		var x = 0
 
-		Order.get(OrderType.SELL).forEach { order ->
+		Order.getListings(OrderType.SELL).forEach { order ->
 			setMenuItem {
 				this.x = x++
 				this.y = 0

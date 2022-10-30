@@ -48,8 +48,11 @@ class Order private constructor(private val row: ResultRow) {
 		/**
 		 * Get one sell order by id.
 		 */
-		fun get(id: Int): Order = transaction {
-			Order { Orders.id eq id }
+		fun get(seller: OfflinePlayer, id: Int): Order? = transaction {
+			Orders.select { (Orders.id eq id) and (Orders.seller eq seller.uniqueId) }
+				.firstOrNull()?.let {
+					Order(it)
+				}
 		}
 
 		/**
@@ -76,7 +79,7 @@ class Order private constructor(private val row: ResultRow) {
 			}
 		}
 
-		fun get(type: OrderType): List<Listing> = transaction {
+		fun getListings(type: OrderType): List<Listing> = transaction {
 			val maxPrice = Orders.price.max()
 			val minPrice = Orders.price.min()
 			val avgPrice = Orders.price.avg()
@@ -129,6 +132,54 @@ class Order private constructor(private val row: ResultRow) {
 				.first()
 				.let {
 					Triple(it[maxPrice] ?: 1.0, it[minPrice] ?: 1.0, it[avgPrice]?.toDouble() ?: 1.0)
+				}
+		}
+
+		fun getAveragePrice(material: Material): Double = transaction {
+			val column = Orders.price.avg()
+
+			Orders
+				.slice(column)
+				.select {
+					(Orders.material eq material.name) and
+							(Orders.amount greater 0) and
+							(Orders.type eq OrderType.SELL)
+				}
+				.first()
+				.let {
+					it[column]?.toDouble() ?: 1.0
+				}
+		}
+
+		fun getMinimumPrice(material: Material): Double = transaction {
+			val column = Orders.price.min()
+
+			Orders
+				.slice(column)
+				.select {
+					(Orders.material eq material.name) and
+							(Orders.amount greater 0) and
+							(Orders.type eq OrderType.SELL)
+				}
+				.first()
+				.let {
+					it[column]?.toDouble() ?: 1.0
+				}
+		}
+
+		fun getMaximumPrice(material: Material): Double = transaction {
+			val column = Orders.price.max()
+
+			Orders
+				.slice(column)
+				.select {
+					(Orders.material eq material.name) and
+							(Orders.amount greater 0) and
+							(Orders.type eq OrderType.SELL)
+				}
+				.first()
+				.let {
+					it[column]?.toDouble() ?: 1.0
 				}
 		}
 

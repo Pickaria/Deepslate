@@ -44,8 +44,7 @@ internal class CreateSellOrderCommand : CommandExecutor, TabCompleter {
 				val isSelling = Order.get(material, OrderType.SELL).isNotEmpty()
 
 				if (isSelling) {
-					val (_, _, avgPrice) = Order.getPrices(material)
-					avgPrice
+					Order.getAveragePrice(material)
 				} else {
 					sender.sendMessage(Component.text("Vous devez entrer un prix unitaire pour vendre cet objet.", NamedTextColor.RED))
 					return false
@@ -102,6 +101,8 @@ internal class CreateSellOrderCommand : CommandExecutor, TabCompleter {
 					.append(Component.text(" placé.", NamedTextColor.GRAY))
 
 				sender.sendMessage(message)
+
+				// TODO: Check if sell order can sell immediately
 			}
 		}
 

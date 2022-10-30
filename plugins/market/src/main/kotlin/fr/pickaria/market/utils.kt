@@ -1,13 +1,14 @@
 package fr.pickaria.market
 
 import fr.pickaria.economy.SendResponse
-import fr.pickaria.economy.sendTo
+import fr.pickaria.economy.send
 import fr.pickaria.shared.models.Order
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
 import org.bukkit.Material
 import org.bukkit.OfflinePlayer
 import org.bukkit.entity.Player
+import org.bukkit.inventory.ItemStack
 import kotlin.math.min
 
 /**
@@ -42,7 +43,7 @@ internal fun buy(player: Player, material: Material, maximumPrice: Double, amoun
 		// Total amount of money to spend
 		val price = buyingAmount * order.price
 
-		when (sendTo(player, order.seller, price)) {
+		when (player send price to order.seller) {
 			SendResponse.SUCCESS -> {
 				boughtAmount += buyingAmount
 				order.amount -= buyingAmount
@@ -117,4 +118,21 @@ internal fun buy(player: Player, material: Material, maximumPrice: Double, amoun
 	}
 
 	return boughtAmount
+}
+
+// TODO: Create `sell` function, any item bought will be placed in (#31)
+
+// TODO: Give to OfflinePlayer through their dematerialized inventory (#31)
+internal fun giveItems(player: Player, material: Material, amountToGive: Int) {
+	var restToGive = amountToGive
+	val item = ItemStack(material)
+
+	while (restToGive > 0) {
+		val amount = min(restToGive, 64)
+		player.inventory.addItem(item.asQuantity(amount)).forEach { (_, it) ->
+			// Drop items that cannot be added
+			player.world.dropItem(player.location, it)
+		}
+		restToGive -= 64
+	}
 }
