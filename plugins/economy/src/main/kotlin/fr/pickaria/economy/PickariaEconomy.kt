@@ -53,7 +53,7 @@ class PickariaEconomy : AbstractEconomy() {
 			}
 		}?.let {
 			it.balance -= amount
-			EconomyResponse(0.0, it.balance, ResponseType.SUCCESS, "")
+			EconomyResponse(amount, it.balance, ResponseType.SUCCESS, "")
 		} ?: EconomyResponse(0.0, 0.0, ResponseType.FAILURE, "")
 
 	override fun depositPlayer(player: OfflinePlayer, amount: Double): EconomyResponse =
@@ -65,7 +65,7 @@ class PickariaEconomy : AbstractEconomy() {
 			}
 		}?.let {
 			it.balance += amount
-			EconomyResponse(0.0, it.balance, ResponseType.SUCCESS, "")
+			EconomyResponse(amount, it.balance, ResponseType.SUCCESS, "")
 		} ?: EconomyResponse(0.0, 0.0, ResponseType.FAILURE, "")
 
 	override fun createPlayerAccount(player: OfflinePlayer): Boolean =
