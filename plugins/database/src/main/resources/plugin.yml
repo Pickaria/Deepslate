@@ -4,4 +4,4 @@ api-version: 1.19
 main: fr.pickaria.database.Main
 author: Quozul
 depend:
-  - PickariaShared
+  - PickariaLib
