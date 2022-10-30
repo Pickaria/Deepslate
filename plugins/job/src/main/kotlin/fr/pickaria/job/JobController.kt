@@ -1,9 +1,9 @@
 package fr.pickaria.job
 
+import fr.pickaria.database.models.Job
 import fr.pickaria.job.events.JobAscentEvent
 import fr.pickaria.job.events.JobLevelUpEvent
 import fr.pickaria.job.jobs.*
-import fr.pickaria.shared.models.Job
 import org.bukkit.Bukkit
 import org.bukkit.Bukkit.getServer
 import org.bukkit.boss.BarColor

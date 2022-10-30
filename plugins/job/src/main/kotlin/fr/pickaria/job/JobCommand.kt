@@ -1,7 +1,7 @@
 package fr.pickaria.job
 
+import fr.pickaria.database.models.Job
 import fr.pickaria.menu.menuController
-import fr.pickaria.shared.models.Job
 import org.bukkit.command.Command
 import org.bukkit.command.CommandExecutor
 import org.bukkit.command.CommandSender

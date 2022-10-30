@@ -3,6 +3,8 @@ repositories {
 }
 
 dependencies {
+	compileOnly(project(":lib"))
+	compileOnly(project(":database"))
 	compileOnly(project(":shared"))
 	compileOnly(project(":economy"))
 	compileOnly(project(":menu"))

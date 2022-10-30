@@ -62,7 +62,7 @@ repositories {
 }
 
 dependencies {
-	compileOnly(project(":shared"))
+	compileOnly(project(":lib"))
 	compileOnly("com.github.MilkBowl:VaultAPI:1.7.1")
 	compileOnly("com.comphenix.protocol:ProtocolLib:5.0.0-SNAPSHOT")
 }
@@ -77,7 +77,7 @@ repositories {
 }
 
 dependencies {
-	compileOnly(project(":shared"))
+	compileOnly(project(":lib"))
 	compileOnly("com.github.MilkBowl:VaultAPI:1.7.1")
 }
 EOF
@@ -91,14 +91,14 @@ repositories {
 }
 
 dependencies {
-	compileOnly(project(":shared"))
+	compileOnly(project(":lib"))
 	compileOnly("com.comphenix.protocol:ProtocolLib:5.0.0-SNAPSHOT")
 }
 EOF
 else
   cat > plugins/$plugin_name/build.gradle.kts << EOF
 dependencies {
-	compileOnly(project(":shared"))
+	compileOnly(project(":lib"))
 }
 EOF
 fi

@@ -101,7 +101,7 @@ subprojects {
 	// Remove Kotlin from all subprojects except 'shared'
 	tasks {
 		shadowJar {
-			if (this@subprojects.name != "shared") {
+			if (this@subprojects.name != "lib") {
 				dependencies {
 					exclude(dependency("org.jetbrains.kotlin:.*"))
 				}
