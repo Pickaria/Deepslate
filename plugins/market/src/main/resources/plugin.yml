@@ -4,8 +4,11 @@ api-version: 1.19
 main: fr.pickaria.market.Main
 author: Quozul
 depend:
-  - PickariaShared
+  - PickariaDatabase
+  - PickariaEconomy
+  - PickariaLib
   - PickariaMenu
+  - PickariaShared
   - Vault
 
 commands:
