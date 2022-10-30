@@ -1,3 +1,3 @@
 dependencies {
-	compileOnly(project(":shared"))
+	compileOnly(project(":lib"))
 }

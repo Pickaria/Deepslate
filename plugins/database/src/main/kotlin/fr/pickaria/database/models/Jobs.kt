@@ -1,4 +1,4 @@
-package fr.pickaria.shared.models
+package fr.pickaria.database.models
 
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq

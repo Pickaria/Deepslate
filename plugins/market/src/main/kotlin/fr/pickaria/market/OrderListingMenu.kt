@@ -1,11 +1,11 @@
 package fr.pickaria.market
 
+import fr.pickaria.database.models.Order
+import fr.pickaria.database.models.OrderType
 import fr.pickaria.market.menu.BuyMenu
 import fr.pickaria.menu.BaseMenu
 import fr.pickaria.menu.MenuLore
 import fr.pickaria.menu.menuController
-import fr.pickaria.shared.models.Order
-import fr.pickaria.shared.models.OrderType
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
 import net.kyori.adventure.text.format.TextDecoration

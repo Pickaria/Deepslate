@@ -1,8 +1,8 @@
 package fr.pickaria.market
 
+import fr.pickaria.database.models.Order
 import fr.pickaria.economy.SendResponse
 import fr.pickaria.economy.send
-import fr.pickaria.shared.models.Order
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
 import org.bukkit.Material

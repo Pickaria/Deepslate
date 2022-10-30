@@ -1,4 +1,4 @@
-package fr.pickaria.shared
+package fr.pickaria.database
 
 import org.bukkit.Bukkit.getLogger
 import org.jetbrains.exposed.sql.SqlLogger

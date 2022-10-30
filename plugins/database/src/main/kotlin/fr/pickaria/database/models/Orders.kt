@@ -1,4 +1,4 @@
-package fr.pickaria.shared.models
+package fr.pickaria.database.models
 
 import org.bukkit.Bukkit
 import org.bukkit.Material
@@ -35,11 +35,11 @@ class Order private constructor(private val row: ResultRow) {
 			price: Double = 1.0
 		): Order? = transaction {
 			Orders.insert {
-				it[this.seller] = seller.uniqueId
-				it[this.material] = material.name
-				it[this.price] = price
-				it[this.amount] = amount
-				it[this.type] = orderType
+				it[Orders.seller] = seller.uniqueId
+				it[Orders.material] = material.name
+				it[Orders.price] = price
+				it[Orders.amount] = amount
+				it[type] = orderType
 			}.resultedValues?.firstOrNull()
 		}?.let {
 			Order(it)
@@ -269,7 +269,7 @@ class Order private constructor(private val row: ResultRow) {
 		get() = row[Orders.amount]
 		set(value) = transaction {
 			Orders.update({ whereClause() }) {
-				it[Orders.amount] = value
+				it[amount] = value
 			}
 		}
 }

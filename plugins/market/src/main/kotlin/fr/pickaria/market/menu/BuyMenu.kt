@@ -1,10 +1,10 @@
 package fr.pickaria.market.menu
 
+import fr.pickaria.database.models.Order
 import fr.pickaria.economy.has
 import fr.pickaria.market.economy
 import fr.pickaria.menu.BaseMenu
 import fr.pickaria.menu.MenuLore
-import fr.pickaria.shared.models.Order
 import net.kyori.adventure.text.Component
 import org.bukkit.Material
 import org.bukkit.OfflinePlayer
