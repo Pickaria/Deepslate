@@ -12,7 +12,7 @@ import org.bukkit.OfflinePlayer
 import org.bukkit.entity.HumanEntity
 import org.bukkit.entity.Player
 
-internal class BuyMenu(private val material: Material, title: Component, opener: HumanEntity, previousMenu: BaseMenu) :
+internal class SellMenu(private val material: Material, title: Component, opener: HumanEntity, previousMenu: BaseMenu) :
 	BaseMenu(title, opener, previousMenu, size = 36) {
 
 	init {
@@ -20,7 +20,7 @@ internal class BuyMenu(private val material: Material, title: Component, opener:
 	}
 
 	override fun initMenu() {
-		val price = getPrices(material).second
+		val price = getPrices(material).first
 		val unitPrice = economy.format(price)
 
 		listOf(1 to 1, 16 to 3, 32 to 5, 64 to 7).forEach { (amount, x) ->
@@ -32,23 +32,19 @@ internal class BuyMenu(private val material: Material, title: Component, opener:
 				this.x = x
 				y = 1
 				name = Component.text("$amount ")
-					.append(Component.translatable(this@BuyMenu.material.translationKey()))
-				if (player has price * amount) {
-					this.material = this@BuyMenu.material
+					.append(Component.translatable(this@SellMenu.material.translationKey()))
+
+				// TODO: Check if player has enough in inventory
+					this.material = this@SellMenu.material
 					lore = MenuLore.build {
-						leftClick = "Clic-gauche pour acheter $amount"
+						leftClick = "Clic-gauche pour vendre $amount"
 						keyValues = mapOf("Prix unitaire" to unitPrice, "Prix total" to offerPrice)
 					}
 					leftClick = {
-						(it.whoClicked as Player).chat("/buy ${material.name.lowercase()} $amount $price")
+						(it.whoClicked as Player).chat("/sell ${material.name.lowercase()} $amount $price")
 						updateMenu()
 					}
-				} else {
-					this.material = Material.BARRIER
-					lore = MenuLore.build {
-						description = listOf("Vous n'avez pas assez", "d'argent pour acheter ceci.")
-					}
-				}
+
 				this.amount = amount
 			}
 		}

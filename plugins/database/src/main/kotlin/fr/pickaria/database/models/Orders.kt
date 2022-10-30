@@ -80,13 +80,11 @@ class Order private constructor(private val row: ResultRow) {
 		}
 
 		fun getListings(type: OrderType): List<Listing> = transaction {
-			val maxPrice = Orders.price.max()
-			val minPrice = Orders.price.min()
 			val avgPrice = Orders.price.avg()
 			val sumAmount = Orders.amount.sum()
 
 			Orders
-				.slice(Orders.material, sumAmount, maxPrice, minPrice, avgPrice)
+				.slice(Orders.material, sumAmount, avgPrice)
 				.select {
 					(Orders.type eq type) and
 					(Orders.amount greater 0)
@@ -96,8 +94,6 @@ class Order private constructor(private val row: ResultRow) {
 					Listing(
 						Material.getMaterial(it[Orders.material]) ?: DEFAULT_MATERIAL,
 						it[sumAmount] ?: 0,
-						it[maxPrice] ?: 0.0,
-						it[minPrice] ?: 0.0,
 						it[avgPrice]?.toDouble() ?: 0.0,
 					)
 				}
@@ -209,7 +205,7 @@ class Order private constructor(private val row: ResultRow) {
 							(Orders.amount greater 0) and
 							(Orders.type eq OrderType.SELL)
 				}
-				.orderBy(Orders.price, SortOrder.DESC)
+				.orderBy(Orders.price, SortOrder.ASC)
 				.map { Order(it) }
 		}
 
@@ -232,8 +228,6 @@ class Order private constructor(private val row: ResultRow) {
 	data class Listing(
 		val material: Material,
 		val amount: Int,
-		val maximumPrice: Double,
-		val minimumPrice: Double,
 		val averagePrice: Double,
 	)
 

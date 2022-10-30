@@ -3,6 +3,7 @@ package fr.pickaria.market
 import fr.pickaria.database.models.Order
 import fr.pickaria.database.models.OrderType
 import fr.pickaria.market.menu.BuyMenu
+import fr.pickaria.market.menu.SellMenu
 import fr.pickaria.menu.BaseMenu
 import fr.pickaria.menu.MenuLore
 import fr.pickaria.menu.menuController
@@ -25,6 +26,8 @@ internal class OrderListingMenu(title: Component, opener: HumanEntity, previousM
 		var x = 0
 
 		Order.getListings(OrderType.SELL).forEach { order ->
+			val (sellPrice, buyPrice) = getPrices(order.averagePrice)
+
 			setMenuItem {
 				this.x = x++
 				this.y = 0
@@ -33,12 +36,12 @@ internal class OrderListingMenu(title: Component, opener: HumanEntity, previousM
 					keyValues = mapOf(
 						"Quantité en vente" to order.amount,
 						"Capitalisation boursière" to economy.format(order.amount * order.averagePrice),
-						"Achat immédiat" to economy.format(order.maximumPrice),
-						"Vente immédiate" to economy.format(order.minimumPrice),
+						"Achat immédiat" to economy.format(buyPrice),
+						"Vente immédiate" to economy.format(sellPrice),
 						"Prix moyen" to economy.format(order.averagePrice),
 					)
 					leftClick = "Clic-gauche pour voir les options d'achat"
-					rightClick = "Clic-gauche pour voir les options de vente"
+					rightClick = "Clic-droit pour voir les options de vente"
 				}
 				name = Component.translatable(order.material.translationKey())
 				leftClick = {
@@ -46,6 +49,13 @@ internal class OrderListingMenu(title: Component, opener: HumanEntity, previousM
 						.append(Component.translatable(order.material.translationKey(), NamedTextColor.GOLD))
 						.decorate(TextDecoration.BOLD)
 					val menu = BuyMenu(order.material, title, opener, this@OrderListingMenu)
+					menuController.openMenu(opener, menu)
+				}
+				rightClick = {
+					val title = Component.text("Vendre ", NamedTextColor.GRAY)
+						.append(Component.translatable(order.material.translationKey(), NamedTextColor.GOLD))
+						.decorate(TextDecoration.BOLD)
+					val menu = SellMenu(order.material, title, opener, this@OrderListingMenu)
 					menuController.openMenu(opener, menu)
 				}
 			}

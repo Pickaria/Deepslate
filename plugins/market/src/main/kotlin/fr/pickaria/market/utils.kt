@@ -9,6 +9,7 @@ import org.bukkit.Material
 import org.bukkit.OfflinePlayer
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
+import kotlin.math.max
 import kotlin.math.min
 
 /**
@@ -142,5 +143,11 @@ internal fun giveItems(player: Player, material: Material, amountToGive: Int) {
  */
 internal fun getPrices(material: Material): Pair<Double, Double> {
 	val average = Order.getAveragePrice(material)
-	return min(average * Config.sellPercentage, Config.minimumPrice) to average * Config.buyPercentage
+	return max(average * Config.sellPercentage, Config.minimumPrice) to average * Config.buyPercentage
 }
+
+/**
+ * Returns a pair containing the sell price and the buy price.
+ */
+internal fun getPrices(average: Double): Pair<Double, Double> =
+	max(average * Config.sellPercentage, Config.minimumPrice) to average * Config.buyPercentage
