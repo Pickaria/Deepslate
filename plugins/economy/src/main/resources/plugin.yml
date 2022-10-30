@@ -4,6 +4,8 @@ api-version: 1.19
 main: fr.pickaria.economy.Main
 author: Quozul
 depend:
+  - PickariaDatabase
+  - PickariaLib
   - PickariaShared
   - Vault
 

@@ -4,7 +4,7 @@ api-version: 1.19
 main: fr.pickaria.potion.Main
 author: Quozul
 depend:
-  - PickariaShared
+  - PickariaLib
 
 commands:
   potion:
