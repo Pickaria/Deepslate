@@ -259,6 +259,9 @@ class Order private constructor(private val row: ResultRow) {
 	val price: Double
 		get() = row[Orders.price]
 
+	val type: OrderType
+		get() = row[Orders.type]
+
 	var amount: Int
 		get() = row[Orders.amount]
 		set(value) = transaction {

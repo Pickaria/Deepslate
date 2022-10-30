@@ -1,9 +1,9 @@
-package fr.pickaria.market
+package fr.pickaria.market.menu
 
 import fr.pickaria.database.models.Order
 import fr.pickaria.database.models.OrderType
-import fr.pickaria.market.menu.BuyMenu
-import fr.pickaria.market.menu.SellMenu
+import fr.pickaria.market.economy
+import fr.pickaria.market.getPrices
 import fr.pickaria.menu.BaseMenu
 import fr.pickaria.menu.MenuLore
 import fr.pickaria.menu.menuController
