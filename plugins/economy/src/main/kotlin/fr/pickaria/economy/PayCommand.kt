@@ -1,8 +1,6 @@
 package fr.pickaria.economy
 
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder
-import net.milkbowl.vault.economy.EconomyResponse
-import org.bukkit.Bukkit.getLogger
 import org.bukkit.Bukkit.getServer
 import org.bukkit.command.Command
 import org.bukkit.command.CommandExecutor
@@ -24,7 +22,7 @@ class PayCommand : CommandExecutor, TabCompleter {
 				return true
 			}
 
-			if (!recipient.hasPlayedBefore()) {
+			if (!recipient.hasPlayedBefore() && !recipient.isOnline) {
 				sender.sendMessage(Config.playerDoesNotExist)
 				return true
 			}
@@ -43,39 +41,31 @@ class PayCommand : CommandExecutor, TabCompleter {
 				return true
 			}
 
-			if (sender has amount) {
-				val withdrawResponse = economy.withdrawPlayer(sender, amount)
+			when (sender send amount to recipient) {
+				SendResponse.RECEIVE_ERROR -> sender.sendMessage(Config.receiveError)
+				SendResponse.REFUND_ERROR -> sender.sendMessage(Config.refundError)
+				SendResponse.SUCCESS -> {
+					val format = economy.format(amount)
 
-				if (withdrawResponse.type == EconomyResponse.ResponseType.SUCCESS) {
-					val depositResponse = economy.depositPlayer(recipient, withdrawResponse.amount)
-
-					if (depositResponse.type != EconomyResponse.ResponseType.SUCCESS) {
-						sender.sendMessage(Config.receiveError)
-
-						// Try to refund
-						val refund = economy.depositPlayer(sender, withdrawResponse.amount)
-						if (refund.type == EconomyResponse.ResponseType.FAILURE) {
-							getLogger().severe("Can't refund player, withdrew amount: ${withdrawResponse.amount}")
-							sender.sendMessage(Config.refundError)
-						}
-					} else {
-						val format = economy.format(depositResponse.amount)
-						sender.sendMessage(miniMessage.deserialize(Config.sendSuccess, Placeholder.unparsed("amount", format)))
-
-						if (recipient.isOnline) {
-							val message = miniMessage.deserialize(
-								Config.receiveSuccess,
-								Placeholder.component("sender", sender.displayName()),
-								Placeholder.unparsed("amount", format),
-							)
-							(recipient as Player).sendMessage(message)
-						}
+					if (recipient.isOnline) {
+						val message = miniMessage.deserialize(
+							Config.receiveSuccess,
+							Placeholder.component("sender", sender.displayName()),
+							Placeholder.unparsed("amount", format),
+						)
+						(recipient as Player).sendMessage(message)
 					}
-				} else {
-					sender.sendMessage(Config.sendError)
+
+					sender.sendMessage(
+						miniMessage.deserialize(
+							Config.sendSuccess,
+							Placeholder.unparsed("amount", format)
+						)
+					)
 				}
-			} else {
-				sender.sendMessage(Config.notEnoughMoney)
+
+				SendResponse.SEND_ERROR -> sender.sendMessage(Config.sendError)
+				SendResponse.NOT_ENOUGH_MONEY -> sender.sendMessage(Config.notEnoughMoney)
 			}
 		}
 
