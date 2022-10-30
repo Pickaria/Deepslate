@@ -1,8 +1,10 @@
 rootProject.name = "plugin-collection"
-include("economy", "shared", "menu", "job", "chat", "potion")
+include("economy", "shared", "menu", "job", "chat", "potion", "lib", "database")
 project(":economy").projectDir = File("plugins/economy")
 project(":shared").projectDir = File("plugins/shared")
 project(":menu").projectDir = File("plugins/menu")
 project(":job").projectDir = File("plugins/job")
 project(":chat").projectDir = File("plugins/chat")
 project(":potion").projectDir = File("plugins/potion")
+project(":lib").projectDir = File("plugins/lib")
+project(":database").projectDir = File("plugins/database")
