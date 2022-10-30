@@ -7,7 +7,6 @@ import org.bukkit.Bukkit
 import org.bukkit.Material
 import org.bukkit.OfflinePlayer
 import org.bukkit.entity.Player
-import org.bukkit.event.inventory.InventoryType
 import org.bukkit.inventory.InventoryView
 import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.MerchantRecipe
@@ -61,15 +60,7 @@ internal fun createChestMerchant(player: Player): InventoryView? {
 		}
 	}
 
-	val view = player.openMerchant(merchant, true)
-
-	view?.topInventory?.let {
-		if (it.type == InventoryType.MERCHANT) {
-			it.holder
-		}
-	}
-
-	return view
+	return player.openMerchant(merchant, true)
 }
 
 /**

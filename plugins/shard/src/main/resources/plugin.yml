@@ -4,8 +4,10 @@ api-version: 1.19
 main: fr.pickaria.shard.Main
 author: Quozul
 depend:
-  - PickariaShared
   - PickariaArtefact
+  - PickariaDatabase
+  - PickariaLib
+  - PickariaShared
   - Vault
 
 commands:

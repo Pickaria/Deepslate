@@ -4,4 +4,5 @@ api-version: 1.19
 main: fr.pickaria.artefact.Main
 author: Quozul
 depend:
+  - PickariaLib
   - PickariaShared
