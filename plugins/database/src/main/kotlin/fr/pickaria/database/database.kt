@@ -1,7 +1,7 @@
-package fr.pickaria.shared
+package fr.pickaria.database
 
-import fr.pickaria.shared.models.BankAccounts
-import fr.pickaria.shared.models.Jobs
+import fr.pickaria.database.models.BankAccounts
+import fr.pickaria.database.models.Jobs
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.transactions.TransactionManager
 import org.jetbrains.exposed.sql.transactions.transaction

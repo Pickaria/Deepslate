@@ -1,6 +1,6 @@
 package fr.pickaria.economy
 
-import fr.pickaria.shared.models.BankAccount
+import fr.pickaria.database.models.BankAccount
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.event.ClickEvent
 import net.kyori.adventure.text.minimessage.tag.Tag

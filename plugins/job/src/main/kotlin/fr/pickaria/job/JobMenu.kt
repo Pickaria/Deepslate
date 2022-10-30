@@ -1,8 +1,8 @@
 package fr.pickaria.job
 
+import fr.pickaria.database.models.Job
 import fr.pickaria.menu.BaseMenu
 import fr.pickaria.menu.MenuLore
-import fr.pickaria.shared.models.Job
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
 import net.kyori.adventure.text.format.TextDecoration
