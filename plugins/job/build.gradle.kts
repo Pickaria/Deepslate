@@ -3,11 +3,11 @@ repositories {
 }
 
 dependencies {
-	compileOnly(project(":lib"))
 	compileOnly(project(":database"))
-	compileOnly(project(":shared"))
 	compileOnly(project(":economy"))
+	compileOnly(project(":lib"))
 	compileOnly(project(":menu"))
 	compileOnly(project(":potion"))
+	compileOnly(project(":shared"))
 	compileOnly("com.github.MilkBowl:VaultAPI:1.7.1")
 }
