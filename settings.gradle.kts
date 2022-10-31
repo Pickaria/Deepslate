@@ -1,5 +1,5 @@
 rootProject.name = "plugin-collection"
-include("economy", "shared", "menu", "job", "chat", "shard", "potion", "artefact", "lib", "database", "market")
+include("economy", "shared", "menu", "job", "chat", "shard", "potion", "artefact", "lib", "database", "market", "reward")
 project(":economy").projectDir = File("plugins/economy")
 project(":shared").projectDir = File("plugins/shared")
 project(":menu").projectDir = File("plugins/menu")
@@ -11,3 +11,4 @@ project(":market").projectDir = File("plugins/market")
 project(":artefact").projectDir = File("plugins/artefact")
 project(":lib").projectDir = File("plugins/lib")
 project(":database").projectDir = File("plugins/database")
+project(":reward").projectDir = File("plugins/reward")
