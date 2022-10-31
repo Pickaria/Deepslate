@@ -1,9 +1,13 @@
 package fr.pickaria.job
 
+import fr.pickaria.chat.getPlayerDisplayName
 import fr.pickaria.database.models.Job
 import fr.pickaria.job.events.JobAscentEvent
 import fr.pickaria.job.events.JobLevelUpEvent
 import fr.pickaria.job.jobs.*
+import net.kyori.adventure.text.Component
+import net.kyori.adventure.text.event.HoverEvent
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder
 import org.bukkit.Bukkit
 import org.bukkit.Bukkit.getServer
 import org.bukkit.boss.BarColor
@@ -12,6 +16,7 @@ import org.bukkit.boss.BossBar
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
+import org.bukkit.event.player.PlayerJoinEvent
 import org.bukkit.event.player.PlayerQuitEvent
 import org.bukkit.scheduler.BukkitRunnable
 import org.bukkit.scheduler.BukkitTask
@@ -45,6 +50,40 @@ class JobController(private val plugin: Main) : Listener {
 	@EventHandler
 	fun onPlayerQuit(event: PlayerQuitEvent) {
 		bossBars.remove(event.player)
+		refreshDisplayName(event.player)
+	}
+
+	/**
+	 * Sets the suffix according to the player's job level.
+	 */
+	@EventHandler
+	fun onPlayerJoin(event: PlayerJoinEvent) {
+		refreshDisplayName(event.player)
+	}
+
+	/**
+	 * Updates the display name with prefix and suffix.
+	 */
+	private fun refreshDisplayName(player: Player) {
+		getRank(player)?.let { suffix ->
+			chat?.setPlayerSuffix(player, miniMessage.serialize(suffix))
+			player.displayName(getPlayerDisplayName(player))
+		}
+	}
+
+	/**
+	 * Get the job rank of a player.
+	 */
+	private fun getRank(player: Player): Component? {
+		val ascendPoints = Job.get(player.uniqueId).sumOf { it.ascentPoints }
+		for ((points, suffix) in jobConfig.ranks) {
+			if (ascendPoints >= points) {
+				return suffix.hoverEvent(HoverEvent.showText(
+					miniMessage.deserialize(jobConfig.rankHover, Placeholder.parsed("points", ascendPoints.toString()))
+				))
+			}
+		}
+		return null
 	}
 
 	/**
@@ -89,6 +128,7 @@ class JobController(private val plugin: Main) : Listener {
 				val ascentPoints = jobController.getAscentPoints(job, config)
 				if (ascentPoints > 0) {
 					ascentJob(player, config, job, ascentPoints)
+					refreshDisplayName(player)
 					true
 				} else {
 					false

@@ -29,6 +29,19 @@ job_experience_boost_potion:
   power: 200 # Power in percentage
 
 
+ranks:
+  384: '<gray>[<dark_purple>X<gray>]'
+  192: '<gray>[<dark_red>S<gray>]'
+  96: '<gray>[<gold>A<gray>]'
+  48: '<gray>[<gold>B<gray>]'
+  24: '<gray>[<green>C<gray>]'
+  12: '<gray>[<dark_green>D<gray>]'
+  6: '<gray>[<gray>E<gray>]'
+  1: '<gray>[<white>F<gray>]'
+
+rank_hover: '<points> point(s) d''ascension'
+
+
 jobs:
   miner: # This is the name stored in the database
     label: "Mineur"
