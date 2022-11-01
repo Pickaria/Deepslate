@@ -20,10 +20,8 @@ internal class ArtefactListeners: Listener {
 	@EventHandler
 	fun onEntityTarget(event: EntityTargetEvent) {
 		event.target?.let {
-			if (it is Player) {
-				if (isWearingArtefact(it, Artefact.STEALTH)) {
-					event.isCancelled = true
-				}
+			if (it is Player && isWearingArtefact(it, Artefact.STEALTH)) {
+				event.isCancelled = true
 			}
 		}
 	}
@@ -31,23 +29,21 @@ internal class ArtefactListeners: Listener {
 	@EventHandler
 	fun onEntityDamageByEntity(event: EntityDamageByEntityEvent) {
 		event.entity.let { player ->
-			if (player is Player) {
-				if (isWearingArtefact(player, Artefact.ICE_THORNS)) {
-					val damager: Entity? = if (event.damager is Projectile) {
-						val shooter = (event.damager as Projectile).shooter
-						if (shooter is Entity) {
-							shooter
-						} else {
-							null
-						}
+			if (player is Player && isWearingArtefact(player, Artefact.ICE_THORNS)) {
+				val attacker: Entity? = if (event.damager is Projectile) {
+					val shooter = (event.damager as Projectile).shooter
+					if (shooter is Entity) {
+						shooter
 					} else {
-						event.damager
+						null
 					}
+				} else {
+					event.damager
+				}
 
-					damager?.let {
-						it.freezeTicks = it.freezeTicks + 140 // 140 is the minimum to freeze
-						it.world.spawnParticle(Particle.SNOWFLAKE, it.location, 10, 0.5, 0.5, 0.5, 0.01)
-					}
+				attacker?.let {
+					it.freezeTicks = it.freezeTicks + 140 // 140 is the minimum to freeze
+					it.world.spawnParticle(Particle.SNOWFLAKE, it.location, 10, 0.5, 0.5, 0.5, 0.01)
 				}
 			}
 		}
@@ -55,10 +51,8 @@ internal class ArtefactListeners: Listener {
 
 	@EventHandler
 	fun onBlockBreak(event: BlockBreakEvent) {
-		if (isWearingArtefact(event.player, Artefact.LUCKY)) {
-			if (Math.random() < 0.1) {
-				event.block.world.dropItemNaturally(event.block.location, ItemStack(Material.DIAMOND, 1))
-			}
+		if (isWearingArtefact(event.player, Artefact.LUCKY) && Math.random() < 0.1) {
+			event.block.world.dropItemNaturally(event.block.location, ItemStack(Material.DIAMOND, 1))
 		}
 	}
 
