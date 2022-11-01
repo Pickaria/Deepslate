@@ -16,7 +16,7 @@ class JobCommand : CommandExecutor, TabCompleter {
 	override fun onCommand(sender: CommandSender, command: Command, label: String, args: Array<out String>): Boolean {
 		if (sender is Player) {
 			if (args.isEmpty()) {
-				val message = if (jobController.jobCount(sender.uniqueId) == 0) {
+				val message = if (sender.jobCount() == 0) {
 				 	"§cVous n'exercez actuellement pas de métier."
 				} else {
 					val jobs = Job.get(sender.uniqueId).filter { it.active }.mapNotNull { jobConfig.jobs[it.job]?.label }
@@ -43,39 +43,39 @@ class JobCommand : CommandExecutor, TabCompleter {
 
 			when (args[0]) {
 				"join" -> {
-					if (jobController.jobCount(sender.uniqueId) >= jobConfig.maxJobs) {
+					if (sender.jobCount() >= jobConfig.maxJobs) {
 						sender.sendMessage("§cVous ne pouvez pas avoir plus de ${jobConfig.maxJobs} métier(s).")
-					} else if (jobController.hasJob(sender.uniqueId, job.key)) {
+					} else if (sender.hasJob(job.key)) {
 						sender.sendMessage("§cVous exercez déjà ce métier.")
 					} else {
-						val cooldown = jobController.getCooldown(sender.uniqueId, job.key)
+						val cooldown = sender.getJobCooldown(job.key)
 
 						if (cooldown > 0) {
 							sender.sendMessage("§cVous devez attendre $cooldown minutes avant de changer de métier.")
 						} else {
-							jobController.joinJob(sender.uniqueId, job.key)
+							sender joinJob job.key
 							sender.sendMessage("§7Vous avez rejoint le métier ${job.label}.")
 						}
 					}
 				}
 
 				"leave" -> {
-					if (!jobController.hasJob(sender.uniqueId, job.key)) {
+					if (!(sender hasJob job.key)) {
 						sender.sendMessage("§cVous n'exercez pas ce métier.")
 					} else {
-						val cooldown = jobController.getCooldown(sender.uniqueId, job.key)
+						val cooldown = sender.getJobCooldown(job.key)
 
 						if (cooldown > 0) {
 							sender.sendMessage("§cVous devez attendre $cooldown minutes avant de changer de métier.")
 						} else {
-							jobController.leaveJob(sender.uniqueId, job.key)
+							sender leaveJob job.key
 							sender.sendMessage("§7Vous avez quitté le métier ${job.label}.")
 						}
 					}
 				}
 
 				"ascent" -> {
-					if (!jobController.ascentJob(sender, job.key)) {
+					if (!(sender ascentJob job.key)) {
 						sender.sendMessage("§7Vous ne pouvez pas effectuer une ascension pour le métier ${job.label}.")
 					}
 				}

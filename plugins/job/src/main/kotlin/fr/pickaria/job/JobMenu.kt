@@ -21,7 +21,7 @@ class JobMenu(title: Component, opener: HumanEntity, previousMenu: BaseMenu?) :
 			JobMenu(title, opener, previousMenu)
 	}
 
-	private val decimalFormat = DecimalFormat("#")
+	private val decimalFormat = DecimalFormat("#.#")
 
 	init {
 		fillMaterial = Material.GREEN_STAINED_GLASS_PANE
@@ -43,7 +43,7 @@ class JobMenu(title: Component, opener: HumanEntity, previousMenu: BaseMenu?) :
 		}
 
 		activeJobs.forEach { (config, job) ->
-			val ascentPoints = jobController.getAscentPoints(job, config)
+			val ascentPoints = getAscentPoints(job, config)
 
 			val lore = MenuLore.build {
 				leftClick = if (ascentPoints > 0) "Clic-gauche pour effectuer une ascension" else null
@@ -59,7 +59,7 @@ class JobMenu(title: Component, opener: HumanEntity, previousMenu: BaseMenu?) :
 				if (ascentPoints > 0) {
 					isEnchanted = true
 					leftClick = {
-						jobController.ascentJob(it.whoClicked as Player, config, job, ascentPoints)
+						(it.whoClicked as Player).ascentJob(config, job, ascentPoints)
 						inventory.close()
 					}
 				}
@@ -76,11 +76,12 @@ class JobMenu(title: Component, opener: HumanEntity, previousMenu: BaseMenu?) :
 				description = config.description
 
 				job?.let {
-					val level = jobController.getLevelFromExperience(config, it.experience)
+					val level = getLevelFromExperience(config, it.experience)
 
 					keyValues = if (it.ascentPoints > 0) {
 						mapOf(
 							"Niveau" to "$level",
+							"Points d'ascension" to it.ascentPoints,
 							"Bonus d'expérience" to "+${decimalFormat.format(it.ascentPoints * jobConfig.experienceIncrease * 100)}%",
 							"Bonus de revenus" to "+${decimalFormat.format(it.ascentPoints * jobConfig.moneyIncrease * 100)}%",
 						)

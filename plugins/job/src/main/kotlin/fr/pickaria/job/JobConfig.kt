@@ -1,7 +1,6 @@
 package fr.pickaria.job
 
 import net.kyori.adventure.text.Component
-import net.kyori.adventure.text.format.NamedTextColor
 import org.bukkit.Bukkit
 import org.bukkit.Material
 import org.bukkit.configuration.file.FileConfiguration

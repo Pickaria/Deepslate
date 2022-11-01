@@ -2,10 +2,8 @@ package fr.pickaria.job
 
 import fr.pickaria.menu.menuController
 import fr.pickaria.potion.PotionController
-import fr.pickaria.shared.setupChat
 import fr.pickaria.shared.setupEconomy
 import net.kyori.adventure.text.minimessage.MiniMessage
-import net.milkbowl.vault.chat.Chat
 import net.milkbowl.vault.economy.Economy
 import org.bukkit.Bukkit.getServicesManager
 import org.bukkit.plugin.java.JavaPlugin
@@ -13,8 +11,7 @@ import org.bukkit.plugin.java.JavaPlugin
 internal lateinit var jobController: JobController
 internal lateinit var jobConfig: JobConfig
 internal lateinit var economy: Economy
-internal val chat: Chat? = setupChat()
-internal val miniMessage: MiniMessage = MiniMessage.miniMessage();
+internal val miniMessage: MiniMessage = MiniMessage.miniMessage()
 internal val potionController: PotionController? = try {
 	getServicesManager().getRegistration(PotionController::class.java)?.provider
 } catch (_: NoClassDefFoundError) {
@@ -43,7 +40,7 @@ class Main : JavaPlugin() {
 			logger.info("Job plugin loaded!")
 		} ?: run {
 			logger.severe("Economy not found, disabling plugin!")
-			server.pluginManager.disablePlugin(this);
+			server.pluginManager.disablePlugin(this)
 		}
 	}
 
