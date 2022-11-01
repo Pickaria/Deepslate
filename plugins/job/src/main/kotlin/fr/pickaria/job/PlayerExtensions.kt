@@ -45,7 +45,7 @@ internal infix fun Player.leaveJob(jobName: String) {
 /**
  * Get the job rank of a player.
  */
-internal fun Player.getRank(): Component? {
+internal fun Player.getRank(): Component {
 	val ascendPoints = Job.get(this.uniqueId).sumOf { it.ascentPoints }
 	for ((points, suffix) in jobConfig.ranks) {
 		if (ascendPoints >= points) {
@@ -55,7 +55,7 @@ internal fun Player.getRank(): Component? {
 			))
 		}
 	}
-	return null
+	return Component.empty()
 }
 
 /**
@@ -97,8 +97,6 @@ internal fun Player.ascentJob(config: JobConfig.Configuration, job: Job, ascentP
  * Refreshes the player's display name with their job rank.
  */
 internal fun Player.refreshDisplayName() {
-	this.getRank()?.let { suffix ->
-		this.suffix = miniMessage.serialize(suffix)
-		this.updateDisplayName()
-	}
+	this.suffix = miniMessage.serialize(this.getRank())
+	this.updateDisplayName()
 }
