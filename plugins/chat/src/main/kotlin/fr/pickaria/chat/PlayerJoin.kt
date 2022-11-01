@@ -9,7 +9,7 @@ internal class PlayerJoin : Listener {
 	@EventHandler
 	fun onPlayerJoin(event: PlayerJoinEvent) {
 		event.player.let {
-			it.displayName(getPlayerDisplayName(it))
+			it.updateDisplayName()
 			event.joinMessage(chatConfig.join.append(it.displayName()))
 		}
 	}

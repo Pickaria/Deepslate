@@ -5,17 +5,33 @@ import net.kyori.adventure.text.format.NamedTextColor
 import org.bukkit.entity.Player
 
 
-fun getPlayerDisplayName(player: Player) =
-	chat?.let { chat ->
-		val prefix = chat.getPlayerPrefix(player)?.let {
-			miniMessage.deserialize(it)
-				.append(Component.text(" "))
-		} ?: Component.empty()
+fun Player.updateDisplayName() {
+	val displayName = this.prefix()
+		.append(this.name().color(NamedTextColor.WHITE))
+		.append(this.suffix())
+	this.displayName(displayName)
+}
 
-		val suffix = chat.getPlayerSuffix(player)?.let {
-			Component.text(" ")
-				.append(miniMessage.deserialize(it))
-		} ?: Component.empty()
+var Player.prefix: String
+	get() = chat?.getPlayerPrefix(this) ?: ""
+	set(value) = chat?.setPlayerPrefix(this, value) ?: Unit
 
-		prefix.append(player.name().color(NamedTextColor.WHITE)).append(suffix)
-	} ?: player.displayName()
+var Player.suffix: String
+	get() = chat?.getPlayerSuffix(this) ?: ""
+	set(value) = chat?.setPlayerSuffix(this, value) ?: Unit
+
+fun Player.prefix(): Component = this.prefix.let {
+	if (it.isNotEmpty()) {
+		miniMessage.deserialize(it).append(Component.text(" "))
+	} else {
+		Component.empty()
+	}
+}
+
+fun Player.suffix(): Component = this.suffix.let {
+	if (it.isNotEmpty()) {
+		Component.text(" ").append(miniMessage.deserialize(it))
+	} else {
+		Component.empty()
+	}
+}

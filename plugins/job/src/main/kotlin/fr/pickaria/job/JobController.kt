@@ -1,6 +1,7 @@
 package fr.pickaria.job
 
-import fr.pickaria.chat.getPlayerDisplayName
+import fr.pickaria.chat.suffix
+import fr.pickaria.chat.updateDisplayName
 import fr.pickaria.database.models.Job
 import fr.pickaria.job.events.JobAscentEvent
 import fr.pickaria.job.events.JobLevelUpEvent
@@ -66,8 +67,8 @@ class JobController(private val plugin: Main) : Listener {
 	 */
 	private fun refreshDisplayName(player: Player) {
 		getRank(player)?.let { suffix ->
-			chat?.setPlayerSuffix(player, miniMessage.serialize(suffix))
-			player.displayName(getPlayerDisplayName(player))
+			player.suffix = miniMessage.serialize(suffix)
+			player.updateDisplayName()
 		}
 	}
 
