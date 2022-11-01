@@ -173,6 +173,13 @@ To get a local copy up and running follow these steps.
 </details>
 
 
+## Dependencies
+- [PaperMC](https://papermc.io/)
+- [Vault](https://www.spigotmc.org/resources/vault.34315/)
+- [ProtocolLib](https://www.spigotmc.org/resources/protocollib.1997/)
+- A permission plugin (ie. [LuckPerms](https://luckperms.net/))
+
+
 <!-- CONTRIBUTING -->
 ## Contributing
 

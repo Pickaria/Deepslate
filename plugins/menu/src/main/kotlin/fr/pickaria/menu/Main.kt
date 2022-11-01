@@ -1,10 +1,6 @@
 package fr.pickaria.menu
 
 import fr.pickaria.menu.sub.HomeMenu
-import kotlinx.coroutines.DelicateCoroutinesApi
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.ExecutorCoroutineDispatcher
-import kotlinx.coroutines.newSingleThreadContext
 import org.bukkit.plugin.java.JavaPlugin
 
 val menuController: MenuController = MenuController()
@@ -29,7 +25,3 @@ class Main : JavaPlugin() {
 		menuController.unregister(DEFAULT_MENU)
 	}
 }
-
-@OptIn(DelicateCoroutinesApi::class)
-val Dispatchers.Menus: ExecutorCoroutineDispatcher
-	get() = newSingleThreadContext("Menus")

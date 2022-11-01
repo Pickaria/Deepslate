@@ -1,4 +1,4 @@
-package fr.pickaria.shared.models
+package fr.pickaria.database.models
 
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
@@ -21,18 +21,18 @@ class Home(private val row: ResultRow) {
 		fun create(playerId: UUID, name: String) = transaction {
 			Homes.insert {
 				it[playerUuid] = playerId
-				it[this.name] = name
+				it[Homes.name] = name
 			}.resultedValues?.firstOrNull()
 		}?.let { Home(it) }
 
 		fun create(playerId: UUID, name: String, world: UUID, x: Int, y: Int, z: Int) = transaction {
 			Homes.insert {
 				it[playerUuid] = playerId
-				it[this.name] = name
-				it[this.world] = world
-				it[this.x] = x
-				it[this.y] = y
-				it[this.z] = z
+				it[Homes.name] = name
+				it[Homes.world] = world
+				it[Homes.x] = x
+				it[Homes.y] = y
+				it[Homes.z] = z
 			}.resultedValues?.firstOrNull()
 		}?.let { Home(it) }
 
@@ -65,7 +65,7 @@ class Home(private val row: ResultRow) {
 		get() = row[Homes.world]
 		set(value) = transaction {
 			Homes.update({ whereClause() }) {
-				it[Homes.world] = value
+				it[world] = value
 			}
 		}
 
@@ -73,7 +73,7 @@ class Home(private val row: ResultRow) {
 		get() = row[Homes.x]
 		set(value) = transaction {
 			Homes.update({ whereClause() }) {
-				it[Homes.x] = value
+				it[x] = value
 			}
 		}
 
@@ -81,7 +81,7 @@ class Home(private val row: ResultRow) {
 		get() = row[Homes.y]
 		set(value) = transaction {
 			Homes.update({ whereClause() }) {
-				it[Homes.y] = value
+				it[y] = value
 			}
 		}
 
@@ -89,7 +89,7 @@ class Home(private val row: ResultRow) {
 		get() = row[Homes.z]
 		set(value) = transaction {
 			Homes.update({ whereClause() }) {
-				it[Homes.z] = value
+				it[z] = value
 			}
 		}
 }

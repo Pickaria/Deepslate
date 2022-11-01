@@ -3,11 +3,16 @@ version: 1.0
 api-version: 1.19
 main: fr.pickaria.job.Main
 author: Quozul
-depends:
+depend:
+  - PickariaDatabase
+  - PickariaEconomy
+  - PickariaLib
+  - PickariaMenu
   - PickariaShared
   - Vault
-  - PickariaEconomy
-  - PickariaMenu
+
+softdepend:
+  - PickariaPotion
 
 commands:
   job:

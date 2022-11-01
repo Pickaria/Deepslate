@@ -1,6 +1,6 @@
 package fr.pickaria.teleport
 
-import fr.pickaria.shared.models.Home
+import fr.pickaria.database.models.Home
 import org.bukkit.Bukkit
 import org.bukkit.Location
 import org.bukkit.event.Listener
