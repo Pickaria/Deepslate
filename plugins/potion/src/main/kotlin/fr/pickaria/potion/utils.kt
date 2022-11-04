@@ -1,7 +1,7 @@
 package fr.pickaria.potion
 
+import fr.pickaria.shared.GlowEnchantment
 import org.bukkit.Material
-import org.bukkit.enchantments.Enchantment
 import org.bukkit.inventory.ItemFlag
 import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.meta.PotionMeta
@@ -13,8 +13,8 @@ fun createPotion(config: PotionConfig.Configuration, amount: Int): ItemStack {
 
 	potion.color = config.potionColor
 	potion.persistentDataContainer.set(namespace, PersistentDataType.STRING, config.key)
-	potion.addEnchant(Enchantment.MENDING, 1, true)
-	potion.addItemFlags(ItemFlag.HIDE_POTION_EFFECTS, ItemFlag.HIDE_ENCHANTS)
+	potion.addEnchant(GlowEnchantment.instance, 1, true)
+	potion.addItemFlags(ItemFlag.HIDE_POTION_EFFECTS)
 
 	potion.displayName(config.label)
 	potion.lore(config.lore)
