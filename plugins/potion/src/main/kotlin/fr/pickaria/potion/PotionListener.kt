@@ -16,10 +16,6 @@ import org.bukkit.persistence.PersistentDataType
 internal class PotionListener : CommandExecutor, TabCompleter, Listener {
 	override fun onCommand(sender: CommandSender, command: Command, label: String, args: Array<out String>?): Boolean {
 		if (sender is Player) {
-			potionConfig.potions.forEach { (key, config) ->
-				sender.sendMessage(key)
-			}
-
 			args?.getOrNull(0)?.let {
 				potionConfig.potions[it]
 			}?.let {

@@ -1,7 +1,7 @@
 package fr.pickaria.job.jobs
 
+import fr.pickaria.job.hasJob
 import fr.pickaria.job.jobConfig
-import fr.pickaria.job.jobController
 import fr.pickaria.job.jobPayPlayer
 import org.bukkit.event.EventHandler
 import org.bukkit.event.EventPriority
@@ -22,8 +22,7 @@ class Wizard: Listener {
 
 	@EventHandler(priority = EventPriority.MONITOR)
 	fun onEnchantItem(event: EnchantItemEvent) {
-		val uniqueId = event.enchanter.uniqueId
-		if (event.isCancelled || !jobController.hasJob(uniqueId, JOB_NAME)) return
+		if (event.isCancelled || !(event.enchanter hasJob JOB_NAME)) return
 
 		jobPayPlayer(event.enchanter, levels[event.whichButton()] ?: 0.15, config, 1)
 	}

@@ -1,7 +1,7 @@
 package fr.pickaria.job.jobs
 
+import fr.pickaria.job.hasJob
 import fr.pickaria.job.jobConfig
-import fr.pickaria.job.jobController
 import fr.pickaria.job.jobPayPlayer
 import org.bukkit.Material
 import org.bukkit.block.data.Ageable
@@ -39,7 +39,7 @@ class Farmer : Listener {
 	@EventHandler(priority = EventPriority.MONITOR)
 	fun onBlockBreak(event: BlockBreakEvent) {
 		if (event.isCancelled) return
-		if (!jobController.hasJob(event.player.uniqueId, JOB_NAME)) return
+		if (!(event.player hasJob JOB_NAME)) return
 
 		crops[event.block.type]?.let {
 			(event.block.blockData as? Ageable)?.let { blockData ->
@@ -57,7 +57,7 @@ class Farmer : Listener {
 		if (event.isCancelled) return
 
 		event.player?.let {
-			if (!jobController.hasJob(it.uniqueId, JOB_NAME)) return
+			if (!(it hasJob JOB_NAME)) return
 			if (event.isFromBonemeal) {
 				jobPayPlayer(it, 0.05, config)
 			}
