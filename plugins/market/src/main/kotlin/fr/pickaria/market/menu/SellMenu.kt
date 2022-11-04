@@ -1,14 +1,11 @@
 package fr.pickaria.market.menu
 
-import fr.pickaria.database.models.Order
-import fr.pickaria.economy.has
 import fr.pickaria.market.economy
 import fr.pickaria.market.getPrices
 import fr.pickaria.menu.BaseMenu
 import fr.pickaria.menu.MenuLore
 import net.kyori.adventure.text.Component
 import org.bukkit.Material
-import org.bukkit.OfflinePlayer
 import org.bukkit.entity.HumanEntity
 import org.bukkit.entity.Player
 
@@ -25,8 +22,6 @@ internal class SellMenu(private val material: Material, title: Component, opener
 
 		listOf(1 to 1, 16 to 3, 32 to 5, 64 to 7).forEach { (amount, x) ->
 			val offerPrice = economy.format(price * amount)
-
-			val player = opener as OfflinePlayer
 
 			setMenuItem {
 				this.x = x

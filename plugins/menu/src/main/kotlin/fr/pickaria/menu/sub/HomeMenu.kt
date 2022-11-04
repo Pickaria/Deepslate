@@ -25,26 +25,26 @@ class HomeMenu(title: Component, opener: HumanEntity, previousMenu: BaseMenu?) :
 	}
 
 	override fun initMenu() {
-		val itemStack = setMenuItem {
+		setMenuItem {
 			this.x = 8
 			this.y = 0
 			material = Material.BUNDLE
 			name = Component.text("Sacoche de Pickarite", NamedTextColor.GOLD)
-		}.getItemStack()
+		}.itemStack?.let {
+			val bundle = it.itemMeta as BundleMeta
 
-		val bundle = itemStack.itemMeta as BundleMeta
+			var balance = getShardBalance(opener as OfflinePlayer)
+			val items = mutableListOf<ItemStack>()
 
-		var balance = getShardBalance(opener as OfflinePlayer)
-		val items = mutableListOf<ItemStack>()
+			for (i in 0 until balance step 64) {
+				val amount = if (balance > 64) 64 else balance
+				items.add(createShardItem(amount))
+				balance -= 64
+			}
 
-		for (i in 0 until balance step 64) {
-			val amount = if (balance > 64) 64 else balance
-			items.add(createShardItem(amount))
-			balance -= 64
+			bundle.setItems(items)
+			it.itemMeta = bundle
 		}
-
-		bundle.setItems(items)
-		itemStack.itemMeta = bundle
 
 		var x = 1
 		var y = 1
