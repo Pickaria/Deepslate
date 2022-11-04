@@ -1,11 +1,11 @@
 package fr.pickaria.job.jobs
 
+import fr.pickaria.job.hasJob
 import fr.pickaria.job.jobConfig
-import fr.pickaria.job.jobController
 import fr.pickaria.job.jobPayPlayer
-import org.bukkit.Bukkit.getServer
 import org.bukkit.Location
 import org.bukkit.Material
+import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.EventPriority
 import org.bukkit.event.Listener
@@ -14,7 +14,6 @@ import org.bukkit.event.inventory.BrewEvent
 import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.meta.PotionMeta
-import java.util.*
 
 class Alchemist: Listener {
 	companion object {
@@ -33,16 +32,13 @@ class Alchemist: Listener {
 	}
 
 	// Store ownership oof brewing stands
-	private val brewingStands: MutableMap<Location, UUID> = mutableMapOf()
+	private val brewingStands: MutableMap<Location, Player> = mutableMapOf()
 
 	@EventHandler
 	fun onPlayerInteract(event: PlayerInteractEvent) {
 		if (event.clickedBlock == null) return
-
-		val uniqueId = event.player.uniqueId
-		if (!jobController.hasJob(uniqueId, JOB_NAME)) return
-
-		brewingStands.putIfAbsent(event.clickedBlock!!.location, uniqueId)
+		if (!(event.player hasJob JOB_NAME)) return
+		brewingStands.putIfAbsent(event.clickedBlock!!.location, event.player)
 	}
 
 	@EventHandler
@@ -53,14 +49,12 @@ class Alchemist: Listener {
 	@EventHandler(priority = EventPriority.MONITOR)
 	fun onBrew(event: BrewEvent) {
 		val location = event.block.location
-		val uniqueId = brewingStands[location]
-		if (event.isCancelled || uniqueId == null || !jobController.hasJob(uniqueId, JOB_NAME)) return
+		val player = brewingStands[location]
+		if (event.isCancelled || player == null || !(player hasJob JOB_NAME)) return
 
 		event.results.forEach {
 			if (isPotion(it)) {
-				getServer().getPlayer(uniqueId)?.let { player ->
-					jobPayPlayer(player, 0.15, config, 1)
-				}
+				jobPayPlayer(player, 0.15, config, 1)
 			}
 		}
 	}

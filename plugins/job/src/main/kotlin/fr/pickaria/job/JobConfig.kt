@@ -1,5 +1,6 @@
 package fr.pickaria.job
 
+import net.kyori.adventure.text.Component
 import org.bukkit.Bukkit
 import org.bukkit.Material
 import org.bukkit.configuration.file.FileConfiguration
@@ -50,4 +51,13 @@ class JobConfig(config: FileConfiguration) {
 		"job_experience_boost_potion",
 		config.getConfigurationSection("job_experience_boost_potion")!!
 	)
+
+	val ranks: Map<Int, Component> = config.getConfigurationSection("ranks")!!.run {
+		this.getKeys(false)
+			.sortedByDescending { it.toInt() }
+			.associateWith { miniMessage.deserialize(this.getString(it)!!) }
+			.mapKeys { it.key.toInt() }
+	}
+
+	val rankHover = config.getString("rank_hover")!!
 }

@@ -1,7 +1,7 @@
 package fr.pickaria.job.jobs
 
+import fr.pickaria.job.hasJob
 import fr.pickaria.job.jobConfig
-import fr.pickaria.job.jobController
 import fr.pickaria.job.jobPayPlayer
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
@@ -21,7 +21,7 @@ class Trader: Listener {
 		val player = event.whoClicked as Player
 
 		if (!event.isCancelled &&
-			jobController.hasJob(player.uniqueId, JOB_NAME) &&
+			player hasJob JOB_NAME &&
 			event.inventory.type == InventoryType.MERCHANT &&
 			event.slotType == InventoryType.SlotType.RESULT) {
 
