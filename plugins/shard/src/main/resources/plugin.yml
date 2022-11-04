@@ -1,0 +1,16 @@
+name: PickariaShard
+version: 1.0
+api-version: 1.19
+main: fr.pickaria.shard.Main
+author: Quozul
+depend:
+  - PickariaArtefact
+  - PickariaDatabase
+  - PickariaLib
+  - PickariaShared
+  - Vault
+
+commands:
+  place:
+    usage: /place
+    description: Place un nouveau magasin à l'endroit où se situe le joueur.

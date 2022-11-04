@@ -79,12 +79,12 @@ abstract class BaseMenu(
 		}
 	}
 
-	protected fun setMenuItem(block: MenuItem.() -> Unit): BaseMenu {
+	protected fun setMenuItem(block: MenuItem.() -> Unit): MenuItem {
 		val menuItem = MenuItem.build(block)
 		val pos = menuItem.y * 9 + menuItem.x
 		if (pos > last) last = pos
 		menuItemStacks[pos] = menuItem
-		return this
+		return menuItem
 	}
 
 	// Check for clicks on items

@@ -1,0 +1,8 @@
+name: PickariaArtefact
+version: 1.0
+api-version: 1.19
+main: fr.pickaria.artefact.Main
+author: Quozul
+depend:
+  - PickariaLib
+  - PickariaShared
