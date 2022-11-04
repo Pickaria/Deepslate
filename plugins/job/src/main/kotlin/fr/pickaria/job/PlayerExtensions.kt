@@ -16,28 +16,28 @@ import kotlin.time.DurationUnit
 /**
  * Checks if the player is currently using the given job.
  */
-internal infix fun Player.hasJob(jobName: String): Boolean = Job.get(this.uniqueId, jobName)?.active == true
+internal infix fun Player.hasJob(jobName: String): Boolean = Job.get(uniqueId, jobName)?.active == true
 
 /**
  * Returns the amount of active jobs a player has.
  */
-internal fun Player.jobCount(): Int = Job.get(this.uniqueId).filter { it.active }.size
+internal fun Player.jobCount(): Int = Job.get(uniqueId).filter { it.active }.size
 
 /**
  * Sets the current job as `active` and updates the `last used` field.
  */
 internal infix fun Player.joinJob(jobName: String) {
-	Job.get(this.uniqueId, jobName)?.apply {
+	Job.get(uniqueId, jobName)?.apply {
 		active = true
 		lastUsed = LocalDateTime.now()
-	} ?: Job.create(this.uniqueId, jobName, true)
+	} ?: Job.create(uniqueId, jobName, true)
 }
 
 /**
  * Sets the given job as not active.
  */
 internal infix fun Player.leaveJob(jobName: String) {
-	Job.get(this.uniqueId, jobName)?.apply {
+	Job.get(uniqueId, jobName)?.apply {
 		active = false
 	}
 }
@@ -46,7 +46,7 @@ internal infix fun Player.leaveJob(jobName: String) {
  * Get the job rank of a player.
  */
 internal fun Player.getRank(): Component {
-	val ascendPoints = Job.get(this.uniqueId).sumOf { it.ascentPoints }
+	val ascendPoints = Job.get(uniqueId).sumOf { it.ascentPoints }
 	for ((points, suffix) in jobConfig.ranks) {
 		if (ascendPoints >= points) {
 			return suffix.hoverEvent(
@@ -64,7 +64,7 @@ internal fun Player.getRank(): Component {
 internal fun Player.getJobCooldown(jobName: String): Int {
 	val previousDay = LocalDateTime.now().minusHours(jobConfig.cooldown)
 
-	val job = Job.get(this.uniqueId, jobName)
+	val job = Job.get(uniqueId, jobName)
 	return if (job == null || !job.active) {
 		0
 	} else {
@@ -73,7 +73,7 @@ internal fun Player.getJobCooldown(jobName: String): Int {
 }
 
 internal infix fun Player.ascentJob(jobName: String): Boolean =
-	Job.get(this.uniqueId, jobName)?.let { job ->
+	Job.get(uniqueId, jobName)?.let { job ->
 		jobConfig.jobs[jobName]?.let { config ->
 			val ascentPoints = getAscentPoints(job, config)
 			if (ascentPoints > 0) {
@@ -97,6 +97,6 @@ internal fun Player.ascentJob(config: JobConfig.Configuration, job: Job, ascentP
  * Refreshes the player's display name with their job rank.
  */
 internal fun Player.refreshDisplayName() {
-	this.suffix = miniMessage.serialize(this.getRank())
-	this.updateDisplayName()
+	suffix = miniMessage.serialize(getRank())
+	updateDisplayName()
 }
