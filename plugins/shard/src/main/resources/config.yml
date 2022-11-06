@@ -7,6 +7,7 @@ pickarite:
 shop_name: 'Marché de Pickaria'
 currency_name_singular: 'Éclat de Pickarite'
 currency_name_plural: 'Éclats de Pickarite'
+collect_shard_message: '<gray>Vous avez collecté <gold><amount><gray>.'
 
 sounds:
   trade_select: block.large_amethyst_bud.place

@@ -9,6 +9,7 @@ import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.inventory.InventoryClickEvent
 import org.bukkit.event.inventory.InventoryType
+import org.bukkit.event.inventory.InventoryType.SlotType
 import org.bukkit.inventory.GrindstoneInventory
 import org.bukkit.inventory.ItemStack
 
@@ -54,32 +55,15 @@ internal class GrindstoneListeners : Listener {
 	 */
 	@EventHandler
 	fun onInventoryClick(event: InventoryClickEvent) {
-		event.currentItem?.let { item ->
-			if (isShardItem(item)) {
-				val inventory = event.inventory
-
-				if (inventory.type == InventoryType.GRINDSTONE && event.slotType == InventoryType.SlotType.RESULT) {
-					val player = event.whoClicked as Player
-
-					// Add Pickarite to account and clears the Grindstone's inventory
-					economy.depositPlayer(player, item.amount.toDouble())
-					inventory.clear()
-
-					// Just some feedback
-					player.playSound(shopConfig.grindSound)
-					inventory.location?.let {
-						it.world.spawnParticle(Particle.END_ROD, it.toCenterLocation(), 30, 1.0, 1.0, 1.0, 0.0)
+		with(event) {
+			if (inventory.type == InventoryType.GRINDSTONE && slotType == SlotType.RESULT) {
+				currentItem?.let {
+					if (creditShard(it, whoClicked as Player)) {
+						inventory.clear()
+						event.result = Event.Result.DENY
+						event.isCancelled = true
 					}
 				}
-
-				// Remove Shards from player's inventory
-				if (inventory.type == InventoryType.PLAYER) {
-					item.amount = 0
-				}
-
-				// Prevent the item from being moved
-				event.result = Event.Result.DENY
-				event.isCancelled = true
 			}
 		}
 	}

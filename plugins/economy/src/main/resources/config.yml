@@ -1,5 +1,5 @@
-currency_name_singular: 'dollar'
-currency_name_plural: 'dollars'
+currency_name_singular: 'crédit'
+currency_name_plural: 'crédits'
 
 # /money message
 balance_message: '<gray>Votre solde : <gold><balance><gray>.'

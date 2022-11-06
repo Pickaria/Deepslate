@@ -29,7 +29,7 @@ internal class ShopListeners : Listener {
 		// Force set the item into the trade view
 		val ingredient = recipe.ingredients.first()
 
-		if (isShardItem(ingredient) && menus.contains(event.view)) {
+		if (ingredient.isShard() && menus.contains(event.view)) {
 			val price = ingredient.amount.toDouble()
 
 			if (economy.has(event.whoClicked as OfflinePlayer, price)) {
@@ -50,7 +50,7 @@ internal class ShopListeners : Listener {
 		event.trade.let {
 			val ingredient = it.ingredients.first()
 
-			if (isShardItem(ingredient)) {
+			if (ingredient.isShard()) {
 				val price = ingredient.amount.toDouble()
 
 				if (economy.has(event.player, price)) {

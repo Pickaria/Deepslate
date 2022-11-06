@@ -13,6 +13,7 @@ internal class ShopConfig(config: FileConfiguration) {
 			.decoration(TextDecoration.ITALIC, TextDecoration.State.FALSE)
 	}
 	val shopName = miniMessage.deserialize(config.getString("shop_name")!!)
+	val collectShardMessage = config.getString("collect_shard_message")!!
 
 	val tradeSelectSound = Sound.sound(Key.key(config.getString("sounds.trade_select")!!), Sound.Source.MASTER, 1f, 1f)
 	val tradeSound = Sound.sound(Key.key(config.getString("sounds.trade")!!), Sound.Source.MASTER, 1f, 1f)

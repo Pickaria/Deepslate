@@ -11,7 +11,7 @@ class Main : JavaPlugin() {
 
 		namespace = NamespacedKey(this, "bundle")
 
-		val crate = CrateCommand(this)
+		val crate = CrateCommand()
 		getCommand("crate")?.setExecutor(crate)
 		server.pluginManager.registerEvents(crate, this)
 

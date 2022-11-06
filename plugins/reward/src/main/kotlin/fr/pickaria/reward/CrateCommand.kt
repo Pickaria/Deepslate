@@ -1,18 +1,19 @@
 package fr.pickaria.reward
 
-import io.papermc.paper.inventory.ItemRarity
+import fr.pickaria.shard.creditShard
+import net.kyori.adventure.key.Key
+import net.kyori.adventure.sound.Sound
 import net.kyori.adventure.text.Component
-import net.kyori.adventure.text.format.NamedTextColor
 import net.kyori.adventure.text.format.TextDecoration
 import org.bukkit.Bukkit
-import org.bukkit.Material
-import org.bukkit.block.Chest
 import org.bukkit.command.Command
 import org.bukkit.command.CommandExecutor
 import org.bukkit.command.CommandSender
+import org.bukkit.command.TabCompleter
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
+import org.bukkit.event.inventory.InventoryClickEvent
 import org.bukkit.event.inventory.InventoryCloseEvent
 import org.bukkit.event.inventory.InventoryType
 import org.bukkit.event.player.PlayerInteractEvent
@@ -20,13 +21,12 @@ import org.bukkit.inventory.Inventory
 import org.bukkit.inventory.InventoryHolder
 import org.bukkit.inventory.ItemFlag
 import org.bukkit.inventory.ItemStack
-import org.bukkit.inventory.meta.BlockStateMeta
 import org.bukkit.loot.LootContext
 import org.bukkit.persistence.PersistentDataType
-import org.bukkit.plugin.java.JavaPlugin
 import org.bukkit.potion.PotionEffectType
+import java.util.*
 
-internal class CrateCommand(private val plugin: JavaPlugin) : CommandExecutor, Listener {
+internal class CrateCommand : CommandExecutor, Listener, TabCompleter {
 	inner class CrateHolder : InventoryHolder {
 		private lateinit var inventory: Inventory
 
@@ -39,29 +39,24 @@ internal class CrateCommand(private val plugin: JavaPlugin) : CommandExecutor, L
 
 	override fun onCommand(sender: CommandSender, command: Command, label: String, args: Array<out String>): Boolean {
 		if (sender is Player) {
-			val item = ItemStack(Material.CHEST)
+			val reward: Rewards = Rewards.valueOf(args.first())
+			val amount = try {
+				args.getOrNull(1)?.toInt() ?: 1
+			} catch (_: NumberFormatException) {
+				1
+			}
+
+			val item = ItemStack(reward.material, amount)
 
 			item.editMeta {
 				it.addItemFlags(ItemFlag.HIDE_ATTRIBUTES, ItemFlag.HIDE_ENCHANTS)
 
 				it.displayName(
-					Component.text("Sacoche de récompense épique", ItemRarity.EPIC.color)
+					Component.text(reward.title, reward.rarity.color, TextDecoration.BOLD)
 						.decoration(TextDecoration.ITALIC, TextDecoration.State.FALSE)
 				)
 
-				it.persistentDataContainer.set(namespace, PersistentDataType.BYTE, 1)
-
-				// Chest meta
-				val luck = sender.getPotionEffect(PotionEffectType.LUCK)?.amplifier ?: 0
-
-				val lootContext = LootContext.Builder(sender.location)
-					.luck(luck.toFloat())
-					.build()
-
-				val items = CustomLootTable(plugin).populateLoot(null, lootContext)
-
-				val chest = (it as BlockStateMeta).blockState as Chest
-				chest.inventory.contents = items.toTypedArray()
+				it.persistentDataContainer.set(namespace, PersistentDataType.STRING, reward.name)
 			}
 
 			sender.inventory.addItem(item)
@@ -71,42 +66,78 @@ internal class CrateCommand(private val plugin: JavaPlugin) : CommandExecutor, L
 	}
 
 	@EventHandler
-	fun onOpenBundle(event: PlayerInteractEvent) {
-		if (event.hasItem()) {
-			event.item?.let {
-				if (it.type == Material.CHEST && it.itemMeta?.persistentDataContainer?.has(namespace) == true) {
-					val chest = (it.itemMeta as BlockStateMeta).blockState as Chest
-					val player = event.player
+	fun onCrateOpen(event: PlayerInteractEvent) = with(event) {
+		if (action.isLeftClick) return@with
 
-					val holder = CrateHolder()
-					val inventory = Bukkit.createInventory(
-						holder,
-						InventoryType.DROPPER,
-						Component.text("Récompense", NamedTextColor.GOLD, TextDecoration.BOLD)
-					)
-					holder.inventory = inventory
-
-					inventory.contents = chest.inventory.contents
-
-					player.openInventory(inventory)
-
-					event.isCancelled = true
+		item?.let { item ->
+			item.itemMeta?.persistentDataContainer?.get(namespace, PersistentDataType.STRING)?.let {
+				try {
+					Rewards.valueOf(it)
+				} catch (_: IllegalArgumentException) {
+					null
 				}
+			}?.let {
+				val holder = CrateHolder()
+				val inventory = Bukkit.createInventory(
+					holder,
+					InventoryType.DROPPER,
+					item.itemMeta.displayName() ?: Component.empty()
+				)
+				holder.inventory = inventory
+
+				// Chest meta
+				val luck = player.getPotionEffect(PotionEffectType.LUCK)?.amplifier ?: 0
+
+				val lootContext = LootContext.Builder(player.location)
+					.luck(luck.toFloat())
+					.lootedEntity(player)
+					.killer(player)
+					.lootingModifier(LootContext.DEFAULT_LOOT_MODIFIER)
+					.build()
+
+				Bukkit.getLootTable(it.lootTable)?.fillInventory(inventory, Random(), lootContext)
+
+				player.playSound(Sound.sound(Key.key("item.bundle.insert"), Sound.Source.MASTER, 1F, 1F))
+				player.openInventory(inventory)
+
+				isCancelled = true
+
+				item.amount -= 1
 			}
 		}
 	}
 
 	@EventHandler
-	fun onCrateClosed(event: InventoryCloseEvent) {
-		with(event) {
-			if (inventory.holder is CrateHolder) {
-				player.inventory.addItem(ItemStack(Material.ACACIA_PLANKS))
-				player.inventory.addItem(*inventory.contents.filterNotNull().toTypedArray()).forEach {
-					val location = player.eyeLocation
-					val item = location.world.dropItem(location, it.value)
-					item.velocity = location.direction.multiply(0.25)
-				}
+	fun onInventoryClick(event: InventoryClickEvent) = with(event) {
+		if (inventory.holder is CrateHolder) {
+			currentItem?.let {
+				creditShard(it, whoClicked as Player)
 			}
 		}
 	}
+
+
+	@EventHandler
+	fun onCrateClosed(event: InventoryCloseEvent) = with(event) {
+		if (inventory.holder is CrateHolder) {
+			val contents = inventory.contents.filterNotNull()
+			contents.forEach {
+				creditShard(it, player as Player)
+			}
+
+			player.inventory.addItem(*contents.toTypedArray()).forEach {
+				val location = player.eyeLocation
+				val item = location.world.dropItem(location, it.value)
+				item.velocity = location.direction.multiply(0.25)
+			}
+			player.playSound(Sound.sound(Key.key("item.bundle.drop_contents"), Sound.Source.MASTER, 1F, 1F))
+		}
+	}
+
+	override fun onTabComplete(
+		sender: CommandSender,
+		command: Command,
+		label: String,
+		args: Array<out String>?
+	): MutableList<String> = mutableListOf("COMMON", "UNCOMMON", "RARE", "EPIC")
 }

@@ -7,7 +7,7 @@ import net.milkbowl.vault.economy.EconomyResponse.ResponseType
 import org.bukkit.OfflinePlayer
 import java.text.DecimalFormat
 
-internal class ShardEconomy: AbstractEconomy() {
+internal class ShardEconomy : AbstractEconomy() {
 	private val formatter = DecimalFormat("0")
 
 	override fun isEnabled(): Boolean = true
@@ -18,7 +18,12 @@ internal class ShardEconomy: AbstractEconomy() {
 
 	override fun fractionalDigits(): Int = 0
 
-	override fun format(amount: Double): String = formatter.format(amount)
+	override fun format(amount: Double): String =
+		if (amount <= 1.0) {
+			"${formatter.format(amount)} ${currencyNameSingular()}"
+		} else {
+			"${formatter.format(amount)} ${currencyNamePlural()}"
+		}
 
 	override fun currencyNamePlural(): String = shopConfig.currencyNamePlural
 
