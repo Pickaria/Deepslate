@@ -6,6 +6,7 @@ import net.kyori.adventure.sound.Sound
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.TextDecoration
 import org.bukkit.Bukkit
+import org.bukkit.Material
 import org.bukkit.command.Command
 import org.bukkit.command.CommandExecutor
 import org.bukkit.command.CommandSender
@@ -46,6 +47,8 @@ internal class CrateCommand : CommandExecutor, Listener, TabCompleter {
 				1
 			}
 
+			Material.BLACK_SHULKER_BOX
+
 			val item = ItemStack(reward.material, amount)
 
 			item.editMeta {
@@ -66,71 +69,77 @@ internal class CrateCommand : CommandExecutor, Listener, TabCompleter {
 	}
 
 	@EventHandler
-	fun onCrateOpen(event: PlayerInteractEvent) = with(event) {
-		if (action.isLeftClick) return@with
+	fun onCrateOpen(event: PlayerInteractEvent) {
+		with(event) {
+			if (action.isLeftClick) return@with
 
-		item?.let { item ->
-			item.itemMeta?.persistentDataContainer?.get(namespace, PersistentDataType.STRING)?.let {
-				try {
-					Rewards.valueOf(it)
-				} catch (_: IllegalArgumentException) {
-					null
+			item?.let { item ->
+				item.itemMeta?.persistentDataContainer?.get(namespace, PersistentDataType.STRING)?.let {
+					try {
+						Rewards.valueOf(it)
+					} catch (_: IllegalArgumentException) {
+						null
+					}
+				}?.let {
+					val holder = CrateHolder()
+					val inventory = Bukkit.createInventory(
+						holder,
+						InventoryType.DROPPER,
+						item.itemMeta.displayName() ?: Component.empty()
+					)
+					holder.inventory = inventory
+
+					// Chest meta
+					val luck = player.getPotionEffect(PotionEffectType.LUCK)?.amplifier ?: 0
+
+					val lootContext = LootContext.Builder(player.location)
+						.luck(luck.toFloat())
+						.lootedEntity(player)
+						.killer(player)
+						.lootingModifier(LootContext.DEFAULT_LOOT_MODIFIER)
+						.build()
+
+					Bukkit.getLootTable(it.lootTable)?.fillInventory(inventory, Random(), lootContext)
+
+					player.playSound(Sound.sound(Key.key("item.bundle.insert"), Sound.Source.MASTER, 1F, 1F))
+					player.openInventory(inventory)
+
+					isCancelled = true
+
+					item.amount -= 1
 				}
-			}?.let {
-				val holder = CrateHolder()
-				val inventory = Bukkit.createInventory(
-					holder,
-					InventoryType.DROPPER,
-					item.itemMeta.displayName() ?: Component.empty()
-				)
-				holder.inventory = inventory
-
-				// Chest meta
-				val luck = player.getPotionEffect(PotionEffectType.LUCK)?.amplifier ?: 0
-
-				val lootContext = LootContext.Builder(player.location)
-					.luck(luck.toFloat())
-					.lootedEntity(player)
-					.killer(player)
-					.lootingModifier(LootContext.DEFAULT_LOOT_MODIFIER)
-					.build()
-
-				Bukkit.getLootTable(it.lootTable)?.fillInventory(inventory, Random(), lootContext)
-
-				player.playSound(Sound.sound(Key.key("item.bundle.insert"), Sound.Source.MASTER, 1F, 1F))
-				player.openInventory(inventory)
-
-				isCancelled = true
-
-				item.amount -= 1
 			}
 		}
 	}
 
 	@EventHandler
-	fun onInventoryClick(event: InventoryClickEvent) = with(event) {
-		if (inventory.holder is CrateHolder) {
-			currentItem?.let {
-				creditShard(it, whoClicked as Player)
+	fun onInventoryClick(event: InventoryClickEvent) {
+		with(event) {
+			if (inventory.holder is CrateHolder) {
+				currentItem?.let {
+					creditShard(it, whoClicked as Player)
+				}
 			}
 		}
 	}
 
 
 	@EventHandler
-	fun onCrateClosed(event: InventoryCloseEvent) = with(event) {
-		if (inventory.holder is CrateHolder) {
-			val contents = inventory.contents.filterNotNull()
-			contents.forEach {
-				creditShard(it, player as Player)
-			}
+	fun onCrateClosed(event: InventoryCloseEvent) {
+		with(event) {
+			if (inventory.holder is CrateHolder) {
+				val contents = inventory.contents.filterNotNull()
+				contents.forEach {
+					creditShard(it, player as Player)
+				}
 
-			player.inventory.addItem(*contents.toTypedArray()).forEach {
-				val location = player.eyeLocation
-				val item = location.world.dropItem(location, it.value)
-				item.velocity = location.direction.multiply(0.25)
+				player.inventory.addItem(*contents.toTypedArray()).forEach {
+					val location = player.eyeLocation
+					val item = location.world.dropItem(location, it.value)
+					item.velocity = location.direction.multiply(0.25)
+				}
+				player.playSound(Sound.sound(Key.key("item.bundle.drop_contents"), Sound.Source.MASTER, 1F, 1F))
 			}
-			player.playSound(Sound.sound(Key.key("item.bundle.drop_contents"), Sound.Source.MASTER, 1F, 1F))
 		}
 	}
 

@@ -1,0 +1,9 @@
+rewards:
+  common:
+    loot_table: minecraft:chests/end_city_treasure
+    material: WHITE_SHULKER_BOX
+    name: '<white>Récompense commune'
+  uncommon:
+    loot_table: minecraft:chests/buried_treasure
+    material: YELLOW_SHULKER_BOX
+    name: '<yellow>Récompense commune'

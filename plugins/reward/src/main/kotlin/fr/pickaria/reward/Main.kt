@@ -15,6 +15,11 @@ class Main : JavaPlugin() {
 		getCommand("crate")?.setExecutor(crate)
 		server.pluginManager.registerEvents(crate, this)
 
+		saveDefaultConfig()
+		Config.setConfig(config)
+		val component = Config.rewards["common"]?.lootTable?.key
+		logger.info(component.toString())
+
 		logger.info("Reward plugin loaded!")
 	}
 }
