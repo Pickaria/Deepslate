@@ -1,30 +1,18 @@
 package fr.pickaria.reward
 
-import fr.pickaria.shard.creditShard
-import net.kyori.adventure.key.Key
-import net.kyori.adventure.sound.Sound
-import net.kyori.adventure.text.Component
+import fr.pickaria.economy.has
+import fr.pickaria.economy.withdraw
 import net.kyori.adventure.text.format.TextDecoration
-import org.bukkit.Bukkit
+import net.milkbowl.vault.economy.EconomyResponse
 import org.bukkit.command.Command
 import org.bukkit.command.CommandExecutor
 import org.bukkit.command.CommandSender
 import org.bukkit.command.TabCompleter
 import org.bukkit.entity.Player
-import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
-import org.bukkit.event.inventory.InventoryClickEvent
-import org.bukkit.event.inventory.InventoryCloseEvent
-import org.bukkit.event.inventory.InventoryType
-import org.bukkit.event.player.PlayerInteractEvent
-import org.bukkit.inventory.Inventory
-import org.bukkit.inventory.InventoryHolder
 import org.bukkit.inventory.ItemFlag
 import org.bukkit.inventory.ItemStack
-import org.bukkit.loot.LootContext
 import org.bukkit.persistence.PersistentDataType
-import org.bukkit.potion.PotionEffectType
-import java.util.*
 
 internal class CrateCommand : CommandExecutor, Listener, TabCompleter {
 	override fun onCommand(sender: CommandSender, command: Command, label: String, args: Array<out String>): Boolean {
@@ -37,15 +25,24 @@ internal class CrateCommand : CommandExecutor, Listener, TabCompleter {
 				1
 			}
 
-			val item = ItemStack(reward.material, amount)
+			val totalPrice = reward.price * amount
+			if (sender has totalPrice) {
+				val response = sender withdraw totalPrice
 
-			item.editMeta {
-				it.addItemFlags(ItemFlag.HIDE_ATTRIBUTES, ItemFlag.HIDE_ENCHANTS)
-				it.displayName(reward.name.decoration(TextDecoration.ITALIC, TextDecoration.State.FALSE))
-				it.persistentDataContainer.set(namespace, PersistentDataType.STRING, key)
+				if (response.type == EconomyResponse.ResponseType.SUCCESS) {
+					val item = ItemStack(reward.material, amount)
+
+					item.editMeta {
+						it.addItemFlags(ItemFlag.HIDE_ATTRIBUTES, ItemFlag.HIDE_ENCHANTS)
+						it.displayName(reward.name.decoration(TextDecoration.ITALIC, TextDecoration.State.FALSE))
+						it.persistentDataContainer.set(namespace, PersistentDataType.STRING, key)
+					}
+
+					sender.inventory.addItem(item)
+				}
+			} else {
+				sender.sendMessage(Config.notEnoughMoney)
 			}
-
-			sender.inventory.addItem(item)
 		}
 
 		return true

@@ -4,9 +4,12 @@ api-version: 1.19
 main: fr.pickaria.reward.Main
 author: Quozul
 depend:
+  - PickariaEconomy
   - PickariaLib
+  - PickariaMenu
   - PickariaShard
   - PickariaShared
+  - Vault
 
 commands:
   crate:

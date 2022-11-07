@@ -4,7 +4,11 @@ import net.milkbowl.vault.economy.EconomyResponse
 import org.bukkit.Bukkit.getLogger
 import org.bukkit.OfflinePlayer
 
-infix fun OfflinePlayer.has(amount: Double): Boolean = economy.has(this@has, amount)
+infix fun OfflinePlayer.has(amount: Double): Boolean = economy.has(this, amount)
+
+infix fun OfflinePlayer.withdraw(amount: Double): EconomyResponse = economy.withdrawPlayer(this, amount)
+
+infix fun OfflinePlayer.deposit(amount: Double): EconomyResponse = economy.depositPlayer(this, amount)
 
 enum class SendResponse {
 	RECEIVE_ERROR,
@@ -19,14 +23,14 @@ enum class SendResponse {
  */
 fun sendTo(sender: OfflinePlayer, recipient: OfflinePlayer, amount: Double): SendResponse =
 	if (sender has amount) {
-		val withdrawResponse = economy.withdrawPlayer(sender, amount)
+		val withdrawResponse = sender withdraw amount
 
 		if (withdrawResponse.type == EconomyResponse.ResponseType.SUCCESS) {
-			val depositResponse = economy.depositPlayer(recipient, withdrawResponse.amount)
+			val depositResponse = recipient deposit withdrawResponse.amount
 
 			if (depositResponse.type != EconomyResponse.ResponseType.SUCCESS) {
 				// Try to refund
-				val refund = economy.depositPlayer(sender, withdrawResponse.amount)
+				val refund = sender deposit withdrawResponse.amount
 				if (refund.type == EconomyResponse.ResponseType.FAILURE) {
 					getLogger().severe("Can't refund player, withdrew amount: ${withdrawResponse.amount}")
 					SendResponse.REFUND_ERROR

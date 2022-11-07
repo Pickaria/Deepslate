@@ -52,7 +52,7 @@ open class ConfigProvider(var section: ConfigurationSection? = null) {
 				else -> {
 					section?.get(this) as? T
 				}
-			} ?: throw Exception("Property $this not found in config file.")
+			} ?: throw Exception("Property `$this` not found in config file.")
 		}
 
 	fun setConfig(config: ConfigurationSection) {
