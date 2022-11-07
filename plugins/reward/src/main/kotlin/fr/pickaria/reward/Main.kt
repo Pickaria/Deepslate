@@ -9,16 +9,12 @@ class Main : JavaPlugin() {
 	override fun onEnable() {
 		super.onEnable()
 
-		namespace = NamespacedKey(this, "bundle")
-
-		val crate = CrateCommand()
-		getCommand("crate")?.setExecutor(crate)
-		server.pluginManager.registerEvents(crate, this)
-
 		saveDefaultConfig()
 		Config.setConfig(config)
-		val component = Config.rewards["common"]?.lootTable?.key
-		logger.info(component.toString())
+		namespace = NamespacedKey(this, "bundle")
+
+		getCommand("crate")?.setExecutor(CrateCommand())
+		server.pluginManager.registerEvents(CrateListeners(), this)
 
 		logger.info("Reward plugin loaded!")
 	}

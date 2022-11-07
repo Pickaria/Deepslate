@@ -69,17 +69,17 @@ open class ConfigProvider(var section: ConfigurationSection? = null) {
 	}
 
 	inner class MaterialLoader {
-		operator fun getValue(config: ConfigProvider, property: KProperty<*>): Material? =
+		operator fun getValue(config: ConfigProvider, property: KProperty<*>): Material =
 			section?.getString(property.name.toSnakeCase())?.let {
 				Material.getMaterial(it)
-			}
+			}!!
 	}
 
 	inner class LootTableLoader {
-		operator fun getValue(config: ConfigProvider, property: KProperty<*>): LootTable? =
+		operator fun getValue(config: ConfigProvider, property: KProperty<*>): LootTable =
 			section?.getString(property.name.toSnakeCase())?.let {
 				val (namespace, key) = it.split(':')
 				Bukkit.getLootTable(NamespacedKey(namespace, key))
-			}
+			}!!
 	}
 }
