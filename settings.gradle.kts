@@ -16,7 +16,8 @@ pluginManagement {
 
 rootProject.name = "deepslate"
 
-include("plugin", "libraries")
+include("plugin", "libraries", "lock")
+project(":lock").projectDir = File("plugins/lock")
 
 dependencyResolutionManagement {
 	versionCatalogs {
