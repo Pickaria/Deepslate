@@ -20,12 +20,6 @@ open class ConfigProvider(var section: ConfigurationSection? = null) {
 	protected val miniMessageDeserializer: MiniMessageDeserializer by lazy {
 		MiniMessageDeserializer()
 	}
-	protected val materialLoader: MaterialLoader by lazy {
-		MaterialLoader()
-	}
-	protected val lootTableLoader: LootTableLoader by lazy {
-		LootTableLoader()
-	}
 
 	protected inline fun <reified T : ConfigProvider> sectionLoader(): SectionLoader<T> = SectionLoader(T::class)
 
@@ -47,6 +41,19 @@ open class ConfigProvider(var section: ConfigurationSection? = null) {
 					section?.getString(this)?.let { Component.text(it) } as? T
 				}
 
+				LootTable::class -> {
+					section?.getString(property.name.toSnakeCase())?.let {
+						val (namespace, key) = it.split(':')
+						Bukkit.getLootTable(NamespacedKey(namespace, key))
+					} as? T
+				}
+
+				Material::class -> {
+					section?.getString(property.name.toSnakeCase())?.let {
+						Material.getMaterial(it)
+					} as? T
+				}
+
 				else -> {
 					section?.get(this) as? T
 				}
@@ -64,20 +71,5 @@ open class ConfigProvider(var section: ConfigurationSection? = null) {
 			section?.getString(property.name.toSnakeCase())?.let {
 				miniMessage.deserialize(it)
 			} ?: Component.text("")
-	}
-
-	protected inner class MaterialLoader {
-		operator fun getValue(config: ConfigProvider, property: KProperty<*>): Material =
-			section?.getString(property.name.toSnakeCase())?.let {
-				Material.getMaterial(it)
-			}!!
-	}
-
-	protected inner class LootTableLoader {
-		operator fun getValue(config: ConfigProvider, property: KProperty<*>): LootTable =
-			section?.getString(property.name.toSnakeCase())?.let {
-				val (namespace, key) = it.split(':')
-				Bukkit.getLootTable(NamespacedKey(namespace, key))
-			}!!
 	}
 }
