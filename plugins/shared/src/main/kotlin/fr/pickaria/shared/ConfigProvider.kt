@@ -16,22 +16,20 @@ fun String.toSnakeCase(): String = camelRegex.replace(this) {
 	"_${it.value}"
 }.lowercase()
 
-inline fun <reified T> create(section: ConfigurationSection?): T = T::class.constructors.first().call(section)
-
 open class ConfigProvider(var section: ConfigurationSection? = null) {
-	val miniMessageDeserializer: MiniMessageDeserializer by lazy {
+	protected val miniMessageDeserializer: MiniMessageDeserializer by lazy {
 		MiniMessageDeserializer()
 	}
-	val materialLoader: MaterialLoader by lazy {
+	protected val materialLoader: MaterialLoader by lazy {
 		MaterialLoader()
 	}
-	val lootTableLoader: LootTableLoader by lazy {
+	protected val lootTableLoader: LootTableLoader by lazy {
 		LootTableLoader()
 	}
 
-	inline fun <reified T : ConfigProvider> sectionLoader(): SectionLoader<T> = SectionLoader(T::class)
+	protected inline fun <reified T : ConfigProvider> sectionLoader(): SectionLoader<T> = SectionLoader(T::class)
 
-	inner class SectionLoader<T: ConfigProvider>(private val type: KClass<T>) {
+	protected inner class SectionLoader<T: ConfigProvider>(private val type: KClass<T>) {
 		operator fun getValue(config: ConfigProvider, property: KProperty<*>): Map<String, T> =
 			section?.getConfigurationSection(property.name.toSnakeCase())?.let {
 				it.getKeys(false).associateWith { key ->
@@ -42,7 +40,7 @@ open class ConfigProvider(var section: ConfigurationSection? = null) {
 			} ?: mapOf()
 	}
 
-	inline operator fun <reified T> getValue(thisRef: ConfigProvider, property: KProperty<*>): T =
+	protected inline operator fun <reified T> getValue(thisRef: ConfigProvider, property: KProperty<*>): T =
 		with(property.name.toSnakeCase()) {
 			when (T::class) {
 				Component::class -> {
@@ -59,7 +57,7 @@ open class ConfigProvider(var section: ConfigurationSection? = null) {
 		this.section = config
 	}
 
-	inner class MiniMessageDeserializer {
+	protected inner class MiniMessageDeserializer {
 		private val miniMessage: MiniMessage = MiniMessage.miniMessage()
 
 		operator fun getValue(config: ConfigProvider, property: KProperty<*>): Component =
@@ -68,14 +66,14 @@ open class ConfigProvider(var section: ConfigurationSection? = null) {
 			} ?: Component.text("")
 	}
 
-	inner class MaterialLoader {
+	protected inner class MaterialLoader {
 		operator fun getValue(config: ConfigProvider, property: KProperty<*>): Material =
 			section?.getString(property.name.toSnakeCase())?.let {
 				Material.getMaterial(it)
 			}!!
 	}
 
-	inner class LootTableLoader {
+	protected inner class LootTableLoader {
 		operator fun getValue(config: ConfigProvider, property: KProperty<*>): LootTable =
 			section?.getString(property.name.toSnakeCase())?.let {
 				val (namespace, key) = it.split(':')
