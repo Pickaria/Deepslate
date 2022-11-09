@@ -3,6 +3,7 @@ package fr.pickaria.newmenu
 import net.kyori.adventure.text.Component
 import org.bukkit.Material
 import org.bukkit.entity.Player
+import org.bukkit.event.inventory.InventoryClickEvent
 import org.bukkit.inventory.ItemStack
 
 data class Item(
@@ -12,7 +13,7 @@ data class Item(
 	val rightClick: ClickHandler? = null
 ) {
 	companion object {
-		operator fun invoke(init: Builder.() -> Unit): Item = Builder().apply(init)()
+		operator fun invoke(init: Builder.() -> Unit): Builder = Builder().apply(init)
 	}
 
 	class Builder {
@@ -43,26 +44,38 @@ data class Item(
 			rightClickCallback = fn
 		}
 
+		fun callback(event: InventoryClickEvent) = if (event.isLeftClick) {
+			leftClickCallback?.invoke(event)
+		} else if (event.isRightClick) {
+			rightClickCallback?.invoke(event)
+		} else {
+			null
+		}
+
 		var position: Pair<Int, Int> = Pair(0, 0)
 		var material: Material = Material.AIR
 		var title: Component? = null
-		var lore: List<Component> = listOf()
+		private var lore: List<Component> = listOf()
+
+		val slot: Int
+			get() = position.second * 9 + position.first
+
+		val itemStack: ItemStack
+			get() {
+				val itemStack = ItemStack(material)
+
+				itemStack.editMeta {
+					it.displayName(title)
+					it.lore(lore)
+				}
+
+				return itemStack
+			}
 
 		fun lore(init: Lore.() -> Unit) {
 			lore = Lore(init)
 		}
 
-		operator fun invoke(): Item {
-			val itemStack = ItemStack(material)
-
-			itemStack.editMeta {
-				it.displayName(title)
-				it.lore(lore)
-			}
-
-			val slot = position.second * 9 + position.first
-
-			return Item(slot, itemStack, leftClickCallback, rightClickCallback)
-		}
+		operator fun invoke(): Item = Item(slot, itemStack, leftClickCallback, rightClickCallback)
 	}
 }

@@ -4,6 +4,13 @@ import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
 import net.kyori.adventure.text.format.TextDecoration
 import org.bukkit.Material
+import org.bukkit.entity.Player
+
+internal fun testMenu() = menu("test") {
+	rows = 3
+	title = Component.text("test")
+	closeItem()
+}
 
 internal fun homeMenu() = menu(DEFAULT_MENU) {
 	rows = 3
@@ -34,6 +41,38 @@ internal fun homeMenu() = menu(DEFAULT_MENU) {
 			}
 			keyValues {
 				"Yellow" to "Best color"
+			}
+			leftClick = "Left click to open a sub-menu"
+		}
+		leftClick = "/newmenu test"
+	}
+
+	closeItem()
+}
+
+fun Menu.Builder.closeItem() {
+	item {
+		position = Pair(4, rows - 1)
+
+		previous?.let { previous ->
+			title = Component.text("Retour")
+				.decoration(TextDecoration.ITALIC, TextDecoration.State.FALSE)
+			material = Material.ARROW
+			leftClick {
+				(it.whoClicked as Player) open previous
+			}
+			lore {
+				leftClick = "Clic-gauche pour retourner au précédent menu"
+			}
+		} ?: run {
+			title = Component.text("Fermer")
+				.decoration(TextDecoration.ITALIC, TextDecoration.State.FALSE)
+			material = Material.BARRIER
+			leftClick {
+				it.whoClicked.closeInventory()
+			}
+			lore {
+				leftClick = "Clic-gauche pour fermer le menu"
 			}
 		}
 	}

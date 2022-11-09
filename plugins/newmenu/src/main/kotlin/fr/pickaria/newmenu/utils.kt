@@ -30,12 +30,20 @@ fun menu(name: String, init: Menu.Builder.() -> Unit): Menu.Builder = menu(init)
 }
 
 infix fun Player.open(menu: Menu) {
-	openInventory(menu.inventory())
+	menu.inventory().let {
+		menu.refresh()
+		openInventory(it)
+	}
+}
+
+infix fun Player.open(builder: Menu.Builder) {
+	val previous = (openInventory.topInventory.holder as? Holder)?.menu
+	this open builder(previous)
 }
 
 infix fun Player.open(menu: String): Boolean =
 	builders[menu]?.let {
-		this open it()
+		this open it
 		true
 	} ?: false
 
