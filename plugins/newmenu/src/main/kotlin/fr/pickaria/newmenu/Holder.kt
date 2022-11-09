@@ -1,0 +1,14 @@
+package fr.pickaria.newmenu
+
+import org.bukkit.inventory.Inventory
+import org.bukkit.inventory.InventoryHolder
+
+class Holder(val menu: Menu): InventoryHolder {
+	private lateinit var inventory: Inventory
+
+	override fun getInventory(): Inventory = inventory
+
+	fun setInventory(inventory: Inventory) {
+		this.inventory = inventory
+	}
+}
