@@ -7,13 +7,23 @@ import org.bukkit.event.inventory.InventoryClickEvent
 import org.bukkit.inventory.ItemStack
 
 data class Item(
+	val menu: Menu,
 	val slot: Int,
 	val itemStack: ItemStack,
 	val leftClick: ClickHandler? = null,
-	val rightClick: ClickHandler? = null
+	val rightClick: ClickHandler? = null,
 ) {
 	companion object {
-		operator fun invoke(init: Builder.() -> Unit): Builder = Builder().apply(init)
+		operator fun invoke(opener: Player, previous: Menu? = null, init: Builder.(Pair<Player, Menu?>) -> Unit): Builder =
+			Builder().apply { init(opener to previous) }
+	}
+
+	fun callback(event: InventoryClickEvent) = if (event.isLeftClick) {
+		leftClick?.invoke(event)
+	} else if (event.isRightClick) {
+		rightClick?.invoke(event)
+	} else {
+		null
 	}
 
 	class Builder {
@@ -44,23 +54,25 @@ data class Item(
 			rightClickCallback = fn
 		}
 
-		fun callback(event: InventoryClickEvent) = if (event.isLeftClick) {
-			leftClickCallback?.invoke(event)
-		} else if (event.isRightClick) {
-			rightClickCallback?.invoke(event)
-		} else {
-			null
-		}
-
 		var position: Pair<Int, Int> = Pair(0, 0)
+			set(value) {
+				if (value.first in 0..8 && value.second in 0..5) {
+					field = value
+				} else {
+					throw RuntimeException("Invalid position provided")
+				}
+			}
+
 		var material: Material = Material.AIR
-		var title: Component? = null
+
+		var title: Component = Component.empty()
+
 		private var lore: List<Component> = listOf()
 
 		val slot: Int
 			get() = position.second * 9 + position.first
 
-		val itemStack: ItemStack
+		private val itemStack: ItemStack
 			get() {
 				val itemStack = ItemStack(material)
 
@@ -76,6 +88,6 @@ data class Item(
 			lore = Lore(init)
 		}
 
-		operator fun invoke(): Item = Item(slot, itemStack, leftClickCallback, rightClickCallback)
+		operator fun invoke(menu: Menu): Item = Item(menu, slot, itemStack, leftClickCallback, rightClickCallback)
 	}
 }

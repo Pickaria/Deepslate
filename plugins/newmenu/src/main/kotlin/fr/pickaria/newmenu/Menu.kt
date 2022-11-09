@@ -2,11 +2,18 @@ package fr.pickaria.newmenu
 
 import net.kyori.adventure.text.Component
 import org.bukkit.Bukkit.createInventory
+import org.bukkit.entity.Player
 import org.bukkit.event.inventory.InventoryClickEvent
 import org.bukkit.inventory.Inventory
 import org.bukkit.inventory.InventoryHolder
 
-data class Menu(private val title: Component, private val size: Int, private val items: Map<Int, Item.Builder>) {
+data class Menu(
+	private val title: Component,
+	private val size: Int,
+	private val items: Map<Int, Item.Builder>,
+	val opener: Player,
+	val previous: Menu? = null
+) {
 	private lateinit var holder: InventoryHolder
 
 	private val inventory: Inventory
@@ -26,39 +33,35 @@ data class Menu(private val title: Component, private val size: Int, private val
 	fun refresh() {
 		// Place items in menu
 		for ((slot, item) in items) {
-			inventory.setItem(slot, item.itemStack)
+			inventory.setItem(slot, item(this).itemStack)
 		}
 	}
 
 	/**
 	 * Handles the InventoryClickEvent for the current menu.
 	 */
-	operator fun invoke(event: InventoryClickEvent) = items[event.rawSlot]?.callback(event)
+	operator fun invoke(event: InventoryClickEvent) = items[event.rawSlot]?.invoke(this)?.callback(event)
 
 	class Builder {
-		var title: Component = Component.empty()
-		var rows: Int = 6
-		private var items: MutableMap<Int, Item.Builder> = mutableMapOf()
-		var previous: Menu? = null
-
-		/**
-		 * Instantiate a new item in the menu.
-		 */
-		fun item(init: Item.Builder.() -> Unit): Item.Builder = Item(init).also {
-			items[it.slot] = it
+		private var itemBinders = mutableListOf<Binder<Item.Builder.(data: Pair<Player, Menu?>) -> Unit>>()
+		fun item(init: Item.Builder.(data: Pair<Player, Menu?>) -> Unit) {
+			itemBinders.add { _, _ -> init }
 		}
 
-		/**
-		 * Creates and returns a new instance of the menu with given parameters.
-		 */
-		operator fun invoke(): Menu = Menu(title, rows * 9, items)
+		var title: Component = Component.empty()
+		var rows: Int = 6
 
 		/**
 		 * Creates and returns a new instance of the menu with given parameters.
 		 */
-		operator fun invoke(previous: Menu? = null): Menu {
-			this.previous = previous
-			return Menu(title, rows * 9, items)
+		operator fun invoke(opener: Player, previous: Menu? = null): Menu {
+			val items = itemBinders.associate {
+				val item = Item(opener, previous, it(opener, previous))
+				item.slot to item
+			}
+			return Menu(title, rows * 9, items, opener, previous)
 		}
 	}
 }
+
+typealias Binder<T> = (opener: Player, previous: Menu?) -> T

@@ -23,9 +23,7 @@ fun unregister(name: String) {
 	}
 }
 
-fun menu(init: Menu.Builder.() -> Unit): Menu.Builder = Menu.Builder().apply(init)
-
-fun menu(name: String, init: Menu.Builder.() -> Unit): Menu.Builder = menu(init).also {
+fun menu(name: String, init: Menu.Builder.() -> Unit): Menu.Builder = Menu.Builder().apply(init).also {
 	register(name, it)
 }
 
@@ -38,7 +36,7 @@ infix fun Player.open(menu: Menu) {
 
 infix fun Player.open(builder: Menu.Builder) {
 	val previous = (openInventory.topInventory.holder as? Holder)?.menu
-	this open builder(previous)
+	this open builder(this, previous)
 }
 
 infix fun Player.open(menu: String): Boolean =
