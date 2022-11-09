@@ -1,35 +1,55 @@
 package fr.pickaria.newmenu
 
 import net.kyori.adventure.text.Component
+import net.kyori.adventure.text.format.NamedTextColor
+import net.kyori.adventure.text.format.TextDecoration
 
 class Lore {
 	var rightClick: String? = null
 	var leftClick: String? = null
-	var description: List<String> = emptyList()
-	var keyValues: Map<String, Any> = emptyMap()
+	private var description: MutableList<Component> = mutableListOf()
+	private var keyValues: MutableList<Component> = mutableListOf()
 
-	fun build(): List<Component> {
-		val lore: MutableList<String> = mutableListOf()
+	fun keyValues(init: KeyValuesBuilder.() -> Unit) = KeyValuesBuilder().init()
 
-		description.forEach {
-			lore.add("§7$it")
+	inner class KeyValuesBuilder {
+		infix fun String.to(value: Any) {
+			val component = Component.text(this, NamedTextColor.GOLD)
+				.append(Component.text(" : ", NamedTextColor.GOLD))
+				.append(Component.text(value.toString(), NamedTextColor.GRAY))
+				.decoration(TextDecoration.ITALIC, TextDecoration.State.FALSE)
+			keyValues.add(component)
 		}
+	}
+
+	fun description(init: DescriptionBuilder.() -> Unit) = DescriptionBuilder().init()
+
+	inner class DescriptionBuilder {
+		operator fun String.unaryMinus() {
+			val component = Component.text(this, NamedTextColor.GRAY)
+				.decoration(TextDecoration.ITALIC, TextDecoration.State.FALSE)
+			description.add(component)
+		}
+	}
+
+	companion object {
+		operator fun invoke(init: Lore.() -> Unit) = Lore().apply(init)()
+	}
+
+	operator fun invoke() = mutableListOf<Component>().apply {
+		addAll(description)
 
 		if (description.isNotEmpty() && keyValues.isNotEmpty()) {
-			lore.add("")
+			add(Component.empty())
 		}
 
-		keyValues.forEach { (key, value) ->
-			lore.add("§6$key : §7$value")
-		}
+		addAll(keyValues)
 
 		if ((!leftClick.isNullOrBlank() || !rightClick.isNullOrBlank()) && (keyValues.isNotEmpty() || description.isNotEmpty())) {
-			lore.add("")
+			add(Component.empty())
 		}
 
-		leftClick?.let { lore.add(it) }
-		rightClick?.let { lore.add(it) }
-
-		return lore.map { Component.text(it) }
+		leftClick?.let { add(Component.text(it)) }
+		rightClick?.let { add(Component.text(it)) }
 	}
 }

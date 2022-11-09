@@ -4,22 +4,19 @@ import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
 import net.kyori.adventure.text.format.TextDecoration
 import org.bukkit.Material
-import org.bukkit.inventory.ItemStack
 
-internal fun homeMenu() = menu {
+internal fun homeMenu() = menu(DEFAULT_MENU) {
 	rows = 3
 	title = Component.text("menu")
 
 	item {
 		material = Material.GRASS_BLOCK
-		leftClick {
-			it.whoClicked.sendMessage("This works!")
-		}
-		rightClick {
-			it.inventory.addItem(ItemStack(Material.GRASS))
-		}
+		leftClick = "/me This works!"
+		rightClick = "/give @s minecraft:grass"
 		lore {
-			description = listOf("Send a small message to the player.")
+			description {
+				-"Send a small message to the player."
+			}
 			leftClick = "Left click to receive a message!"
 			rightClick = "Right click to receive grass!"
 		}
@@ -31,7 +28,13 @@ internal fun homeMenu() = menu {
 		position = Pair(4, 1)
 		material = Material.YELLOW_CONCRETE
 		lore {
-			keyValues = mapOf("Yellow" to "Best color")
+			description {
+				-"ligne 1"
+				-"ligne 2"
+			}
+			keyValues {
+				"Yellow" to "Best color"
+			}
 		}
 	}
 }

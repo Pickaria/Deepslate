@@ -25,13 +25,17 @@ fun unregister(name: String) {
 
 fun menu(init: Menu.Builder.() -> Unit): Menu.Builder = Menu.Builder().apply(init)
 
+fun menu(name: String, init: Menu.Builder.() -> Unit): Menu.Builder = menu(init).also {
+	register(name, it)
+}
+
 infix fun Player.open(menu: Menu) {
 	openInventory(menu.inventory())
 }
 
 infix fun Player.open(menu: String): Boolean =
-	builders[menu]?.build()?.let {
-		this open it
+	builders[menu]?.let {
+		this open it()
 		true
 	} ?: false
 

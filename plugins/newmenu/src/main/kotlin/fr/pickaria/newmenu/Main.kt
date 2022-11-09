@@ -9,7 +9,7 @@ class Main : JavaPlugin() {
 		getCommand("newmenu")?.setExecutor(Command())
 		server.pluginManager.registerEvents(Listeners(), this)
 
-		register(DEFAULT_MENU, homeMenu())
+		homeMenu()
 
 		logger.info("Newmenu plugin loaded!")
 	}
