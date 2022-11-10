@@ -1,5 +1,6 @@
 package fr.pickaria.job
 
+import fr.pickaria.menu.Result
 import fr.pickaria.menu.closeItem
 import fr.pickaria.menu.fill
 import fr.pickaria.menu.home.addToHome
@@ -40,7 +41,7 @@ internal fun jobMenu() = menu("job") {
 					"Points d'ascension à récupérer" to ascentPoints
 				}
 			}
-			leftClick = "/job ascent ${config.key}"
+			leftClick = Result.CLOSE to "/job ascent ${config.key}"
 			editMeta {
 				it.addItemFlags(ItemFlag.HIDE_ATTRIBUTES, ItemFlag.HIDE_ENCHANTS)
 				if (ascentPoints > 0) {
@@ -61,8 +62,8 @@ internal fun jobMenu() = menu("job") {
 			material = config.icon
 			title = Component.text(config.label).decoration(TextDecoration.ITALIC, TextDecoration.State.FALSE)
 
-			if (isCurrentJob) rightClick = "/job leave $key"
-			else leftClick = "/job join $key"
+			if (isCurrentJob) rightClick = Result.CLOSE to "/job leave $key"
+			else leftClick = Result.CLOSE to "/job join $key"
 
 			lore {
 				description {
