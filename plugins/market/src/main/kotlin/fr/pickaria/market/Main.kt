@@ -1,6 +1,7 @@
 package fr.pickaria.market
 
 import fr.pickaria.market.menu.orderListingMenu
+import fr.pickaria.market.menu.ownOrdersMenu
 import fr.pickaria.menu.unregister
 import fr.pickaria.shared.setupEconomy
 import net.milkbowl.vault.economy.Economy
@@ -24,6 +25,7 @@ class Main : JavaPlugin() {
 		getCommand("market")?.setExecutor(MarketCommand())
 		getCommand("cancel")?.setExecutor(CancelOrderCommand())
 		orderListingMenu()
+		ownOrdersMenu()
 
 		logger.info("Market plugin loaded!")
 	}

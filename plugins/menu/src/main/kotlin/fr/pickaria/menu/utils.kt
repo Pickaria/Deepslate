@@ -52,6 +52,13 @@ infix fun Player.open(init: BuilderInit<Menu.Builder>) {
 /**
  * Builds and opens a menu at a given page.
  */
+fun Player.open(init: BuilderInit<Menu.Builder>, previous: Menu?) {
+	this open Menu(init, this@open, previous, 0).build()
+}
+
+/**
+ * Builds and opens a menu at a given page.
+ */
 infix fun Player.open(menu: String): Boolean =
 	builders[menu]?.let {
 		val previous = (openInventory.topInventory.holder as? Holder)?.menu

@@ -56,17 +56,6 @@ class Order private constructor(private val row: ResultRow) {
 		}
 
 		/**
-		 * Get all specific material's orders.
-		 */
-		fun get(material: Material): List<Order> = transaction {
-			Orders.select {
-				Orders.material eq material.name
-			}.map {
-				Order(it)
-			}
-		}
-
-		/**
 		 * Get all specific material's orders with given type.
 		 */
 		fun get(material: Material, type: OrderType): List<Order> = transaction {
@@ -111,6 +100,17 @@ class Order private constructor(private val row: ResultRow) {
 				.count()
 		}
 
+		fun count(type: OrderType, seller: OfflinePlayer): Long = transaction {
+			Orders
+				.slice(Orders.seller)
+				.select {
+					(Orders.type eq type) and
+					(Orders.seller eq seller.uniqueId) and
+					(Orders.amount greater 0)
+				}
+				.count()
+		}
+
 		fun getSumAmount(type: OrderType, material: Material) = transaction {
 			val sumAmount = Orders.amount.sum()
 
@@ -118,7 +118,7 @@ class Order private constructor(private val row: ResultRow) {
 				.slice(sumAmount)
 				.select {
 					(Orders.type eq type) and
-					(Orders.material eq material.name)
+							(Orders.material eq material.name)
 				}
 				.groupBy(Orders.material)
 				.firstOrNull()?.get(sumAmount) ?: 0
@@ -158,38 +158,6 @@ class Order private constructor(private val row: ResultRow) {
 
 		fun getAveragePrice(material: Material): Double = transaction {
 			val column = Orders.price.avg()
-
-			Orders
-				.slice(column)
-				.select {
-					(Orders.material eq material.name) and
-							(Orders.amount greater 0) and
-							(Orders.type eq OrderType.SELL)
-				}
-				.first()
-				.let {
-					it[column]?.toDouble() ?: 1.0
-				}
-		}
-
-		fun getMinimumPrice(material: Material): Double = transaction {
-			val column = Orders.price.min()
-
-			Orders
-				.slice(column)
-				.select {
-					(Orders.material eq material.name) and
-							(Orders.amount greater 0) and
-							(Orders.type eq OrderType.SELL)
-				}
-				.first()
-				.let {
-					it[column]?.toDouble() ?: 1.0
-				}
-		}
-
-		fun getMaximumPrice(material: Material): Double = transaction {
-			val column = Orders.price.max()
 
 			Orders
 				.slice(column)
@@ -246,6 +214,17 @@ class Order private constructor(private val row: ResultRow) {
 				.groupBy(Orders.material)
 				.mapNotNull {
 					Material.getMaterial(it[Orders.material])
+				}
+		}
+
+		fun get(seller: OfflinePlayer, limit: Int, offset: Long = 0): List<Order> = transaction {
+			Orders
+				.select {
+					Orders.seller eq seller.uniqueId
+				}
+				.limit(limit, offset)
+				.map {
+					Order(it)
 				}
 		}
 	}

@@ -48,8 +48,8 @@ data class Menu(
 	}
 
 	internal fun rebuild() {
-		opener open builder
-		inventory.clear()
+		opener.open(builder, previous)
+		inventory.close()
 	}
 
 	/**
