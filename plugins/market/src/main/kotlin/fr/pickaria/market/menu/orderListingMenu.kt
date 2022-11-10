@@ -11,6 +11,7 @@ import net.kyori.adventure.text.format.NamedTextColor
 import net.kyori.adventure.text.format.TextDecoration
 import org.bukkit.Material
 
+@OptIn(ItemBuilderUnsafe::class)
 internal fun orderListingMenu() = menu("market") {
 	title = Component.text("Marché", NamedTextColor.GOLD, TextDecoration.BOLD)
 

@@ -1,5 +1,7 @@
 package fr.pickaria.market.menu
 
+import fr.pickaria.database.models.Order
+import fr.pickaria.database.models.OrderType
 import fr.pickaria.economy.has
 import fr.pickaria.market.economy
 import fr.pickaria.market.getPrices
@@ -31,7 +33,10 @@ internal fun buyMenu(material: Material) = menu {
 			title = Component.text("$amount ")
 				.append(Component.translatable(material.translationKey()))
 
-			if (player has price * amount) {
+			val stocks = Order.getSumAmount(OrderType.SELL, material)
+			println(stocks)
+
+			if (player has price * amount && amount <= stocks) {
 				this.material = material
 
 				lore {
@@ -42,7 +47,7 @@ internal fun buyMenu(material: Material) = menu {
 					}
 				}
 
-				leftClick = "/buy ${material.name.lowercase()} $amount $price"
+				leftClick = Result.REFRESH to "/buy ${material.name.lowercase()} $amount $price"
 			} else {
 				this.material = Material.BARRIER
 

@@ -12,18 +12,17 @@ typealias ClickCallback = Pair<Result, String?>
 private typealias FullClickCallback = Triple<Result, String?, ClickHandler?>
 
 data class Item(
-	val menu: Menu,
-	val slot: Int,
-	val itemStack: ItemStack,
-	val leftClick: FullClickCallback,
-	val rightClick: FullClickCallback
+	private val menu: Menu,
+	internal val itemStack: ItemStack,
+	private val leftClick: FullClickCallback,
+	private val rightClick: FullClickCallback
 ) {
 	companion object {
-		operator fun invoke(init: BuilderInit<Builder>): Builder =
+		internal operator fun invoke(init: BuilderInit<Builder>): Builder =
 			Builder().apply { init() }
 	}
 
-	fun callback(event: InventoryClickEvent) {
+	internal fun callback(event: InventoryClickEvent) {
 		if (event.isLeftClick) {
 			callback(event, leftClick)
 		} else if (event.isRightClick) {
@@ -34,8 +33,6 @@ data class Item(
 	private fun callback(event: InventoryClickEvent, click: FullClickCallback) {
 		val player = event.whoClicked as Player
 
-		println(click)
-
 		click.second?.let {
 			player.chat(it)
 		}
@@ -45,7 +42,7 @@ data class Item(
 		when (click.first) {
 			Result.CLOSE -> event.inventory.close()
 			Result.PREVIOUS -> menu.previous?.let { player open it }
-			Result.REFRESH -> menu.refresh()
+			Result.REFRESH -> menu.rebuild()
 			Result.NONE -> {}
 		}
 	}
@@ -65,12 +62,12 @@ data class Item(
 				rightClickCallback = Triple(value.first, value.second, rightClickCallback.third)
 			}
 
-		@Deprecated("Menu should help player run a command.", replaceWith = ReplaceWith("leftClick = \"/command\""))
+		@ItemBuilderUnsafe
 		fun leftClick(fn: ClickHandler) {
 			leftClickCallback = Triple(leftClick.first, leftClick.second, fn)
 		}
 
-		@Deprecated("Menu should help player run a command.", replaceWith = ReplaceWith("rightClick = \"/command\""))
+		@ItemBuilderUnsafe
 		fun rightClick(fn: ClickHandler) {
 			rightClickCallback = Triple(rightClick.first, rightClick.second, fn)
 		}
@@ -85,6 +82,7 @@ data class Item(
 			}
 
 		var material: Material = Material.AIR
+
 		var title: Component? = null
 			set(value) {
 				field = value?.decoration(TextDecoration.ITALIC, TextDecoration.State.FALSE)
@@ -120,6 +118,6 @@ data class Item(
 				return itemStack
 			}
 
-		operator fun invoke(menu: Menu): Item = Item(menu, slot, itemStack, leftClickCallback, rightClickCallback)
+		operator fun invoke(menu: Menu): Item = Item(menu, itemStack, leftClickCallback, rightClickCallback)
 	}
 }

@@ -11,15 +11,19 @@ data class Menu(
 	private val title: Component,
 	private val size: Int,
 	private val items: Map<Int, Item.Builder>,
+	private val builder: BuilderInit<Builder>,
 	val opener: Player,
-	val previous: Menu? = null
+	internal val previous: Menu? = null
 ) {
 	companion object {
-		operator fun invoke(init: BuilderInit<Builder>, key: String, opener: Player, previous: Menu? = null, page: Int = 0) =
-			Builder(key, opener, previous, page).apply { init() }
-
-		operator fun invoke(init: BuilderInit<Builder>, opener: Player, previous: Menu? = null, page: Int = 0) =
-			Builder(null, opener, previous, page).apply { init() }
+		internal operator fun invoke(
+			init: BuilderInit<Builder>,
+			opener: Player,
+			previous: Menu? = null,
+			page: Int = 0,
+			key: String? = null
+		) =
+			Builder(opener, init, previous, page, key).apply { init() }
 	}
 
 	private lateinit var holder: InventoryHolder
@@ -30,27 +34,36 @@ data class Menu(
 	/**
 	 * Creates a new inventory and places items in it.
 	 */
-	fun inventory(): Inventory {
+	internal fun inventory(): Inventory {
 		holder = Holder(this).apply {
 			inventory = createInventory(this, size, title)
+		}
+
+		// Place items in menu
+		for ((slot, item) in items) {
+			inventory.setItem(slot, item(this).itemStack)
 		}
 
 		return holder.inventory
 	}
 
-	fun refresh() {
-		// Place items in menu
-		for ((slot, item) in items) {
-			inventory.setItem(slot, item(this).itemStack)
-		}
+	internal fun rebuild() {
+		opener open builder
+		inventory.clear()
 	}
 
 	/**
 	 * Handles the InventoryClickEvent for the current menu.
 	 */
-	operator fun invoke(event: InventoryClickEvent) = items[event.rawSlot]?.invoke(this)?.callback(event)
+	internal operator fun invoke(event: InventoryClickEvent) = items[event.rawSlot]?.invoke(this)?.callback(event)
 
-	class Builder(val key: String? = null, val opener: Player, val previous: Menu? = null, val page: Int = 0) {
+	class Builder(
+		val opener: Player,
+		private val init: BuilderInit<Builder>,
+		val previous: Menu? = null,
+		val page: Int = 0,
+		val key: String? = null
+	) {
 		private val items = mutableMapOf<Int, Item.Builder>()
 
 		fun item(init: Item.Builder.() -> Unit): Item.Builder = Item(init).also {
@@ -64,6 +77,7 @@ data class Menu(
 		internal infix fun has(index: Int) = items.contains(index)
 
 		var title: Component = Component.empty()
+
 		var rows: Int = 6
 			set(value) {
 				if (rows in 1..6) {
@@ -79,8 +93,8 @@ data class Menu(
 		/**
 		 * Creates and returns a new instance of the menu with given parameters.
 		 */
-		fun build(): Menu {
-			return Menu(title, size, items, opener, previous)
+		internal fun build(): Menu {
+			return Menu(title, size, items, init, opener, previous)
 		}
 	}
 }

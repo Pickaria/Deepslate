@@ -1,6 +1,5 @@
 package fr.pickaria.database.models
 
-import fr.pickaria.database.BukkitLogger
 import org.bukkit.Bukkit
 import org.bukkit.Material
 import org.bukkit.OfflinePlayer
@@ -83,7 +82,6 @@ class Order private constructor(private val row: ResultRow) {
 		fun getListings(type: OrderType, limit: Int, offset: Long = 0): List<Listing> = transaction {
 			val avgPrice = Orders.price.avg()
 			val sumAmount = Orders.amount.sum()
-			addLogger(BukkitLogger)
 
 			Orders
 				.slice(Orders.material, sumAmount, avgPrice)
@@ -103,8 +101,6 @@ class Order private constructor(private val row: ResultRow) {
 		}
 
 		fun count(type: OrderType): Long = transaction {
-			addLogger(BukkitLogger)
-
 			Orders
 				.slice(Orders.material)
 				.select {
@@ -113,6 +109,19 @@ class Order private constructor(private val row: ResultRow) {
 				}
 				.groupBy(Orders.material)
 				.count()
+		}
+
+		fun getSumAmount(type: OrderType, material: Material) = transaction {
+			val sumAmount = Orders.amount.sum()
+
+			Orders
+				.slice(sumAmount)
+				.select {
+					(Orders.type eq type) and
+					(Orders.material eq material.name)
+				}
+				.groupBy(Orders.material)
+				.firstOrNull()?.get(sumAmount) ?: 0
 		}
 
 		/**

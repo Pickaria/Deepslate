@@ -38,10 +38,7 @@ fun menu(name: String, init: BuilderInit<Menu.Builder>) = register(name, init)
  * Opens an already instantiated menu.
  */
 infix fun Player.open(menu: Menu) {
-	menu.inventory().let {
-		menu.refresh()
-		openInventory(it)
-	}
+	openInventory(menu.inventory())
 }
 
 /**
@@ -58,7 +55,7 @@ infix fun Player.open(init: BuilderInit<Menu.Builder>) {
 infix fun Player.open(menu: String): Boolean =
 	builders[menu]?.let {
 		val previous = (openInventory.topInventory.holder as? Holder)?.menu
-		this open Menu(it, menu, this@open, previous, 0).build()
+		this open Menu(it, this@open, previous, 0, menu).build()
 		true
 	} ?: false
 
@@ -68,6 +65,6 @@ infix fun Player.open(menu: String): Boolean =
 fun Player.open(menu: String, page: Int): Boolean =
 	builders[menu]?.let {
 		val previous = (openInventory.topInventory.holder as? Holder)?.menu?.previous
-		this open Menu(it, menu, this@open, previous, page).build()
+		this open Menu(it, this@open, previous, page, menu).build()
 		true
 	} ?: false
