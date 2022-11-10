@@ -17,7 +17,7 @@ import org.bukkit.persistence.PersistentDataType
 import org.bukkit.potion.PotionEffectType
 import java.util.*
 
-internal class CrateListeners: Listener {
+internal class RewardListeners: Listener {
 	@EventHandler
 	fun onCrateOpen(event: PlayerInteractEvent) {
 		with(event) {
@@ -31,7 +31,7 @@ internal class CrateListeners: Listener {
 						null
 					}
 				}?.let {
-					val holder = CrateHolder()
+					val holder = RewardHolder()
 					val inventory = Bukkit.createInventory(
 						holder,
 						InventoryType.DROPPER,
@@ -65,7 +65,7 @@ internal class CrateListeners: Listener {
 	@EventHandler
 	fun onInventoryClick(event: InventoryClickEvent) {
 		with(event) {
-			if (inventory.holder is CrateHolder) {
+			if (inventory.holder is RewardHolder) {
 				currentItem?.let {
 					creditShard(it, whoClicked as Player)
 				}
@@ -77,7 +77,7 @@ internal class CrateListeners: Listener {
 	@EventHandler
 	fun onCrateClosed(event: InventoryCloseEvent) {
 		with(event) {
-			if (inventory.holder is CrateHolder) {
+			if (inventory.holder is RewardHolder) {
 				val contents = inventory.contents.filterNotNull()
 				contents.forEach {
 					creditShard(it, player as Player)

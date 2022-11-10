@@ -12,5 +12,5 @@ depend:
   - Vault
 
 commands:
-  crate:
-    usage: /crate
+  reward:
+    usage: /reward [reward tier]

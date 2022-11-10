@@ -1,6 +1,5 @@
 package fr.pickaria.reward
 
-import fr.pickaria.menu.menuController
 import fr.pickaria.shared.setupEconomy
 import net.milkbowl.vault.economy.Economy
 import org.bukkit.NamespacedKey
@@ -19,10 +18,10 @@ class Main : JavaPlugin() {
 		Config.setConfig(config)
 		namespace = NamespacedKey(this, "reward")
 
-		getCommand("crate")?.setExecutor(CrateCommand())
-		server.pluginManager.registerEvents(CrateListeners(), this)
+		getCommand("reward")?.setExecutor(RewardCommand())
+		server.pluginManager.registerEvents(RewardListeners(), this)
 
-		menuController.register("reward", CrateMenu.Factory())
+		crateMenu()
 
 		logger.info("Reward plugin loaded!")
 	}

@@ -2,6 +2,7 @@ package fr.pickaria.reward
 
 import fr.pickaria.economy.has
 import fr.pickaria.economy.withdraw
+import fr.pickaria.menu.open
 import net.kyori.adventure.text.format.TextDecoration
 import net.milkbowl.vault.economy.EconomyResponse
 import org.bukkit.command.Command
@@ -14,9 +15,13 @@ import org.bukkit.inventory.ItemFlag
 import org.bukkit.inventory.ItemStack
 import org.bukkit.persistence.PersistentDataType
 
-internal class CrateCommand : CommandExecutor, Listener, TabCompleter {
+internal class RewardCommand : CommandExecutor, Listener, TabCompleter {
 	override fun onCommand(sender: CommandSender, command: Command, label: String, args: Array<out String>): Boolean {
 		if (sender is Player) {
+			if (args.isEmpty()) {
+				sender open "reward"
+			}
+
 			val key = args.first()
 			val reward: RewardConfig = Config.rewards[key]!!
 			val amount = try {
