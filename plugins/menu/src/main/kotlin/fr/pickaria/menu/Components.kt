@@ -1,9 +1,7 @@
 package fr.pickaria.menu
 
-import fr.pickaria.menu.Result
 import net.kyori.adventure.text.Component
 import org.bukkit.Material
-import org.bukkit.entity.Player
 
 
 fun Menu.Builder.closeItem() {

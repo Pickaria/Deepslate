@@ -1,0 +1,30 @@
+name: PickariaMarket
+version: 1.0
+api-version: 1.19
+main: fr.pickaria.market.Main
+author: Quozul
+depend:
+  - PickariaDatabase
+  - PickariaEconomy
+  - PickariaLib
+  - PickariaMenu
+  - PickariaShared
+  - Vault
+
+commands:
+  sell:
+    usage: /sell [material] [quantity] [minimum sell price]
+    description: Creates a sell order for the item in player's hand.
+    permission: pickaria.market.sell
+  buy:
+    usage: /buy <material> [quantity] [maximum buy price]
+    description: Creates a buy order.
+    permission: pickaria.market.buy
+  cancel:
+    usage: /cancel <order id>
+    description: Cancels an order only if the command's sender created id.
+    permission: pickaria.market.cancel
+  market:
+    usage: /market
+    description: Open the market menu.
+    permission: pickaria.market.market
