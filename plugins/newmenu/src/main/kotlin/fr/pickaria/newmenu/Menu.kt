@@ -2,11 +2,23 @@ package fr.pickaria.newmenu
 
 import net.kyori.adventure.text.Component
 import org.bukkit.Bukkit.createInventory
+import org.bukkit.entity.Player
 import org.bukkit.event.inventory.InventoryClickEvent
 import org.bukkit.inventory.Inventory
 import org.bukkit.inventory.InventoryHolder
 
-data class Menu(private val title: Component, private val size: Int, private val items: Map<Int, Item>) {
+data class Menu(
+	private val title: Component,
+	private val size: Int,
+	private val items: Map<Int, Item.Builder>,
+	val opener: Player,
+	val previous: Menu? = null
+) {
+	companion object {
+		operator fun invoke(init: BuilderInit<Builder>, key: String, opener: Player, previous: Menu? = null, page: Int = 0) =
+			Builder(key, opener, previous, page).apply { init() }
+	}
+
 	private lateinit var holder: InventoryHolder
 
 	private val inventory: Inventory
@@ -20,44 +32,50 @@ data class Menu(private val title: Component, private val size: Int, private val
 			inventory = createInventory(this, size, title)
 		}
 
+		return holder.inventory
+	}
+
+	fun refresh() {
 		// Place items in menu
 		for ((slot, item) in items) {
-			inventory.setItem(slot, item.itemStack)
+			inventory.setItem(slot, item(this).itemStack)
 		}
-
-		return holder.inventory
 	}
 
 	/**
 	 * Handles the InventoryClickEvent for the current menu.
 	 */
-	operator fun invoke(event: InventoryClickEvent) {
-		items[event.rawSlot]?.let {
-			if (event.isLeftClick) {
-				it.leftClick?.invoke(event)
-			} else if (event.isRightClick) {
-				it.rightClick?.invoke(event)
+	operator fun invoke(event: InventoryClickEvent) = items[event.rawSlot]?.invoke(this)?.callback(event)
+
+	class Builder(val key: String, val opener: Player, val previous: Menu? = null, val page: Int = 0) {
+		private val items = mutableMapOf<Int, Item.Builder>()
+
+		fun item(init: Item.Builder.() -> Unit): Item.Builder = Item(init).also {
+			if (it.slot < size) {
+				items[it.slot] = it
 			} else {
-				null
+				throw RuntimeException("Invalid item position, inventory of size $size, item in index ${it.slot}.")
 			}
 		}
-	}
 
-	class Builder {
 		var title: Component = Component.empty()
 		var rows: Int = 6
-		var items: MutableMap<Int, Item> = mutableMapOf()
+			set(value) {
+				if (rows in 1..6) {
+					field = value
+				} else {
+					throw RuntimeException("Invalid row number provided, must be between 1 and 6.")
+				}
+			}
 
-		/**
-		 * Instantiate a new item in the menu.
-		 */
-		fun item(init: Item.Builder.() -> Unit): Item = Item(init).also {
-			items[it.slot] = it
-		}
+		val size: Int
+			get() = rows * 9
 
 		/**
 		 * Creates and returns a new instance of the menu with given parameters.
 		 */
-		operator fun invoke(): Menu = Menu(title, rows * 9, items)
+		fun build(): Menu {
+			return Menu(title, size, items, opener, previous)
+		}
 	}
 }

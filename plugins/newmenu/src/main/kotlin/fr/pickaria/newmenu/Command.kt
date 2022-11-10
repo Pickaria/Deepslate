@@ -15,8 +15,25 @@ internal class Command : CommandExecutor, TabCompleter {
 				DEFAULT_MENU
 			}
 
-			if (!(sender open menu)) {
-				sender.sendMessage("§cCe menu n'existe pas.")
+			val page = try {
+				args.getOrNull(1)?.toInt()
+			} catch (_: NumberFormatException) {
+				null
+			}
+
+			try {
+				val opened = if (page != null) {
+					sender.open(menu, page)
+				} else {
+					sender open menu
+				}
+
+				if (!opened) {
+					sender.sendMessage("§cCe menu n'existe pas.")
+				}
+			} catch (exception: Exception) {
+				sender.sendMessage("§cUne erreur est survenue lors de l'ouverture du menu.")
+				exception.printStackTrace()
 			}
 		}
 

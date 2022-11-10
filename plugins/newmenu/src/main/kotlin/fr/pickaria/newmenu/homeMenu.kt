@@ -5,13 +5,47 @@ import net.kyori.adventure.text.format.NamedTextColor
 import net.kyori.adventure.text.format.TextDecoration
 import org.bukkit.Material
 
+internal fun foodMenu() = menu("food") {
+	rows = 4
+	title = Component.text("Nourritures", NamedTextColor.GREEN)
+
+	val pageSize = rows * 9 - 10
+	val start = page * pageSize
+	val materials = Material.values().filter { it.isEdible }
+
+	for (i in 0..pageSize) {
+		materials.getOrNull(start + i)?.let {
+			item {
+				material = it
+				title = Component.translatable(it.translationKey())
+				slot = i
+			}
+		}
+	}
+
+	previousPage()
+	closeItem()
+	nextPage(materials.size / pageSize)
+}
+
 internal fun homeMenu() = menu(DEFAULT_MENU) {
-	rows = 3
-	title = Component.text("menu")
+	rows = 4
+	title = Component.text("Home menu")
+
+	fill(Material.GREEN_STAINED_GLASS_PANE, true)
 
 	item {
+		position = 7 to 1
+		material = Material.PLAYER_HEAD
+		title = opener.displayName()
+	}
+
+	item {
+		position = 1 to 1
 		material = Material.GRASS_BLOCK
-		leftClick = "/me This works!"
+		leftClick {
+			it.whoClicked.sendMessage("This works!")
+		}
 		rightClick = "/give @s minecraft:grass"
 		lore {
 			description {
@@ -25,7 +59,7 @@ internal fun homeMenu() = menu(DEFAULT_MENU) {
 	item {
 		title = Component.text("This is a yellow concrete", NamedTextColor.YELLOW)
 			.decoration(TextDecoration.ITALIC, TextDecoration.State.FALSE)
-		position = Pair(4, 1)
+		position = 4 to 1
 		material = Material.YELLOW_CONCRETE
 		lore {
 			description {
@@ -35,6 +69,10 @@ internal fun homeMenu() = menu(DEFAULT_MENU) {
 			keyValues {
 				"Yellow" to "Best color"
 			}
+			leftClick = "Left click to open a sub-menu"
 		}
+		leftClick = "/newmenu food"
 	}
+
+	closeItem()
 }

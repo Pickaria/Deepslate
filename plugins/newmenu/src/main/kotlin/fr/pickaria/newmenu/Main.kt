@@ -10,6 +10,7 @@ class Main : JavaPlugin() {
 		server.pluginManager.registerEvents(Listeners(), this)
 
 		homeMenu()
+		foodMenu()
 
 		logger.info("Newmenu plugin loaded!")
 	}

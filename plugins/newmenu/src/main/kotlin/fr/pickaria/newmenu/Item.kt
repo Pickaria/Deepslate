@@ -3,16 +3,27 @@ package fr.pickaria.newmenu
 import net.kyori.adventure.text.Component
 import org.bukkit.Material
 import org.bukkit.entity.Player
+import org.bukkit.event.inventory.InventoryClickEvent
 import org.bukkit.inventory.ItemStack
 
 data class Item(
+	val menu: Menu,
 	val slot: Int,
 	val itemStack: ItemStack,
 	val leftClick: ClickHandler? = null,
 	val rightClick: ClickHandler? = null
 ) {
 	companion object {
-		operator fun invoke(init: Builder.() -> Unit): Item = Builder().apply(init)()
+		operator fun invoke(init: BuilderInit<Builder>): Builder =
+			Builder().apply { init() }
+	}
+
+	fun callback(event: InventoryClickEvent) = if (event.isLeftClick) {
+		leftClick?.invoke(event)
+	} else if (event.isRightClick) {
+		rightClick?.invoke(event)
+	} else {
+		null
 	}
 
 	class Builder {
@@ -23,6 +34,7 @@ data class Item(
 			set(value) = leftClick { event ->
 				value?.let {
 					(event.whoClicked as Player).chat(value)
+					event.inventory.close()
 				}
 			}
 
@@ -30,6 +42,7 @@ data class Item(
 			set(value) = rightClick { event ->
 				value?.let {
 					(event.whoClicked as Player).chat(value)
+					event.inventory.close()
 				}
 			}
 
@@ -44,25 +57,40 @@ data class Item(
 		}
 
 		var position: Pair<Int, Int> = Pair(0, 0)
-		var material: Material = Material.AIR
-		var title: Component? = null
-		var lore: List<Component> = listOf()
-
-		fun lore(init: Lore.() -> Unit) {
-			lore = Lore(init)
-		}
-
-		operator fun invoke(): Item {
-			val itemStack = ItemStack(material)
-
-			itemStack.editMeta {
-				it.displayName(title)
-				it.lore(lore)
+			set(value) {
+				if (value.first in 0..8 && value.second in 0..5) {
+					field = value
+				} else {
+					throw RuntimeException("Invalid position provided")
+				}
 			}
 
-			val slot = position.second * 9 + position.first
+		var material: Material = Material.AIR
+		var title: Component? = null
+		private var lore: List<Component> = listOf()
 
-			return Item(slot, itemStack, leftClickCallback, rightClickCallback)
+		fun lore(init: Lore.() -> Unit) {
+			lore = Lore(init).build()
 		}
+
+		var slot: Int
+			get() = position.second * 9 + position.first
+			set(value) {
+				position = Pair(value % 9, value / 9)
+			}
+
+		private val itemStack: ItemStack
+			get() {
+				val itemStack = ItemStack(material)
+
+				itemStack.editMeta {
+					it.displayName(title)
+					it.lore(lore)
+				}
+
+				return itemStack
+			}
+
+		operator fun invoke(menu: Menu): Item = Item(menu, slot, itemStack, leftClickCallback, rightClickCallback)
 	}
 }
