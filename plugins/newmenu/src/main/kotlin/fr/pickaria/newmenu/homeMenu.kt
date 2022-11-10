@@ -4,27 +4,44 @@ import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
 import net.kyori.adventure.text.format.TextDecoration
 import org.bukkit.Material
-import org.bukkit.entity.Player
 
-internal fun testMenu() = menu("test") {
-	rows = 3
-	title = opener.displayName()
+internal fun foodMenu() = menu("food") {
+	rows = 4
+	title = Component.text("Nourritures", NamedTextColor.GREEN)
 
+	val pageSize = rows * 9 - 10
+	val start = page * pageSize
+	val materials = Material.values().filter { it.isEdible }
+
+	for (i in 0..pageSize) {
+		materials.getOrNull(start + i)?.let {
+			item {
+				material = it
+				title = Component.translatable(it.translationKey())
+				slot = i
+			}
+		}
+	}
+
+	previousPage()
 	closeItem()
+	nextPage(materials.size / pageSize)
 }
 
 internal fun homeMenu() = menu(DEFAULT_MENU) {
-	rows = 3
-	title = Component.text("menu")
+	rows = 4
+	title = Component.text("Home menu")
+
+	fill(Material.GREEN_STAINED_GLASS_PANE, true)
 
 	item {
-		position = Pair(8, 0) // Last column on first row
+		position = 7 to 1
 		material = Material.PLAYER_HEAD
 		title = opener.displayName()
-
 	}
 
 	item {
+		position = 1 to 1
 		material = Material.GRASS_BLOCK
 		leftClick {
 			it.whoClicked.sendMessage("This works!")
@@ -42,7 +59,7 @@ internal fun homeMenu() = menu(DEFAULT_MENU) {
 	item {
 		title = Component.text("This is a yellow concrete", NamedTextColor.YELLOW)
 			.decoration(TextDecoration.ITALIC, TextDecoration.State.FALSE)
-		position = Pair(4, 1)
+		position = 4 to 1
 		material = Material.YELLOW_CONCRETE
 		lore {
 			description {
@@ -54,38 +71,8 @@ internal fun homeMenu() = menu(DEFAULT_MENU) {
 			}
 			leftClick = "Left click to open a sub-menu"
 		}
-		leftClick = "/newmenu test"
+		leftClick = "/newmenu food"
 	}
 
 	closeItem()
-}
-
-fun Menu.Builder.closeItem() {
-	item {
-		position = Pair(4, rows - 1)
-
-		previous?.let {
-			// Go back
-			title = Component.text("Retour")
-				.decoration(TextDecoration.ITALIC, TextDecoration.State.FALSE)
-			material = Material.ARROW
-			leftClick {
-				(it.whoClicked as Player) open previous
-			}
-			lore {
-				leftClick = "Clic-gauche pour retourner au précédent menu"
-			}
-		} ?: run {
-			// Close menu
-			title = Component.text("Fermer")
-				.decoration(TextDecoration.ITALIC, TextDecoration.State.FALSE)
-			material = Material.BARRIER
-			leftClick {
-				it.whoClicked.closeInventory()
-			}
-			lore {
-				leftClick = "Clic-gauche pour fermer le menu"
-			}
-		}
-	}
 }

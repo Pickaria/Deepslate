@@ -15,8 +15,8 @@ data class Menu(
 	val previous: Menu? = null
 ) {
 	companion object {
-		operator fun invoke(opener: Player, previous: Menu?, init: BuilderInit<Builder>) =
-			Builder(opener, previous).apply { init() }
+		operator fun invoke(init: BuilderInit<Builder>, key: String, opener: Player, previous: Menu? = null, page: Int = 0) =
+			Builder(key, opener, previous, page).apply { init() }
 	}
 
 	private lateinit var holder: InventoryHolder
@@ -47,11 +47,15 @@ data class Menu(
 	 */
 	operator fun invoke(event: InventoryClickEvent) = items[event.rawSlot]?.invoke(this)?.callback(event)
 
-	class Builder(val opener: Player, val previous: Menu? = null) {
+	class Builder(val key: String, val opener: Player, val previous: Menu? = null, val page: Int = 0) {
 		private val items = mutableMapOf<Int, Item.Builder>()
 
 		fun item(init: Item.Builder.() -> Unit): Item.Builder = Item(init).also {
-			items[it.slot] = it
+			if (it.slot < size) {
+				items[it.slot] = it
+			} else {
+				throw RuntimeException("Invalid item position, inventory of size $size, item in index ${it.slot}.")
+			}
 		}
 
 		var title: Component = Component.empty()
@@ -60,15 +64,18 @@ data class Menu(
 				if (rows in 1..6) {
 					field = value
 				} else {
-					throw RuntimeException("Invalid row number provided")
+					throw RuntimeException("Invalid row number provided, must be between 1 and 6.")
 				}
 			}
+
+		val size: Int
+			get() = rows * 9
 
 		/**
 		 * Creates and returns a new instance of the menu with given parameters.
 		 */
 		fun build(): Menu {
-			return Menu(title, rows * 9, items, opener, previous)
+			return Menu(title, size, items, opener, previous)
 		}
 	}
 }
