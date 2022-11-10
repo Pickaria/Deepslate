@@ -1,7 +1,6 @@
-package fr.pickaria.newmenu
+package fr.pickaria.menu
 
 import net.kyori.adventure.text.Component
-import net.kyori.adventure.text.format.TextDecoration
 import org.bukkit.Material
 import org.bukkit.entity.Player
 
@@ -40,7 +39,7 @@ fun Menu.Builder.previousPage() {
 			material = Material.PAPER
 			title = Component.text("Page précédente")
 			position = 2 to rows - 1
-			leftClick = "/newmenu $key ${page - 1}"
+			leftClick = "/menu $key ${page - 1}"
 		}
 	}
 }
@@ -51,7 +50,7 @@ fun Menu.Builder.nextPage(maxPage: Int) {
 			material = Material.PAPER
 			title = Component.text("Page suivante")
 			position = 6 to rows - 1
-			leftClick = "/newmenu $key ${page + 1}"
+			leftClick = "/menu $key ${page + 1}"
 		}
 	}
 }

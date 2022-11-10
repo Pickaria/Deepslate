@@ -1,9 +1,9 @@
 package fr.pickaria.job
 
-import fr.pickaria.newmenu.closeItem
-import fr.pickaria.newmenu.fill
-import fr.pickaria.newmenu.home.addToHome
-import fr.pickaria.newmenu.menu
+import fr.pickaria.menu.closeItem
+import fr.pickaria.menu.fill
+import fr.pickaria.menu.home.addToHome
+import fr.pickaria.menu.menu
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
 import net.kyori.adventure.text.format.TextDecoration

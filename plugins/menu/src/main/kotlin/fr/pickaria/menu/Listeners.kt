@@ -1,4 +1,4 @@
-package fr.pickaria.newmenu
+package fr.pickaria.menu
 
 import org.bukkit.event.Event
 import org.bukkit.event.EventHandler

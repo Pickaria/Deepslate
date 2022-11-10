@@ -1,8 +1,8 @@
-package fr.pickaria.newmenu.home
+package fr.pickaria.menu.home
 
-import fr.pickaria.newmenu.BuilderInit
-import fr.pickaria.newmenu.Entry
-import fr.pickaria.newmenu.Lore
+import fr.pickaria.menu.BuilderInit
+import fr.pickaria.menu.Entry
+import fr.pickaria.menu.Lore
 import net.kyori.adventure.text.Component
 import org.bukkit.Material
 

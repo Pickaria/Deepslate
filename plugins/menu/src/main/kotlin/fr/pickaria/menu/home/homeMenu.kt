@@ -1,6 +1,6 @@
-package fr.pickaria.newmenu.home
+package fr.pickaria.menu.home
 
-import fr.pickaria.newmenu.*
+import fr.pickaria.menu.*
 import fr.pickaria.shard.createShardItem
 import fr.pickaria.shard.getShardBalance
 import net.kyori.adventure.text.Component
@@ -8,17 +8,10 @@ import net.kyori.adventure.text.format.NamedTextColor
 import net.kyori.adventure.text.format.TextDecoration
 import org.bukkit.Material
 import org.bukkit.OfflinePlayer
-import org.bukkit.Statistic
 import org.bukkit.inventory.ItemFlag
 import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.meta.BundleMeta
 import org.bukkit.inventory.meta.SkullMeta
-import java.time.Duration
-import java.time.format.DateTimeFormatter
-import java.time.format.FormatStyle
-import java.time.temporal.TemporalAccessor
-import kotlin.time.Duration.Companion.seconds
-import kotlin.time.DurationUnit
 import kotlin.time.ExperimentalTime
 
 internal fun foodMenu() = menu("food") {
@@ -61,7 +54,10 @@ internal fun homeMenu() = menu(DEFAULT_MENU) {
 			material = entry.material
 			title = entry.title
 			lore = entry.lore
-			leftClick = "/newmenu ${entry.entry.key}"
+			leftClick = "/menu ${entry.entry.key}"
+			editMeta {
+				it.addItemFlags(ItemFlag.HIDE_ATTRIBUTES)
+			}
 		}
 	}
 
