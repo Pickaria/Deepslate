@@ -14,7 +14,7 @@ data class Item(
 	val rightClick: ClickHandler? = null,
 ) {
 	companion object {
-		operator fun invoke(opener: Player, previous: Menu? = null, init: Builder.(Pair<Player, Menu?>) -> Unit): Builder =
+		operator fun invoke(opener: Player, previous: Menu? = null, init: ItemBuilderConfig): Builder =
 			Builder().apply { init(opener to previous) }
 	}
 
@@ -34,6 +34,7 @@ data class Item(
 			set(value) = leftClick { event ->
 				value?.let {
 					(event.whoClicked as Player).chat(value)
+					event.inventory.close()
 				}
 			}
 
@@ -41,6 +42,7 @@ data class Item(
 			set(value) = rightClick { event ->
 				value?.let {
 					(event.whoClicked as Player).chat(value)
+					event.inventory.close()
 				}
 			}
 

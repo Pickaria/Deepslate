@@ -43,8 +43,8 @@ data class Menu(
 	operator fun invoke(event: InventoryClickEvent) = items[event.rawSlot]?.invoke(this)?.callback(event)
 
 	class Builder {
-		private var itemBinders = mutableListOf<Binder<Item.Builder.(data: Pair<Player, Menu?>) -> Unit>>()
-		fun item(init: Item.Builder.(data: Pair<Player, Menu?>) -> Unit) {
+		private var itemBinders = mutableListOf<Binder<ItemBuilderConfig>>()
+		fun item(init: ItemBuilderConfig) {
 			itemBinders.add { _, _ -> init }
 		}
 
@@ -65,3 +65,7 @@ data class Menu(
 }
 
 typealias Binder<T> = (opener: Player, previous: Menu?) -> T
+
+typealias OpenMenuData = (Pair<Player, Menu?>)
+
+typealias ItemBuilderConfig = Item.Builder.(data: OpenMenuData) -> Unit
