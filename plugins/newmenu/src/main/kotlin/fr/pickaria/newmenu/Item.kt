@@ -14,8 +14,8 @@ data class Item(
 	val rightClick: ClickHandler? = null,
 ) {
 	companion object {
-		operator fun invoke(opener: Player, previous: Menu? = null, init: ItemBuilderConfig): Builder =
-			Builder().apply { init(opener to previous) }
+		operator fun invoke(init: BuilderInit<Builder>): Builder =
+			Builder().apply { init() }
 	}
 
 	fun callback(event: InventoryClickEvent) = if (event.isLeftClick) {

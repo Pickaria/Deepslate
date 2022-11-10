@@ -4,17 +4,20 @@ import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
 import net.kyori.adventure.text.format.TextDecoration
 import org.bukkit.Material
+import org.bukkit.entity.Player
 
 internal fun testMenu() = menu("test") {
 	rows = 3
-	title = Component.text("test")
+	title = opener.displayName()
+
+	closeItem()
 }
 
 internal fun homeMenu() = menu(DEFAULT_MENU) {
 	rows = 3
 	title = Component.text("menu")
 
-	item { (opener, _) ->
+	item {
 		position = Pair(8, 0) // Last column on first row
 		material = Material.PLAYER_HEAD
 		title = opener.displayName()
@@ -54,33 +57,35 @@ internal fun homeMenu() = menu(DEFAULT_MENU) {
 		leftClick = "/newmenu test"
 	}
 
-	//closeItem()
+	closeItem()
 }
 
-/*fun Menu.Builder.closeItem() {
+fun Menu.Builder.closeItem() {
 	item {
 		position = Pair(4, rows - 1)
 
-		// Go back
-		title = Component.text("Retour")
-			.decoration(TextDecoration.ITALIC, TextDecoration.State.FALSE)
-		material = Material.ARROW
-		leftClick {
-			(it.whoClicked as Player) open this@closeItem.previous!!
-		}
-		lore {
-			leftClick = "Clic-gauche pour retourner au précédent menu"
-		}
-
-		// Close menu
-		title = Component.text("Fermer")
-			.decoration(TextDecoration.ITALIC, TextDecoration.State.FALSE)
-		material = Material.BARRIER
-		leftClick {
-			it.whoClicked.closeInventory()
-		}
-		lore {
-			leftClick = "Clic-gauche pour fermer le menu"
+		previous?.let {
+			// Go back
+			title = Component.text("Retour")
+				.decoration(TextDecoration.ITALIC, TextDecoration.State.FALSE)
+			material = Material.ARROW
+			leftClick {
+				(it.whoClicked as Player) open previous
+			}
+			lore {
+				leftClick = "Clic-gauche pour retourner au précédent menu"
+			}
+		} ?: run {
+			// Close menu
+			title = Component.text("Fermer")
+				.decoration(TextDecoration.ITALIC, TextDecoration.State.FALSE)
+			material = Material.BARRIER
+			leftClick {
+				it.whoClicked.closeInventory()
+			}
+			lore {
+				leftClick = "Clic-gauche pour fermer le menu"
+			}
 		}
 	}
-}*/
+}

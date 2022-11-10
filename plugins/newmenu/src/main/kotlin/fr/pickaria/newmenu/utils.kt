@@ -5,9 +5,12 @@ import org.bukkit.entity.Player
 import org.bukkit.event.inventory.InventoryClickEvent
 
 typealias ClickHandler = ((InventoryClickEvent) -> Unit)
-internal val builders: MutableMap<String, Menu.Builder> = mutableMapOf()
+typealias BuilderInit<T> = T.() -> Unit
 
-fun register(name: String, builder: Menu.Builder) {
+internal const val DEFAULT_MENU = "home"
+internal val builders: MutableMap<String, BuilderInit<Menu.Builder>> = mutableMapOf()
+
+fun register(name: String, builder: BuilderInit<Menu.Builder>) {
 	if (builders.containsKey(name)) {
 		Bukkit.getServer().logger.warning("Registering menu `$name` but is already registered.")
 	}
@@ -23,10 +26,11 @@ fun unregister(name: String) {
 	}
 }
 
-fun menu(name: String, init: Menu.Builder.() -> Unit): Menu.Builder = Menu.Builder().apply(init).also {
-	register(name, it)
-}
+fun menu(name: String, init: BuilderInit<Menu.Builder>) = register(name, init)
 
+/**
+ * Opens an already instantiated menu.
+ */
 infix fun Player.open(menu: Menu) {
 	menu.inventory().let {
 		menu.refresh()
@@ -34,15 +38,12 @@ infix fun Player.open(menu: Menu) {
 	}
 }
 
-infix fun Player.open(builder: Menu.Builder) {
-	val previous = (openInventory.topInventory.holder as? Holder)?.menu
-	this open builder(this, previous)
-}
-
+/**
+ * Builds and opens a menu.
+ */
 infix fun Player.open(menu: String): Boolean =
 	builders[menu]?.let {
-		this open it
+		val previous = (openInventory.topInventory.holder as? Holder)?.menu
+		this open Menu(this@open, previous, it).build()
 		true
 	} ?: false
-
-internal const val DEFAULT_MENU = "home"

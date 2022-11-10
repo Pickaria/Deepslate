@@ -14,6 +14,11 @@ data class Menu(
 	val opener: Player,
 	val previous: Menu? = null
 ) {
+	companion object {
+		operator fun invoke(opener: Player, previous: Menu?, init: BuilderInit<Builder>) =
+			Builder(opener, previous).apply { init() }
+	}
+
 	private lateinit var holder: InventoryHolder
 
 	private val inventory: Inventory
@@ -42,30 +47,28 @@ data class Menu(
 	 */
 	operator fun invoke(event: InventoryClickEvent) = items[event.rawSlot]?.invoke(this)?.callback(event)
 
-	class Builder {
-		private var itemBinders = mutableListOf<Binder<ItemBuilderConfig>>()
-		fun item(init: ItemBuilderConfig) {
-			itemBinders.add { _, _ -> init }
+	class Builder(val opener: Player, val previous: Menu? = null) {
+		private val items = mutableMapOf<Int, Item.Builder>()
+
+		fun item(init: Item.Builder.() -> Unit): Item.Builder = Item(init).also {
+			items[it.slot] = it
 		}
 
 		var title: Component = Component.empty()
 		var rows: Int = 6
+			set(value) {
+				if (rows in 1..6) {
+					field = value
+				} else {
+					throw RuntimeException("Invalid row number provided")
+				}
+			}
 
 		/**
 		 * Creates and returns a new instance of the menu with given parameters.
 		 */
-		operator fun invoke(opener: Player, previous: Menu? = null): Menu {
-			val items = itemBinders.associate {
-				val item = Item(opener, previous, it(opener, previous))
-				item.slot to item
-			}
+		fun build(): Menu {
 			return Menu(title, rows * 9, items, opener, previous)
 		}
 	}
 }
-
-typealias Binder<T> = (opener: Player, previous: Menu?) -> T
-
-typealias OpenMenuData = (Pair<Player, Menu?>)
-
-typealias ItemBuilderConfig = Item.Builder.(data: OpenMenuData) -> Unit
