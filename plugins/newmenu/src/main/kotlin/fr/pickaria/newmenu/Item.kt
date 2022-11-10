@@ -73,8 +73,11 @@ data class Item(
 			lore = Lore(init).build()
 		}
 
-		val slot: Int
+		var slot: Int
 			get() = position.second * 9 + position.first
+			set(value) {
+				position = Pair(value % 9, value / 9)
+			}
 
 		private val itemStack: ItemStack
 			get() {
