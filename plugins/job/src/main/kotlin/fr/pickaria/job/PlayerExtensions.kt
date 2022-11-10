@@ -100,3 +100,8 @@ internal fun Player.refreshDisplayName() {
 	suffix = miniMessage.serialize(getRank())
 	updateDisplayName()
 }
+
+internal fun Player.jobs() = Job.get(uniqueId)
+
+internal val Job.config: JobConfig.Configuration?
+	get() = jobConfig.jobs[this.job]
