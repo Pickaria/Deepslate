@@ -8,54 +8,71 @@ import org.bukkit.event.inventory.InventoryClickEvent
 import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.meta.ItemMeta
 
+typealias ClickCallback = Pair<Result, String?>
+private typealias FullClickCallback = Triple<Result, String?, ClickHandler?>
+
 data class Item(
 	val menu: Menu,
 	val slot: Int,
 	val itemStack: ItemStack,
-	val leftClick: ClickHandler? = null,
-	val rightClick: ClickHandler? = null
+	val leftClick: FullClickCallback,
+	val rightClick: FullClickCallback
 ) {
 	companion object {
 		operator fun invoke(init: BuilderInit<Builder>): Builder =
 			Builder().apply { init() }
 	}
 
-	fun callback(event: InventoryClickEvent) = if (event.isLeftClick) {
-		leftClick?.invoke(event)
-	} else if (event.isRightClick) {
-		rightClick?.invoke(event)
-	} else {
-		null
+	fun callback(event: InventoryClickEvent) {
+		if (event.isLeftClick) {
+			callback(event, leftClick)
+		} else if (event.isRightClick) {
+			callback(event, rightClick)
+		}
+	}
+
+	private fun callback(event: InventoryClickEvent, click: FullClickCallback) {
+		val player = event.whoClicked as Player
+
+		println(click)
+
+		click.second?.let {
+			player.chat(it)
+		}
+
+		click.third?.invoke(event)
+
+		when (click.first) {
+			Result.CLOSE -> event.inventory.close()
+			Result.PREVIOUS -> menu.previous?.let { player open it }
+			Result.REFRESH -> menu.refresh()
+			Result.NONE -> {}
+		}
 	}
 
 	class Builder {
-		private var leftClickCallback: ClickHandler? = null
-		private var rightClickCallback: ClickHandler? = null
+		private var leftClickCallback: FullClickCallback = Triple(Result.NONE, null, null)
+		private var rightClickCallback: FullClickCallback = Triple(Result.NONE, null, null)
 
-		var leftClick: String? = null
-			set(value) = leftClick { event ->
-				value?.let {
-					(event.whoClicked as Player).chat(value)
-					event.inventory.close()
-				}
+		var leftClick: ClickCallback = Result.NONE to null
+			set(value) {
+				field = value
+				leftClickCallback = Triple(value.first, value.second, leftClickCallback.third)
 			}
-
-		var rightClick: String? = null
-			set(value) = rightClick { event ->
-				value?.let {
-					(event.whoClicked as Player).chat(value)
-					event.inventory.close()
-				}
+		var rightClick: ClickCallback = Result.NONE to null
+			set(value) {
+				field = value
+				rightClickCallback = Triple(value.first, value.second, rightClickCallback.third)
 			}
 
 		@Deprecated("Menu should help player run a command.", replaceWith = ReplaceWith("leftClick = \"/command\""))
 		fun leftClick(fn: ClickHandler) {
-			leftClickCallback = fn
+			leftClickCallback = Triple(leftClick.first, leftClick.second, fn)
 		}
 
 		@Deprecated("Menu should help player run a command.", replaceWith = ReplaceWith("rightClick = \"/command\""))
 		fun rightClick(fn: ClickHandler) {
-			rightClickCallback = fn
+			rightClickCallback = Triple(rightClick.first, rightClick.second, fn)
 		}
 
 		var position: Pair<Int, Int> = Pair(0, 0)

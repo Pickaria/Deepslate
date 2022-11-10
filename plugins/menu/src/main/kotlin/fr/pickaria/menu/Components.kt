@@ -1,5 +1,6 @@
 package fr.pickaria.menu
 
+import fr.pickaria.menu.Result
 import net.kyori.adventure.text.Component
 import org.bukkit.Material
 import org.bukkit.entity.Player
@@ -13,9 +14,7 @@ fun Menu.Builder.closeItem() {
 			// Go back
 			title = Component.text("Retour")
 			material = Material.ARROW
-			leftClick {
-				(it.whoClicked as Player) open previous
-			}
+			leftClick = Result.PREVIOUS to null
 			lore {
 				leftClick = "Clic-gauche pour retourner au précédent menu"
 			}
@@ -23,9 +22,7 @@ fun Menu.Builder.closeItem() {
 			// Close menu
 			title = Component.text("Fermer")
 			material = Material.BARRIER
-			leftClick {
-				it.whoClicked.closeInventory()
-			}
+			leftClick = Result.CLOSE to null
 			lore {
 				leftClick = "Clic-gauche pour fermer le menu"
 			}
@@ -39,7 +36,7 @@ fun Menu.Builder.previousPage() {
 			material = Material.PAPER
 			title = Component.text("Page précédente")
 			position = 2 to rows - 1
-			leftClick = "/menu $key ${page - 1}"
+			leftClick = Result.NONE to "/menu $key ${page - 1}"
 		}
 	}
 }
@@ -50,7 +47,7 @@ fun Menu.Builder.nextPage(maxPage: Int) {
 			material = Material.PAPER
 			title = Component.text("Page suivante")
 			position = 6 to rows - 1
-			leftClick = "/menu $key ${page + 1}"
+			leftClick = Result.NONE to "/menu $key ${page + 1}"
 		}
 	}
 }
