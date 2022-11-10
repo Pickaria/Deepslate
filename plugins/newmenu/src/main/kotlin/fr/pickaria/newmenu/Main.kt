@@ -1,5 +1,7 @@
 package fr.pickaria.newmenu
 
+import fr.pickaria.newmenu.home.foodMenu
+import fr.pickaria.newmenu.home.homeMenu
 import org.bukkit.plugin.java.JavaPlugin
 
 class Main : JavaPlugin() {

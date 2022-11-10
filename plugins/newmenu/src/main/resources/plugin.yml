@@ -5,6 +5,7 @@ main: fr.pickaria.newmenu.Main
 author: Quozul
 depend:
   - PickariaLib
+  - PickariaShard
 
 commands:
   newmenu:

@@ -13,7 +13,6 @@ fun Menu.Builder.closeItem() {
 		previous?.let {
 			// Go back
 			title = Component.text("Retour")
-				.decoration(TextDecoration.ITALIC, TextDecoration.State.FALSE)
 			material = Material.ARROW
 			leftClick {
 				(it.whoClicked as Player) open previous
@@ -24,7 +23,6 @@ fun Menu.Builder.closeItem() {
 		} ?: run {
 			// Close menu
 			title = Component.text("Fermer")
-				.decoration(TextDecoration.ITALIC, TextDecoration.State.FALSE)
 			material = Material.BARRIER
 			leftClick {
 				it.whoClicked.closeInventory()

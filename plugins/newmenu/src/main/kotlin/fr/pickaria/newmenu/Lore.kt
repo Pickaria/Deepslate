@@ -33,7 +33,7 @@ class Lore {
 	}
 
 	companion object {
-		operator fun invoke(init: Lore.() -> Unit) = Lore().apply(init)
+		operator fun invoke(init: BuilderInit<Lore>) = Lore().apply(init)
 	}
 
 	fun build() = mutableListOf<Component>().apply {

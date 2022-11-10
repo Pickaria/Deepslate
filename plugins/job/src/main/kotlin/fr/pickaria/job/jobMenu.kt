@@ -2,6 +2,7 @@ package fr.pickaria.job
 
 import fr.pickaria.newmenu.closeItem
 import fr.pickaria.newmenu.fill
+import fr.pickaria.newmenu.home.addToHome
 import fr.pickaria.newmenu.menu
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
@@ -94,4 +95,8 @@ internal fun jobMenu() = menu("job") {
 
 	closeItem()
 	fill(Material.GREEN_STAINED_GLASS_PANE, true)
+}.addToHome(Material.WOODEN_PICKAXE, Component.text("Métiers", NamedTextColor.GOLD)) {
+	description {
+		-"Rejoignez un métier et gagner de l'argent !"
+	}
 }

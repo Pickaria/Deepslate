@@ -1,6 +1,7 @@
 package fr.pickaria.newmenu
 
 import net.kyori.adventure.text.Component
+import net.kyori.adventure.text.format.TextDecoration
 import org.bukkit.Material
 import org.bukkit.entity.Player
 import org.bukkit.event.inventory.InventoryClickEvent
@@ -68,7 +69,10 @@ data class Item(
 
 		var material: Material = Material.AIR
 		var title: Component? = null
-		private var lore: List<Component> = listOf()
+			set(value) {
+				field = value?.decoration(TextDecoration.ITALIC, TextDecoration.State.FALSE)
+			}
+		var lore: List<Component> = listOf()
 
 		fun lore(init: Lore.() -> Unit) {
 			lore = Lore(init).build()
