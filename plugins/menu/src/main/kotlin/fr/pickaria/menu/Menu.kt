@@ -17,6 +17,9 @@ data class Menu(
 	companion object {
 		operator fun invoke(init: BuilderInit<Builder>, key: String, opener: Player, previous: Menu? = null, page: Int = 0) =
 			Builder(key, opener, previous, page).apply { init() }
+
+		operator fun invoke(init: BuilderInit<Builder>, opener: Player, previous: Menu? = null, page: Int = 0) =
+			Builder(null, opener, previous, page).apply { init() }
 	}
 
 	private lateinit var holder: InventoryHolder
@@ -47,7 +50,7 @@ data class Menu(
 	 */
 	operator fun invoke(event: InventoryClickEvent) = items[event.rawSlot]?.invoke(this)?.callback(event)
 
-	class Builder(val key: String, val opener: Player, val previous: Menu? = null, val page: Int = 0) {
+	class Builder(val key: String? = null, val opener: Player, val previous: Menu? = null, val page: Int = 0) {
 		private val items = mutableMapOf<Int, Item.Builder>()
 
 		fun item(init: Item.Builder.() -> Unit): Item.Builder = Item(init).also {

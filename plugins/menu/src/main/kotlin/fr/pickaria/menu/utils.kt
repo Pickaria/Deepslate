@@ -30,6 +30,8 @@ fun unregister(name: String) {
 	}
 }
 
+fun menu(init: BuilderInit<Menu.Builder>) = init
+
 fun menu(name: String, init: BuilderInit<Menu.Builder>) = register(name, init)
 
 /**
@@ -40,6 +42,14 @@ infix fun Player.open(menu: Menu) {
 		menu.refresh()
 		openInventory(it)
 	}
+}
+
+/**
+ * Builds and opens a menu at a given page.
+ */
+infix fun Player.open(init: BuilderInit<Menu.Builder>) {
+	val previous = (openInventory.topInventory.holder as? Holder)?.menu
+	this open Menu(init, this@open, previous, 0).build()
 }
 
 /**

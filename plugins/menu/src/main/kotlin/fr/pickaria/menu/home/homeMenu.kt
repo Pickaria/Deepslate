@@ -18,7 +18,7 @@ internal fun foodMenu() = menu("food") {
 	rows = 4
 	title = Component.text("Nourritures", NamedTextColor.GREEN)
 
-	val pageSize = rows * 9 - 10
+	val pageSize = size - 10
 	val start = page * pageSize
 	val materials = Material.values().filter { it.isEdible }
 
@@ -41,7 +41,6 @@ internal fun foodMenu() = menu("food") {
 	}
 }
 
-@OptIn(ExperimentalTime::class)
 internal fun homeMenu() = menu(DEFAULT_MENU) {
 	rows = 6
 	title = Component.text("Accueil", NamedTextColor.GOLD, TextDecoration.BOLD)

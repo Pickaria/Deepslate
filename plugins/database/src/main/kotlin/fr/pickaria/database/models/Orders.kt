@@ -1,5 +1,6 @@
 package fr.pickaria.database.models
 
+import fr.pickaria.database.BukkitLogger
 import org.bukkit.Bukkit
 import org.bukkit.Material
 import org.bukkit.OfflinePlayer
@@ -72,24 +73,26 @@ class Order private constructor(private val row: ResultRow) {
 		fun get(material: Material, type: OrderType): List<Order> = transaction {
 			Orders.select {
 				(Orders.material eq material.name) and
-				(Orders.amount greater 0) and
-				(Orders.type eq type)
+						(Orders.amount greater 0) and
+						(Orders.type eq type)
 			}.map {
 				Order(it)
 			}
 		}
 
-		fun getListings(type: OrderType): List<Listing> = transaction {
+		fun getListings(type: OrderType, limit: Int, offset: Long = 0): List<Listing> = transaction {
 			val avgPrice = Orders.price.avg()
 			val sumAmount = Orders.amount.sum()
+			addLogger(BukkitLogger)
 
 			Orders
 				.slice(Orders.material, sumAmount, avgPrice)
 				.select {
 					(Orders.type eq type) and
-					(Orders.amount greater 0)
+							(Orders.amount greater 0)
 				}
 				.groupBy(Orders.material)
+				.limit(limit, offset)
 				.map {
 					Listing(
 						Material.getMaterial(it[Orders.material]) ?: DEFAULT_MATERIAL,
@@ -97,6 +100,19 @@ class Order private constructor(private val row: ResultRow) {
 						it[avgPrice]?.toDouble() ?: 0.0,
 					)
 				}
+		}
+
+		fun count(type: OrderType): Long = transaction {
+			addLogger(BukkitLogger)
+
+			Orders
+				.slice(Orders.material)
+				.select {
+					(Orders.type eq type) and
+							(Orders.amount greater 0)
+				}
+				.groupBy(Orders.material)
+				.count()
 		}
 
 		/**
@@ -216,7 +232,7 @@ class Order private constructor(private val row: ResultRow) {
 			Orders.slice(Orders.material)
 				.select {
 					(Orders.type eq OrderType.SELL) and
-						(Orders.amount greater 0)
+							(Orders.amount greater 0)
 				}
 				.groupBy(Orders.material)
 				.mapNotNull {
