@@ -33,10 +33,10 @@ class Lore {
 	}
 
 	companion object {
-		operator fun invoke(init: Lore.() -> Unit) = Lore().apply(init)()
+		operator fun invoke(init: Lore.() -> Unit) = Lore().apply(init)
 	}
 
-	operator fun invoke() = mutableListOf<Component>().apply {
+	fun build() = mutableListOf<Component>().apply {
 		addAll(description)
 
 		if (description.isNotEmpty() && keyValues.isNotEmpty()) {

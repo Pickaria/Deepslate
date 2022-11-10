@@ -11,7 +11,7 @@ data class Item(
 	val slot: Int,
 	val itemStack: ItemStack,
 	val leftClick: ClickHandler? = null,
-	val rightClick: ClickHandler? = null,
+	val rightClick: ClickHandler? = null
 ) {
 	companion object {
 		operator fun invoke(init: BuilderInit<Builder>): Builder =
@@ -66,10 +66,12 @@ data class Item(
 			}
 
 		var material: Material = Material.AIR
-
-		var title: Component = Component.empty()
-
+		var title: Component? = null
 		private var lore: List<Component> = listOf()
+
+		fun lore(init: Lore.() -> Unit) {
+			lore = Lore(init).build()
+		}
 
 		val slot: Int
 			get() = position.second * 9 + position.first
@@ -85,10 +87,6 @@ data class Item(
 
 				return itemStack
 			}
-
-		fun lore(init: Lore.() -> Unit) {
-			lore = Lore(init)
-		}
 
 		operator fun invoke(menu: Menu): Item = Item(menu, slot, itemStack, leftClickCallback, rightClickCallback)
 	}
