@@ -20,6 +20,7 @@ internal class RewardCommand : CommandExecutor, Listener, TabCompleter {
 		if (sender is Player) {
 			if (args.isEmpty()) {
 				sender open "reward"
+				return true
 			}
 
 			val key = args.first()

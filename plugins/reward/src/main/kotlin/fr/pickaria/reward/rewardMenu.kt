@@ -2,13 +2,12 @@ package fr.pickaria.reward
 
 import fr.pickaria.menu.Result
 import fr.pickaria.menu.closeItem
-import fr.pickaria.menu.fill
 import fr.pickaria.menu.home.addToHome
 import fr.pickaria.menu.menu
 import net.kyori.adventure.text.Component
 import org.bukkit.Material
 
-internal fun crateMenu() = menu("reward") {
+internal fun rewardMenu() = menu("reward") {
 	title = Component.text("Récompenses")
 	rows = 3
 
@@ -24,7 +23,7 @@ internal fun crateMenu() = menu("reward") {
 					"Prix" to economy.format(reward.price)
 				}
 			}
-			leftClick = Result.NONE to "/crate $key"
+			leftClick = Result.NONE to "/reward $key"
 		}
 	}
 

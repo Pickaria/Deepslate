@@ -19,7 +19,7 @@ import java.util.*
 
 internal class RewardListeners: Listener {
 	@EventHandler
-	fun onCrateOpen(event: PlayerInteractEvent) {
+	fun onRewardOpen(event: PlayerInteractEvent) {
 		with(event) {
 			if (action.isLeftClick) return@with
 
@@ -75,7 +75,7 @@ internal class RewardListeners: Listener {
 
 
 	@EventHandler
-	fun onCrateClosed(event: InventoryCloseEvent) {
+	fun onRewardClose(event: InventoryCloseEvent) {
 		with(event) {
 			if (inventory.holder is RewardHolder) {
 				val contents = inventory.contents.filterNotNull()

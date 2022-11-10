@@ -21,7 +21,7 @@ class Main : JavaPlugin() {
 		getCommand("reward")?.setExecutor(RewardCommand())
 		server.pluginManager.registerEvents(RewardListeners(), this)
 
-		crateMenu()
+		rewardMenu()
 
 		logger.info("Reward plugin loaded!")
 	}
