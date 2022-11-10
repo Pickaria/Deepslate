@@ -58,6 +58,8 @@ data class Menu(
 			}
 		}
 
+		internal infix fun has(index: Int) = items.contains(index)
+
 		var title: Component = Component.empty()
 		var rows: Int = 6
 			set(value) {

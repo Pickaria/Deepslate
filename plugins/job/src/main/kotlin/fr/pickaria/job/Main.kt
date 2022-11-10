@@ -1,6 +1,5 @@
 package fr.pickaria.job
 
-import fr.pickaria.menu.menuController
 import fr.pickaria.potion.PotionController
 import fr.pickaria.shared.setupEconomy
 import net.kyori.adventure.text.minimessage.MiniMessage
@@ -27,9 +26,9 @@ class Main : JavaPlugin() {
 
 			saveDefaultConfig()
 
-			menuController.register("job", JobMenu.Factory())
-
 			jobConfig = JobConfig(this.config)
+
+			jobMenu()
 
 			jobController = JobController(this)
 
@@ -46,7 +45,5 @@ class Main : JavaPlugin() {
 
 	override fun onDisable() {
 		super.onDisable()
-
-		menuController.unregister("job")
 	}
 }

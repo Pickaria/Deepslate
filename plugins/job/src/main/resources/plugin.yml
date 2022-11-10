@@ -8,7 +8,7 @@ depend:
   - PickariaDatabase
   - PickariaEconomy
   - PickariaLib
-  - PickariaMenu
+  - PickariaNewmenu
   - PickariaShared
   - Vault
 

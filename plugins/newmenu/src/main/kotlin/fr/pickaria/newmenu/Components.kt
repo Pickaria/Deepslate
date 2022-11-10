@@ -62,6 +62,8 @@ fun Menu.Builder.fill(material: Material, ignoreLastRow: Boolean = false) {
 	val end = (if (ignoreLastRow) size - 9 else size) - 1
 
 	for (i in 0..end) {
+		if (this has i) continue
+
 		item {
 			title = Component.empty()
 			this.material = material

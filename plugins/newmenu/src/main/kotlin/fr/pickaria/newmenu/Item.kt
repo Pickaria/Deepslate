@@ -5,6 +5,7 @@ import org.bukkit.Material
 import org.bukkit.entity.Player
 import org.bukkit.event.inventory.InventoryClickEvent
 import org.bukkit.inventory.ItemStack
+import org.bukkit.inventory.meta.ItemMeta
 
 data class Item(
 	val menu: Menu,
@@ -79,6 +80,12 @@ data class Item(
 				position = Pair(value % 9, value / 9)
 			}
 
+		private var meta: ((ItemMeta) -> Unit)? = null
+
+		fun editMeta(consumer: (ItemMeta) -> Unit) {
+			meta = consumer
+		}
+
 		private val itemStack: ItemStack
 			get() {
 				val itemStack = ItemStack(material)
@@ -86,6 +93,7 @@ data class Item(
 				itemStack.editMeta {
 					it.displayName(title)
 					it.lore(lore)
+					meta?.invoke(it)
 				}
 
 				return itemStack
