@@ -1,7 +1,6 @@
-package fr.pickaria.newmenu
+package fr.pickaria.menu
 
 import net.kyori.adventure.text.Component
-import net.kyori.adventure.text.format.TextDecoration
 import org.bukkit.Material
 import org.bukkit.entity.Player
 
@@ -13,7 +12,6 @@ fun Menu.Builder.closeItem() {
 		previous?.let {
 			// Go back
 			title = Component.text("Retour")
-				.decoration(TextDecoration.ITALIC, TextDecoration.State.FALSE)
 			material = Material.ARROW
 			leftClick {
 				(it.whoClicked as Player) open previous
@@ -24,7 +22,6 @@ fun Menu.Builder.closeItem() {
 		} ?: run {
 			// Close menu
 			title = Component.text("Fermer")
-				.decoration(TextDecoration.ITALIC, TextDecoration.State.FALSE)
 			material = Material.BARRIER
 			leftClick {
 				it.whoClicked.closeInventory()
@@ -42,7 +39,7 @@ fun Menu.Builder.previousPage() {
 			material = Material.PAPER
 			title = Component.text("Page précédente")
 			position = 2 to rows - 1
-			leftClick = "/newmenu $key ${page - 1}"
+			leftClick = "/menu $key ${page - 1}"
 		}
 	}
 }
@@ -53,7 +50,7 @@ fun Menu.Builder.nextPage(maxPage: Int) {
 			material = Material.PAPER
 			title = Component.text("Page suivante")
 			position = 6 to rows - 1
-			leftClick = "/newmenu $key ${page + 1}"
+			leftClick = "/menu $key ${page + 1}"
 		}
 	}
 }
@@ -62,6 +59,8 @@ fun Menu.Builder.fill(material: Material, ignoreLastRow: Boolean = false) {
 	val end = (if (ignoreLastRow) size - 9 else size) - 1
 
 	for (i in 0..end) {
+		if (this has i) continue
+
 		item {
 			title = Component.empty()
 			this.material = material

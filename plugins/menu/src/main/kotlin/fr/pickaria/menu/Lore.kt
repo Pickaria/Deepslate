@@ -1,4 +1,4 @@
-package fr.pickaria.newmenu
+package fr.pickaria.menu
 
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
@@ -33,7 +33,7 @@ class Lore {
 	}
 
 	companion object {
-		operator fun invoke(init: Lore.() -> Unit) = Lore().apply(init)
+		operator fun invoke(init: BuilderInit<Lore>) = Lore().apply(init)
 	}
 
 	fun build() = mutableListOf<Component>().apply {

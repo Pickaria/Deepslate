@@ -1,10 +1,12 @@
-package fr.pickaria.newmenu
+package fr.pickaria.menu
 
 import net.kyori.adventure.text.Component
+import net.kyori.adventure.text.format.TextDecoration
 import org.bukkit.Material
 import org.bukkit.entity.Player
 import org.bukkit.event.inventory.InventoryClickEvent
 import org.bukkit.inventory.ItemStack
+import org.bukkit.inventory.meta.ItemMeta
 
 data class Item(
 	val menu: Menu,
@@ -67,7 +69,10 @@ data class Item(
 
 		var material: Material = Material.AIR
 		var title: Component? = null
-		private var lore: List<Component> = listOf()
+			set(value) {
+				field = value?.decoration(TextDecoration.ITALIC, TextDecoration.State.FALSE)
+			}
+		var lore: List<Component> = listOf()
 
 		fun lore(init: Lore.() -> Unit) {
 			lore = Lore(init).build()
@@ -79,6 +84,12 @@ data class Item(
 				position = Pair(value % 9, value / 9)
 			}
 
+		private var meta: ((ItemMeta) -> Unit)? = null
+
+		fun editMeta(consumer: (ItemMeta) -> Unit) {
+			meta = consumer
+		}
+
 		private val itemStack: ItemStack
 			get() {
 				val itemStack = ItemStack(material)
@@ -86,6 +97,7 @@ data class Item(
 				itemStack.editMeta {
 					it.displayName(title)
 					it.lore(lore)
+					meta?.invoke(it)
 				}
 
 				return itemStack

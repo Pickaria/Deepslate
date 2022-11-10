@@ -1,4 +1,4 @@
-package fr.pickaria.newmenu
+package fr.pickaria.menu
 
 import org.bukkit.inventory.Inventory
 import org.bukkit.inventory.InventoryHolder

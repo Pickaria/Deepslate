@@ -1,21 +1,25 @@
-package fr.pickaria.newmenu
+package fr.pickaria.menu
 
 import org.bukkit.Bukkit
 import org.bukkit.entity.Player
 import org.bukkit.event.inventory.InventoryClickEvent
 
-typealias ClickHandler = ((InventoryClickEvent) -> Unit)
-typealias BuilderInit<T> = T.() -> Unit
+internal typealias ClickHandler = ((InventoryClickEvent) -> Unit)
+internal typealias BuilderInit<T> = T.() -> Unit
 
 internal const val DEFAULT_MENU = "home"
 internal val builders: MutableMap<String, BuilderInit<Menu.Builder>> = mutableMapOf()
 
-fun register(name: String, builder: BuilderInit<Menu.Builder>) {
+data class Entry(val key: String, val init: BuilderInit<Menu.Builder>)
+
+fun register(name: String, builder: BuilderInit<Menu.Builder>): Entry {
 	if (builders.containsKey(name)) {
 		Bukkit.getServer().logger.warning("Registering menu `$name` but is already registered.")
 	}
 
 	builders[name] = builder
+
+	return Entry(name, builder)
 }
 
 fun unregister(name: String) {

@@ -1,7 +1,7 @@
 package fr.pickaria.job
 
 import fr.pickaria.database.models.Job
-import fr.pickaria.menu.menuController
+import fr.pickaria.menu.open
 import org.bukkit.command.Command
 import org.bukkit.command.CommandExecutor
 import org.bukkit.command.CommandSender
@@ -27,7 +27,7 @@ class JobCommand : CommandExecutor, TabCompleter {
 			}
 
 			if (args[0] == "menu") {
-				menuController.openMenu(sender, "job", null)
+				sender open "job"
 				return true
 			}
 

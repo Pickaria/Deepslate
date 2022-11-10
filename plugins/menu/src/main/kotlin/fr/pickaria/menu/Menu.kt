@@ -1,4 +1,4 @@
-package fr.pickaria.newmenu
+package fr.pickaria.menu
 
 import net.kyori.adventure.text.Component
 import org.bukkit.Bukkit.createInventory
@@ -57,6 +57,8 @@ data class Menu(
 				throw RuntimeException("Invalid item position, inventory of size $size, item in index ${it.slot}.")
 			}
 		}
+
+		internal infix fun has(index: Int) = items.contains(index)
 
 		var title: Component = Component.empty()
 		var rows: Int = 6

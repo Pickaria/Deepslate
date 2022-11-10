@@ -5,9 +5,8 @@ main: fr.pickaria.menu.Main
 author: Quozul
 depend:
   - PickariaLib
+  - PickariaShard
 
 commands:
   menu:
-    description: Menu
     usage: /menu
-    permission: pickaria.menu.command.menu
