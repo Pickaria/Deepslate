@@ -42,6 +42,9 @@ internal fun orderListingMenu() = menu("market") {
 			leftClick {
 				opener open buyMenu(order.material)
 			}
+			rightClick {
+				opener open sellMenu(order.material)
+			}
 		}
 	}
 
