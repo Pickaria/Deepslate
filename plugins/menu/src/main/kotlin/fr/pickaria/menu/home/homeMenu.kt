@@ -1,6 +1,7 @@
 package fr.pickaria.menu.home
 
 import fr.pickaria.menu.*
+import fr.pickaria.menu.Result
 import fr.pickaria.shard.createShardItem
 import fr.pickaria.shard.getShardBalance
 import net.kyori.adventure.text.Component
@@ -12,7 +13,6 @@ import org.bukkit.inventory.ItemFlag
 import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.meta.BundleMeta
 import org.bukkit.inventory.meta.SkullMeta
-import kotlin.time.ExperimentalTime
 
 internal fun foodMenu() = menu("food") {
 	rows = 4
@@ -53,7 +53,7 @@ internal fun homeMenu() = menu(DEFAULT_MENU) {
 			material = entry.material
 			title = entry.title
 			lore = entry.lore
-			leftClick = "/menu ${entry.entry.key}"
+			leftClick = Result.NONE to "/menu ${entry.entry.key}"
 			editMeta {
 				it.addItemFlags(ItemFlag.HIDE_ATTRIBUTES)
 			}
