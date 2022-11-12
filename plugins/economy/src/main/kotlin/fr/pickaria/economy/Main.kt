@@ -3,11 +3,13 @@ package fr.pickaria.economy
 import net.kyori.adventure.text.minimessage.MiniMessage
 import net.milkbowl.vault.economy.Economy
 import org.bukkit.Bukkit
+import org.bukkit.NamespacedKey
 import org.bukkit.plugin.ServicePriority
 import org.bukkit.plugin.java.JavaPlugin
 
 internal lateinit var economy: Economy
 internal val miniMessage: MiniMessage = MiniMessage.miniMessage();
+internal lateinit var namespace: NamespacedKey
 
 class Main : JavaPlugin() {
 	override fun onEnable() {
@@ -15,6 +17,8 @@ class Main : JavaPlugin() {
 
 		saveDefaultConfig()
 		Config.setConfig(this.config)
+
+		namespace = NamespacedKey(this, "coin")
 
 		setupEconomy()
 

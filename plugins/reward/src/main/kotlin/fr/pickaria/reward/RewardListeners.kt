@@ -1,5 +1,7 @@
 package fr.pickaria.reward
 
+import fr.pickaria.economy.adjustCoin
+import fr.pickaria.economy.creditCoin
 import fr.pickaria.shard.creditShard
 import net.kyori.adventure.key.Key
 import net.kyori.adventure.sound.Sound
@@ -51,6 +53,8 @@ internal class RewardListeners: Listener {
 
 					it.lootTable.fillInventory(inventory, Random(), lootContext)
 
+					inventory.contents.forEach { coin -> coin?.adjustCoin() }
+
 					player.playSound(Sound.sound(Key.key("item.bundle.insert"), Sound.Source.MASTER, 1F, 1F))
 					player.openInventory(inventory)
 
@@ -68,11 +72,11 @@ internal class RewardListeners: Listener {
 			if (inventory.holder is RewardHolder) {
 				currentItem?.let {
 					creditShard(it, whoClicked as Player)
+					creditCoin(it, whoClicked as Player)
 				}
 			}
 		}
 	}
-
 
 	@EventHandler
 	fun onRewardClose(event: InventoryCloseEvent) {
@@ -81,6 +85,7 @@ internal class RewardListeners: Listener {
 				val contents = inventory.contents.filterNotNull()
 				contents.forEach {
 					creditShard(it, player as Player)
+					creditCoin(it, player as Player)
 				}
 
 				player.inventory.addItem(*contents.toTypedArray()).forEach {

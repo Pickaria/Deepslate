@@ -2,6 +2,8 @@ package fr.pickaria.shard
 
 import com.destroystokyo.paper.event.inventory.PrepareResultEvent
 import fr.pickaria.artefact.getArtefactConfig
+import fr.pickaria.economy.createCoinItem
+import fr.pickaria.economy.creditCoin
 import org.bukkit.Particle
 import org.bukkit.entity.Player
 import org.bukkit.event.Event
@@ -17,7 +19,13 @@ internal class GrindstoneListeners : Listener {
 	private fun getResult(itemStack: ItemStack?): ItemStack? = itemStack?.let {
 		if (it.amount == 1) getArtefactConfig(it) else null
 	}?.let {
-		createShardItem(it.value)
+		val amount = (it.value * shopConfig.grindLoss)
+		println(amount)
+		if (amount < 1) {
+			createCoinItem(shopConfig.grindCoinValue, (amount * 64).toInt())
+		} else {
+			createShardItem(amount.toInt())
+		}
 	}
 
 	/**
@@ -58,7 +66,7 @@ internal class GrindstoneListeners : Listener {
 		with(event) {
 			if (inventory.type == InventoryType.GRINDSTONE && slotType == SlotType.RESULT) {
 				currentItem?.let {
-					if (creditShard(it, whoClicked as Player)) {
+					if (creditShard(it, whoClicked as Player) || creditCoin(it, whoClicked as Player)) {
 						inventory.clear()
 						event.result = Event.Result.DENY
 						event.isCancelled = true

@@ -23,4 +23,6 @@ internal class ShopConfig(config: FileConfiguration) {
 	val grindSound = Sound.sound(Key.key(config.getString("sounds.grind")!!), Sound.Source.MASTER, 1f, 1f)
 	val currencyNameSingular: String = config.getString("currency_name_singular")!!
 	val currencyNamePlural: String = config.getString("currency_name_plural")!!
+	val grindLoss: Double = config.getDouble("grind_loss")
+	val grindCoinValue: Double = config.getDouble("grind_coin_value")
 }

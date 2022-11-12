@@ -6,6 +6,7 @@ author: Quozul
 depend:
   - PickariaArtefact
   - PickariaDatabase
+  - PickariaEconomy
   - PickariaLib
   - PickariaShared
   - Vault
