@@ -13,13 +13,15 @@ internal fun rewardMenu() = menu("reward") {
 
 	var x = 0
 
-	Config.rewards.forEach { (key, reward) ->
+	Config.rewards
+		.filter { it.value.purchasable }
+		.forEach { (key, reward) ->
 		item {
 			slot = x++
 			title = reward.name
 			material = reward.material
 			lore {
-				keyValues  {
+				keyValues {
 					"Prix" to economy.format(reward.price)
 				}
 			}

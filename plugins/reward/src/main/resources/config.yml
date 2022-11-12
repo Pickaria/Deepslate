@@ -16,3 +16,4 @@ rewards:
     price: 50000.0
 
 not_enough_money: '<red>Vous n''avez pas assez d''argent pour acheter cette récompense.'
+cant_purchase_reward: '<red>Cette récompense ne peut pas être achetée.'

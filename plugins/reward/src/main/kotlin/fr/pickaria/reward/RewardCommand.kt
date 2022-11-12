@@ -5,6 +5,7 @@ import fr.pickaria.economy.withdraw
 import fr.pickaria.menu.open
 import net.kyori.adventure.text.format.TextDecoration
 import net.milkbowl.vault.economy.EconomyResponse
+import org.bukkit.Material
 import org.bukkit.command.Command
 import org.bukkit.command.CommandExecutor
 import org.bukkit.command.CommandSender
@@ -25,6 +26,12 @@ internal class RewardCommand : CommandExecutor, Listener, TabCompleter {
 
 			val key = args.first()
 			val reward: RewardConfig = Config.rewards[key]!!
+
+			if (!reward.purchasable) {
+				sender.sendMessage(Config.cantPurchaseReward)
+				return true
+			}
+
 			val amount = try {
 				args.getOrNull(1)?.toInt() ?: 1
 			} catch (_: NumberFormatException) {
