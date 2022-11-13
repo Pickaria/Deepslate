@@ -13,9 +13,6 @@ class MoneyCommand : CommandExecutor, CurrencyExtensions(Credit) {
 			val placeholder = Placeholder.unparsed("balance", balance)
 			val message = miniMessage.deserialize(Config.balanceMessage, placeholder)
 			sender.sendMessage(message)
-
-			// TODO: Remove next line
-			sender.inventory.addItem(Credit.item())
 		}
 
 		return true
