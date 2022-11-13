@@ -15,7 +15,7 @@ class MoneyCommand : CommandExecutor, CurrencyExtensions(Credit) {
 			sender.sendMessage(message)
 
 			// TODO: Remove next line
-			sender.inventory.addItem(Credit.createItem())
+			sender.inventory.addItem(Credit.item())
 		}
 
 		return true

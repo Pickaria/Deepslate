@@ -1,5 +1,7 @@
 package fr.pickaria.shared
 
+import net.kyori.adventure.key.Key
+import net.kyori.adventure.sound.Sound
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.minimessage.MiniMessage
 import org.bukkit.configuration.ConfigurationSection
@@ -22,6 +24,10 @@ abstract class ConfigProvider {
 			when (T::class) {
 				Component::class -> {
 					section?.getString(this)?.let { Component.text(it) } as? T
+				}
+
+				Sound::class -> {
+					section?.getString(this)?.let { Sound.sound(Key.key(it), Sound.Source.MASTER, 1f, 1f) } as? T
 				}
 
 				else -> {

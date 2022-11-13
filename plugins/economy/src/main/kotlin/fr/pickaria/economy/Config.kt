@@ -1,6 +1,7 @@
 package fr.pickaria.economy
 
 import fr.pickaria.shared.ConfigProvider
+import net.kyori.adventure.sound.Sound
 
 
 internal object Config : ConfigProvider() {
@@ -8,7 +9,7 @@ internal object Config : ConfigProvider() {
 	val currencyNamePlural: String by this
 	val currencyDescription: String by this
 	val currencyCollectMessage: String by this
-	val currencyCollectSound: String by this
+	val currencyCollectSound: Sound by this
 
 	val balanceMessage: String by this
 

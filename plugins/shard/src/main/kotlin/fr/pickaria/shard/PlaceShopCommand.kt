@@ -19,7 +19,7 @@ internal class PlaceShopCommand : CommandExecutor {
 			}
 
 			// TODO: For testing purposes, remove once not needed
-			sender.inventory.addItem(Shard.createItem())
+			sender.inventory.addItem(Shard.item())
 		}
 
 		return true

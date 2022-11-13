@@ -14,7 +14,7 @@ import kotlin.math.floor
  * Creates a new shard ItemStack.
  */
 @Deprecated("Replace with Shard.createItem(amount)", ReplaceWith("Shard.createItem(amount)"))
-fun createShardItem(amount: Int): ItemStack = Shard.createItem(amount)
+fun createShardItem(amount: Int): ItemStack = Shard.item(amount)
 
 internal fun createChestMerchant(player: Player): InventoryView? {
 	val money = getShardBalance(player)
@@ -32,7 +32,7 @@ internal fun createChestMerchant(player: Player): InventoryView? {
 
 		MerchantRecipe(item.clone().apply { amount = 1 }, canBuy).apply {
 			uses = 0
-			addIngredient(Shard.createItem(price))
+			addIngredient(Shard.item(price))
 		}
 	}
 

@@ -17,7 +17,7 @@ internal class GrindstoneListeners : Listener, CurrencyExtensions(Shard) {
 	private fun getResult(itemStack: ItemStack?): ItemStack? = itemStack?.let {
 		if (it.amount == 1) getArtefactConfig(it) else null
 	}?.let {
-		Shard.createItem(it.value)
+		Shard.item(it.value)
 	}
 
 	/**

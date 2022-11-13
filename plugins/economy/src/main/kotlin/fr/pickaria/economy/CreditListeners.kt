@@ -1,7 +1,5 @@
 package fr.pickaria.economy
 
-import net.kyori.adventure.key.Key
-import net.kyori.adventure.sound.Sound
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder
 import net.milkbowl.vault.economy.EconomyResponse
 import org.bukkit.OfflinePlayer
@@ -26,7 +24,7 @@ internal class CreditListeners : Listener, CurrencyExtensions(Credit) {
 						val placeholder = Placeholder.unparsed("amount", economy.format(response.amount))
 						whoClicked.sendMessage(miniMessage.deserialize(Config.currencyCollectMessage, placeholder))
 
-						whoClicked.playSound(Sound.sound(Key.key(Config.currencyCollectSound), Sound.Source.MASTER, 1f, 1f))
+						whoClicked.playSound(Config.currencyCollectSound)
 
 						it.amount = 0
 					}
