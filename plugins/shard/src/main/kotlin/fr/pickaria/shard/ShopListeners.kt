@@ -1,6 +1,8 @@
 package fr.pickaria.shard
 
 import fr.pickaria.economy.CurrencyExtensions
+import fr.pickaria.economy.has
+import fr.pickaria.economy.withdraw
 import io.papermc.paper.event.player.PlayerPurchaseEvent
 import org.bukkit.Material
 import org.bukkit.OfflinePlayer
@@ -33,7 +35,7 @@ internal class ShopListeners : Listener, CurrencyExtensions(Shard) {
 		if (ingredient.isCurrency() && menus.contains(event.view)) {
 			val price = ingredient.amount.toDouble()
 
-			if ((event.whoClicked as OfflinePlayer) has price) {
+			if ((event.whoClicked as OfflinePlayer).has(Shard, price)) {
 				event.inventory.setItem(0, ingredient)
 				event.whoClicked.playSound(shopConfig.tradeSelectSound)
 				// FIXME: Reopen inventory to update `maxUses`?
@@ -54,8 +56,8 @@ internal class ShopListeners : Listener, CurrencyExtensions(Shard) {
 			if (ingredient.isCurrency()) {
 				val price = ingredient.amount.toDouble()
 
-				if (event.player has price) {
-					event.player withdraw price
+				if (event.player.has(Shard, price)) {
+					event.player.withdraw(Shard, price)
 					event.player.playSound(shopConfig.tradeSound)
 				} else {
 					// If the player doesn't have enough money, prevent the trade

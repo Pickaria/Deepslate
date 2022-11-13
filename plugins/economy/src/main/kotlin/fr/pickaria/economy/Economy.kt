@@ -10,7 +10,7 @@ import java.text.DecimalFormat
 class Economy(
 	private val currencyNameSingular: String,
 	private val currencyNamePlural: String,
-	val account: String = "default",
+	private val account: String = "default",
 	format: String = "0.00"
 ) : AbstractEconomy() {
 	private val formatter = DecimalFormat(format)

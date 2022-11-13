@@ -9,28 +9,38 @@ val OfflinePlayer.balance: Double
 	get() = economy.getBalance(this)
 
 @GlobalCurrencyExtensions
-infix fun OfflinePlayer.has(amount: Double): Boolean = economy.has(this@has, amount)
+infix fun OfflinePlayer.has(amount: Double): Boolean = this.has(Credit, amount)
 
 @GlobalCurrencyExtensions
-infix fun OfflinePlayer.withdraw(amount: Double): EconomyResponse = economy.withdrawPlayer(this, amount)
+infix fun OfflinePlayer.withdraw(amount: Double): EconomyResponse = this.withdraw(Credit, amount)
 
 @GlobalCurrencyExtensions
-infix fun OfflinePlayer.deposit(amount: Double): EconomyResponse = economy.depositPlayer(this, amount)
+infix fun OfflinePlayer.deposit(amount: Double): EconomyResponse = this.deposit(Credit, amount)
 
 /**
  * Withdraws money from the sender's account and deposits it into the recipient's account safely.
  */
 @GlobalCurrencyExtensions
-fun sendTo(sender: OfflinePlayer, recipient: OfflinePlayer, amount: Double): SendResponse =
-	if (sender has amount) {
-		val withdrawResponse = sender withdraw amount
+fun sendTo(sender: OfflinePlayer, recipient: OfflinePlayer, amount: Double): SendResponse = sendTo(Credit, sender, recipient, amount)
+
+fun OfflinePlayer.balance(currency: Currency): Double = currency.economy.getBalance(this)
+
+fun OfflinePlayer.has(currency: Currency, amount: Double): Boolean = currency.economy.has(this, amount)
+
+fun OfflinePlayer.withdraw(currency: Currency, amount: Double): EconomyResponse = currency.economy.withdrawPlayer(this, amount)
+
+fun OfflinePlayer.deposit(currency: Currency, amount: Double): EconomyResponse = currency.economy.depositPlayer(this, amount)
+
+fun sendTo(currency: Currency, sender: OfflinePlayer, recipient: OfflinePlayer, amount: Double): SendResponse =
+	if (sender.has(currency, amount)) {
+		val withdrawResponse = sender.withdraw(currency,  amount)
 
 		if (withdrawResponse.type == EconomyResponse.ResponseType.SUCCESS) {
-			val depositResponse = recipient deposit withdrawResponse.amount
+			val depositResponse = recipient.deposit(currency,  withdrawResponse.amount)
 
 			if (depositResponse.type != EconomyResponse.ResponseType.SUCCESS) {
 				// Try to refund
-				val refund = sender deposit withdrawResponse.amount
+				val refund = sender.deposit(currency, withdrawResponse.amount)
 				if (refund.type == EconomyResponse.ResponseType.FAILURE) {
 					getLogger().severe("Can't refund player, withdrew amount: ${withdrawResponse.amount}")
 					SendResponse.REFUND_ERROR
@@ -46,15 +56,3 @@ fun sendTo(sender: OfflinePlayer, recipient: OfflinePlayer, amount: Double): Sen
 	} else {
 		SendResponse.NOT_ENOUGH_MONEY
 	}
-
-@GlobalCurrencyExtensions
-class SendMoney(private val sender: OfflinePlayer, private val amount: Double) {
-	infix fun to(recipient: OfflinePlayer) = sendTo(sender, recipient, amount)
-}
-
-@Deprecated(
-	"Prefer using sendTo() directly.",
-	ReplaceWith("sendTo(sender, recipient, amount)", "fr.pickaria.economy.sendTo")
-)
-@GlobalCurrencyExtensions
-infix fun OfflinePlayer.send(amount: Double) = SendMoney(this, amount)

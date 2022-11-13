@@ -16,7 +16,7 @@ abstract class Currency : Listener {
 	protected abstract val description: List<String>
 	protected abstract val currencyNameSingular: String
 	protected abstract val currencyNamePlural: String
-	protected open val account: String = "default"
+	open val account: String = "default"
 	protected open val format: String = "0.00"
 
 	private val currencyDisplayName: Component by lazy {
@@ -50,7 +50,7 @@ abstract class Currency : Listener {
 
 			meta.lore(line)
 
-			meta.persistentDataContainer.set(currencyNamespace, PersistentDataType.STRING, economy.account)
+			meta.persistentDataContainer.set(currencyNamespace, PersistentDataType.STRING, account)
 			meta.persistentDataContainer.set(valueNamespace, PersistentDataType.DOUBLE, value)
 		}
 
