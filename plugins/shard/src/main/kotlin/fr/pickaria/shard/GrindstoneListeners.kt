@@ -66,12 +66,15 @@ internal class GrindstoneListeners : Listener, CurrencyExtensions(Credit, Shard)
 		with(event) {
 			if (inventory.type == InventoryType.GRINDSTONE && slotType == InventoryType.SlotType.RESULT) {
 				currentItem?.let {
-					val response = (whoClicked as Player) deposit it
+					val player = whoClicked as Player
+					val response = player deposit it
 
 					if (response.type == EconomyResponse.ResponseType.SUCCESS) {
+						inventory.removeItem(it)
 						inventory.clear()
-						event.result = Event.Result.DENY
-						event.isCancelled = true
+						player.updateInventory()
+						result = Event.Result.DENY
+						isCancelled = true
 					}
 				}
 			}

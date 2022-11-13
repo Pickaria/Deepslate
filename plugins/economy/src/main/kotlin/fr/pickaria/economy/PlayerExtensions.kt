@@ -9,13 +9,7 @@ val OfflinePlayer.balance: Double
 	get() = economy.getBalance(this)
 
 @GlobalCurrencyExtensions
-infix fun OfflinePlayer.has(amount: Double): Boolean = this.has(Credit, amount)
-
-@GlobalCurrencyExtensions
-infix fun OfflinePlayer.withdraw(amount: Double): EconomyResponse = this.withdraw(Credit, amount)
-
-@GlobalCurrencyExtensions
-infix fun OfflinePlayer.deposit(amount: Double): EconomyResponse = this.deposit(Credit, amount)
+infix fun OfflinePlayer.has(amount: Double): Boolean = has(Credit, amount)
 
 /**
  * Withdraws money from the sender's account and deposits it into the recipient's account safely.
@@ -36,7 +30,7 @@ fun sendTo(currency: Currency, sender: OfflinePlayer, recipient: OfflinePlayer, 
 		val withdrawResponse = sender.withdraw(currency,  amount)
 
 		if (withdrawResponse.type == EconomyResponse.ResponseType.SUCCESS) {
-			val depositResponse = recipient.deposit(currency,  withdrawResponse.amount)
+			val depositResponse = recipient.deposit(currency, withdrawResponse.amount)
 
 			if (depositResponse.type != EconomyResponse.ResponseType.SUCCESS) {
 				// Try to refund
