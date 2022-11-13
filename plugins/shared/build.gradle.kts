@@ -5,5 +5,4 @@ repositories {
 dependencies {
 	compileOnly(project(":lib"))
 	compileOnly("com.github.MilkBowl:VaultAPI:1.7.1")
-	compileOnly(kotlin("reflect"))
 }

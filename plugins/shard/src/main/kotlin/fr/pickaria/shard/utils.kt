@@ -10,6 +10,9 @@ import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.MerchantRecipe
 import kotlin.math.floor
 
+/**
+ * Creates a new shard ItemStack.
+ */
 @Deprecated("Replace with Shard.createItem(amount)", ReplaceWith("Shard.createItem(amount)"))
 fun createShardItem(amount: Int = 1): ItemStack = Shard.item(amount)
 
@@ -36,6 +39,9 @@ internal fun createChestMerchant(player: Player): InventoryView? {
 	return player.openMerchant(merchant, true)
 }
 
+/**
+ * Returns the amount of Shards a player has, defaults to 0.
+ */
 @Deprecated(
 	"Implement CurrencyExtensions and use `player.balance` instead.",
 	ReplaceWith("Shard.economy.getBalance(player).toInt()")
