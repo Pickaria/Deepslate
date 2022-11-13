@@ -1,5 +1,8 @@
 currency_name_singular: 'crédit'
 currency_name_plural: 'crédits'
+currency_description: '<gray>Pièce d''une valeur de <gold><value><gray>.'
+currency_collect_sound: 'block.amethyst_block.fall'
+currency_collect_message: '<gray>Vous avez collecté <gold><amount><gray>.'
 
 # /money message
 balance_message: '<gray>Votre solde : <gold><balance><gray>.'
@@ -21,7 +24,3 @@ not_much_pages: '<red>Il n''y a pas autant de pages.'
 header: '<gold>==== Baltop (<page>/<max>) ===='
 row: '<white><position>. <gray><player>, <balance>'
 footer: '<gray>Tapez <gold><next-page>/baltop <page></next-page></gold> pour lire la page suivante.'
-
-coin_description: '<gray>Piece d''une valeur de <value> chacune.'
-coin_collect_sound: 'block.amethyst_block.fall'
-coin_collect_message: '<gray>Vous avez collecté <gold><amount><gray>.'

@@ -1,4 +1,4 @@
-package fr.pickaria.shard
+package fr.pickaria.economy
 
 import fr.pickaria.database.models.BankAccount
 import net.milkbowl.vault.economy.AbstractEconomy
@@ -7,16 +7,19 @@ import net.milkbowl.vault.economy.EconomyResponse.ResponseType
 import org.bukkit.OfflinePlayer
 import java.text.DecimalFormat
 
-internal class ShardEconomy : AbstractEconomy() {
-	private val formatter = DecimalFormat("0")
+class Economy(
+	private val currencyNameSingular: String,
+	private val currencyNamePlural: String,
+	val account: String = "default",
+	format: String = "0.00"
+) : AbstractEconomy() {
+	private val formatter = DecimalFormat(format)
 
-	override fun isEnabled(): Boolean = true
+	// Constants methods
 
-	override fun getName(): String = "Shard"
+	override fun getName(): String = account
 
-	override fun hasBankSupport(): Boolean = false
-
-	override fun fractionalDigits(): Int = 0
+	override fun fractionalDigits(): Int = -1
 
 	override fun format(amount: Double): String =
 		if (amount <= 1.0) {
@@ -25,19 +28,23 @@ internal class ShardEconomy : AbstractEconomy() {
 			"${formatter.format(amount)} ${currencyNamePlural()}"
 		}
 
-	override fun currencyNamePlural(): String = shopConfig.currencyNamePlural
+	override fun isEnabled(): Boolean = true
 
-	override fun currencyNameSingular(): String = shopConfig.currencyNameSingular
+	override fun hasBankSupport(): Boolean = false
+
+	override fun currencyNamePlural(): String = currencyNamePlural
+
+	override fun currencyNameSingular(): String = currencyNameSingular
 
 	// Logic methods
 
 	override fun hasAccount(player: OfflinePlayer): Boolean =
-		BankAccount.get(player.uniqueId, SHARD_ACCOUNT_NAME)?.let {
+		BankAccount.get(player.uniqueId, account)?.let {
 			true
 		} ?: false
 
 	override fun getBalance(player: OfflinePlayer): Double =
-		BankAccount.get(player.uniqueId, SHARD_ACCOUNT_NAME)?.balance ?: 0.0
+		BankAccount.get(player.uniqueId, account)?.balance ?: 0.0
 
 	override fun has(player: OfflinePlayer, amount: Double): Boolean =
 		getBalance(player) >= amount
@@ -45,29 +52,29 @@ internal class ShardEconomy : AbstractEconomy() {
 	override fun withdrawPlayer(player: OfflinePlayer, amount: Double): EconomyResponse =
 		player.uniqueId.let {
 			if (!hasAccount(player)) {
-				BankAccount.create(it, SHARD_ACCOUNT_NAME)
+				BankAccount.create(it, account)
 			} else {
-				BankAccount.get(it, SHARD_ACCOUNT_NAME)
+				BankAccount.get(it, account)
 			}
 		}?.let {
 			it.balance -= amount
-			EconomyResponse(0.0, it.balance, ResponseType.SUCCESS, "")
+			EconomyResponse(amount, it.balance, ResponseType.SUCCESS, "")
 		} ?: EconomyResponse(0.0, 0.0, ResponseType.FAILURE, "")
 
 	override fun depositPlayer(player: OfflinePlayer, amount: Double): EconomyResponse =
 		player.uniqueId.let {
 			if (!hasAccount(player)) {
-				BankAccount.create(it, SHARD_ACCOUNT_NAME)
+				BankAccount.create(it, account)
 			} else {
-				BankAccount.get(it, SHARD_ACCOUNT_NAME)
+				BankAccount.get(it, account)
 			}
 		}?.let {
 			it.balance += amount
-			EconomyResponse(0.0, it.balance, ResponseType.SUCCESS, "")
+			EconomyResponse(amount, it.balance, ResponseType.SUCCESS, "")
 		} ?: EconomyResponse(0.0, 0.0, ResponseType.FAILURE, "")
 
 	override fun createPlayerAccount(player: OfflinePlayer): Boolean =
-		BankAccount.create(player.uniqueId, SHARD_ACCOUNT_NAME)?.let {
+		BankAccount.create(player.uniqueId, account)?.let {
 			true
 		} ?: false
 
@@ -92,9 +99,6 @@ internal class ShardEconomy : AbstractEconomy() {
 		EconomyResponse(0.0, 0.0, ResponseType.NOT_IMPLEMENTED, "We do not support bank accounts!")
 
 	override fun getBanks(): MutableList<String> = mutableListOf()
-
-	override fun isBankMember(name: String?, player: OfflinePlayer?): EconomyResponse =
-		EconomyResponse(0.0, 0.0, ResponseType.NOT_IMPLEMENTED, "We do not support bank accounts!")
 
 	// Deprecated methods
 
@@ -165,6 +169,10 @@ internal class ShardEconomy : AbstractEconomy() {
 
 	@Deprecated("Deprecated in Java")
 	override fun createPlayerAccount(playerName: String?, worldName: String?): Boolean {
+		TODO("Not yet implemented")
+	}
+
+	override fun isBankMember(name: String?, player: OfflinePlayer?): EconomyResponse {
 		TODO("Not yet implemented")
 	}
 }

@@ -1,5 +1,6 @@
 package fr.pickaria.reward
 
+import fr.pickaria.economy.GlobalCurrencyExtensions
 import fr.pickaria.economy.has
 import fr.pickaria.economy.withdraw
 import fr.pickaria.menu.open
@@ -16,6 +17,7 @@ import org.bukkit.inventory.ItemFlag
 import org.bukkit.inventory.ItemStack
 import org.bukkit.persistence.PersistentDataType
 
+@OptIn(GlobalCurrencyExtensions::class)
 internal class RewardCommand : CommandExecutor, Listener, TabCompleter {
 	override fun onCommand(sender: CommandSender, command: Command, label: String, args: Array<out String>): Boolean {
 		if (sender is Player) {

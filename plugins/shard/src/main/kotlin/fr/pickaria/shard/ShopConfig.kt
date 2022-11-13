@@ -6,12 +6,7 @@ import net.kyori.adventure.text.format.TextDecoration
 import org.bukkit.configuration.file.FileConfiguration
 
 internal class ShopConfig(config: FileConfiguration) {
-	val pickariteLabel = miniMessage.deserialize(config.getString("pickarite.label")!!)
-		.decoration(TextDecoration.ITALIC, TextDecoration.State.FALSE)
-	val pickariteLore = config.getStringList("pickarite.lore").map {
-		miniMessage.deserialize(it)
-			.decoration(TextDecoration.ITALIC, TextDecoration.State.FALSE)
-	}
+	val pickariteLore = config.getStringList("pickarite.lore")
 	val shopName = miniMessage.deserialize(config.getString("shop_name")!!)
 	val collectShardMessage = config.getString("collect_shard_message")!!
 
