@@ -7,7 +7,6 @@ import org.bukkit.Bukkit
 import org.bukkit.NamespacedKey
 import org.bukkit.plugin.java.JavaPlugin
 
-internal val economy: Economy = ShardEconomy()
 internal lateinit var namespace: NamespacedKey
 internal val miniMessage = MiniMessage.miniMessage()
 internal lateinit var shopConfig: ShopConfig
@@ -16,7 +15,6 @@ internal val artefactConfig: ArtefactConfig? = try {
 } catch (_: NoClassDefFoundError) {
 	null
 }
-internal const val SHARD_ACCOUNT_NAME = "SHARD"
 
 class Main : JavaPlugin() {
 	override fun onEnable() {

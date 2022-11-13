@@ -11,14 +11,13 @@ class Economy(
 	private val currencyNameSingular: String,
 	private val currencyNamePlural: String,
 	val account: String = "default",
-	private val name: String = "Currency",
 	format: String = "0.00"
 ) : AbstractEconomy() {
 	private val formatter = DecimalFormat(format)
 
 	// Constants methods
 
-	override fun getName(): String = name
+	override fun getName(): String = account
 
 	override fun fractionalDigits(): Int = -1
 

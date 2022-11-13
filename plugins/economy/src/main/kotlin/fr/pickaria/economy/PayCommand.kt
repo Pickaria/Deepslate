@@ -8,7 +8,7 @@ import org.bukkit.command.CommandSender
 import org.bukkit.command.TabCompleter
 import org.bukkit.entity.Player
 
-class PayCommand : CommandExecutor, TabCompleter {
+class PayCommand : CommandExecutor, TabCompleter, CurrencyExtensions(Credit) {
 	override fun onCommand(sender: CommandSender, command: Command, label: String, args: Array<out String>): Boolean {
 		if (sender is Player) {
 			val recipient = try {

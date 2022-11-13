@@ -1,19 +1,15 @@
 package fr.pickaria.economy
 
-import net.kyori.adventure.key.Key
-import net.kyori.adventure.sound.Sound
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder
 import net.milkbowl.vault.economy.EconomyResponse
-import org.bukkit.Bukkit
 import org.bukkit.OfflinePlayer
 import org.bukkit.event.Event
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.inventory.InventoryClickEvent
 import org.bukkit.event.inventory.InventoryDragEvent
-import org.bukkit.event.inventory.InventoryInteractEvent
 
-internal class Listeners : Listener {
+internal class Listeners : Listener, CurrencyExtensions(Credit) {
 	@EventHandler
 	fun onCurrencyClick(event: InventoryClickEvent) {
 		with(event) {
@@ -32,7 +28,7 @@ internal class Listeners : Listener {
 							}
 
 							currency.sound?.let { sound ->
-								whoClicked.playSound(Sound.sound(Key.key(sound), Sound.Source.MASTER, 1f, 1f))
+								whoClicked.playSound(sound)
 							}
 						}
 
@@ -51,10 +47,5 @@ internal class Listeners : Listener {
 				isCancelled = true
 			}
 		}
-	}
-
-	@EventHandler
-	fun onCurrencyMove(event: InventoryInteractEvent) {
-		Bukkit.broadcastMessage("event")
 	}
 }

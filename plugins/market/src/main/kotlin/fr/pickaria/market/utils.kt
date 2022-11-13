@@ -1,8 +1,10 @@
 package fr.pickaria.market
 
 import fr.pickaria.database.models.Order
+import fr.pickaria.economy.GlobalCurrencyExtensions
 import fr.pickaria.economy.SendResponse
 import fr.pickaria.economy.send
+import fr.pickaria.economy.sendTo
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
 import org.bukkit.Material
@@ -15,6 +17,7 @@ import kotlin.math.min
 /**
  * Finds sell orders and buys the specified amount of material.
  */
+@OptIn(GlobalCurrencyExtensions::class)
 internal fun buy(player: Player, material: Material, maximumPrice: Double, amount: Int): Int {
 	// Total amount of material that has been bought
 	var boughtAmount = 0
@@ -44,7 +47,7 @@ internal fun buy(player: Player, material: Material, maximumPrice: Double, amoun
 		// Total amount of money to spend
 		val price = buyingAmount * order.price
 
-		when (player send price to order.seller) {
+		when (sendTo(player, order.seller, price)) {
 			SendResponse.SUCCESS -> {
 				boughtAmount += buyingAmount
 				order.amount -= buyingAmount

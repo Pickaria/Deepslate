@@ -1,5 +1,6 @@
 package fr.pickaria.shard
 
+import fr.pickaria.economy.CurrencyExtensions
 import io.papermc.paper.event.player.PlayerPurchaseEvent
 import org.bukkit.Material
 import org.bukkit.OfflinePlayer
@@ -15,7 +16,7 @@ import org.bukkit.persistence.PersistentDataType
 import org.bukkit.potion.PotionEffect
 import org.bukkit.potion.PotionEffectType
 
-internal class ShopListeners : Listener {
+internal class ShopListeners : Listener, CurrencyExtensions(Shard) {
 	companion object {
 		private val openPotionEffectType = PotionEffectType.BLINDNESS
 		private val openPotionEffect = PotionEffect(openPotionEffectType, Integer.MAX_VALUE, 1, true, false, false)
@@ -29,10 +30,10 @@ internal class ShopListeners : Listener {
 		// Force set the item into the trade view
 		val ingredient = recipe.ingredients.first()
 
-		if (isShardItem(ingredient) && menus.contains(event.view)) {
+		if (ingredient.isCurrency() && menus.contains(event.view)) {
 			val price = ingredient.amount.toDouble()
 
-			if (economy.has(event.whoClicked as OfflinePlayer, price)) {
+			if ((event.whoClicked as OfflinePlayer) has price) {
 				event.inventory.setItem(0, ingredient)
 				event.whoClicked.playSound(shopConfig.tradeSelectSound)
 				// FIXME: Reopen inventory to update `maxUses`?
@@ -50,11 +51,11 @@ internal class ShopListeners : Listener {
 		event.trade.let {
 			val ingredient = it.ingredients.first()
 
-			if (isShardItem(ingredient)) {
+			if (ingredient.isCurrency()) {
 				val price = ingredient.amount.toDouble()
 
-				if (economy.has(event.player, price)) {
-					economy.withdrawPlayer(event.player, price)
+				if (event.player has price) {
+					event.player withdraw price
 					event.player.playSound(shopConfig.tradeSound)
 				} else {
 					// If the player doesn't have enough money, prevent the trade

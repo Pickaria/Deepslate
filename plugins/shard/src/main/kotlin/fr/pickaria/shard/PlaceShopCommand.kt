@@ -17,6 +17,9 @@ internal class PlaceShopCommand : CommandExecutor {
 				state.persistentDataContainer.set(namespace, PersistentDataType.BYTE, 1)
 				state.update() // Extremely important!
 			}
+
+			// TODO: For testing purposes, remove once not needed
+			sender.inventory.addItem(Shard.createItem())
 		}
 
 		return true

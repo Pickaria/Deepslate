@@ -6,7 +6,7 @@ import org.bukkit.command.CommandExecutor
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 
-class MoneyCommand : CommandExecutor {
+class MoneyCommand : CommandExecutor, CurrencyExtensions(Credit) {
 	override fun onCommand(sender: CommandSender, command: Command, label: String, args: Array<out String>): Boolean {
 		if (sender is Player) {
 			val balance = economy.format(sender.balance)
@@ -16,6 +16,7 @@ class MoneyCommand : CommandExecutor {
 
 			// TODO: Remove next line
 			sender.inventory.addItem(Credit.createItem())
+
 			return true
 		}
 
