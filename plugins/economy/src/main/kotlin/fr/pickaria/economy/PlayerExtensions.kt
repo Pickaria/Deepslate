@@ -4,29 +4,33 @@ import net.milkbowl.vault.economy.EconomyResponse
 import org.bukkit.Bukkit.getLogger
 import org.bukkit.OfflinePlayer
 
+@GlobalCurrencyExtensions
+val OfflinePlayer.balance: Double
+	get() = economy.getBalance(this)
+
+@GlobalCurrencyExtensions
 infix fun OfflinePlayer.has(amount: Double): Boolean = economy.has(this@has, amount)
 
-enum class SendResponse {
-	RECEIVE_ERROR,
-	REFUND_ERROR,
-	SUCCESS,
-	SEND_ERROR,
-	NOT_ENOUGH_MONEY;
-}
+@GlobalCurrencyExtensions
+infix fun OfflinePlayer.withdraw(amount: Double): EconomyResponse = economy.withdrawPlayer(this, amount)
+
+@GlobalCurrencyExtensions
+infix fun OfflinePlayer.deposit(amount: Double): EconomyResponse = economy.depositPlayer(this, amount)
 
 /**
  * Withdraws money from the sender's account and deposits it into the recipient's account safely.
  */
+@GlobalCurrencyExtensions
 fun sendTo(sender: OfflinePlayer, recipient: OfflinePlayer, amount: Double): SendResponse =
 	if (sender has amount) {
-		val withdrawResponse = economy.withdrawPlayer(sender, amount)
+		val withdrawResponse = sender withdraw amount
 
 		if (withdrawResponse.type == EconomyResponse.ResponseType.SUCCESS) {
-			val depositResponse = economy.depositPlayer(recipient, withdrawResponse.amount)
+			val depositResponse = recipient deposit withdrawResponse.amount
 
 			if (depositResponse.type != EconomyResponse.ResponseType.SUCCESS) {
 				// Try to refund
-				val refund = economy.depositPlayer(sender, withdrawResponse.amount)
+				val refund = sender deposit withdrawResponse.amount
 				if (refund.type == EconomyResponse.ResponseType.FAILURE) {
 					getLogger().severe("Can't refund player, withdrew amount: ${withdrawResponse.amount}")
 					SendResponse.REFUND_ERROR
@@ -43,8 +47,14 @@ fun sendTo(sender: OfflinePlayer, recipient: OfflinePlayer, amount: Double): Sen
 		SendResponse.NOT_ENOUGH_MONEY
 	}
 
+@GlobalCurrencyExtensions
 class SendMoney(private val sender: OfflinePlayer, private val amount: Double) {
 	infix fun to(recipient: OfflinePlayer) = sendTo(sender, recipient, amount)
 }
 
+@Deprecated(
+	"Prefer using sendTo() directly.",
+	ReplaceWith("sendTo(sender, recipient, amount)", "fr.pickaria.economy.sendTo")
+)
+@GlobalCurrencyExtensions
 infix fun OfflinePlayer.send(amount: Double) = SendMoney(this, amount)

@@ -1,5 +1,8 @@
-currency_name_singular: 'dollar'
-currency_name_plural: 'dollars'
+currency_name_singular: 'crédit'
+currency_name_plural: 'crédits'
+currency_description: '<gray>Pièce d''une valeur de <gold><value><gray>.'
+currency_collect_sound: 'block.amethyst_block.fall'
+currency_collect_message: '<gray>Vous avez collecté <gold><amount><gray>.'
 
 # /money message
 balance_message: '<gray>Votre solde : <gold><balance><gray>.'

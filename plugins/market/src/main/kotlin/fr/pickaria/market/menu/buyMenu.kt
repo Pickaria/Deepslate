@@ -2,6 +2,7 @@ package fr.pickaria.market.menu
 
 import fr.pickaria.database.models.Order
 import fr.pickaria.database.models.OrderType
+import fr.pickaria.economy.GlobalCurrencyExtensions
 import fr.pickaria.economy.has
 import fr.pickaria.market.economy
 import fr.pickaria.market.getPrices
@@ -15,6 +16,7 @@ import net.kyori.adventure.text.format.TextDecoration
 import org.bukkit.Material
 import org.bukkit.OfflinePlayer
 
+@OptIn(GlobalCurrencyExtensions::class)
 internal fun buyMenu(material: Material) = menu {
 	title = Component.text("Acheter ", NamedTextColor.GRAY)
 		.append(Component.translatable(material.translationKey(), NamedTextColor.GOLD))
