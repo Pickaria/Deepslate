@@ -21,8 +21,6 @@ class Main : JavaPlugin() {
 
 		getCommand("pay")?.setExecutor(PayCommand()) ?: logger.warning("Could not register `pay` command.")
 
-		server.pluginManager.registerEvents(CreditListeners(), this)
-
 		if (economy is fr.pickaria.economy.Economy) {
 			getCommand("balancetop")?.setExecutor(BalanceTopCommand())
 				?: logger.warning("Could not register `balancetop` command.")

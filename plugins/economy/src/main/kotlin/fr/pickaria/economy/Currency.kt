@@ -5,7 +5,9 @@ import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
 import net.kyori.adventure.text.format.TextDecoration
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder
+import net.milkbowl.vault.economy.EconomyResponse
 import org.bukkit.Material
+import org.bukkit.OfflinePlayer
 import org.bukkit.event.Listener
 import org.bukkit.inventory.ItemStack
 import org.bukkit.persistence.PersistentDataType
@@ -16,7 +18,7 @@ abstract class Currency : Listener {
 	protected abstract val description: List<String>
 	protected abstract val currencyNameSingular: String
 	protected abstract val currencyNamePlural: String
-	protected open val account: String = "default"
+	open val account: String = "default"
 	protected open val format: String = "0.00"
 
 	private val currencyDisplayName: Component by lazy {
@@ -50,10 +52,19 @@ abstract class Currency : Listener {
 
 			meta.lore(line)
 
-			meta.persistentDataContainer.set(currencyNamespace, PersistentDataType.STRING, economy.account)
+			meta.persistentDataContainer.set(currencyNamespace, PersistentDataType.STRING, account)
 			meta.persistentDataContainer.set(valueNamespace, PersistentDataType.DOUBLE, value)
 		}
 
 		return itemStack
 	}
+
+	open fun collect(player: OfflinePlayer, itemStack: ItemStack): EconomyResponse =
+		if (itemStack.account == account) {
+			player.deposit(this, itemStack.totalValue).also {
+				itemStack.amount = 0
+			}
+		} else {
+			EconomyResponse(0.0, 0.0, EconomyResponse.ResponseType.FAILURE, "Tried to deposit an item that is not a currency.")
+		}
 }

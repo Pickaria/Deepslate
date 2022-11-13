@@ -1,12 +1,11 @@
 package fr.pickaria.reward
 
-import fr.pickaria.economy.GlobalCurrencyExtensions
+import fr.pickaria.economy.Credit
 import fr.pickaria.economy.has
 import fr.pickaria.economy.withdraw
 import fr.pickaria.menu.open
 import net.kyori.adventure.text.format.TextDecoration
 import net.milkbowl.vault.economy.EconomyResponse
-import org.bukkit.Material
 import org.bukkit.command.Command
 import org.bukkit.command.CommandExecutor
 import org.bukkit.command.CommandSender
@@ -17,7 +16,6 @@ import org.bukkit.inventory.ItemFlag
 import org.bukkit.inventory.ItemStack
 import org.bukkit.persistence.PersistentDataType
 
-@OptIn(GlobalCurrencyExtensions::class)
 internal class RewardCommand : CommandExecutor, Listener, TabCompleter {
 	override fun onCommand(sender: CommandSender, command: Command, label: String, args: Array<out String>): Boolean {
 		if (sender is Player) {
@@ -41,8 +39,8 @@ internal class RewardCommand : CommandExecutor, Listener, TabCompleter {
 			}
 
 			val totalPrice = reward.price * amount
-			if (sender has totalPrice) {
-				val response = sender withdraw totalPrice
+			if (sender.has(Credit, totalPrice)) {
+				val response = sender.withdraw(Credit, totalPrice)
 
 				if (response.type == EconomyResponse.ResponseType.SUCCESS) {
 					val item = ItemStack(reward.material, amount)
