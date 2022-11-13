@@ -7,12 +7,18 @@ import net.milkbowl.vault.economy.EconomyResponse.ResponseType
 import org.bukkit.OfflinePlayer
 import java.text.DecimalFormat
 
-class PickariaEconomy : AbstractEconomy() {
-	private val formatter = DecimalFormat("0.00")
+class Economy(
+	private val currencyNameSingular: String,
+	private val currencyNamePlural: String,
+	val account: String = "default",
+	private val name: String = "Currency",
+	format: String = "0.00"
+) : AbstractEconomy() {
+	private val formatter = DecimalFormat(format)
 
 	// Constants methods
 
-	override fun getName(): String = "Pickaria economy"
+	override fun getName(): String = name
 
 	override fun fractionalDigits(): Int = -1
 
@@ -27,19 +33,19 @@ class PickariaEconomy : AbstractEconomy() {
 
 	override fun hasBankSupport(): Boolean = false
 
-	override fun currencyNamePlural(): String = Config.currencyNamePlural
+	override fun currencyNamePlural(): String = currencyNamePlural
 
-	override fun currencyNameSingular(): String = Config.currencyNameSingular
+	override fun currencyNameSingular(): String = currencyNameSingular
 
 	// Logic methods
 
 	override fun hasAccount(player: OfflinePlayer): Boolean =
-		BankAccount.get(player.uniqueId)?.let {
+		BankAccount.get(player.uniqueId, account)?.let {
 			true
 		} ?: false
 
 	override fun getBalance(player: OfflinePlayer): Double =
-		BankAccount.get(player.uniqueId)?.balance ?: 0.0
+		BankAccount.get(player.uniqueId, account)?.balance ?: 0.0
 
 	override fun has(player: OfflinePlayer, amount: Double): Boolean =
 		getBalance(player) >= amount
@@ -47,9 +53,9 @@ class PickariaEconomy : AbstractEconomy() {
 	override fun withdrawPlayer(player: OfflinePlayer, amount: Double): EconomyResponse =
 		player.uniqueId.let {
 			if (!hasAccount(player)) {
-				BankAccount.create(it)
+				BankAccount.create(it, account)
 			} else {
-				BankAccount.get(it)
+				BankAccount.get(it, account)
 			}
 		}?.let {
 			it.balance -= amount
@@ -59,9 +65,9 @@ class PickariaEconomy : AbstractEconomy() {
 	override fun depositPlayer(player: OfflinePlayer, amount: Double): EconomyResponse =
 		player.uniqueId.let {
 			if (!hasAccount(player)) {
-				BankAccount.create(it)
+				BankAccount.create(it, account)
 			} else {
-				BankAccount.get(it)
+				BankAccount.get(it, account)
 			}
 		}?.let {
 			it.balance += amount
@@ -69,7 +75,7 @@ class PickariaEconomy : AbstractEconomy() {
 		} ?: EconomyResponse(0.0, 0.0, ResponseType.FAILURE, "")
 
 	override fun createPlayerAccount(player: OfflinePlayer): Boolean =
-		BankAccount.create(player.uniqueId)?.let {
+		BankAccount.create(player.uniqueId, account)?.let {
 			true
 		} ?: false
 

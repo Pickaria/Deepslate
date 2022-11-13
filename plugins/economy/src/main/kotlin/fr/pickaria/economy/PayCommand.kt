@@ -41,7 +41,7 @@ class PayCommand : CommandExecutor, TabCompleter {
 				return true
 			}
 
-			when (sender send amount to recipient) {
+			when (sendTo(sender, recipient, amount)) {
 				SendResponse.RECEIVE_ERROR -> sender.sendMessage(Config.receiveError)
 				SendResponse.REFUND_ERROR -> sender.sendMessage(Config.refundError)
 				SendResponse.SUCCESS -> {

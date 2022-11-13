@@ -24,7 +24,9 @@ class Main : JavaPlugin() {
 
 		getCommand("pay")?.setExecutor(PayCommand()) ?: logger.warning("Could not register `pay` command.")
 
-		if (economy is PickariaEconomy) {
+		server.pluginManager.registerEvents(Listeners(), this)
+
+		if (economy is fr.pickaria.economy.Economy) {
 			getCommand("balancetop")?.setExecutor(BalanceTopCommand())
 				?: logger.warning("Could not register `balancetop` command.")
 			getCommand("baltop")?.setExecutor(BalanceTopCommand())
@@ -47,8 +49,8 @@ class Main : JavaPlugin() {
 
 			logger.info("Third party plugin is handling economy")
 		} ?: let {
-			economy = PickariaEconomy()
-			Bukkit.getServicesManager().register(Economy::class.java, economy, this, ServicePriority.Normal)
+			economy = Credit.economy
+			Bukkit.getServicesManager().register(Economy::class.java, Credit.economy, this, ServicePriority.Normal)
 
 			logger.info("Pickaria is handling economy")
 		}

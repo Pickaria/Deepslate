@@ -9,10 +9,13 @@ import org.bukkit.entity.Player
 class MoneyCommand : CommandExecutor {
 	override fun onCommand(sender: CommandSender, command: Command, label: String, args: Array<out String>): Boolean {
 		if (sender is Player) {
-			val balance = economy.format(economy.getBalance(sender))
+			val balance = economy.format(sender.balance)
 			val placeholder = Placeholder.unparsed("balance", balance)
 			val message = miniMessage.deserialize(Config.balanceMessage, placeholder)
 			sender.sendMessage(message)
+
+			// TODO: Remove next line
+			sender.inventory.addItem(Credit.createItem())
 			return true
 		}
 

@@ -21,4 +21,7 @@ internal object Config : ConfigProvider() {
 	val header: String by this
 	val row: String by this
 	val footer: String by this
+	val currencyDescription: String by this
+	val currencyCollectMessage: String by this
+	val currencyCollectSound: String by this
 }
