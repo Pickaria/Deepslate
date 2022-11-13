@@ -1,13 +1,9 @@
 package fr.pickaria.economy
 
-import net.kyori.adventure.text.minimessage.MiniMessage
 import net.milkbowl.vault.economy.Economy
 import org.bukkit.Bukkit
 import org.bukkit.plugin.ServicePriority
 import org.bukkit.plugin.java.JavaPlugin
-
-internal lateinit var economy: Economy
-internal val miniMessage: MiniMessage = MiniMessage.miniMessage();
 
 class Main : JavaPlugin() {
 	override fun onEnable() {
@@ -24,7 +20,7 @@ class Main : JavaPlugin() {
 
 		getCommand("pay")?.setExecutor(PayCommand()) ?: logger.warning("Could not register `pay` command.")
 
-		server.pluginManager.registerEvents(Listeners(), this)
+		server.pluginManager.registerEvents(CreditListeners(), this)
 
 		if (economy is fr.pickaria.economy.Economy) {
 			getCommand("balancetop")?.setExecutor(BalanceTopCommand())

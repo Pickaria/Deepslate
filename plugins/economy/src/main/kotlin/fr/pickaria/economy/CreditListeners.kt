@@ -1,5 +1,7 @@
 package fr.pickaria.economy
 
+import net.kyori.adventure.key.Key
+import net.kyori.adventure.sound.Sound
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder
 import net.milkbowl.vault.economy.EconomyResponse
 import org.bukkit.OfflinePlayer
@@ -9,7 +11,7 @@ import org.bukkit.event.Listener
 import org.bukkit.event.inventory.InventoryClickEvent
 import org.bukkit.event.inventory.InventoryDragEvent
 
-internal class Listeners : Listener, CurrencyExtensions(Credit) {
+internal class CreditListeners : Listener, CurrencyExtensions(Credit) {
 	@EventHandler
 	fun onCurrencyClick(event: InventoryClickEvent) {
 		with(event) {
@@ -21,16 +23,10 @@ internal class Listeners : Listener, CurrencyExtensions(Credit) {
 					val response = (whoClicked as OfflinePlayer) deposit it
 
 					if (response.type == EconomyResponse.ResponseType.SUCCESS) {
-						it.currency?.let { currency ->
-							currency.creditMessage?.let { message ->
-								val placeholder = Placeholder.unparsed("amount", economy.format(it.totalValue))
-								whoClicked.sendMessage(miniMessage.deserialize(message, placeholder))
-							}
+						val placeholder = Placeholder.unparsed("amount", economy.format(response.amount))
+						whoClicked.sendMessage(miniMessage.deserialize(Config.currencyCollectMessage, placeholder))
 
-							currency.sound?.let { sound ->
-								whoClicked.playSound(sound)
-							}
-						}
+						whoClicked.playSound(Sound.sound(Key.key(Config.currencyCollectSound), Sound.Source.MASTER, 1f, 1f))
 
 						it.amount = 0
 					}

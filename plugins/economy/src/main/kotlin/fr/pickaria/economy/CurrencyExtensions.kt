@@ -26,9 +26,6 @@ abstract class CurrencyExtensions(private val currency: Currency) {
 	val ItemStack.account: String?
 		get() = itemMeta?.persistentDataContainer?.get(currencyNamespace, PersistentDataType.STRING)
 
-	val ItemStack.currency: Currency?
-		get() = account?.let { currencies[it] }
-
 	val ItemStack.value: Double
 		get() = itemMeta?.persistentDataContainer?.get(valueNamespace, PersistentDataType.DOUBLE) ?: 0.0
 
