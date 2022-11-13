@@ -5,7 +5,9 @@ import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
 import net.kyori.adventure.text.format.TextDecoration
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder
+import net.milkbowl.vault.economy.EconomyResponse
 import org.bukkit.Material
+import org.bukkit.OfflinePlayer
 import org.bukkit.event.Listener
 import org.bukkit.inventory.ItemStack
 import org.bukkit.persistence.PersistentDataType
@@ -56,4 +58,13 @@ abstract class Currency : Listener {
 
 		return itemStack
 	}
+
+	open fun collect(player: OfflinePlayer, itemStack: ItemStack): EconomyResponse =
+		if (itemStack.account == account) {
+			player.deposit(this, itemStack.totalValue).also {
+				itemStack.amount = 0
+			}
+		} else {
+			EconomyResponse(0.0, 0.0, EconomyResponse.ResponseType.FAILURE, "Tried to deposit an item that is not a currency.")
+		}
 }

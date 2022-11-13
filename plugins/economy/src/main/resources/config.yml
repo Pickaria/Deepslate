@@ -1,5 +1,5 @@
-currency_name_singular: 'crédit'
-currency_name_plural: 'crédits'
+currency_name_singular: 'Crédit'
+currency_name_plural: 'Crédits'
 currency_description: '<gray>Pièce d''une valeur de <gold><value><gray>.'
 currency_collect_sound: 'block.amethyst_block.fall'
 currency_collect_message: '<gray>Vous avez collecté <gold><amount><gray>.'

@@ -29,7 +29,7 @@ abstract class CurrencyExtensions(vararg currencies: Currency) {
 	/**
 	 * The currency of the current item if any.
 	 */
-	val ItemStack.currency: Currency?
+	private val ItemStack.currency: Currency?
 		get() = if (isCurrency()) {
 			currencies[account]
 		} else {
@@ -39,9 +39,10 @@ abstract class CurrencyExtensions(vararg currencies: Currency) {
 	// OfflinePlayer extensions
 
 	infix fun OfflinePlayer.deposit(itemStack: ItemStack): EconomyResponse =
-		itemStack.currency?.let {
-			deposit(it, itemStack.totalValue).also {
-				itemStack.amount = 0
-			}
-		} ?: EconomyResponse(0.0, 0.0, EconomyResponse.ResponseType.FAILURE, "Tried to deposit an item that is not a currency.")
+		itemStack.currency?.collect(this, itemStack) ?: EconomyResponse(
+			0.0,
+			0.0,
+			EconomyResponse.ResponseType.FAILURE,
+			"Tried to deposit an item that is not a currency."
+		)
 }
