@@ -8,12 +8,15 @@ import org.bukkit.Material
 import org.bukkit.OfflinePlayer
 import org.bukkit.Particle
 import org.bukkit.block.EnderChest
+import org.bukkit.entity.Mob
+import org.bukkit.entity.Villager
 import org.bukkit.event.Event
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.inventory.*
 import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.inventory.InventoryView
+import org.bukkit.inventory.MerchantInventory
 import org.bukkit.persistence.PersistentDataType
 import org.bukkit.potion.PotionEffect
 import org.bukkit.potion.PotionEffectType
@@ -22,7 +25,6 @@ internal class ShopListeners : Listener, CurrencyExtensions(Shard) {
 	companion object {
 		private val openPotionEffectType = PotionEffectType.BLINDNESS
 		private val openPotionEffect = PotionEffect(openPotionEffectType, Integer.MAX_VALUE, 1, true, false, false)
-		private val menus: MutableList<InventoryView> = mutableListOf() // FIXME: Possible memory leak
 	}
 
 	@EventHandler
@@ -32,7 +34,7 @@ internal class ShopListeners : Listener, CurrencyExtensions(Shard) {
 		// Force set the item into the trade view
 		val ingredient = recipe.ingredients.first()
 
-		if (ingredient.isCurrency() && menus.contains(event.view)) {
+		if (ingredient.isCurrency()) {
 			val price = ingredient.amount.toDouble()
 
 			if ((event.whoClicked as OfflinePlayer).has(Shard, price)) {
@@ -80,12 +82,6 @@ internal class ShopListeners : Listener, CurrencyExtensions(Shard) {
 
 					if (!player.isSneaking) {
 						createChestMerchant(player)?.let {
-							menus.add(it)
-
-							player.playSound(shopConfig.openSound)
-							player.addPotionEffect(openPotionEffect)
-							player.world.spawnParticle(Particle.END_ROD, block.location, 30, 1.0, 1.0, 1.0, 0.0)
-
 							event.isCancelled = true
 						}
 					}
@@ -95,11 +91,11 @@ internal class ShopListeners : Listener, CurrencyExtensions(Shard) {
 	}
 
 	/**
-	 * Prevents the player from clicking in other slots than result.
+	 * Prevents the player from clicking in other slots than result if the clicked item is a currency.
 	 */
 	@EventHandler
 	fun onInventoryClick(event: InventoryClickEvent) {
-		if (event.clickedInventory?.type === InventoryType.MERCHANT && menus.contains(event.view) && event.slotType != InventoryType.SlotType.RESULT) {
+		if (event.clickedInventory?.type === InventoryType.MERCHANT && event.slotType != InventoryType.SlotType.RESULT && event.currentItem?.isCurrency() == true) {
 			event.result = Event.Result.DENY
 			event.isCancelled = true
 		}
@@ -110,11 +106,35 @@ internal class ShopListeners : Listener, CurrencyExtensions(Shard) {
 	 */
 	@EventHandler
 	fun onInventoryClose(event: InventoryCloseEvent) {
-		if (event.inventory.type === InventoryType.MERCHANT && menus.contains(event.view)) {
-			event.inventory.clear()
-			event.player.removePotionEffect(openPotionEffectType)
-			event.player.playSound(shopConfig.closeSound)
-			menus.remove(event.view)
+		with(event) {
+			if (inventory.type === InventoryType.MERCHANT) {
+				inventory.contents.forEach {
+					if (it?.isCurrency() == true) {
+						inventory.removeItem(it)
+					}
+				}
+
+				val villager = (inventory as MerchantInventory).merchant as Mob
+
+				if (villager.persistentDataContainer.has(namespace)) {
+					player.removePotionEffect(openPotionEffectType)
+					player.playSound(shopConfig.closeSound)
+				}
+			}
+		}
+	}
+
+	@EventHandler
+	fun onInventoryOpen(event: InventoryOpenEvent) {
+		with(event) {
+			if (inventory.type === InventoryType.MERCHANT) {
+				val villager = (inventory as MerchantInventory).merchant as Villager
+				if (villager.persistentDataContainer.has(namespace)) {
+					player.playSound(shopConfig.openSound)
+					player.addPotionEffect(openPotionEffect)
+					player.world.spawnParticle(Particle.END_ROD, player.location.toCenterLocation(), 30, 1.0, 1.0, 1.0, 0.0)
+				}
+			}
 		}
 	}
 }
