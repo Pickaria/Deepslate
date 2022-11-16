@@ -8,7 +8,6 @@ import org.bukkit.plugin.java.JavaPlugin
 
 internal lateinit var namespace: NamespacedKey
 internal val miniMessage = MiniMessage.miniMessage()
-internal lateinit var shopConfig: ShopConfig
 internal val artefactConfig: ArtefactConfig? = try {
 	Bukkit.getServicesManager().getRegistration(ArtefactConfig::class.java)?.provider
 } catch (_: NoClassDefFoundError) {
@@ -21,7 +20,7 @@ class Main : JavaPlugin() {
 
 		saveDefaultConfig()
 
-		shopConfig = ShopConfig(this.config)
+		Config.setConfig(this.config)
 		namespace = NamespacedKey(this, "pickarite")
 
 		getCommand("place")?.setExecutor(PlaceShopCommand()) ?: server.logger.warning("Command `place` could not be registered")

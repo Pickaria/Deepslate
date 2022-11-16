@@ -1,6 +1,7 @@
 package fr.pickaria.shard
 
 import fr.pickaria.economy.CurrencyExtensions
+import fr.pickaria.economy.balance
 import fr.pickaria.economy.has
 import fr.pickaria.economy.withdraw
 import fr.pickaria.shopapi.event.*
@@ -28,7 +29,7 @@ internal class ShopListeners : Listener, CurrencyExtensions(Shard) {
 
 				if (player.has(Shard, price)) {
 					inventory.setItem(0, ingredient)
-					player.playSound(shopConfig.tradeSelectSound)
+					player.playSound(Config.tradeSelectSound)
 					// FIXME: Reopen inventory to update `maxUses`?
 				} else {
 					// If the player doesn't have enough money, prevent the trade and clears previous trade
@@ -51,7 +52,7 @@ internal class ShopListeners : Listener, CurrencyExtensions(Shard) {
 
 					if (player.has(Shard, price)) {
 						player.withdraw(Shard, price)
-						player.playSound(shopConfig.tradeSound)
+						player.playSound(Config.tradeSound)
 					} else {
 						// If the player doesn't have enough money, prevent the trade
 						result = Event.Result.DENY
@@ -65,9 +66,16 @@ internal class ShopListeners : Listener, CurrencyExtensions(Shard) {
 	@EventHandler
 	fun onChestOpened(event: PlayerOpenShopEvent) {
 		with(event) {
-			player.playSound(shopConfig.openSound)
-			player.addPotionEffect(openPotionEffect)
-			player.world.spawnParticle(Particle.END_ROD, player.location, 30, 1.0, 1.0, 1.0, 0.0)
+			if (player.balance(Shard) < 1) {
+				player.playSound(Config.noShardToTradeSound)
+				player.sendMessage(Config.noShardToTrade)
+				isCancelled = true
+			} else {
+				// TODO: Adjust max uses
+				player.playSound(Config.openSound)
+				player.addPotionEffect(openPotionEffect)
+				player.world.spawnParticle(Particle.END_ROD, player.location, 30, 1.0, 1.0, 1.0, 0.0)
+			}
 		}
 	}
 
@@ -75,11 +83,9 @@ internal class ShopListeners : Listener, CurrencyExtensions(Shard) {
 	 * Prevents the player from clicking in other slots than result if the clicked item is a currency.
 	 */
 	@EventHandler
-	fun onInventoryClick(event: ShopClickEvent) {
-		if (event.currentItem?.isCurrency() == true) {
-			event.result = Event.Result.DENY
-			event.isCancelled = true
-		}
+	fun onShopClickEvent(event: ShopClickEvent) {
+		event.result = Event.Result.DENY
+		event.isCancelled = true
 	}
 
 	/**
@@ -95,16 +101,7 @@ internal class ShopListeners : Listener, CurrencyExtensions(Shard) {
 			}
 
 			player.removePotionEffect(openPotionEffectType)
-			player.playSound(shopConfig.closeSound)
-		}
-	}
-
-	@EventHandler
-	fun onInventoryOpen(event: PlayerOpenShopEvent) {
-		with(event) {
-			player.playSound(shopConfig.openSound)
-			player.addPotionEffect(openPotionEffect)
-			player.world.spawnParticle(Particle.END_ROD, player.location.toCenterLocation(), 30, 1.0, 1.0, 1.0, 0.0)
+			player.playSound(Config.closeSound)
 		}
 	}
 }

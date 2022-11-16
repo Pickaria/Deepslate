@@ -21,19 +21,13 @@ internal class PlaceShopCommand : CommandExecutor {
 			villager.villagerType = Villager.Type.PLAINS
 
 			val merchant = villager as Merchant
-
-			val money = getShardBalance(sender)
-
 			val artefacts = artefactConfig?.artefacts ?: mapOf()
 
 			merchant.recipes = artefacts.map { (_, config) ->
 				val item = createArtefactReceptacle(config)
 				val price: Int = getArtefactConfig(item)?.value ?: (floor(Math.random() * 64) + 1).toInt()
 
-				// Maximum the player can buy
-				val canBuy = money / price
-
-				MerchantRecipe(item.clone().apply { amount = 1 }, canBuy).apply {
+				MerchantRecipe(item.clone().apply { amount = 1 }, Int.MAX_VALUE).apply {
 					uses = 0
 					addIngredient(Shard.item(price))
 				}
