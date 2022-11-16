@@ -3,6 +3,7 @@ package fr.pickaria.shard
 import fr.pickaria.artefact.createArtefactReceptacle
 import fr.pickaria.artefact.getArtefactConfig
 import fr.pickaria.shopapi.spawnVillager
+import net.kyori.adventure.text.Component
 import org.bukkit.command.Command
 import org.bukkit.command.CommandExecutor
 import org.bukkit.command.CommandSender
@@ -15,10 +16,10 @@ import kotlin.math.floor
 internal class PlaceShopCommand : CommandExecutor {
 	override fun onCommand(sender: CommandSender, command: Command, label: String, args: Array<out String>?): Boolean {
 		if (sender is Player) {
-			val villager = spawnVillager(sender.location, "test")
+			val villager = spawnVillager(sender.location, "Shard")
 
-			villager.profession = Villager.Profession.ARMORER
-			villager.villagerType = Villager.Type.PLAINS
+			villager.profession = Villager.Profession.CLERIC
+			villager.villagerType = Villager.Type.SWAMP
 
 			val merchant = villager as Merchant
 			val artefacts = artefactConfig?.artefacts ?: mapOf()
@@ -32,6 +33,9 @@ internal class PlaceShopCommand : CommandExecutor {
 					addIngredient(Shard.item(price))
 				}
 			}
+
+			villager.customName(Component.text("Bertrand"))
+			villager.isCustomNameVisible = true
 		}
 
 		return true
