@@ -2,7 +2,6 @@ package fr.pickaria.shard
 
 import fr.pickaria.artefact.ArtefactConfig
 import net.kyori.adventure.text.minimessage.MiniMessage
-import net.milkbowl.vault.economy.Economy
 import org.bukkit.Bukkit
 import org.bukkit.NamespacedKey
 import org.bukkit.plugin.java.JavaPlugin

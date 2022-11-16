@@ -1,31 +1,43 @@
 package fr.pickaria.shard
 
-import fr.pickaria.economy.Credit
-import org.bukkit.Material
+import fr.pickaria.artefact.createArtefactReceptacle
+import fr.pickaria.artefact.getArtefactConfig
+import fr.pickaria.shopapi.spawnVillager
 import org.bukkit.command.Command
 import org.bukkit.command.CommandExecutor
 import org.bukkit.command.CommandSender
-import org.bukkit.entity.EntityType
 import org.bukkit.entity.Player
 import org.bukkit.entity.Villager
-import org.bukkit.inventory.ItemStack
+import org.bukkit.inventory.Merchant
 import org.bukkit.inventory.MerchantRecipe
-import org.bukkit.persistence.PersistentDataType
+import kotlin.math.floor
 
 internal class PlaceShopCommand : CommandExecutor {
 	override fun onCommand(sender: CommandSender, command: Command, label: String, args: Array<out String>?): Boolean {
 		if (sender is Player) {
-			val villager = sender.location.world.spawnEntity(sender.location, EntityType.VILLAGER) as Villager
-			villager.setAI(false)
-			villager.isSilent = true
+			val villager = spawnVillager(sender.location, "test")
 
-			val recipe = MerchantRecipe(ItemStack(Material.GRASS_BLOCK), Int.MAX_VALUE)
-			recipe.addIngredient(Shard.item(3))
-			recipe.addIngredient(Credit.item(50))
+			villager.profession = Villager.Profession.ARMORER
+			villager.villagerType = Villager.Type.PLAINS
 
-			villager.persistentDataContainer.set(namespace, PersistentDataType.BYTE, 1)
+			val merchant = villager as Merchant
 
-			villager.recipes = listOf(recipe)
+			val money = getShardBalance(sender)
+
+			val artefacts = artefactConfig?.artefacts ?: mapOf()
+
+			merchant.recipes = artefacts.map { (_, config) ->
+				val item = createArtefactReceptacle(config)
+				val price: Int = getArtefactConfig(item)?.value ?: (floor(Math.random() * 64) + 1).toInt()
+
+				// Maximum the player can buy
+				val canBuy = money / price
+
+				MerchantRecipe(item.clone().apply { amount = 1 }, canBuy).apply {
+					uses = 0
+					addIngredient(Shard.item(price))
+				}
+			}
 		}
 
 		return true
