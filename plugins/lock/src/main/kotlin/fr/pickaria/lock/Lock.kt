@@ -3,8 +3,8 @@ package fr.pickaria.lock
 import org.bukkit.GameMode
 import org.bukkit.Material
 import org.bukkit.Tag
-import org.bukkit.block.Block
-import org.bukkit.entity.Player
+import org.bukkit.block.Lockable
+import org.bukkit.block.Sign
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.block.BlockDamageEvent
@@ -52,39 +52,19 @@ class Lock : Listener {
          */
         val player = event.player
         if (player.gameMode == GameMode.CREATIVE) return
+        if (!player.isSneaking) return
 
         val block = event.block
-        when(block.type) {
-            in lockSigns -> {}
-            !in lockBlocks -> return
-            else -> {}
-        }
-        player.sendMessage("hit Lockable....")
-        if (player.isSneaking) {
-            player.sendMessage("Lock is triggered.")
-            when (isLocked(block)) {
-                true -> unlock(block, player)
-                false -> lock(block, player)
+        when (block.state) {
+            is Lockable -> { // TODO: isLocked, getKey, setKey
+                player.sendMessage("hit Lockable....")
             }
+            is Sign -> {
+                player.sendMessage("hit Sign....")
+            }
+            else -> return
         }
-    }
-
-    private fun isLocked(block: Block): Boolean {
-        return (getKey() != null)
-    }
-
-    private fun getKey() {}
-
-    private fun setKey() {}
-
-    private fun lock(block: Block, player: Player) {
-        // TODO: Create a sign indicating protection + owner.
-
-        player.sendMessage("Locked.")
-    }
-
-    private fun unlock(block: Block, player: Player) {
-        player.sendMessage("Unlocked.")
+        player.sendMessage("Lock is triggered.")
     }
 
 }
