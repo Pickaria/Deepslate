@@ -1,42 +1,51 @@
 package fr.pickaria.shard
 
-import fr.pickaria.economy.CurrencyExtensions
-import fr.pickaria.economy.balance
-import fr.pickaria.economy.has
-import fr.pickaria.economy.withdraw
+import fr.pickaria.economy.*
 import fr.pickaria.shopapi.event.*
 import org.bukkit.Particle
+import org.bukkit.entity.Player
 import org.bukkit.event.Event
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
+import org.bukkit.inventory.ItemStack
 import org.bukkit.potion.PotionEffect
 import org.bukkit.potion.PotionEffectType
 
-internal class ShopListeners : Listener, CurrencyExtensions(Shard) {
+internal class ShopListeners : Listener, CurrencyExtensions(Shard, Credit) {
 	companion object {
 		private val openPotionEffectType = PotionEffectType.BLINDNESS
 		private val openPotionEffect = PotionEffect(openPotionEffectType, Integer.MAX_VALUE, 1, true, false, false)
 	}
 
+	private fun Player.hasAll(ingredients: List<ItemStack>): Boolean {
+		for (ingredient in ingredients) {
+			ingredient.currency?.let { currency ->
+				if (!has(currency, ingredient.amount.toDouble())) {
+					return false
+				}
+			}
+		}
+
+		return true
+	}
+
 	@EventHandler
 	fun onTradeSelected(event: PlayerSelectTradeEvent) {
 		with(event) {
-			// Force set the item into the trade view
-			val ingredient = selectedRecipe.ingredients.first()
+			val hasAll = player.hasAll(selectedRecipe.ingredients)
 
-			if (ingredient.isCurrency()) {
-				val price = ingredient.amount.toDouble()
-
-				if (player.has(Shard, price)) {
-					inventory.setItem(0, ingredient)
-					player.playSound(Config.tradeSelectSound)
-					// FIXME: Reopen inventory to update `maxUses`?
-				} else {
-					// If the player doesn't have enough money, prevent the trade and clears previous trade
-					inventory.setItem(0, null)
-					result = Event.Result.DENY
-					isCancelled = true
+			if (hasAll) {
+				// Force set the item into the trade view
+				selectedRecipe.ingredients.forEachIndexed { index, ingredient ->
+					ingredient.currency?.let {
+						inventory.setItem(index, ingredient)
+						player.playSound(Config.tradeSelectSound)
+					}
 				}
+			} else {
+				inventory.clear()
+				result = Event.Result.DENY
+				isCancelled = true
 			}
 		}
 	}
@@ -44,21 +53,20 @@ internal class ShopListeners : Listener, CurrencyExtensions(Shard) {
 	@EventHandler
 	fun onPlayerTrade(event: PlayerBuyEvent) {
 		with(event) {
-			trade.let {
-				val ingredient = it.ingredients.first()
+			val hasAll = player.hasAll(trade.ingredients)
 
-				if (ingredient.isCurrency()) {
-					val price = ingredient.amount.toDouble()
-
-					if (player.has(Shard, price)) {
-						player.withdraw(Shard, price)
-						player.playSound(Config.tradeSound)
-					} else {
-						// If the player doesn't have enough money, prevent the trade
-						result = Event.Result.DENY
-						isCancelled = true
+			if (hasAll) {
+				trade.ingredients.forEach {
+					it.currency?.let { currency ->
+						player.withdraw(currency, it.amount.toDouble())
 					}
 				}
+
+				player.playSound(Config.tradeSound)
+				player.world.spawnParticle(Particle.END_ROD, player.location, 30, 1.0, 1.0, 1.0, 0.0)
+			} else {
+				result = Event.Result.DENY
+				isCancelled = true
 			}
 		}
 	}
@@ -74,7 +82,6 @@ internal class ShopListeners : Listener, CurrencyExtensions(Shard) {
 				// TODO: Adjust max uses
 				player.playSound(Config.openSound)
 				player.addPotionEffect(openPotionEffect)
-				player.world.spawnParticle(Particle.END_ROD, player.location, 30, 1.0, 1.0, 1.0, 0.0)
 			}
 		}
 	}

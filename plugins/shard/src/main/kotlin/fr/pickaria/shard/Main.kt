@@ -3,10 +3,8 @@ package fr.pickaria.shard
 import fr.pickaria.artefact.ArtefactConfig
 import net.kyori.adventure.text.minimessage.MiniMessage
 import org.bukkit.Bukkit
-import org.bukkit.NamespacedKey
 import org.bukkit.plugin.java.JavaPlugin
 
-internal lateinit var namespace: NamespacedKey
 internal val miniMessage = MiniMessage.miniMessage()
 internal val artefactConfig: ArtefactConfig? = try {
 	Bukkit.getServicesManager().getRegistration(ArtefactConfig::class.java)?.provider
@@ -21,13 +19,10 @@ class Main : JavaPlugin() {
 		saveDefaultConfig()
 
 		Config.setConfig(this.config)
-		namespace = NamespacedKey(this, "pickarite")
 
 		getCommand("place")?.setExecutor(PlaceShopCommand()) ?: server.logger.warning("Command `place` could not be registered")
 
 		Bukkit.getServer().pluginManager.registerEvents(ShopListeners(), this)
 		Bukkit.getServer().pluginManager.registerEvents(GrindstoneListeners(), this)
-
-		logger.info("Shop plugin loaded!")
 	}
 }

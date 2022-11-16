@@ -2,6 +2,7 @@ package fr.pickaria.shard
 
 import fr.pickaria.artefact.createArtefactReceptacle
 import fr.pickaria.artefact.getArtefactConfig
+import fr.pickaria.economy.Credit
 import fr.pickaria.shopapi.spawnVillager
 import net.kyori.adventure.text.Component
 import org.bukkit.command.Command
@@ -31,6 +32,7 @@ internal class PlaceShopCommand : CommandExecutor {
 				MerchantRecipe(item.clone().apply { amount = 1 }, Int.MAX_VALUE).apply {
 					uses = 0
 					addIngredient(Shard.item(price))
+					addIngredient(Credit.item(price * 4))
 				}
 			}
 
