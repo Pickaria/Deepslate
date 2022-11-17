@@ -29,7 +29,7 @@ abstract class CurrencyExtensions(vararg currencies: Currency) {
 	/**
 	 * The currency of the current item if any.
 	 */
-	private val ItemStack.currency: Currency?
+	val ItemStack.currency: Currency?
 		get() = if (isCurrency()) {
 			currencies[account]
 		} else {

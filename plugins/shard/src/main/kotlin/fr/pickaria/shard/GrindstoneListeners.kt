@@ -4,9 +4,7 @@ import com.destroystokyo.paper.event.inventory.PrepareResultEvent
 import fr.pickaria.artefact.getArtefactConfig
 import fr.pickaria.economy.Credit
 import fr.pickaria.economy.CurrencyExtensions
-import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder
 import net.milkbowl.vault.economy.EconomyResponse
-import org.bukkit.Particle
 import org.bukkit.entity.Player
 import org.bukkit.event.Event
 import org.bukkit.event.EventHandler
@@ -20,9 +18,9 @@ internal class GrindstoneListeners : Listener, CurrencyExtensions(Credit, Shard)
 	private fun getResult(itemStack: ItemStack?): ItemStack? = itemStack?.let {
 		if (it.amount == 1) getArtefactConfig(it) else null
 	}?.let {
-		val amount = (it.value * shopConfig.grindLoss)
+		val amount = (it.value * Config.grindLoss)
 		if (amount < 1) {
-			Credit.item((amount * 64).toInt(), shopConfig.grindCoinValue)
+			Credit.item((amount * 64).toInt(), Config.grindCoinValue)
 		} else {
 			Shard.item(amount.toInt())
 		}
@@ -51,7 +49,7 @@ internal class GrindstoneListeners : Listener, CurrencyExtensions(Credit, Shard)
 			}
 
 			result?.let {
-				event.inventory.location?.world?.playSound(shopConfig.grindPlaceSound)
+				event.inventory.location?.world?.playSound(Config.grindPlaceSound)
 				event.result = it
 			}
 		}
