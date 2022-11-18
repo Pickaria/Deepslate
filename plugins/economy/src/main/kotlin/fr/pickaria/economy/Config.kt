@@ -5,11 +5,7 @@ import net.kyori.adventure.sound.Sound
 
 
 internal object Config : ConfigProvider() {
-	val currencyNameSingular: String by this
-	val currencyNamePlural: String by this
-	val currencyDescription: String by this
-	val currencyCollectMessage: String by this
-	val currencyCollectSound: Sound by this
+	val currencies by this.sectionLoader<Currency>()
 
 	val balanceMessage: String by this
 

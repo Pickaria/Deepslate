@@ -1,5 +1,6 @@
 package fr.pickaria.shard
 
+import fr.pickaria.economy.Shard
 import org.bukkit.OfflinePlayer
 import org.bukkit.inventory.ItemStack
 

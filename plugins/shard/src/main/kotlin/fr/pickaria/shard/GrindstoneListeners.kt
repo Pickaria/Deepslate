@@ -4,6 +4,7 @@ import com.destroystokyo.paper.event.inventory.PrepareResultEvent
 import fr.pickaria.artefact.getArtefactConfig
 import fr.pickaria.economy.Credit
 import fr.pickaria.economy.CurrencyExtensions
+import fr.pickaria.economy.Shard
 import net.milkbowl.vault.economy.EconomyResponse
 import org.bukkit.entity.Player
 import org.bukkit.event.Event
