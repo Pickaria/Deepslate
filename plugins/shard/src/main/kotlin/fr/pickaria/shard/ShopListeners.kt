@@ -7,6 +7,7 @@ import org.bukkit.entity.Player
 import org.bukkit.event.Event
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
+import org.bukkit.inventory.Inventory
 import org.bukkit.inventory.ItemStack
 import org.bukkit.potion.PotionEffect
 import org.bukkit.potion.PotionEffectType
@@ -29,10 +30,22 @@ internal class ShopListeners : Listener, CurrencyExtensions(Shard, Credit, Key) 
 		return true
 	}
 
+	private fun Inventory.removeCurrencies() {
+		contents.forEach {
+			if (it?.isCurrency() == true) {
+				removeItem(it)
+			}
+		}
+	}
+
 	@EventHandler
 	fun onTradeSelected(event: PlayerSelectTradeEvent) {
 		with(event) {
 			val hasAll = player.hasAll(selectedRecipe.ingredients)
+
+			inventory.removeCurrencies()
+			result = Event.Result.DENY
+			isCancelled = true
 
 			if (hasAll) {
 				// Force set the item into the trade view
@@ -42,10 +55,6 @@ internal class ShopListeners : Listener, CurrencyExtensions(Shard, Credit, Key) 
 						player.playSound(Config.tradeSelectSound)
 					}
 				}
-			} else {
-				inventory.clear()
-				result = Event.Result.DENY
-				isCancelled = true
 			}
 		}
 	}
@@ -73,11 +82,9 @@ internal class ShopListeners : Listener, CurrencyExtensions(Shard, Credit, Key) 
 
 	@EventHandler
 	fun onChestOpened(event: PlayerOpenShopEvent) {
-		with(event) {
-			// TODO: Adjust max uses
-			player.playSound(Config.openSound)
-			player.addPotionEffect(openPotionEffect)
-		}
+		// TODO: Adjust max uses
+		event.player.playSound(Config.openSound)
+		event.player.addPotionEffect(openPotionEffect)
 	}
 
 	/**
@@ -95,12 +102,7 @@ internal class ShopListeners : Listener, CurrencyExtensions(Shard, Credit, Key) 
 	@EventHandler
 	fun onInventoryClose(event: PlayerCloseShopEvent) {
 		with(event) {
-			inventory.contents.forEach {
-				if (it?.isCurrency() == true) {
-					inventory.removeItem(it)
-				}
-			}
-
+			inventory.removeCurrencies()
 			player.removePotionEffect(openPotionEffectType)
 			player.playSound(Config.closeSound)
 		}

@@ -18,8 +18,8 @@ internal class PlaceShopCommand : CommandExecutor {
 		if (sender is Player) {
 			val villager = spawnVillager(sender.location, "Shard")
 
-			villager.profession = Villager.Profession.CLERIC
-			villager.villagerType = Villager.Type.SWAMP
+			villager.profession = Villager.Profession.SHEPHERD
+			villager.villagerType = Villager.Type.PLAINS
 
 			val merchant = villager as Merchant
 
@@ -33,7 +33,7 @@ internal class PlaceShopCommand : CommandExecutor {
 				}
 			}
 
-			villager.customName(Component.text("Bertrand"))
+			villager.customName(Component.text("George"))
 			villager.isCustomNameVisible = true
 		}
 
