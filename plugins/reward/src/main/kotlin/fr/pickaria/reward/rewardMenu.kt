@@ -22,7 +22,8 @@ internal fun rewardMenu() = menu("reward") {
 			material = reward.material
 			lore {
 				keyValues {
-					"Prix" to economy.format(reward.price)
+					"Clés" to economy.format(reward.keys.toDouble())
+					"Éclats" to economy.format(reward.shards.toDouble())
 				}
 			}
 			leftClick = Result.NONE to "/reward $key"

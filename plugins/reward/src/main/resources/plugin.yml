@@ -14,3 +14,5 @@ depend:
 commands:
   reward:
     usage: /reward [reward tier]
+  placereward:
+    usage: /placereward

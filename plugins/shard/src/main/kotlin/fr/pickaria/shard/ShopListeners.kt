@@ -11,7 +11,7 @@ import org.bukkit.inventory.ItemStack
 import org.bukkit.potion.PotionEffect
 import org.bukkit.potion.PotionEffectType
 
-internal class ShopListeners : Listener, CurrencyExtensions(Shard, Credit) {
+internal class ShopListeners : Listener, CurrencyExtensions(Shard, Credit, Key) {
 	companion object {
 		private val openPotionEffectType = PotionEffectType.BLINDNESS
 		private val openPotionEffect = PotionEffect(openPotionEffectType, Integer.MAX_VALUE, 1, true, false, false)
@@ -74,15 +74,9 @@ internal class ShopListeners : Listener, CurrencyExtensions(Shard, Credit) {
 	@EventHandler
 	fun onChestOpened(event: PlayerOpenShopEvent) {
 		with(event) {
-			if (player.balance(Shard) < 1) {
-				player.playSound(Config.noShardToTradeSound)
-				player.sendMessage(Config.noShardToTrade)
-				isCancelled = true
-			} else {
-				// TODO: Adjust max uses
-				player.playSound(Config.openSound)
-				player.addPotionEffect(openPotionEffect)
-			}
+			// TODO: Adjust max uses
+			player.playSound(Config.openSound)
+			player.addPotionEffect(openPotionEffect)
 		}
 	}
 

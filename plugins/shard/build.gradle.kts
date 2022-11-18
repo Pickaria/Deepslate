@@ -1,6 +1,5 @@
 repositories {
 	maven("https://jitpack.io")
-	maven("https://maven.quozul.dev/snapshots")
 }
 
 dependencies {

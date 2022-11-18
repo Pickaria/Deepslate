@@ -51,8 +51,9 @@ class Currency : ConfigProvider() {
 			meta.displayName(currencyDisplayName)
 
 			val line = description.map {
-				miniMessage.deserialize(it, Placeholder.unparsed("value", economy.format(value)))
-					.decoration(TextDecoration.ITALIC, TextDecoration.State.FALSE)
+				MiniMessage(it) {
+					"value" to economy.format(value)
+				}.message.decoration(TextDecoration.ITALIC, TextDecoration.State.FALSE)
 			}
 
 			meta.lore(line)

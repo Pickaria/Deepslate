@@ -9,4 +9,5 @@ dependencies {
 	compileOnly(project(":shard"))
 	compileOnly(project(":shared"))
 	compileOnly("com.github.MilkBowl:VaultAPI:1.7.1")
+	compileOnly("fr.pickaria:warden:1.0-SNAPSHOT")
 }

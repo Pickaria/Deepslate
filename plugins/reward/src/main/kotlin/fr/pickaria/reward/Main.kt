@@ -19,6 +19,7 @@ class Main : JavaPlugin() {
 		namespace = NamespacedKey(this, "reward")
 
 		getCommand("reward")?.setExecutor(RewardCommand())
+		getCommand("placereward")?.setExecutor(PlaceShopCommand())
 		server.pluginManager.registerEvents(RewardListeners(), this)
 
 		rewardMenu()

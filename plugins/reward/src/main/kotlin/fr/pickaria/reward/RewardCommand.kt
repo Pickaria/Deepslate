@@ -1,10 +1,10 @@
 package fr.pickaria.reward
 
-import fr.pickaria.economy.Credit
+import fr.pickaria.economy.Key
+import fr.pickaria.economy.Shard
 import fr.pickaria.economy.has
 import fr.pickaria.economy.withdraw
 import fr.pickaria.menu.open
-import net.kyori.adventure.text.format.TextDecoration
 import net.milkbowl.vault.economy.EconomyResponse
 import org.bukkit.command.Command
 import org.bukkit.command.CommandExecutor
@@ -12,9 +12,6 @@ import org.bukkit.command.CommandSender
 import org.bukkit.command.TabCompleter
 import org.bukkit.entity.Player
 import org.bukkit.event.Listener
-import org.bukkit.inventory.ItemFlag
-import org.bukkit.inventory.ItemStack
-import org.bukkit.persistence.PersistentDataType
 
 internal class RewardCommand : CommandExecutor, Listener, TabCompleter {
 	override fun onCommand(sender: CommandSender, command: Command, label: String, args: Array<out String>): Boolean {
@@ -38,23 +35,20 @@ internal class RewardCommand : CommandExecutor, Listener, TabCompleter {
 				1
 			}
 
-			val totalPrice = reward.price * amount
-			if (sender.has(Credit, totalPrice)) {
-				val response = sender.withdraw(Credit, totalPrice)
+			val totalKeys = (reward.keys * amount).toDouble()
+			val totalShards = (reward.shards * amount).toDouble()
 
-				if (response.type == EconomyResponse.ResponseType.SUCCESS) {
-					val item = ItemStack(reward.material, amount)
+			createReward(key, amount)?.let {
+				if (sender.has(Key, totalKeys) && sender.has(Shard, totalShards)) {
+					val keyResponse = sender.withdraw(Key, totalKeys)
+					val shardResponse = sender.withdraw(Shard, totalShards)
 
-					item.editMeta {
-						it.addItemFlags(ItemFlag.HIDE_ATTRIBUTES, ItemFlag.HIDE_ENCHANTS)
-						it.displayName(reward.name.decoration(TextDecoration.ITALIC, TextDecoration.State.FALSE))
-						it.persistentDataContainer.set(namespace, PersistentDataType.STRING, key)
+					if (keyResponse.type == EconomyResponse.ResponseType.SUCCESS && shardResponse.type == EconomyResponse.ResponseType.SUCCESS) {
+						sender.inventory.addItem(it)
 					}
-
-					sender.inventory.addItem(item)
+				} else {
+					sender.sendMessage(Config.notEnoughMoney)
 				}
-			} else {
-				sender.sendMessage(Config.notEnoughMoney)
 			}
 		}
 
