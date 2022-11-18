@@ -2,8 +2,8 @@ package fr.pickaria.reward
 
 import fr.pickaria.economy.Credit
 import fr.pickaria.economy.CurrencyExtensions
-import net.kyori.adventure.key.Key
-import net.kyori.adventure.sound.Sound
+import fr.pickaria.economy.Key
+import fr.pickaria.economy.Shard
 import net.kyori.adventure.text.Component
 import org.bukkit.Bukkit
 import org.bukkit.OfflinePlayer
@@ -19,7 +19,7 @@ import org.bukkit.persistence.PersistentDataType
 import org.bukkit.potion.PotionEffectType
 import java.util.*
 
-internal class RewardListeners: Listener, CurrencyExtensions(Credit) {
+internal class RewardListeners: Listener, CurrencyExtensions(Credit, Shard, Key) {
 	@EventHandler
 	fun onRewardOpen(event: PlayerInteractEvent) {
 		with(event) {
@@ -53,7 +53,7 @@ internal class RewardListeners: Listener, CurrencyExtensions(Credit) {
 
 					it.lootTable.fillInventory(inventory, Random(), lootContext)
 
-					player.playSound(Sound.sound(Key.key("item.bundle.insert"), Sound.Source.MASTER, 1F, 1F))
+					player.playSound(Config.rewardOpenSound)
 					player.openInventory(inventory)
 
 					isCancelled = true
@@ -89,7 +89,7 @@ internal class RewardListeners: Listener, CurrencyExtensions(Credit) {
 					val item = location.world.dropItem(location, it.value)
 					item.velocity = location.direction.multiply(0.25)
 				}
-				player.playSound(Sound.sound(Key.key("item.bundle.drop_contents"), Sound.Source.MASTER, 1F, 1F))
+				player.playSound(Config.rewardCloseSound)
 			}
 		}
 	}

@@ -44,8 +44,6 @@ internal class ShopListeners : Listener, CurrencyExtensions(Shard, Credit, Key) 
 			val hasAll = player.hasAll(selectedRecipe.ingredients)
 
 			inventory.removeCurrencies()
-			result = Event.Result.DENY
-			isCancelled = true
 
 			if (hasAll) {
 				// Force set the item into the trade view

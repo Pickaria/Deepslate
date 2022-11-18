@@ -22,3 +22,5 @@ not_enough_money: '<red>Vous n''avez pas assez d''argent pour acheter cette réc
 cant_purchase_reward: '<red>Cette récompense ne peut pas être achetée.'
 reward_description:
   - '<gray>Caisse contenant des objets aléatoires.'
+reward_close_sound: item.bundle.drop_contents
+reward_open_sound: item.bundle.insert

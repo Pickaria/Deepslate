@@ -1,6 +1,7 @@
 package fr.pickaria.reward
 
 import fr.pickaria.shared.ConfigProvider
+import net.kyori.adventure.sound.Sound
 import org.bukkit.Material
 import org.bukkit.loot.LootTable
 
@@ -18,4 +19,6 @@ internal object Config: ConfigProvider() {
 	val notEnoughMoney by miniMessageDeserializer
 	val cantPurchaseReward by miniMessageDeserializer
 	val rewardDescription: List<String> by this
+	val rewardCloseSound: Sound by this
+	val rewardOpenSound: Sound by this
 }
