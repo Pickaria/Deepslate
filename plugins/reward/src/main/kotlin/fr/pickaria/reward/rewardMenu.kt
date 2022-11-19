@@ -1,5 +1,7 @@
 package fr.pickaria.reward
 
+import fr.pickaria.economy.Key
+import fr.pickaria.economy.Shard
 import fr.pickaria.menu.Result
 import fr.pickaria.menu.closeItem
 import fr.pickaria.menu.home.addToHome
@@ -22,8 +24,8 @@ internal fun rewardMenu() = menu("reward") {
 			material = reward.material
 			lore {
 				keyValues {
-					"Clés" to economy.format(reward.keys.toDouble())
-					"Éclats" to economy.format(reward.shards.toDouble())
+					"Clés" to Key.economy.format(reward.keys.toDouble())
+					"Éclats" to Shard.economy.format(reward.shards.toDouble())
 				}
 			}
 			leftClick = Result.NONE to "/reward $key"
