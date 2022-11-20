@@ -7,7 +7,6 @@ import net.kyori.adventure.sound.Sound
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
 import net.kyori.adventure.text.format.TextDecoration
-import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder
 import net.milkbowl.vault.economy.EconomyResponse
 import org.bukkit.Material
 import org.bukkit.OfflinePlayer
@@ -65,19 +64,24 @@ class Currency : ConfigProvider() {
 		return itemStack
 	}
 
+	fun message(player: Player, amount: Double) {
+		MiniMessage(collectMessage) {
+			"amount" to economy.format(amount)
+		}.send(player)
+		player.playSound(collectSound)
+	}
+
 	fun collect(player: OfflinePlayer, itemStack: ItemStack): EconomyResponse =
 		if (itemStack.account == account) {
 			player.deposit(this, itemStack.totalValue).also {
 				itemStack.amount = 0
-
-				if (player is Player) {
-					MiniMessage(collectMessage) {
-						"amount" to economy.format(it.amount)
-					}.send(player)
-					player.playSound(collectSound)
-				}
 			}
 		} else {
-			EconomyResponse(0.0, 0.0, EconomyResponse.ResponseType.FAILURE, "Tried to deposit an item that is not a currency.")
+			EconomyResponse(
+				0.0,
+				0.0,
+				EconomyResponse.ResponseType.FAILURE,
+				"Tried to deposit an item that is not a currency."
+			)
 		}
 }

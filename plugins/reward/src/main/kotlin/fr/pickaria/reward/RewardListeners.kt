@@ -1,9 +1,7 @@
 package fr.pickaria.reward
 
-import fr.pickaria.economy.Credit
-import fr.pickaria.economy.CurrencyExtensions
-import fr.pickaria.economy.Key
-import fr.pickaria.economy.Shard
+import fr.pickaria.economy.*
+import fr.pickaria.economy.Currency
 import net.kyori.adventure.text.Component
 import org.bukkit.Bukkit
 import org.bukkit.OfflinePlayer
@@ -79,9 +77,20 @@ internal class RewardListeners: Listener, CurrencyExtensions(Credit, Shard, Key)
 	fun onRewardClose(event: InventoryCloseEvent) {
 		with(event) {
 			if (inventory.holder is RewardHolder) {
+				val deposited = mutableMapOf<Currency, Double>()
 				val contents = inventory.contents.filterNotNull()
+
 				contents.forEach {
-					(player as OfflinePlayer) deposit it
+					it.currency?.let { currency ->
+						val response = (player as OfflinePlayer) silentDeposit it
+						val previousAmount = deposited.getOrDefault(currency, 0.0)
+						deposited[currency] = previousAmount + response.amount
+					}
+				}
+
+				// Merge collect messages
+				deposited.forEach { (currency, amount) ->
+					currency.message(player as Player, amount)
 				}
 
 				player.inventory.addItem(*contents.toTypedArray()).forEach {
@@ -89,6 +98,7 @@ internal class RewardListeners: Listener, CurrencyExtensions(Credit, Shard, Key)
 					val item = location.world.dropItem(location, it.value)
 					item.velocity = location.direction.multiply(0.25)
 				}
+
 				player.playSound(Config.rewardCloseSound)
 			}
 		}

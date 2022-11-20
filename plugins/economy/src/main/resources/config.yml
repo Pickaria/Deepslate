@@ -21,11 +21,11 @@ footer: '<gray>Tapez <gold><next-page>/baltop <page></next-page></gold> pour lir
 
 currencies:
   credits:
-    name_singular: 'crédit'
-    name_plural: 'crédits'
+    name_singular: 'Crédit'
+    name_plural: 'Crédits'
     description:
       - '<gray>Pièce d''une valeur de <gold><value><gray>.'
-    collect_sound: 'block.amethyst_block.fall'
+    collect_sound: block.amethyst_block.fall
     collect_message: '<gray>Vous avez collecté <gold><amount><gray>.'
     material: GOLD_NUGGET
     account: default

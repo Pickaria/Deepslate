@@ -33,6 +33,7 @@ internal class ShopListeners : Listener, CurrencyExtensions(Shard, Credit, Key) 
 	private fun Inventory.removeCurrencies() {
 		contents.forEach {
 			if (it?.isCurrency() == true) {
+				it.amount = 0
 				removeItem(it)
 			}
 		}
@@ -43,7 +44,7 @@ internal class ShopListeners : Listener, CurrencyExtensions(Shard, Credit, Key) 
 		with(event) {
 			val hasAll = player.hasAll(selectedRecipe.ingredients)
 
-			inventory.removeCurrencies()
+			inventory.removeCurrencies() // FIXME: Prevent currencies from ending in player's inventory
 
 			if (hasAll) {
 				// Force set the item into the trade view
