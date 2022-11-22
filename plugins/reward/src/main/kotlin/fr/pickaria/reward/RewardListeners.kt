@@ -2,6 +2,7 @@ package fr.pickaria.reward
 
 import fr.pickaria.economy.*
 import fr.pickaria.economy.Currency
+import fr.pickaria.shared.give
 import net.kyori.adventure.text.Component
 import org.bukkit.Bukkit
 import org.bukkit.OfflinePlayer
@@ -93,12 +94,7 @@ internal class RewardListeners: Listener, CurrencyExtensions(Credit, Shard, Key)
 					currency.message(player as Player, amount)
 				}
 
-				player.inventory.addItem(*contents.toTypedArray()).forEach {
-					val location = player.eyeLocation
-					val item = location.world.dropItem(location, it.value)
-					item.velocity = location.direction.multiply(0.25)
-				}
-
+				player.give(*contents.toTypedArray())
 				player.playSound(Config.rewardCloseSound)
 			}
 		}

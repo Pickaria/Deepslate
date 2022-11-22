@@ -5,6 +5,7 @@ import fr.pickaria.economy.Shard
 import fr.pickaria.economy.has
 import fr.pickaria.economy.withdraw
 import fr.pickaria.menu.open
+import fr.pickaria.shared.give
 import net.milkbowl.vault.economy.EconomyResponse
 import org.bukkit.command.Command
 import org.bukkit.command.CommandExecutor
@@ -44,7 +45,7 @@ internal class RewardCommand : CommandExecutor, Listener, TabCompleter {
 					val shardResponse = sender.withdraw(Shard, totalShards)
 
 					if (keyResponse.type == EconomyResponse.ResponseType.SUCCESS && shardResponse.type == EconomyResponse.ResponseType.SUCCESS) {
-						sender.inventory.addItem(it)
+						sender.give(it)
 					}
 				} else {
 					sender.sendMessage(Config.notEnoughMoney)

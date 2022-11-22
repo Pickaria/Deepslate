@@ -24,6 +24,7 @@ class Main : JavaPlugin() {
 		getCommand("buy")?.setExecutor(CreateBuyOrderCommand())
 		getCommand("market")?.setExecutor(MarketCommand())
 		getCommand("cancel")?.setExecutor(CancelOrderCommand())
+		getCommand("fake")?.setExecutor(FakeSellCommand())
 		orderListingMenu()
 		ownOrdersMenu()
 

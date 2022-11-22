@@ -29,7 +29,7 @@ currencies:
     collect_message: '<gray>Vous avez collecté <gold><amount><gray>.'
     material: GOLD_NUGGET
     account: default
-    format: '0.00'
+    format: '###,##0.00'
   shards:
     description:
       - '<gray>Fragment ancestral issu de la'
@@ -40,7 +40,7 @@ currencies:
     name_plural: 'Éclats de Pickarite'
     material: ECHO_SHARD
     account: shards
-    format: '0'
+    format: '###,##0'
   keys:
     description:
       - '<gray>Objet permettant l''achat de récompenses'
@@ -50,4 +50,4 @@ currencies:
     name_plural: 'Clés'
     material: TRIPWIRE_HOOK
     account: keys
-    format: '0'
+    format: '###,##0'

@@ -2,6 +2,7 @@ package fr.pickaria.market
 
 import fr.pickaria.database.models.Order
 import fr.pickaria.database.models.OrderType
+import fr.pickaria.shared.give
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
 import org.bukkit.Material
@@ -76,7 +77,7 @@ internal class CreateBuyOrderCommand : CommandExecutor, TabCompleter {
 			}
 
 			// TODO: Create buy order
-			val boughtAmount = buy(sender, material, maxPrice, quantity)
+			val boughtAmount = buy(sender, material, quantity)
 			giveItems(sender, material, boughtAmount)
 		}
 

@@ -13,7 +13,11 @@ class Economy(
 	private val account: String = "default",
 	format: String = "0.00"
 ) : AbstractEconomy() {
-	private val formatter = DecimalFormat(format)
+	private val formatter = DecimalFormat(format).apply {
+		decimalFormatSymbols = decimalFormatSymbols.apply {
+			groupingSeparator = ' '
+		}
+	}
 
 	// Constants methods
 
