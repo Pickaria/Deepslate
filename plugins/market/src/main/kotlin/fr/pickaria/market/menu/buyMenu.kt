@@ -32,10 +32,10 @@ internal fun buyMenu(material: Material) = menu {
 		listOf(1 to 2, maxStackSize to 4, stocks to 6)
 	} else if (stocks > 3) {
 		listOf(1 to 2, stocks / 2 to 4, stocks to 6)
-	} else if (stocks == 1) {
-		listOf(1 to 4)
-	} else {
+	} else if (stocks > 1) {
 		listOf(1 to 2, stocks to 6)
+	} else {
+		listOf(1 to 4)
 	}
 
 	items.forEach { (amount, x) ->
