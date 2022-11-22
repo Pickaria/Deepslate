@@ -3,6 +3,7 @@ package fr.pickaria.economy
 import fr.pickaria.shared.GlowEnchantment
 import net.milkbowl.vault.economy.EconomyResponse
 import org.bukkit.OfflinePlayer
+import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 import org.bukkit.persistence.PersistentDataType
 
@@ -38,7 +39,24 @@ abstract class CurrencyExtensions(vararg currencies: Currency) {
 
 	// OfflinePlayer extensions
 
+	/**
+	 * Deposits an item into the appropriate account and sends a feedback message.
+	 */
 	infix fun OfflinePlayer.deposit(itemStack: ItemStack): EconomyResponse =
+		itemStack.currency?.let {
+			val response = it.collect(this, itemStack)
+			if (this is Player) {
+				it.message(this, response.amount)
+			}
+			response
+		} ?: EconomyResponse(
+			0.0,
+			0.0,
+			EconomyResponse.ResponseType.FAILURE,
+			"Tried to deposit an item that is not a currency."
+		)
+
+	infix fun OfflinePlayer.silentDeposit(itemStack: ItemStack): EconomyResponse =
 		itemStack.currency?.collect(this, itemStack) ?: EconomyResponse(
 			0.0,
 			0.0,

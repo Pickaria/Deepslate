@@ -1,8 +1,7 @@
-package fr.pickaria.shard
+package fr.pickaria.reward
 
-import fr.pickaria.artefact.createArtefactReceptacle
-import fr.pickaria.artefact.getArtefactConfig
 import fr.pickaria.economy.Credit
+import fr.pickaria.economy.Key
 import fr.pickaria.economy.Shard
 import fr.pickaria.shopapi.spawnVillager
 import net.kyori.adventure.text.Component
@@ -13,31 +12,28 @@ import org.bukkit.entity.Player
 import org.bukkit.entity.Villager
 import org.bukkit.inventory.Merchant
 import org.bukkit.inventory.MerchantRecipe
-import kotlin.math.floor
 
 internal class PlaceShopCommand : CommandExecutor {
 	override fun onCommand(sender: CommandSender, command: Command, label: String, args: Array<out String>?): Boolean {
 		if (sender is Player) {
 			val villager = spawnVillager(sender.location, "Shard")
 
-			villager.profession = Villager.Profession.CLERIC
-			villager.villagerType = Villager.Type.SWAMP
+			villager.profession = Villager.Profession.SHEPHERD
+			villager.villagerType = Villager.Type.PLAINS
 
 			val merchant = villager as Merchant
-			val artefacts = artefactConfig?.artefacts ?: mapOf()
 
-			merchant.recipes = artefacts.map { (_, config) ->
-				val item = createArtefactReceptacle(config)
-				val price: Int = getArtefactConfig(item)?.value ?: (floor(Math.random() * 64) + 1).toInt()
-
-				MerchantRecipe(item.clone().apply { amount = 1 }, Int.MAX_VALUE).apply {
-					uses = 0
-					addIngredient(Shard.item(price))
-					addIngredient(Credit.item(price * 4))
+			merchant.recipes = Config.rewards.filter { it.value.purchasable }.map { (key, config) ->
+				createReward(key)?.let { item ->
+					MerchantRecipe(item.clone().apply { amount = 1 }, Int.MAX_VALUE).apply {
+						uses = 0
+						addIngredient(Key.item(config.keys))
+						addIngredient(Shard.item(config.shards))
+					}
 				}
 			}
 
-			villager.customName(Component.text("Bertrand"))
+			villager.customName(Component.text("George"))
 			villager.isCustomNameVisible = true
 		}
 

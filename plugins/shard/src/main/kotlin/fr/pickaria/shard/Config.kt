@@ -16,6 +16,6 @@ object Config: ConfigProvider() {
 	val currencyNamePlural: String by this
 	val grindLoss: Double by this
 	val grindCoinValue: Double by this
-	val noShardToTrade by this.miniMessage
+	val noShardToTrade by this.miniMessageDeserializer
 	val noShardToTradeSound: Sound by this
 }

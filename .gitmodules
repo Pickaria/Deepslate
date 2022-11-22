@@ -1,0 +1,3 @@
+[submodule "server/world/datapacks"]
+	path = server/world/datapacks
+	url = git@github.com:Pickaria/Datapack.git

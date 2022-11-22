@@ -1,9 +1,3 @@
-currency_name_singular: 'crédit'
-currency_name_plural: 'crédits'
-currency_description: '<gray>Pièce d''une valeur de <gold><value><gray>.'
-currency_collect_sound: 'block.amethyst_block.fall'
-currency_collect_message: '<gray>Vous avez collecté <gold><amount><gray>.'
-
 # /money message
 balance_message: '<gray>Votre solde : <gold><balance><gray>.'
 
@@ -24,3 +18,36 @@ not_much_pages: '<red>Il n''y a pas autant de pages.'
 header: '<gold>==== Baltop (<page>/<max>) ===='
 row: '<white><position>. <gray><player>, <balance>'
 footer: '<gray>Tapez <gold><next-page>/baltop <page></next-page></gold> pour lire la page suivante.'
+
+currencies:
+  credits:
+    name_singular: 'Crédit'
+    name_plural: 'Crédits'
+    description:
+      - '<gray>Pièce d''une valeur de <gold><value><gray>.'
+    collect_sound: block.amethyst_block.fall
+    collect_message: '<gray>Vous avez collecté <gold><amount><gray>.'
+    material: GOLD_NUGGET
+    account: default
+    format: '0.00'
+  shards:
+    description:
+      - '<gray>Fragment ancestral issu de la'
+      - '<gray>création du monde de Pickaria.'
+    collect_message: '<gray>Vous avez collecté <gold><amount><gray>.'
+    collect_sound: block.amethyst_cluster.break
+    name_singular: 'Éclat de Pickarite'
+    name_plural: 'Éclats de Pickarite'
+    material: ECHO_SHARD
+    account: shards
+    format: '0'
+  keys:
+    description:
+      - '<gray>Objet permettant l''achat de récompenses'
+    collect_message: '<gray>Vous avez collecté <gold><amount><gray>.'
+    collect_sound: item.armor.equip_chain
+    name_singular: 'Clé'
+    name_plural: 'Clés'
+    material: TRIPWIRE_HOOK
+    account: keys
+    format: '0'

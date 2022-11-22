@@ -1,0 +1,30 @@
+rewards:
+  common:
+    loot_table: minecraft:chests/end_city_treasure
+    material: WHITE_SHULKER_BOX
+    name: '<white>Récompense commune'
+    keys: 1
+    shards: 0
+    description:
+      - '<gray>Conteneur de trésors de l''end.'
+  uncommon:
+    loot_table: minecraft:chests/buried_treasure
+    material: YELLOW_SHULKER_BOX
+    name: '<yellow>Récompense peu commune'
+    keys: 5
+    shards: 0
+    description:
+      - '<gray>Conteneur de trésors de l''océan.'
+  rare:
+    loot_table: minecraft:chests/bastion_treasure
+    material: CYAN_SHULKER_BOX
+    name: '<aqua>Récompense rare'
+    keys: 10
+    shards: 1
+    description:
+      - '<gray>Conteneur de trésors de bastion.'
+
+not_enough_money: '<red>Vous n''avez pas assez d''argent pour acheter cette récompense.'
+cant_purchase_reward: '<red>Cette récompense ne peut pas être achetée.'
+reward_close_sound: item.bundle.drop_contents
+reward_open_sound: item.bundle.insert

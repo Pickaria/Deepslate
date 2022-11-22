@@ -1,28 +1,32 @@
 package fr.pickaria.economy
 
+import fr.pickaria.shared.ConfigProvider
 import fr.pickaria.shared.GlowEnchantment
+import fr.pickaria.shared.MiniMessage
+import net.kyori.adventure.sound.Sound
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
 import net.kyori.adventure.text.format.TextDecoration
-import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder
 import net.milkbowl.vault.economy.EconomyResponse
 import org.bukkit.Material
 import org.bukkit.OfflinePlayer
-import org.bukkit.event.Listener
+import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 import org.bukkit.persistence.PersistentDataType
 import java.util.*
 
-abstract class Currency : Listener {
-	protected abstract val material: Material
-	protected abstract val description: List<String>
-	protected abstract val currencyNameSingular: String
-	protected abstract val currencyNamePlural: String
-	open val account: String = "default"
-	protected open val format: String = "0.00"
+class Currency : ConfigProvider() {
+	val material: Material by this
+	val description: List<String> by this
+	private val nameSingular: String by this
+	private val namePlural: String by this
+	val account: String by this
+	val format: String by this
+	private val collectMessage: String by this
+	private val collectSound: Sound by this
 
 	private val currencyDisplayName: Component by lazy {
-		Component.text(currencyNameSingular.replaceFirstChar {
+		Component.text(nameSingular.replaceFirstChar {
 			if (it.isLowerCase()) it.titlecase(
 				Locale.getDefault()
 			) else it.toString()
@@ -30,7 +34,7 @@ abstract class Currency : Listener {
 	}
 
 	val economy: Economy by lazy {
-		Economy(currencyNameSingular, currencyNamePlural, account, format)
+		Economy(nameSingular, namePlural, account, format)
 	}
 
 	/**
@@ -46,8 +50,9 @@ abstract class Currency : Listener {
 			meta.displayName(currencyDisplayName)
 
 			val line = description.map {
-				miniMessage.deserialize(it, Placeholder.unparsed("value", economy.format(value)))
-					.decoration(TextDecoration.ITALIC, TextDecoration.State.FALSE)
+				MiniMessage(it) {
+					"value" to economy.format(value)
+				}.message.decoration(TextDecoration.ITALIC, TextDecoration.State.FALSE)
 			}
 
 			meta.lore(line)
@@ -59,12 +64,24 @@ abstract class Currency : Listener {
 		return itemStack
 	}
 
-	open fun collect(player: OfflinePlayer, itemStack: ItemStack): EconomyResponse =
+	fun message(player: Player, amount: Double) {
+		MiniMessage(collectMessage) {
+			"amount" to economy.format(amount)
+		}.send(player)
+		player.playSound(collectSound)
+	}
+
+	fun collect(player: OfflinePlayer, itemStack: ItemStack): EconomyResponse =
 		if (itemStack.account == account) {
 			player.deposit(this, itemStack.totalValue).also {
 				itemStack.amount = 0
 			}
 		} else {
-			EconomyResponse(0.0, 0.0, EconomyResponse.ResponseType.FAILURE, "Tried to deposit an item that is not a currency.")
+			EconomyResponse(
+				0.0,
+				0.0,
+				EconomyResponse.ResponseType.FAILURE,
+				"Tried to deposit an item that is not a currency."
+			)
 		}
 }

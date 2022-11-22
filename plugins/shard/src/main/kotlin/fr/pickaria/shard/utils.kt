@@ -1,5 +1,6 @@
 package fr.pickaria.shard
 
+import fr.pickaria.economy.Shard
 import org.bukkit.OfflinePlayer
 import org.bukkit.inventory.ItemStack
 
@@ -7,7 +8,7 @@ import org.bukkit.inventory.ItemStack
  * Creates a new shard ItemStack.
  */
 @Deprecated("Replace with Shard.createItem(amount)", ReplaceWith("Shard.createItem(amount)"))
-fun createShardItem(amount: Int): ItemStack = Shard.item(amount)
+fun createShardItem(amount: Int = 1): ItemStack = Shard.item(amount)
 
 /**
  * Returns the amount of Shards a player has, defaults to 0.
