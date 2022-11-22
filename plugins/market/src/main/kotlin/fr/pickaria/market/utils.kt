@@ -57,6 +57,7 @@ internal fun buy(player: Player, material: Material, amount: Int): Int {
 	// Stores the data to notify sellers
 	val notifications: MutableMap<OfflinePlayer, Pair<Int, Double>> = mutableMapOf()
 
+	// FIXME: Possible item duplication
 	info.orders.forEach { (order, buyingAmount) ->
 		val price = order.price * buyingAmount
 

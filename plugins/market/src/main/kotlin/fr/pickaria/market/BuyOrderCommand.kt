@@ -2,7 +2,6 @@ package fr.pickaria.market
 
 import fr.pickaria.database.models.Order
 import fr.pickaria.database.models.OrderType
-import fr.pickaria.shared.give
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
 import org.bukkit.Material
@@ -23,7 +22,7 @@ import org.bukkit.entity.Player
  *
  * TODO: Save listing for later use.
  */
-internal class CreateBuyOrderCommand : CommandExecutor, TabCompleter {
+internal class BuyOrderCommand : CommandExecutor, TabCompleter {
 	override fun onCommand(sender: CommandSender, command: Command, label: String, args: Array<out String>): Boolean {
 		if (sender is Player) {
 			if (args.isEmpty()) {
