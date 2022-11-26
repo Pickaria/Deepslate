@@ -136,8 +136,18 @@ internal fun getPrices(material: Material): Pair<Double, Double> {
 	return max(average * Config.sellPercentage, Config.minimumPrice) to average * Config.buyPercentage
 }
 
-/**
- * Returns a pair containing the sell price and the buy price.
- */
-internal fun getPrices(average: Double): Pair<Double, Double> =
-	max(average * Config.sellPercentage, Config.minimumPrice) to average * Config.buyPercentage
+internal fun getMenuItems(material: Material, stocks: Int): List<Pair<Int, Int>> {
+	val maxStackSize = min(material.maxStackSize, stocks)
+
+	return if (maxStackSize in 3 until stocks) {
+		listOf(1 to 1, maxStackSize / 2 to 3, maxStackSize to 5, stocks to 7)
+	} else if (maxStackSize == 2 && stocks < 2) {
+		listOf(1 to 2, maxStackSize to 4, stocks to 6)
+	} else if (stocks > 3) {
+		listOf(1 to 2, stocks / 2 to 4, stocks to 6)
+	} else if (stocks > 1) {
+		listOf(1 to 2, stocks to 6)
+	} else {
+		listOf(1 to 4)
+	}
+}

@@ -4,6 +4,7 @@ import fr.pickaria.database.models.Order
 import fr.pickaria.database.models.OrderType
 import fr.pickaria.economy.Credit
 import fr.pickaria.economy.has
+import fr.pickaria.market.getMenuItems
 import fr.pickaria.market.getPrices
 import fr.pickaria.menu.Result
 import fr.pickaria.menu.closeItem
@@ -14,7 +15,6 @@ import net.kyori.adventure.text.format.NamedTextColor
 import net.kyori.adventure.text.format.TextDecoration
 import org.bukkit.Material
 import org.bukkit.OfflinePlayer
-import kotlin.math.min
 
 internal fun buyMenu(material: Material) = menu {
 	title = Component.text("Acheter ", NamedTextColor.GRAY)
@@ -24,21 +24,8 @@ internal fun buyMenu(material: Material) = menu {
 
 	val unitPrice = Credit.economy.format(Order.getPrices(material).first)
 	val stocks = Order.getSumAmount(OrderType.SELL, material)
-	val maxStackSize = min(material.maxStackSize, stocks)
 
-	val items = if (maxStackSize in 3 until stocks) {
-		listOf(1 to 1, maxStackSize / 2 to 3, maxStackSize to 5, stocks to 7)
-	} else if (maxStackSize == 2 && stocks < 2) {
-		listOf(1 to 2, maxStackSize to 4, stocks to 6)
-	} else if (stocks > 3) {
-		listOf(1 to 2, stocks / 2 to 4, stocks to 6)
-	} else if (stocks > 1) {
-		listOf(1 to 2, stocks to 6)
-	} else {
-		listOf(1 to 4)
-	}
-
-	items.forEach { (amount, x) ->
+	getMenuItems(material, stocks).forEach { (amount, x) ->
 		val info = getPrices(material, amount)
 		val player = opener as OfflinePlayer
 

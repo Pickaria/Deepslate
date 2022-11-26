@@ -1,11 +1,13 @@
 package fr.pickaria.market.menu
 
 import fr.pickaria.market.economy
+import fr.pickaria.market.getMenuItems
 import fr.pickaria.market.getPrices
 import fr.pickaria.menu.Result
 import fr.pickaria.menu.closeItem
 import fr.pickaria.menu.fill
 import fr.pickaria.menu.menu
+import fr.pickaria.shared.count
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
 import net.kyori.adventure.text.format.TextDecoration
@@ -20,8 +22,9 @@ internal fun sellMenu(material: Material) = menu {
 
 	val price = getPrices(material).second
 	val unitPrice = economy.format(price)
+	val stocks = opener.inventory.count(material)
 
-	listOf(1 to 1, 16 to 3, 32 to 5, 64 to 7).forEach { (amount, x) ->
+	getMenuItems(material, stocks).forEach { (amount, x) ->
 		val offerPrice = economy.format(price * amount)
 
 		item {
