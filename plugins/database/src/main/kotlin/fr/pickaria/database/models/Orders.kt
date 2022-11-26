@@ -5,9 +5,7 @@ import org.bukkit.Material
 import org.bukkit.OfflinePlayer
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
-import org.jetbrains.exposed.sql.transactions.TransactionManager
 import org.jetbrains.exposed.sql.transactions.transaction
-import kotlin.math.max
 
 enum class OrderType {
 	BUY,
