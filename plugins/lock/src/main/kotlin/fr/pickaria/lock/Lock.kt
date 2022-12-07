@@ -2,45 +2,43 @@ package fr.pickaria.lock
 
 import org.bukkit.Bukkit
 import org.bukkit.GameMode
-import org.bukkit.NamespacedKey
-import org.bukkit.block.Beacon
 import org.bukkit.block.Block
-import org.bukkit.block.Container
 import org.bukkit.block.Lockable
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.block.BlockBreakEvent
 import org.bukkit.event.block.BlockDamageEvent
-import org.bukkit.persistence.PersistentDataContainer
-import org.bukkit.persistence.PersistentDataType
 import java.util.*
 
 /**
- * ###------- WORK IN PROGRESS
+ * #####----- WORK IN PROGRESS
  *
  * 'Lock' is made for Lockable containers.
  *   - A locked container have an owner.
  *   - The owner can have trusted players on its container.
  *   - Only the owner can break the protection.
  *   - Trusted members can access the container, but not break the protection.
+ *
+ *   + checking UUIDs instead of nicknames is safer since nicknames can be changed at any time.
  */
-class Lock(plugin: Main): Listener {
-    private val namespace = NamespacedKey(plugin, "lock")
-
+class Lock : Listener {
     /**
      * Called when a player tries to punch a block.
      */
-    @EventHandler(ignoreCancelled = true)
+    @EventHandler
     fun onBlockDamage(event: BlockDamageEvent) {
         with(event) {
             if (!player.isSneaking) return
-            when (block.state) {
-                is Lockable -> {
-                    val container = block.state as Lockable
-                    player.sendMessage("key: ${container.lock}")
-                    if (!container.isLocked) lock(container, player)
+            val bState = block.state // capture once
+            if (bState is Lockable) {
+                val bLockable = (bState as Lockable)
+                if (!bLockable.isLocked) {
+                    lock(block, player)
+                    player.sendMessage("Ce ${block.type} vous appartient désormais.")
                 }
+                else
+                    player.sendMessage("Ce ${block.type} appartient à ${Bukkit.getPlayer(UUID.fromString(bLockable.lock))?.name}.")
             }
         }
     }
@@ -50,28 +48,22 @@ class Lock(plugin: Main): Listener {
      */
     @EventHandler(ignoreCancelled = true)
     fun onBlockBreak(event: BlockBreakEvent) {
-        //TODO: control thieves and bypasses (one-click break)
-
+        //TODO: control thieves and bypasses (one-click break?)
         with(event) {
-            if (player.gameMode == GameMode.CREATIVE) {
-                // admin thing, properly unlocks
-                unlock(block.state as Lockable)
-                return
-            }
-
-            when (block.state) {
-                is Lockable -> {
-                    val container = (block.state as Lockable)
-                    if (container.isLocked) {
-                        if (!isOwner(container, player)) {
-                            player.sendMessage("Ce bloc est verrouillé.")
-                            isCancelled = true
-                        }
-                        else unlock(container)
+            val bState = block.state // capture once
+            if (bState is Lockable) {
+                if ((bState as Lockable).isLocked) {
+                    if (player.gameMode == GameMode.CREATIVE || isOwner(block, player)) {
+                        player.sendMessage("Ce bloc était verrouillé.")
+                        unlock(block)
+                        return
+                    }
+                    else {
+                        player.sendMessage("Vous ne pouvez pas faire ça. (propriété de ${Bukkit.getPlayer(UUID.fromString((bState as Lockable).lock))?.name}).")
+                        isCancelled = true
                     }
                 }
             }
-            player.sendMessage("Successfully unlocked.")
         }
     }
 
@@ -80,64 +72,61 @@ class Lock(plugin: Main): Listener {
      * @param container, the Container to lock
      * @param player, the owner
      */
-    fun lock(container: Lockable, player: Player) {
-        if (container is Beacon)
-                (container as PersistentDataContainer).set(namespace, PersistentDataType.STRING, player.uniqueId.toString())
-        else
-                (container as Container).persistentDataContainer.set(namespace, PersistentDataType.STRING, player.uniqueId.toString())
-        container.setLock(player.uniqueId.toString())
-        player.sendMessage("Successfully locked.")
-        player.sendMessage("with key: ${container.lock}")
+    private fun lock(container: Block, player: Player) {
+        val bState = container.state // capture once
+        (bState as Lockable).setLock(player.uniqueId.toString())
+        bState.update()
     }
 
     /**
-     * Unlocks a container and erases propriety.
+     * Unlocks a container by erasing its property.
      * @param container, the Container to unlock
      */
-    private fun unlock(container: Lockable) {
-        (container as Container).persistentDataContainer.remove(namespace)
-        container.setLock("")
+    private fun unlock(container: Block) {
+        val bState = container.state // capture once
+        (bState as Lockable).setLock("")
+        bState.update()
     }
 
     /**
-     * Checks if a player owns a container.
-     * @param container, the Container
+     * Checks if a player owns a locked container.
+     * @param container, the locked container
      * @param player, the potential owner
      * @return true if the player owns the container, false otherwise.
      */
-    private fun isOwner(container: Lockable, player: Player): Boolean {
-        val uuids = (container as Container).persistentDataContainer.get(namespace, PersistentDataType.STRING) ?: return false
-        return (UUID.fromString(uuids.split(",")[0]) == player.uniqueId)
+    private fun isOwner(container: Block, player: Player): Boolean {
+        val uuids: List<Player> = (container.state as Lockable).lock.split(",").mapNotNull { Bukkit.getPlayer(UUID.fromString(it)) }
+        return (uuids[0].uniqueId == player.uniqueId)
     }
+
+
+    /*
+    ******************** FUTURE FEATURES BELOW ********************.
+    */
 
     /**
      * Allows another player to interact with a locked container.
-     * @param container, the locked Container
+     * @param container, the locked container
      * @param player, the player to trust
      */
     private fun addNeighbor(container: Block, player: Player) {
-        val uuids: List<Player> = (container as Container).persistentDataContainer.get(namespace, PersistentDataType.STRING)?.let {
-                uniqueIds -> uniqueIds.split(",").mapNotNull { Bukkit.getPlayer(UUID.fromString(it)) }
-        } ?: listOf()
-        val uuidsStr = uuids.joinToString(",")
-        (container.state as Container).persistentDataContainer.set(namespace, PersistentDataType.STRING, uuidsStr)
+        val bState = container.state
+        val uuids: List<Player> = (bState as Lockable).lock.split(",").mapNotNull { Bukkit.getPlayer(UUID.fromString(it)) } + player
+        (bState as Lockable).setLock(uuids.joinToString(","))
         uuids[0].sendMessage("${player.name} est devenu un membre de confiance pour ce bloc.")
-        player.sendMessage("Vous êtes devenu un membre de confiance pour ${uuids[0]}.")
+        player.sendMessage("${uuids[0].name} vous donne un accès libre: ${container.type}, X=${container.x}, Y=${container.y}, Z=${container.z}.")
     }
 
     /**
-     * Forbids a trusted player to interact with a locked container.
-     * @param container, the Container
+     * Withdraws interaction with a locked container to a player already trusted.
+     * @param container, the locked container
      * @param player, the player to withdraw trust
      */
     private fun removeNeighbor(container: Block, player: Player) {
-        val uuids: List<Player> = (container as Container).persistentDataContainer.get(namespace, PersistentDataType.STRING)?.let {
-                uniqueIds -> uniqueIds.split(",").mapNotNull { Bukkit.getPlayer(UUID.fromString(it)) }
-        } ?: listOf()
-        uuids.minus(player)
-        val uuidsStr = uuids.joinToString(",")
-        (container.state as Container).persistentDataContainer.set(namespace, PersistentDataType.STRING, uuidsStr)
+        val bState = container.state
+        val uuids: List<Player> = (bState as Lockable).lock.split(",").mapNotNull { Bukkit.getPlayer(UUID.fromString(it)) } - player
+        (bState as Lockable).setLock(uuids.joinToString(","))
         uuids[0].sendMessage("${player.name} n'est plus un membre de confiance pour ce bloc.")
-        player.sendMessage("Vous n'êtes plus un membre de confiance pour ${uuids[0]}.")
+        player.sendMessage("${uuids[0].name} vous retire un accès libre: ${container.type}, X=${container.x}, Y=${container.y}, Z=${container.z}.")
     }
 }

@@ -6,7 +6,7 @@ class Main : JavaPlugin() {
     override fun onEnable() {
         super.onEnable()
 
-        server.pluginManager.registerEvents(Lock(this), this)
+        server.pluginManager.registerEvents(Lock(), this)
 
         logger.info("Lock plugin loaded!")
     }
