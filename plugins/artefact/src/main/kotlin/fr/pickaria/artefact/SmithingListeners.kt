@@ -1,6 +1,7 @@
 package fr.pickaria.artefact
 
 import com.destroystokyo.paper.event.inventory.PrepareResultEvent
+import fr.pickaria.reforge.getAttributeTitle
 import fr.pickaria.shared.GlowEnchantment
 import net.kyori.adventure.key.Key
 import net.kyori.adventure.sound.Sound
@@ -27,7 +28,8 @@ internal class SmithingListeners : Listener {
 
 						result.itemMeta = result.itemMeta.apply {
 							addEnchant(GlowEnchantment.instance, 1, true)
-							lore(inventory.inputMineral!!.lore())
+							val newLore = listOf(artefact.label, getAttributeTitle(attributeModifiers?.size() ?: 0))
+							lore(newLore)
 							persistentDataContainer.set(artefactNamespace, PersistentDataType.STRING, artefact.key.name)
 						}
 

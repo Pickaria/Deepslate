@@ -1,0 +1,11 @@
+name: PickariaReforge
+version: 1.0
+api-version: 1.19
+main: fr.pickaria.reforge.Main
+author: Quozul
+depend:
+  - PickariaShared
+
+commands:
+  reforge:
+    usage: /reforge
