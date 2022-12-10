@@ -7,25 +7,21 @@ import fr.pickaria.shared.GlowEnchantment
 import fr.pickaria.shared.MiniMessage
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.Style
-import net.kyori.adventure.text.format.TextColor
 import net.kyori.adventure.text.format.TextDecoration
-import org.bukkit.Bukkit
 import org.bukkit.Material
+import org.bukkit.attribute.AttributeModifier
 import org.bukkit.inventory.ItemStack
 import org.bukkit.persistence.PersistentDataType
+import java.util.*
 
 /**
  * Returns the artefact of the item if any.
  */
 val ItemStack.artefact
-	get(): Artefact? =
-		itemMeta?.persistentDataContainer?.get(artefactNamespace, PersistentDataType.STRING)?.let {
-			try {
-				Config.artefacts[it]
-			} catch (_: IllegalArgumentException) {
-				null
-			}
-		}
+	get(): Artefact? = Config.lazyArtefacts["flame_cosmetics"]
+		/*itemMeta?.persistentDataContainer?.get(artefactNamespace, PersistentDataType.STRING)?.let {
+			Config.artefacts[it]
+		}*/
 
 /**
  * Returns the artefact configuration of the item if any.

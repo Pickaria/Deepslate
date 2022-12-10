@@ -17,10 +17,10 @@ import org.bukkit.inventory.ItemStack
 
 internal class ArtefactListeners : Listener {
 	// TODO: Check that artefact is in the correct slot, ie. an artefact on boots held in hand should not have any effect
-	private val stealthArtefact = Config.artefacts["stealth"]!!
-	private val iceThornsArtefact = Config.artefacts["ice_thorns"]!!
-	private val luckyArtefact = Config.artefacts["lucky"]!!
-	private val flameCosmeticsArtefact = Config.artefacts["flame_cosmetics"]!!
+	private val stealthArtefact = Config.lazyArtefacts["stealth"]!!
+	private val iceThornsArtefact = Config.lazyArtefacts["ice_thorns"]!!
+	private val luckyArtefact = Config.lazyArtefacts["lucky"]!!
+	private val flameCosmeticsArtefact = Config.lazyArtefacts["flame_cosmetics"]!!
 
 	@EventHandler
 	fun onEntityTarget(event: EntityTargetEvent) {
@@ -66,19 +66,8 @@ internal class ArtefactListeners : Listener {
 	@EventHandler
 	fun onPlayerMove(event: PlayerMoveEvent) {
 		with(event) {
-			player.getWornArtefacts().forEach { (slot, _) ->
-				val loc = when (slot) {
-					EquipmentSlot.HAND -> player.eyeLocation
-					EquipmentSlot.OFF_HAND -> player.eyeLocation
-					EquipmentSlot.FEET -> player.location
-					EquipmentSlot.LEGS -> player.location.clone().add(0.0, 0.5, 0.0)
-					EquipmentSlot.CHEST -> player.location.clone().add(0.0, 1.0, 0.0)
-					EquipmentSlot.HEAD -> player.eyeLocation
-				}
-
-				if (player.isWearingArtefact(flameCosmeticsArtefact)) {
-					event.player.world.spawnParticle(Particle.FLAME, loc, 2, 0.1, 0.1, 0.1, 0.01)
-				}
+			if (player.isWearingArtefact(flameCosmeticsArtefact)) {
+				player.world.spawnParticle(Particle.FLAME, player.location, 2, 0.1, 0.1, 0.1, 0.01)
 			}
 		}
 	}

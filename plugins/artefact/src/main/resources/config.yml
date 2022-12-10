@@ -6,6 +6,9 @@ artefacts:
     description:
       - '<gray>Fait apparaitre des flammes'
       - '<gray>lorsque son porteur se déplace.'
+      - ''
+      - '<gray>Peut s''appliquer sur :'
+      - '<dark_gray>Bottes'
     # Possible values: ARMOR, ARMOR_FEET, ARMOR_LEGS, ARMOR_TORSO, ARMOR_HEAD, WEAPON, TOOL
     #                  BOW, FISHING_ROD, BREAKABLE, WEARABLE, TRIDENT, CROSSBOW, VANISHABLE
     target: ARMOR_FEET
@@ -19,6 +22,9 @@ artefacts:
     description:
       - '<gray>Empêche le porteur de se faire'
       - '<gray>repérer par les monstres.'
+      - ''
+      - '<gray>Peut s''appliquer sur :'
+      - '<dark_gray>Armures'
     target: ARMOR
     rarity: RARE
     value: 10
@@ -26,8 +32,11 @@ artefacts:
   ice_thorns:
     label: '<aqua>Épines glacées'
     description:
-      - '<gray>Gèle les attaquants.'
-    target: ARMOR
+      - '<gray>Gèle les ennemis.'
+      - ''
+      - '<gray>Peut s''appliquer sur :'
+      - '<dark_gray>Armes'
+    target: WEAPON
     rarity: UNCOMMON
     value: 5
 
@@ -36,20 +45,34 @@ artefacts:
     description:
       - '<gray>A faible chance de faire apparaitre'
       - '<gray>un minerai en plus à chaque bloc cassé.'
+      - ''
+      - '<gray>Peut s''appliquer sur :'
+      - '<dark_gray>Outils'
     target: TOOL
     rarity: EPIC
     value: 15
 
+minimum_attribute: -0.05
+maximum_attribute: 0.1
+
 rarities:
   # For any item
   broken:
-    name: 'Endommagé'
-    color: '<green><name>'
+    name: 'Détruit'
+    color: '<dark_green><name>'
     attributes: -100.0
+  damaged:
+    name: 'Endommagé'
+    color: '<dark_aqua><name>'
+    attributes: -10.0
   rusted:
     name: 'Rouillé'
-    color: '<green><name>'
+    color: '<dark_gray><name>'
     attributes: -5.0
+  used:
+    name: 'Usé'
+    color: '<aqua><name>'
+    attributes: -2.5
   common:
     name: 'Commun'
     color: '<grey><name>'
@@ -58,20 +81,20 @@ rarities:
   uncommon:
     name: 'Peu commun'
     color: '<yellow><name>'
-    attributes: 1.0
+    attributes: 0.5
   rare:
     name: 'Rare'
     color: '<blue><name>'
-    attributes: 2.0
+    attributes: 1.75
   epic:
     name: 'Épique'
-    color: '<purple><name>'
+    color: '<dark_purple><name>'
     attributes: 3.0
   legendary:
     name: 'Légendaire'
     color: '<rainbow><name>'
-    attributes: 4.0
+    attributes: 4.75
   mythic:
     name: 'Mythique'
     color: '<red><name>'
-    attributes: 5.0
+    attributes: 6.0

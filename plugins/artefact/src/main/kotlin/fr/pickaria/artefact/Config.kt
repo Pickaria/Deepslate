@@ -1,6 +1,5 @@
 package fr.pickaria.artefact
 
-import fr.pickaria.artefact.Config
 import fr.pickaria.artefactNamespace
 import fr.pickaria.receptacleNamespace
 import fr.pickaria.shared.ConfigProvider
@@ -62,7 +61,10 @@ class Rarity : ConfigProvider() {
 
 object Config : ConfigProvider() {
 	val artefactReceptacleName: String by this
-	val artefacts by sectionLoader<Artefact>()
+	private val artefacts by sectionLoader<Artefact>()
+	val lazyArtefacts by lazy {
+		artefacts
+	}
 	private val rarities by sectionLoader<Rarity>()
 	val minimumAttribute: Double by this
 	val maximumAttribute: Double by this

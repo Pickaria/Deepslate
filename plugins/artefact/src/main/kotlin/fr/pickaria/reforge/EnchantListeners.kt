@@ -13,6 +13,7 @@ import org.bukkit.event.Listener
 import org.bukkit.event.enchantment.EnchantItemEvent
 import org.bukkit.event.enchantment.PrepareItemEnchantEvent
 import org.bukkit.inventory.EnchantingInventory
+import org.bukkit.inventory.EquipmentSlot
 import java.util.*
 import kotlin.random.Random
 
@@ -44,13 +45,28 @@ class EnchantListeners: Listener {
 					val power = whichButton()
 
 					item.editMeta { meta ->
+						// Clear all previous attributes
 						meta.removeAttributeModifier(slot)
 
+						// Re-add default attributes
+						item.type.getDefaultAttributeModifiers(slot).forEach { attribute, modifier ->
+							val newModifier = AttributeModifier(
+								UUID.randomUUID(),
+								"default",
+								modifier.amount,
+								modifier.operation,
+								modifier.slot
+							)
+
+							meta.addAttributeModifier(attribute, newModifier)
+						}
+
+						// Add random attributes
 						AUTHORIZED_ATTRIBUTES.shuffled().slice(0..power).forEach { attribute ->
 							val amount = Random.nextDouble(Config.minimumAttribute, Config.maximumAttribute)
 							val modifier = AttributeModifier(
 								UUID.randomUUID(),
-								attribute.name,
+								"custom",
 								amount,
 								AttributeModifier.Operation.ADD_SCALAR,
 								slot

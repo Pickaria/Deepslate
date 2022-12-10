@@ -22,7 +22,7 @@ internal class PlaceShopCommand : CommandExecutor {
 			villager.villagerType = Villager.Type.SWAMP
 
 			val merchant = villager as Merchant
-			val artefacts = ArtefactConfig.artefacts
+			val artefacts = ArtefactConfig.lazyArtefacts
 
 			merchant.recipes = artefacts.map { (_, artefact) ->
 				val item = artefact.createReceptacle()
