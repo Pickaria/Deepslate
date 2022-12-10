@@ -64,6 +64,9 @@ object Config : ConfigProvider() {
 	val artefactReceptacleName: String by this
 	val artefacts by sectionLoader<Artefact>()
 	private val rarities by sectionLoader<Rarity>()
+	val minimumAttribute: Double by this
+	val maximumAttribute: Double by this
+
 	val lowestRarity by lazy {
 		rarities.values.minByOrNull { it.attributes } ?: throw RuntimeException("Could not get default rarity.")
 	}

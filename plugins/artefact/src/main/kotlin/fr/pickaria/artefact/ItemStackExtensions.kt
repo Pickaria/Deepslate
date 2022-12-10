@@ -7,7 +7,9 @@ import fr.pickaria.shared.GlowEnchantment
 import fr.pickaria.shared.MiniMessage
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.Style
+import net.kyori.adventure.text.format.TextColor
 import net.kyori.adventure.text.format.TextDecoration
+import org.bukkit.Bukkit
 import org.bukkit.Material
 import org.bukkit.inventory.ItemStack
 import org.bukkit.persistence.PersistentDataType
@@ -76,17 +78,27 @@ fun ItemStack.updateRarity(): ItemStack {
 	val rarity = artefactRarity
 
 	editMeta {
-		val displayName: Component = it.displayName() ?: Component.translatable(type.translationKey())
+		val displayName: Component = it.displayName()?.let { displayName ->
+			val newChildren = displayName.children().map { child ->
+				child.style(Style.empty())
+			}
+			displayName.compact().children(newChildren).style(Style.empty())
+		} ?: Component.translatable(type.translationKey())
 
 		val newDisplayName = MiniMessage(rarity.color) {
-			"name" to displayName.style(Style.empty()).decoration(TextDecoration.ITALIC, TextDecoration.State.FALSE).decorate(TextDecoration.BOLD)
+			"name" to displayName
+				.decoration(TextDecoration.ITALIC, TextDecoration.State.FALSE)
+				.decorate(TextDecoration.BOLD)
 		}.message
 
 		it.displayName(newDisplayName)
 
 		val newLore: List<Component> = listOfNotNull(
 			Component.empty(),
-			MiniMessage(rarity.color) { "name" to rarity.name }.message.decoration(TextDecoration.ITALIC, TextDecoration.State.FALSE),
+			MiniMessage(rarity.color) { "name" to rarity.name }.message.decoration(
+				TextDecoration.ITALIC,
+				TextDecoration.State.FALSE
+			),
 			artefact?.label?.decoration(TextDecoration.ITALIC, TextDecoration.State.FALSE)
 		)
 
@@ -99,17 +111,21 @@ fun ItemStack.updateRarity(): ItemStack {
 /**
  * Returns true if the ItemStack is the item that can change stats in enchanting table.
  */
-fun ItemStack.isAttributeItem() = type == Material.LAPIS_LAZULI && itemMeta.persistentDataContainer.has(reforgeNamespace)
+fun ItemStack.isAttributeItem() =
+	type == Material.LAPIS_LAZULI && itemMeta.persistentDataContainer.has(reforgeNamespace)
 
 /**
  * Sums the amount of all attribute modifiers.
  */
 fun ItemStack.getRarityLevel(): Double {
-	var level = 0.0
+	val amount = itemMeta.attributeModifiers?.size()?.toDouble() ?: 0.0
+	var attributeLevel = 0.0
 
 	itemMeta.attributeModifiers?.forEach { _, modifier ->
-		level += modifier.amount
+		attributeLevel += modifier.amount * 10
 	}
 
-	return level * 100
+	val artefactLevel = if (isArtefact()) amount else 0.0
+
+	return attributeLevel + artefactLevel
 }

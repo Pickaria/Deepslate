@@ -1,5 +1,6 @@
 package fr.pickaria.reforge
 
+import fr.pickaria.artefact.Config
 import fr.pickaria.artefact.isAttributeItem
 import fr.pickaria.artefact.updateRarity
 import fr.pickaria.shared.GlowEnchantment
@@ -46,7 +47,7 @@ class EnchantListeners: Listener {
 						meta.removeAttributeModifier(slot)
 
 						AUTHORIZED_ATTRIBUTES.shuffled().slice(0..power).forEach { attribute ->
-							val amount = Random.nextDouble(-0.1, 0.1)
+							val amount = Random.nextDouble(Config.minimumAttribute, Config.maximumAttribute)
 							val modifier = AttributeModifier(
 								UUID.randomUUID(),
 								attribute.name,
