@@ -8,4 +8,5 @@ dependencies {
 	compileOnly("org.jetbrains.exposed:exposed-jdbc:$exposedVersion")
 	compileOnly("org.jetbrains.exposed:exposed-java-time:$exposedVersion")
 	compileOnly("com.h2database:h2:2.1.214")
+
 }

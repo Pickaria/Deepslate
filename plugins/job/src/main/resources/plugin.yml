@@ -8,8 +8,7 @@ depend:
   - PickariaDatabase
   - PickariaEconomy
   - PickariaLib
-  - PickariaMenu
-  - PickariaShared
+  - Pickaria
   - Vault
 
 softdepend:

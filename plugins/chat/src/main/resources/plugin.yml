@@ -5,7 +5,6 @@ main: fr.pickaria.chat.Main
 author: Quozul
 depend:
   - PickariaLib
-  - PickariaShared
 
 softdepend:
   - Vault

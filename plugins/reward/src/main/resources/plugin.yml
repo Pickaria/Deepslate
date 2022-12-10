@@ -6,9 +6,8 @@ author: Quozul
 depend:
   - PickariaEconomy
   - PickariaLib
-  - PickariaMenu
+  - Pickaria
   - PickariaShard
-  - PickariaShared
   - Vault
 
 commands:

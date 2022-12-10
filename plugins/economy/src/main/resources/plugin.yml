@@ -6,7 +6,6 @@ author: Quozul
 depend:
   - PickariaDatabase
   - PickariaLib
-  - PickariaShared
   - Vault
 
 commands:

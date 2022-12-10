@@ -1,15 +1,14 @@
-package fr.pickaria.menu
+package fr.pickaria.deepslate
 
-import fr.pickaria.menu.home.foodMenu
-import fr.pickaria.menu.home.homeMenu
+import fr.pickaria.DEFAULT_MENU
+import fr.pickaria.deepslate.home.foodMenu
+import fr.pickaria.deepslate.home.homeMenu
+import fr.pickaria.menu.unregister
 import org.bukkit.plugin.java.JavaPlugin
 
 class Main : JavaPlugin() {
 	override fun onEnable() {
 		super.onEnable()
-
-		getCommand("menu")?.setExecutor(Command())
-		server.pluginManager.registerEvents(Listeners(), this)
 
 		homeMenu()
 		foodMenu()

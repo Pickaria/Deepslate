@@ -5,7 +5,7 @@ import fr.pickaria.database.models.OrderType
 import fr.pickaria.market.economy
 import fr.pickaria.menu.Result
 import fr.pickaria.menu.closeItem
-import fr.pickaria.menu.home.addToHome
+import fr.pickaria.deepslate.home.addToHome
 import fr.pickaria.menu.menu
 import fr.pickaria.menu.nextPage
 import fr.pickaria.menu.previousPage
@@ -14,8 +14,6 @@ import org.bukkit.Material
 
 internal fun ownOrdersMenu() = menu("orders") {
 	title = Component.text("Mes ordres")
-
-	var x = 0
 
 	val count = Order.count(OrderType.SELL, opener)
 	val pageSize = size - 9

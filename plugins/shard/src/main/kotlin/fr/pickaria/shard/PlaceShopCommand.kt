@@ -4,7 +4,7 @@ import fr.pickaria.artefact.createArtefactReceptacle
 import fr.pickaria.artefact.getArtefactConfig
 import fr.pickaria.economy.Credit
 import fr.pickaria.economy.Shard
-import fr.pickaria.shopapi.spawnVillager
+import fr.pickaria.spawner.spawnVillager
 import net.kyori.adventure.text.Component
 import org.bukkit.command.Command
 import org.bukkit.command.CommandExecutor

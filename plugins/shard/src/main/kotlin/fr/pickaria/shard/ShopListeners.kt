@@ -1,7 +1,7 @@
 package fr.pickaria.shard
 
 import fr.pickaria.economy.*
-import fr.pickaria.shopapi.event.*
+import fr.pickaria.spawner.event.*
 import org.bukkit.Particle
 import org.bukkit.entity.Player
 import org.bukkit.event.Event
