@@ -8,5 +8,4 @@ dependencies {
 	compileOnly(project(":deepslate"))
 	compileOnly(project(":shard"))
 	compileOnly("com.github.MilkBowl:VaultAPI:1.7.1")
-	compileOnly("fr.pickaria:warden:1.0-SNAPSHOT")
 }
