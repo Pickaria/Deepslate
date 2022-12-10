@@ -1,7 +1,7 @@
 package fr.pickaria.shard
 
 import com.destroystokyo.paper.event.inventory.PrepareResultEvent
-import fr.pickaria.artefact.getArtefactConfig
+import fr.pickaria.artefact.artefact
 import fr.pickaria.economy.Credit
 import fr.pickaria.economy.CurrencyExtensions
 import fr.pickaria.economy.Shard
@@ -17,7 +17,7 @@ import org.bukkit.inventory.ItemStack
 
 internal class GrindstoneListeners : Listener, CurrencyExtensions(Credit, Shard) {
 	private fun getResult(itemStack: ItemStack?): ItemStack? = itemStack?.let {
-		if (it.amount == 1) getArtefactConfig(it) else null
+		if (it.amount == 1) it.artefact else null
 	}?.let {
 		val amount = (it.value * Config.grindLoss)
 		if (amount < 1) {

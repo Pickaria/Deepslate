@@ -14,13 +14,18 @@ import org.bukkit.event.player.PlayerMoveEvent
 import org.bukkit.inventory.EquipmentSlot
 import org.bukkit.inventory.ItemStack
 
-internal class ArtefactListeners: Listener {
+
+internal class ArtefactListeners : Listener {
 	// TODO: Check that artefact is in the correct slot, ie. an artefact on boots held in hand should not have any effect
+	private val stealthArtefact = Config.artefacts["stealth"]!!
+	private val iceThornsArtefact = Config.artefacts["ice_thorns"]!!
+	private val luckyArtefact = Config.artefacts["lucky"]!!
+	private val flameCosmeticsArtefact = Config.artefacts["flame_cosmetics"]!!
 
 	@EventHandler
 	fun onEntityTarget(event: EntityTargetEvent) {
 		event.target?.let {
-			if (it is Player && isWearingArtefact(it, Artefact.STEALTH)) {
+			if (it is Player && it.isWearingArtefact(stealthArtefact)) {
 				event.isCancelled = true
 			}
 		}
@@ -29,7 +34,7 @@ internal class ArtefactListeners: Listener {
 	@EventHandler
 	fun onEntityDamageByEntity(event: EntityDamageByEntityEvent) {
 		event.entity.let { player ->
-			if (player is Player && isWearingArtefact(player, Artefact.ICE_THORNS)) {
+			if (player is Player && player.isWearingArtefact(iceThornsArtefact)) {
 				val attacker: Entity? = if (event.damager is Projectile) {
 					val shooter = (event.damager as Projectile).shooter
 					if (shooter is Entity) {
@@ -51,27 +56,29 @@ internal class ArtefactListeners: Listener {
 
 	@EventHandler
 	fun onBlockBreak(event: BlockBreakEvent) {
-		if (isWearingArtefact(event.player, Artefact.LUCKY) && Math.random() < 0.1) {
-			event.block.world.dropItemNaturally(event.block.location, ItemStack(Material.DIAMOND, 1))
+		with(event) {
+			if (player.isWearingArtefact(luckyArtefact) && Math.random() < 0.1) {
+				block.world.dropItemNaturally(event.block.location, ItemStack(Material.DIAMOND, 1))
+			}
 		}
 	}
 
 	@EventHandler
 	fun onPlayerMove(event: PlayerMoveEvent) {
-		val wornArtefacts = getWornArtefacts(event.player)
+		with(event) {
+			player.getWornArtefacts().forEach { (slot, _) ->
+				val loc = when (slot) {
+					EquipmentSlot.HAND -> player.eyeLocation
+					EquipmentSlot.OFF_HAND -> player.eyeLocation
+					EquipmentSlot.FEET -> player.location
+					EquipmentSlot.LEGS -> player.location.clone().add(0.0, 0.5, 0.0)
+					EquipmentSlot.CHEST -> player.location.clone().add(0.0, 1.0, 0.0)
+					EquipmentSlot.HEAD -> player.eyeLocation
+				}
 
-		wornArtefacts.forEach { (slot, _) ->
-			val loc = when (slot) {
-				EquipmentSlot.HAND -> event.player.eyeLocation
-				EquipmentSlot.OFF_HAND -> event.player.eyeLocation
-				EquipmentSlot.FEET -> event.player.location
-				EquipmentSlot.LEGS -> event.player.location.clone().add(0.0, 0.5, 0.0)
-				EquipmentSlot.CHEST -> event.player.location.clone().add(0.0, 1.0, 0.0)
-				EquipmentSlot.HEAD -> event.player.eyeLocation
-			}
-
-			if (isWearingArtefact(event.player, Artefact.FLAME_COSMETICS)) {
-				event.player.world.spawnParticle(Particle.FLAME, loc, 2, 0.1, 0.1, 0.1, 0.01)
+				if (player.isWearingArtefact(flameCosmeticsArtefact)) {
+					event.player.world.spawnParticle(Particle.FLAME, loc, 2, 0.1, 0.1, 0.1, 0.01)
+				}
 			}
 		}
 	}

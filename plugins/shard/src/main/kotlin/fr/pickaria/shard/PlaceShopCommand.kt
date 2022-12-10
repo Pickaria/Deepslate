@@ -1,7 +1,5 @@
 package fr.pickaria.shard
 
-import fr.pickaria.artefact.createArtefactReceptacle
-import fr.pickaria.artefact.getArtefactConfig
 import fr.pickaria.economy.Credit
 import fr.pickaria.economy.Shard
 import fr.pickaria.spawner.spawnVillager
@@ -13,7 +11,7 @@ import org.bukkit.entity.Player
 import org.bukkit.entity.Villager
 import org.bukkit.inventory.Merchant
 import org.bukkit.inventory.MerchantRecipe
-import kotlin.math.floor
+import fr.pickaria.artefact.Config as ArtefactConfig
 
 internal class PlaceShopCommand : CommandExecutor {
 	override fun onCommand(sender: CommandSender, command: Command, label: String, args: Array<out String>?): Boolean {
@@ -24,11 +22,11 @@ internal class PlaceShopCommand : CommandExecutor {
 			villager.villagerType = Villager.Type.SWAMP
 
 			val merchant = villager as Merchant
-			val artefacts = artefactConfig?.artefacts ?: mapOf()
+			val artefacts = ArtefactConfig.artefacts
 
-			merchant.recipes = artefacts.map { (_, config) ->
-				val item = createArtefactReceptacle(config)
-				val price: Int = getArtefactConfig(item)?.value ?: (floor(Math.random() * 64) + 1).toInt()
+			merchant.recipes = artefacts.map { (_, artefact) ->
+				val item = artefact.createReceptacle()
+				val price: Int = artefact.value
 
 				MerchantRecipe(item.clone().apply { amount = 1 }, Int.MAX_VALUE).apply {
 					uses = 0

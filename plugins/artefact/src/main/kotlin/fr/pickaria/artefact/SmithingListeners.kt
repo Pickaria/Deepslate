@@ -20,7 +20,7 @@ internal class SmithingListeners : Listener {
 		if (event.inventory.type == InventoryType.SMITHING) {
 			val inventory = (event.inventory as SmithingInventory)
 
-			inventory.inputMineral?.let { getArtefactConfig(it) }?.let { artefact ->
+			inventory.inputMineral?.let { it.artefact }?.let { artefact ->
 				// If equipment can have artefact
 				inventory.inputEquipment?.let {
 					event.result = if (artefact.target.includes(it)) {
@@ -30,7 +30,7 @@ internal class SmithingListeners : Listener {
 							addEnchant(GlowEnchantment.instance, 1, true)
 							val newLore = listOf(artefact.label, getAttributeTitle(attributeModifiers?.size() ?: 0))
 							lore(newLore)
-							persistentDataContainer.set(artefactNamespace, PersistentDataType.STRING, artefact.key.name)
+							persistentDataContainer.set(artefactNamespace, PersistentDataType.STRING, artefact.section!!.name)
 						}
 
 						result
@@ -46,7 +46,7 @@ internal class SmithingListeners : Listener {
 	fun onInventoryClick(event: InventoryClickEvent) {
 		if (event.inventory.type == InventoryType.SMITHING && event.slotType == InventoryType.SlotType.RESULT) {
 			event.currentItem?.let {
-				if (isArtefact(it)) {
+				if (it.isArtefact()) {
 					// TODO: Handle shift-click
 					event.cursor = event.currentItem
 					event.inventory.clear()
@@ -68,7 +68,7 @@ internal class SmithingListeners : Listener {
 	@EventHandler
 	fun onPrepareItemCraft(event: PrepareItemCraftEvent) {
 		val containsArtefact = event.inventory.contents.filterNotNull().mapNotNull {
-			getArtefactConfig(it)
+			it.artefact
 		}.isNotEmpty()
 
 		if (containsArtefact) {
