@@ -1,4 +1,5 @@
 val exposedVersion: String by project
+val pickariaBedrock: String by project
 
 plugins {
 	kotlin("plugin.serialization") version "1.7.20"
@@ -14,5 +15,6 @@ dependencies {
 	implementation("org.jetbrains.exposed:exposed-jdbc:$exposedVersion")
 	implementation("org.jetbrains.exposed:exposed-java-time:$exposedVersion")
 	implementation("com.h2database:h2:2.1.214")
-	implementation("fr.pickaria:bedrock:1.0.2-SNAPSHOT")
+
+	implementation("fr.pickaria:bedrock:$pickariaBedrock")
 }

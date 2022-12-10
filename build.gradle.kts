@@ -40,6 +40,10 @@ java {
 	targetCompatibility = JavaVersion.VERSION_17
 }
 
+val pickariaBedrock: String by project
+val pickariaSpawner: String by project
+val spigotVersion: String by project
+
 allprojects {
 	group = "fr.pickaria"
 	version = "1.0-SNAPSHOT"
@@ -57,8 +61,9 @@ allprojects {
 	}
 
 	dependencies {
-		compileOnly("io.papermc.paper:paper-api:1.19.2-R0.1-SNAPSHOT")
-		compileOnly("fr.pickaria:bedrock:1.0.2-SNAPSHOT")
+		compileOnly("io.papermc.paper:paper-api:$spigotVersion")
+		compileOnly("fr.pickaria:bedrock:$pickariaBedrock")
+		compileOnly("fr.pickaria:spawner:$pickariaSpawner")
 	}
 
 	repositories {
