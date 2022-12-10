@@ -2,6 +2,7 @@ package fr.pickaria.market.menu
 
 import fr.pickaria.database.models.Order
 import fr.pickaria.database.models.OrderType
+import fr.pickaria.market.Config
 import fr.pickaria.market.economy
 import fr.pickaria.market.getPrices
 import fr.pickaria.menu.*
@@ -10,6 +11,7 @@ import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
 import net.kyori.adventure.text.format.TextDecoration
 import org.bukkit.Material
+import kotlin.math.max
 
 @OptIn(ItemBuilderUnsafe::class)
 internal fun orderListingMenu() = menu("market") {
@@ -22,7 +24,7 @@ internal fun orderListingMenu() = menu("market") {
 	val maxPage = (count - 1) / pageSize
 
 	orders.forEachIndexed { index, order ->
-		val (sellPrice, buyPrice) = getPrices(order.averagePrice)
+		val sellPrice = max(order.averagePrice * Config.sellPercentage, Config.minimumPrice)
 
 		item {
 			slot = index
@@ -31,9 +33,8 @@ internal fun orderListingMenu() = menu("market") {
 			lore {
 				keyValues {
 					"Quantité en vente" to order.amount
-					"Capitalisation boursière" to economy.format(order.amount * order.averagePrice)
-					"Achat immédiat" to economy.format(buyPrice)
-					"Vente immédiate" to economy.format(sellPrice)
+					"Achat à partir de" to economy.format(order.minimumPrice)
+					"Vente immédiate à" to economy.format(sellPrice)
 					"Prix moyen" to economy.format(order.averagePrice)
 				}
 				leftClick = "Clic-gauche pour voir les options d'achat"

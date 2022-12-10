@@ -27,3 +27,5 @@ commands:
     usage: /market
     description: Open the market menu.
     permission: pickaria.market.market
+  fake:
+    usage: /fake

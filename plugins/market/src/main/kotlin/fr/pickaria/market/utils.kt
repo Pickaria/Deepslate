@@ -3,7 +3,9 @@ package fr.pickaria.market
 import fr.pickaria.database.models.Order
 import fr.pickaria.economy.GlobalCurrencyExtensions
 import fr.pickaria.economy.SendResponse
+import fr.pickaria.economy.has
 import fr.pickaria.economy.sendTo
+import fr.pickaria.shared.give
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
 import org.bukkit.Material
@@ -13,44 +15,55 @@ import org.bukkit.inventory.ItemStack
 import kotlin.math.max
 import kotlin.math.min
 
+internal data class OrderInfo(
+	val orders: List<Pair<Order, Int>>,
+	val totalAmount: Int,
+	val totalPrice: Double,
+)
+
+internal fun getPrices(material: Material, amount: Int): OrderInfo {
+	var remaining = amount
+
+	// Order to Amount to buy
+	val orders = Order.findSellOrders(material).map {
+		val value = it to max(min(remaining, it.amount), 0)
+		remaining -= it.amount
+		value
+	}
+
+	val totalAmount = orders.sumOf { it.second }
+	val totalPrice = orders.sumOf { (order, amount) -> order.price * amount }
+
+	return OrderInfo(orders, totalAmount, totalPrice)
+}
+
 /**
  * Finds sell orders and buys the specified amount of material.
  */
 @OptIn(GlobalCurrencyExtensions::class)
-internal fun buy(player: Player, material: Material, maximumPrice: Double, amount: Int): Int {
-	// Total amount of material that has been bought
-	var boughtAmount = 0
+internal fun buy(player: Player, material: Material, amount: Int): Int {
+	val info = getPrices(material, amount)
 
-	// Total amount of money spent to acquire the given material
-	var totalSpent = 0.0
+	if (info.totalAmount != amount) {
+		player.sendMessage(Component.text("Ce matériau n'est pas en stocks.", NamedTextColor.RED))
+		return 0
+	}
 
-	val orders = Order.findSellOrders(material, maximumPrice)
+	if (!(player has info.totalPrice)) {
+		player.sendMessage(Component.text("Vous n'avez pas assez d'argent.", NamedTextColor.RED))
+		return 0
+	}
 
 	// Stores the data to notify sellers
 	val notifications: MutableMap<OfflinePlayer, Pair<Int, Double>> = mutableMapOf()
 
-	// Maximum amount of material the player can buy with their balance
-	val maximumCanAfford = (economy.getBalance(player) / maximumPrice).toInt()
-
-	// Whether the player ended up not having enough money
-	var notEnoughMoney = maximumCanAfford == 0
-
-	for (order in orders) {
-		// How much material can be bought from this order
-		val buyingAmount = minOf(amount - boughtAmount, order.amount, maximumCanAfford)
-
-		if (buyingAmount == 0) {
-			continue
-		}
-
-		// Total amount of money to spend
-		val price = buyingAmount * order.price
+	// FIXME: Possible item duplication
+	info.orders.forEach { (order, buyingAmount) ->
+		val price = order.price * buyingAmount
 
 		when (sendTo(player, order.seller, price)) {
 			SendResponse.SUCCESS -> {
-				boughtAmount += buyingAmount
 				order.amount -= buyingAmount
-				totalSpent += price
 
 				val notification = notifications.getOrDefault(order.seller, 0 to 0.0)
 				notifications[order.seller] = notification.first + buyingAmount to notification.second + price
@@ -59,47 +72,25 @@ internal fun buy(player: Player, material: Material, maximumPrice: Double, amoun
 				if (order.amount - buyingAmount <= 0) {
 					order.delete()
 				}
-
-				notEnoughMoney = false
 			}
 
 			SendResponse.NOT_ENOUGH_MONEY -> {
-				notEnoughMoney = true
+				player.sendMessage(Component.text("Vous n'avez pas assez d'argent.", NamedTextColor.RED))
 			}
 
-			else -> {}
-		}
-
-		if (boughtAmount >= amount) {
-			break
+			else -> {
+				player.sendMessage(Component.text("Une erreur lors de l'achat est survenue.", NamedTextColor.RED))
+			}
 		}
 	}
 
-	if (notEnoughMoney && boughtAmount < amount) {
-		val message = Component.text("Vous n'avez pas assez d'argent.", NamedTextColor.RED)
-		player.sendMessage(message)
-	}
+	val message = Component.text("${info.totalAmount} ", NamedTextColor.GOLD)
+		.append(Component.translatable(material.translationKey(), NamedTextColor.GOLD))
+		.append(Component.text(" acheté(s) pour ", NamedTextColor.GRAY))
+		.append(Component.text(economy.format(info.totalPrice), NamedTextColor.GOLD))
+		.append(Component.text(".", NamedTextColor.GRAY))
 
-	val remainingToBuy = amount - boughtAmount
-
-	if (boughtAmount > 0) {
-		val message = Component.text("$boughtAmount ", NamedTextColor.GOLD)
-			.append(Component.translatable(material.translationKey(), NamedTextColor.GOLD))
-			.append(Component.text(" acheté(s) pour ", NamedTextColor.GRAY))
-			.append(Component.text(economy.format(totalSpent), NamedTextColor.GOLD))
-			.append(Component.text(".", NamedTextColor.GRAY))
-
-		player.sendMessage(message)
-	}
-
-	if (remainingToBuy > 0) {
-		val message = Component.text("$remainingToBuy", NamedTextColor.GOLD)
-			.append(Component.text(" n'ont pas pu être achetés au prix maximum de ", NamedTextColor.GRAY))
-			.append(Component.text(economy.format(maximumPrice), NamedTextColor.GOLD))
-			.append(Component.text(".", NamedTextColor.GRAY))
-
-		player.sendMessage(message)
-	}
+	player.sendMessage(message)
 
 	notifications.forEach { (seller, pair) ->
 		val (buyingAmount, price) = pair
@@ -120,10 +111,10 @@ internal fun buy(player: Player, material: Material, maximumPrice: Double, amoun
 		}
 	}
 
-	return boughtAmount
+	return info.totalAmount
 }
 
-// TODO: Create `sell` function, any item bought will be placed in (#31)
+// TODO: Create `sell` function, any item bought will be placed in dematerialized inventory (#31)
 
 // TODO: Give to OfflinePlayer through their dematerialized inventory (#31)
 internal fun giveItems(player: Player, material: Material, amountToGive: Int) {
@@ -132,10 +123,7 @@ internal fun giveItems(player: Player, material: Material, amountToGive: Int) {
 
 	while (restToGive > 0) {
 		val amount = min(restToGive, material.maxStackSize)
-		player.inventory.addItem(item.asQuantity(amount)).forEach { (_, it) ->
-			// Drop items that cannot be added
-			player.world.dropItem(player.location, it)
-		}
+		player.give(item.asQuantity(amount))
 		restToGive -= material.maxStackSize
 	}
 }
@@ -148,8 +136,18 @@ internal fun getPrices(material: Material): Pair<Double, Double> {
 	return max(average * Config.sellPercentage, Config.minimumPrice) to average * Config.buyPercentage
 }
 
-/**
- * Returns a pair containing the sell price and the buy price.
- */
-internal fun getPrices(average: Double): Pair<Double, Double> =
-	max(average * Config.sellPercentage, Config.minimumPrice) to average * Config.buyPercentage
+internal fun getMenuItems(material: Material, stocks: Int): List<Pair<Int, Int>> {
+	val maxStackSize = min(material.maxStackSize, stocks)
+
+	return if (maxStackSize in 3 until stocks) {
+		listOf(1 to 1, maxStackSize / 2 to 3, maxStackSize to 5, stocks to 7)
+	} else if (maxStackSize == 2 && stocks < 2) {
+		listOf(1 to 2, maxStackSize to 4, stocks to 6)
+	} else if (stocks > 3) {
+		listOf(1 to 2, stocks / 2 to 4, stocks to 6)
+	} else if (stocks > 1) {
+		listOf(1 to 2, stocks to 6)
+	} else {
+		listOf(1 to 4)
+	}
+}

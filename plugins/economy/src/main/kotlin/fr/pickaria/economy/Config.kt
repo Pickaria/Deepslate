@@ -1,7 +1,6 @@
 package fr.pickaria.economy
 
 import fr.pickaria.shared.ConfigProvider
-import net.kyori.adventure.sound.Sound
 
 
 internal object Config : ConfigProvider() {

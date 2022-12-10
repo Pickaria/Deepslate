@@ -69,11 +69,13 @@ class Order private constructor(private val row: ResultRow) {
 		}
 
 		fun getListings(type: OrderType, limit: Int, offset: Long = 0): List<Listing> = transaction {
+			val minPrice = Orders.price.min()
 			val avgPrice = Orders.price.avg()
+			val maxPrice = Orders.price.max()
 			val sumAmount = Orders.amount.sum()
 
 			Orders
-				.slice(Orders.material, sumAmount, avgPrice)
+				.slice(Orders.material, sumAmount, minPrice, avgPrice, maxPrice)
 				.select {
 					(Orders.type eq type) and
 							(Orders.amount greater 0)
@@ -84,7 +86,9 @@ class Order private constructor(private val row: ResultRow) {
 					Listing(
 						Material.getMaterial(it[Orders.material]) ?: DEFAULT_MATERIAL,
 						it[sumAmount] ?: 0,
+						it[minPrice]?.toDouble() ?: 0.0,
 						it[avgPrice]?.toDouble() ?: 0.0,
+						it[maxPrice]?.toDouble() ?: 0.0,
 					)
 				}
 		}
@@ -105,8 +109,8 @@ class Order private constructor(private val row: ResultRow) {
 				.slice(Orders.seller)
 				.select {
 					(Orders.type eq type) and
-					(Orders.seller eq seller.uniqueId) and
-					(Orders.amount greater 0)
+							(Orders.seller eq seller.uniqueId) and
+							(Orders.amount greater 0)
 				}
 				.count()
 		}
@@ -139,9 +143,9 @@ class Order private constructor(private val row: ResultRow) {
 		 * Get maximum, minimum and average prices of sell orders by material.
 		 */
 		fun getPrices(material: Material): Triple<Double, Double, Double> = transaction {
-			val maxPrice = Orders.price.max()
 			val minPrice = Orders.price.min()
 			val avgPrice = Orders.price.avg()
+			val maxPrice = Orders.price.max()
 
 			Orders
 				.slice(maxPrice, minPrice, avgPrice)
@@ -152,7 +156,7 @@ class Order private constructor(private val row: ResultRow) {
 				}
 				.first()
 				.let {
-					Triple(it[maxPrice] ?: 1.0, it[minPrice] ?: 1.0, it[avgPrice]?.toDouble() ?: 1.0)
+					Triple(it[minPrice] ?: 1.0, it[avgPrice]?.toDouble() ?: 1.0, it[maxPrice] ?: 1.0)
 				}
 		}
 
@@ -172,29 +176,10 @@ class Order private constructor(private val row: ResultRow) {
 				}
 		}
 
-		/**
-		 * Find buy orders with a given minimum price, sorted by cheaper last.
-		 */
-		fun findBuyOrders(material: Material, minimumPrice: Double): List<Order> = transaction {
+		fun findSellOrders(material: Material): List<Order> = transaction {
 			Orders
 				.select {
 					(Orders.material eq material.name) and
-							(Orders.price greaterEq minimumPrice) and
-							(Orders.amount greater 0) and
-							(Orders.type eq OrderType.BUY)
-				}
-				.orderBy(Orders.price, SortOrder.DESC)
-				.map { Order(it) }
-		}
-
-		/**
-		 * Find sell orders with a given maximum price, sorted by cheaper last.
-		 */
-		fun findSellOrders(material: Material, maximumPrice: Double): List<Order> = transaction {
-			Orders
-				.select {
-					(Orders.material eq material.name) and
-							(Orders.price lessEq maximumPrice) and
 							(Orders.amount greater 0) and
 							(Orders.type eq OrderType.SELL)
 				}
@@ -232,7 +217,9 @@ class Order private constructor(private val row: ResultRow) {
 	data class Listing(
 		val material: Material,
 		val amount: Int,
+		val minimumPrice: Double,
 		val averagePrice: Double,
+		val maximumPrice: Double,
 	)
 
 	private constructor(whereClause: SqlExpressionBuilder.() -> Op<Boolean>) : this(

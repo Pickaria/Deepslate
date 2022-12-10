@@ -21,9 +21,10 @@ class Main : JavaPlugin() {
 		}
 
 		getCommand("sell")?.setExecutor(CreateSellOrderCommand())
-		getCommand("buy")?.setExecutor(CreateBuyOrderCommand())
+		getCommand("buy")?.setExecutor(BuyOrderCommand())
 		getCommand("market")?.setExecutor(MarketCommand())
 		getCommand("cancel")?.setExecutor(CancelOrderCommand())
+		getCommand("fake")?.setExecutor(FakeSellCommand())
 		orderListingMenu()
 		ownOrdersMenu()
 

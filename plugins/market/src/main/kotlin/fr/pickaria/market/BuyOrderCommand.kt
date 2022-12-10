@@ -22,7 +22,7 @@ import org.bukkit.entity.Player
  *
  * TODO: Save listing for later use.
  */
-internal class CreateBuyOrderCommand : CommandExecutor, TabCompleter {
+internal class BuyOrderCommand : CommandExecutor, TabCompleter {
 	override fun onCommand(sender: CommandSender, command: Command, label: String, args: Array<out String>): Boolean {
 		if (sender is Player) {
 			if (args.isEmpty()) {
@@ -76,7 +76,7 @@ internal class CreateBuyOrderCommand : CommandExecutor, TabCompleter {
 			}
 
 			// TODO: Create buy order
-			val boughtAmount = buy(sender, material, maxPrice, quantity)
+			val boughtAmount = buy(sender, material, quantity)
 			giveItems(sender, material, boughtAmount)
 		}
 

@@ -1,11 +1,9 @@
 package fr.pickaria.shard
 
 import fr.pickaria.artefact.ArtefactConfig
-import net.kyori.adventure.text.minimessage.MiniMessage
 import org.bukkit.Bukkit
 import org.bukkit.plugin.java.JavaPlugin
 
-internal val miniMessage = MiniMessage.miniMessage()
 internal val artefactConfig: ArtefactConfig? = try {
 	Bukkit.getServicesManager().getRegistration(ArtefactConfig::class.java)?.provider
 } catch (_: NoClassDefFoundError) {

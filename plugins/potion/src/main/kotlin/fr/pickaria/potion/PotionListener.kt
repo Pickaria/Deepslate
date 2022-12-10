@@ -1,5 +1,6 @@
 package fr.pickaria.potion
 
+import fr.pickaria.shared.give
 import org.bukkit.Material
 import org.bukkit.command.Command
 import org.bukkit.command.CommandExecutor
@@ -26,7 +27,7 @@ internal class PotionListener : CommandExecutor, TabCompleter, Listener {
 				}
 
 				val itemStack = createPotion(it, amount)
-				sender.inventory.addItem(itemStack)
+				sender.give(itemStack)
 			}
 
 			return true
