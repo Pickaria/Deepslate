@@ -7,8 +7,7 @@ dependencies {
 	compileOnly(project(":database"))
 	compileOnly(project(":economy"))
 	compileOnly(project(":lib"))
-	compileOnly(project(":menu"))
+	compileOnly(project(":deepslate"))
 	compileOnly(project(":potion"))
-	compileOnly(project(":shared"))
 	compileOnly("com.github.MilkBowl:VaultAPI:1.7.1")
 }

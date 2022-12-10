@@ -1,4 +1,4 @@
-package fr.pickaria.menu.home
+package fr.pickaria.deepslate.home
 
 import fr.pickaria.menu.BuilderInit
 import fr.pickaria.menu.Entry

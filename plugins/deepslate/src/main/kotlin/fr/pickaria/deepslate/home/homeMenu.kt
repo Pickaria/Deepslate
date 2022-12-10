@@ -1,7 +1,7 @@
-package fr.pickaria.menu.home
+package fr.pickaria.deepslate.home
 
+import fr.pickaria.DEFAULT_MENU
 import fr.pickaria.menu.*
-import fr.pickaria.menu.Result
 import fr.pickaria.shard.createShardItem
 import fr.pickaria.shard.getShardBalance
 import net.kyori.adventure.text.Component

@@ -1,9 +1,9 @@
 package fr.pickaria.job
 
-import fr.pickaria.chat.suffix
-import fr.pickaria.chat.updateDisplayName
 import fr.pickaria.database.models.Job
 import fr.pickaria.job.events.JobAscentEvent
+import fr.pickaria.shared.suffix
+import fr.pickaria.shared.updateDisplayName
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.event.HoverEvent
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder

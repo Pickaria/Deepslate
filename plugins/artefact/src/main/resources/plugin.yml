@@ -5,4 +5,3 @@ main: fr.pickaria.artefact.Main
 author: Quozul
 depend:
   - PickariaLib
-  - PickariaShared
