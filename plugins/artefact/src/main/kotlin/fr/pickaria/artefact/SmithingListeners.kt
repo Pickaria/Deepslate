@@ -1,8 +1,6 @@
 package fr.pickaria.artefact
 
 import com.destroystokyo.paper.event.inventory.PrepareResultEvent
-import fr.pickaria.reforge.getAttributeTitle
-import fr.pickaria.shared.GlowEnchantment
 import net.kyori.adventure.key.Key
 import net.kyori.adventure.sound.Sound
 import org.bukkit.Particle
@@ -12,7 +10,6 @@ import org.bukkit.event.inventory.InventoryClickEvent
 import org.bukkit.event.inventory.InventoryType
 import org.bukkit.event.inventory.PrepareItemCraftEvent
 import org.bukkit.inventory.SmithingInventory
-import org.bukkit.persistence.PersistentDataType
 
 internal class SmithingListeners : Listener {
 	@EventHandler
@@ -24,22 +21,15 @@ internal class SmithingListeners : Listener {
 				// If equipment can have artefact
 				inventory.inputEquipment?.let {
 					event.result = if (artefact.target.includes(it)) {
-						val result = it.clone()
-
-						result.itemMeta = result.itemMeta.apply {
-							addEnchant(GlowEnchantment.instance, 1, true)
-							val newLore = listOf(artefact.label, getAttributeTitle(attributeModifiers?.size() ?: 0))
-							lore(newLore)
-							persistentDataContainer.set(artefactNamespace, PersistentDataType.STRING, artefact.section!!.name)
-						}
-
-						result
+						it.clone().setArtefact(artefact)
 					} else {
 						null
 					}
 				}
 			}
 		}
+
+		event.result?.updateRarity()
 	}
 
 	@EventHandler
@@ -67,12 +57,16 @@ internal class SmithingListeners : Listener {
 	 */
 	@EventHandler
 	fun onPrepareItemCraft(event: PrepareItemCraftEvent) {
-		val containsArtefact = event.inventory.contents.filterNotNull().mapNotNull {
-			it.artefact
-		}.isNotEmpty()
+		with(event.inventory) {
+			val containsArtefact = contents.filterNotNull().mapNotNull {
+				it.artefact
+			}.isNotEmpty()
 
-		if (containsArtefact) {
-			event.inventory.result = null
+			if (containsArtefact) {
+				result = null
+			}
+
+			result?.updateRarity()
 		}
 	}
 }

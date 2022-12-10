@@ -1,5 +1,5 @@
 rootProject.name = "plugin-collection"
-include("economy", "deepslate", "job", "chat", "shard", "potion", "artefact", "lib", "database", "market", "reward", "reforge")
+include("economy", "deepslate", "job", "chat", "shard", "potion", "artefact", "lib", "database", "market", "reward")
 project(":economy").projectDir = File("plugins/economy")
 project(":deepslate").projectDir = File("plugins/deepslate")
 project(":job").projectDir = File("plugins/job")
@@ -11,4 +11,3 @@ project(":artefact").projectDir = File("plugins/artefact")
 project(":lib").projectDir = File("plugins/lib")
 project(":database").projectDir = File("plugins/database")
 project(":reward").projectDir = File("plugins/reward")
-project(":reforge").projectDir = File("plugins/reforge")

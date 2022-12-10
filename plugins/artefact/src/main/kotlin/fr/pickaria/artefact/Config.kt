@@ -1,5 +1,8 @@
 package fr.pickaria.artefact
 
+import fr.pickaria.artefact.Config
+import fr.pickaria.artefactNamespace
+import fr.pickaria.receptacleNamespace
 import fr.pickaria.shared.ConfigProvider
 import fr.pickaria.shared.GlowEnchantment
 import fr.pickaria.shared.MiniMessage
@@ -13,7 +16,7 @@ import org.bukkit.persistence.PersistentDataType
 import fr.pickaria.artefact.Config as ArtefactConfig
 
 class Artefact : ConfigProvider() {
-	val label by this.miniMessageDeserializer
+	val label by miniMessageDeserializer
 	private val description: List<String> by this
 	val target: EnchantmentTarget by this
 	private val rarity: ItemRarity by this
@@ -51,7 +54,20 @@ class Artefact : ConfigProvider() {
 	}
 }
 
+class Rarity : ConfigProvider() {
+	val color: String by this
+	val name: Component by this
+	val attributes: Double by this
+}
+
 object Config : ConfigProvider() {
 	val artefactReceptacleName: String by this
 	val artefacts by sectionLoader<Artefact>()
+	private val rarities by sectionLoader<Rarity>()
+	val lowestRarity by lazy {
+		rarities.values.minByOrNull { it.attributes } ?: throw RuntimeException("Could not get default rarity.")
+	}
+	val sortedRarities by lazy {
+		rarities.values.sortedByDescending { it.attributes }
+	}
 }

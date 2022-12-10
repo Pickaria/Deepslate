@@ -39,3 +39,39 @@ artefacts:
     target: TOOL
     rarity: EPIC
     value: 15
+
+rarities:
+  # For any item
+  broken:
+    name: 'Endommagé'
+    color: '<green><name>'
+    attributes: -100.0
+  rusted:
+    name: 'Rouillé'
+    color: '<green><name>'
+    attributes: -5.0
+  common:
+    name: 'Commun'
+    color: '<grey><name>'
+    attributes: 0.0 # Attributes required
+  # When the item has at least 1 custom element applied onto it
+  uncommon:
+    name: 'Peu commun'
+    color: '<yellow><name>'
+    attributes: 1.0
+  rare:
+    name: 'Rare'
+    color: '<blue><name>'
+    attributes: 2.0
+  epic:
+    name: 'Épique'
+    color: '<purple><name>'
+    attributes: 3.0
+  legendary:
+    name: 'Légendaire'
+    color: '<rainbow><name>'
+    attributes: 4.0
+  mythic:
+    name: 'Mythique'
+    color: '<red><name>'
+    attributes: 5.0
