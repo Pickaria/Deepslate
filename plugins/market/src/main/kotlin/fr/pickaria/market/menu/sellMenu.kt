@@ -7,7 +7,7 @@ import fr.pickaria.menu.Result
 import fr.pickaria.menu.closeItem
 import fr.pickaria.menu.fill
 import fr.pickaria.menu.menu
-import fr.pickaria.shared.count
+import fr.pickaria.shared.sum
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
 import net.kyori.adventure.text.format.TextDecoration
@@ -22,7 +22,7 @@ internal fun sellMenu(material: Material) = menu {
 
 	val price = getPrices(material).second
 	val unitPrice = economy.format(price)
-	val stocks = opener.inventory.count(material)
+	val stocks = opener.inventory.sum(material)
 
 	getMenuItems(material, stocks).forEach { (amount, x) ->
 		val offerPrice = economy.format(price * amount)

@@ -4,8 +4,6 @@ import fr.pickaria.economy.Credit
 import fr.pickaria.economy.has
 import fr.pickaria.economy.withdraw
 import fr.pickaria.shared.GlowEnchantment
-import net.kyori.adventure.key.Key
-import net.kyori.adventure.sound.Sound
 import org.bukkit.attribute.Attribute
 import org.bukkit.attribute.AttributeModifier
 import org.bukkit.command.Command
