@@ -59,42 +59,42 @@ rarities:
   # For any item
   broken:
     name: 'Détruit'
-    color: '<dark_green><name>'
-    attributes: -100.0
+    color: '<dark_purple><name>'
+    attributes: -100
   damaged:
     name: 'Endommagé'
-    color: '<dark_aqua><name>'
-    attributes: -10.0
+    color: '<dark_red><name>'
+    attributes: -3
   rusted:
     name: 'Rouillé'
     color: '<dark_gray><name>'
-    attributes: -5.0
+    attributes: -2
   used:
     name: 'Usé'
-    color: '<aqua><name>'
-    attributes: -2.5
+    color: '<dark_green><name>'
+    attributes: -1
   common:
     name: 'Commun'
     color: '<grey><name>'
-    attributes: 0.0 # Attributes required
+    attributes: 0 # Attributes required
   # When the item has at least 1 custom element applied onto it
   uncommon:
     name: 'Peu commun'
     color: '<yellow><name>'
-    attributes: 0.5
+    attributes: 1
   rare:
     name: 'Rare'
     color: '<blue><name>'
-    attributes: 1.75
+    attributes: 2
   epic:
     name: 'Épique'
-    color: '<dark_purple><name>'
-    attributes: 3.0
+    color: '<light_purple><name>'
+    attributes: 3
   legendary:
     name: 'Légendaire'
     color: '<rainbow><name>'
-    attributes: 4.75
+    attributes: 4
   mythic:
     name: 'Mythique'
     color: '<red><name>'
-    attributes: 6.0
+    attributes: 5

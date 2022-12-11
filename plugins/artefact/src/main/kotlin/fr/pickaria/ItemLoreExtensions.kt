@@ -1,13 +1,14 @@
 package fr.pickaria
 
-import com.google.common.collect.Multimap
 import fr.pickaria.artefact.*
 import fr.pickaria.reforge.canBeEnchanted
 import fr.pickaria.shared.MiniMessage
 import net.kyori.adventure.text.Component
+import net.kyori.adventure.text.TranslatableComponent
 import net.kyori.adventure.text.format.NamedTextColor
 import net.kyori.adventure.text.format.Style
 import net.kyori.adventure.text.format.TextDecoration
+import org.bukkit.Bukkit
 import org.bukkit.attribute.Attribute
 import org.bukkit.attribute.AttributeModifier
 import org.bukkit.inventory.ItemFlag
@@ -24,8 +25,7 @@ private val percentFormatter = DecimalFormat("#.##%").apply { positivePrefix = "
  */
 val ItemStack.artefactRarity: Rarity
 	get() {
-		val artefactScore = if (isArtefact()) 1 else 0
-		val level = getRarityLevel() + artefactScore
+		val (level, hasCustomAttribute) = getRarityLevel()
 		for (rarity in Config.sortedRarities) {
 			if (rarity.attributes <= level) {
 				return rarity
@@ -37,19 +37,22 @@ val ItemStack.artefactRarity: Rarity
 /**
  * Sums the amount of all attribute modifiers.
  */
-fun ItemStack.getRarityLevel(): Double {
-	val amount = itemMeta.attributeModifiers?.size()?.toDouble() ?: 0.0
-	var attributeLevel = 0.0
+fun ItemStack.getRarityLevel(): Pair<Int, Boolean> {
+	var attributeLevel = if (isArtefact()) 1 else 0
+	var hasCustomAttributes = false
 
 	itemMeta.attributeModifiers?.forEach { _, modifier ->
 		if (modifier.name == "custom") {
-			attributeLevel += modifier.amount * 10
+			attributeLevel += if (modifier.amount >= 0.0) 1 else -1
+			hasCustomAttributes = true
 		}
 	}
 
-	val artefactLevel = if (isArtefact()) amount else 0.0
+	if (hasCustomAttributes && attributeLevel == 0) {
+		attributeLevel = 1
+	}
 
-	return attributeLevel + artefactLevel
+	return attributeLevel to hasCustomAttributes
 }
 
 /**
@@ -63,10 +66,14 @@ fun ItemStack.updateRarity(): ItemStack {
 		it.addItemFlags(ItemFlag.HIDE_ATTRIBUTES)
 
 		val displayName: Component = it.displayName()?.let { displayName ->
-			val newChildren = displayName.children().map { child ->
-				child.style(Style.empty())
+			if (displayName is TranslatableComponent) {
+				Component.translatable(type.translationKey())
+			} else {
+				val newChildren = displayName.children().map { child ->
+					child.style(Style.empty())
+				}
+				displayName.compact().children(newChildren).style(Style.empty())
 			}
-			displayName.compact().children(newChildren).style(Style.empty())
 		} ?: Component.translatable(type.translationKey())
 
 		val newDisplayName = MiniMessage(rarity.color) {
@@ -87,26 +94,33 @@ fun ItemStack.updateRarity(): ItemStack {
 		)
 
 		if (it.hasAttributeModifiers()) {
-			newLore.add(Component.empty())
-			newLore.add(
-				Component.text("Statistiques de base :", NamedTextColor.GRAY)
-					.decoration(TextDecoration.ITALIC, TextDecoration.State.FALSE)
-			)
-			it.attributeModifiers?.forEach { attribute, modifier ->
-				if (modifier.name == "default") {
-					newLore.add(attributeLore(attribute, modifier))
-				}
-			}
-			newLore.add(Component.empty())
-			newLore.add(
-				Component.text("Statistiques améliorées :", NamedTextColor.GRAY)
-					.decoration(TextDecoration.ITALIC, TextDecoration.State.FALSE)
-			)
+			val defaultAttributes = mutableListOf<Component>()
+			val customAttributes = mutableListOf<Component>()
 
 			it.attributeModifiers?.forEach { attribute, modifier ->
-				if (modifier.name == "custom") {
-					newLore.add(attributeLore(attribute, modifier))
+				if (modifier.name == "default") {
+					defaultAttributes.add(attributeLore(attribute, modifier))
+				} else {
+					customAttributes.add(attributeLore(attribute, modifier))
 				}
+			}
+
+			if (defaultAttributes.isNotEmpty()) {
+				newLore.add(Component.empty())
+				newLore.add(
+					Component.text("Statistiques de base :", NamedTextColor.GRAY)
+						.decoration(TextDecoration.ITALIC, TextDecoration.State.FALSE)
+				)
+				newLore.addAll(defaultAttributes)
+			}
+
+			if (customAttributes.isNotEmpty()) {
+				newLore.add(Component.empty())
+				newLore.add(
+					Component.text("Statistiques améliorées :", NamedTextColor.GRAY)
+						.decoration(TextDecoration.ITALIC, TextDecoration.State.FALSE)
+				)
+				newLore.addAll(customAttributes)
 			}
 		}
 
@@ -115,21 +129,6 @@ fun ItemStack.updateRarity(): ItemStack {
 
 	return this
 }
-
-val ItemStack.attributeModifiers: Map<Attribute, Collection<AttributeModifier>>?
-	get() = itemMeta.attributeModifiers?.asMap()
-
-val ItemStack.defaultAttributes: Map<Attribute, Collection<AttributeModifier>>?
-	get() =
-		attributeModifiers?.mapValues { modifiers ->
-			modifiers.value.filter { it.name == "default" }
-		}
-
-val ItemStack.customAttributes: Map<Attribute, Collection<AttributeModifier>>?
-	get() =
-		attributeModifiers?.mapValues { modifiers ->
-			modifiers.value.filter { it.name == "custom" }
-		}
 
 private fun attributeLore(attribute: Attribute, modifier: AttributeModifier): Component {
 	val amount = when (modifier.operation) {

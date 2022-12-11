@@ -56,7 +56,7 @@ class Artefact : ConfigProvider() {
 class Rarity : ConfigProvider() {
 	val color: String by this
 	val name: Component by this
-	val attributes: Double by this
+	val attributes: Int by this
 }
 
 object Config : ConfigProvider() {
