@@ -1,8 +1,8 @@
 package fr.pickaria.reforge
 
-import fr.pickaria.artefact.*
 import fr.pickaria.shared.GlowEnchantment
-import fr.pickaria.updateRarity
+import fr.pickaria.updateLore
+import org.bukkit.Bukkit
 import org.bukkit.attribute.Attribute
 import org.bukkit.enchantments.EnchantmentOffer
 import org.bukkit.event.EventHandler
@@ -32,24 +32,25 @@ class EnchantListeners: Listener {
 		with(event) {
 			val inventory = (event.inventory as EnchantingInventory)
 
+			item.clearAttributes()
+			item.updateDefaultAttributes(enchantsToAdd)
+
 			inventory.secondary?.let {
 				if (it.isAttributeItem()) {
 					enchantsToAdd.clear()
 					enchantsToAdd[GlowEnchantment.instance] = 1
 					val power = whichButton()
 
-					item.addDefaultAttributes()
-
 					// Add random attributes
 					for (attribute in AUTHORIZED_ATTRIBUTES.shuffled().slice(0..power)) {
-						item.addRandomAttribute(attribute)
+						item.addRandomAttributeModifier(attribute)
 					}
 
 					it.amount -= (power + 1)
 				}
 			}
 
-			item.updateRarity()
+			item.updateLore()
 		}
 	}
 
@@ -65,19 +66,19 @@ class EnchantListeners: Listener {
 					isCancelled = false
 
 					offers[0] = if (it.amount >= 1 && enchanter.level >= 1) {
-						EnchantmentOffer(GlowEnchantment.instance, 0, 1)
+						EnchantmentOffer(GlowEnchantment.instance, 1, 1)
 					} else {
 						null
 					}
 
 					offers[1] = if (it.amount >= 2 && enchanter.level >= 2) {
-						EnchantmentOffer(GlowEnchantment.instance, 0, 2)
+						EnchantmentOffer(GlowEnchantment.instance, 1, 2)
 					} else {
 						null
 					}
 
 					offers[2] = if (it.amount >= 3 && enchanter.level >= 3) {
-						EnchantmentOffer(GlowEnchantment.instance, 0, 3)
+						EnchantmentOffer(GlowEnchantment.instance, 1, 3)
 					} else {
 						null
 					}

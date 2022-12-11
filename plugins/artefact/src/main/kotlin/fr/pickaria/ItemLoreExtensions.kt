@@ -2,13 +2,13 @@ package fr.pickaria
 
 import fr.pickaria.artefact.*
 import fr.pickaria.reforge.canBeEnchanted
+import fr.pickaria.shared.GlowEnchantment
 import fr.pickaria.shared.MiniMessage
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.TranslatableComponent
 import net.kyori.adventure.text.format.NamedTextColor
 import net.kyori.adventure.text.format.Style
 import net.kyori.adventure.text.format.TextDecoration
-import org.bukkit.Bukkit
 import org.bukkit.attribute.Attribute
 import org.bukkit.attribute.AttributeModifier
 import org.bukkit.inventory.ItemFlag
@@ -25,7 +25,7 @@ private val percentFormatter = DecimalFormat("#.##%").apply { positivePrefix = "
  */
 val ItemStack.artefactRarity: Rarity
 	get() {
-		val (level, hasCustomAttribute) = getRarityLevel()
+		val level = getRarityLevel()
 		for (rarity in Config.sortedRarities) {
 			if (rarity.attributes <= level) {
 				return rarity
@@ -37,7 +37,7 @@ val ItemStack.artefactRarity: Rarity
 /**
  * Sums the amount of all attribute modifiers.
  */
-fun ItemStack.getRarityLevel(): Pair<Int, Boolean> {
+fun ItemStack.getRarityLevel(): Int {
 	var attributeLevel = if (isArtefact()) 1 else 0
 	var hasCustomAttributes = false
 
@@ -52,15 +52,22 @@ fun ItemStack.getRarityLevel(): Pair<Int, Boolean> {
 		attributeLevel = 1
 	}
 
-	return attributeLevel to hasCustomAttributes
+	return attributeLevel
 }
 
 /**
  * Updates the display name and the lore of the ItemStack to better correspond to the item's rarity.
  */
-fun ItemStack.updateRarity(): ItemStack {
+fun ItemStack.updateLore(): ItemStack {
 	if (!type.canBeEnchanted) return this
 	val rarity = artefactRarity
+
+	// If is not default rarity, add glow enchant
+	if (rarity.attributes != 0) {
+		addUnsafeEnchantment(GlowEnchantment.instance, 1)
+	} else {
+		removeEnchantment(GlowEnchantment.instance)
+	}
 
 	editMeta {
 		it.addItemFlags(ItemFlag.HIDE_ATTRIBUTES)

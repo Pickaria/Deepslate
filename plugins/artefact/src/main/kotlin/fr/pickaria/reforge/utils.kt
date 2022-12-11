@@ -3,6 +3,7 @@ package fr.pickaria.reforge
 import fr.pickaria.reforgeNamespace
 import fr.pickaria.shared.GlowEnchantment
 import net.kyori.adventure.text.Component
+import net.kyori.adventure.text.format.NamedTextColor
 import net.kyori.adventure.text.format.TextDecoration
 import org.bukkit.Material
 import org.bukkit.inventory.ItemStack
@@ -17,7 +18,10 @@ fun getAttributeItem(): ItemStack {
 			Component.translatable(Material.LAPIS_LAZULI.translationKey())
 				.append(Component.text(" chargé"))
 				.decoration(TextDecoration.ITALIC, TextDecoration.State.FALSE)
+				.color(NamedTextColor.GOLD)
 		)
+
+		it.lore(listOf(Component.text("Élément utilisé pour modifier les statiques d'un objet.", NamedTextColor.GRAY)))
 	}
 	return itemStack
 }

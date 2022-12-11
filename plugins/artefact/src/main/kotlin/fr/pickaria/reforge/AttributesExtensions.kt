@@ -2,25 +2,58 @@ package fr.pickaria.reforge
 
 import fr.pickaria.artefact.Config
 import fr.pickaria.reforgeNamespace
+import org.bukkit.Bukkit
 import org.bukkit.Material
 import org.bukkit.attribute.Attribute
 import org.bukkit.attribute.AttributeModifier
+import org.bukkit.enchantments.Enchantment
+import org.bukkit.entity.EntityCategory
 import org.bukkit.inventory.ItemStack
 import java.util.*
 import kotlin.random.Random
 
 
-fun ItemStack.addDefaultAttributes() {
+/**
+ * Clears all item's attributes.
+ */
+fun ItemStack.clearAttributes() {
+	editMeta {
+		it.removeAttributeModifier(type.equipmentSlot)
+	}
+}
+
+/**
+ * Updates the default attributes of the item with its enchantments or given enchants to add.
+ */
+fun ItemStack.updateDefaultAttributes(enchantsToAdd: Map<Enchantment, Int>? = null) {
 	editMeta {
 		// Clear all previous attributes
-		it.removeAttributeModifier(type.equipmentSlot)
+		if (it.hasAttributeModifiers()) {
+			it.getAttributeModifiers(type.equipmentSlot).forEach { attribute, modifier ->
+				if (modifier.name == "default") {
+					it.removeAttributeModifier(attribute, modifier)
+				}
+			}
+		}
+
+		// Calculate enchantment damage increase
+		val damageIncrease = (enchantsToAdd ?: enchantments).map { (enchantment, level) ->
+			val increase = enchantment.getDamageIncrease(level, EntityCategory.NONE)
+			increase
+		}.sum()
 
 		// Re-add default attributes
 		type.getDefaultAttributeModifiers(type.equipmentSlot).forEach { attribute, modifier ->
+			val amount = if (attribute == Attribute.GENERIC_ATTACK_DAMAGE) {
+				modifier.amount + 1 + damageIncrease
+			} else {
+				modifier.amount
+			}
+
 			val newModifier = AttributeModifier(
 				UUID.randomUUID(),
 				"default",
-				modifier.amount,
+				amount,
 				modifier.operation,
 				modifier.slot
 			)
@@ -30,7 +63,10 @@ fun ItemStack.addDefaultAttributes() {
 	}
 }
 
-fun ItemStack.addRandomAttribute(attribute: Attribute) {
+/**
+ * Add an attribute with random modifier.
+ */
+fun ItemStack.addRandomAttributeModifier(attribute: Attribute) {
 	editMeta {
 		val amount = Random.nextDouble(Config.minimumAttribute, Config.maximumAttribute)
 		val modifier = AttributeModifier(
