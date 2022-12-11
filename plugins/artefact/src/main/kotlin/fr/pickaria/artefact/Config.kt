@@ -68,6 +68,8 @@ object Config : ConfigProvider() {
 	private val rarities by sectionLoader<Rarity>()
 	val minimumAttribute: Double by this
 	val maximumAttribute: Double by this
+	val chargedLapisDescription: List<String> by this
+	val chargedLapisName: String by this
 
 	val lowestRarity by lazy {
 		rarities.values.minByOrNull { it.attributes } ?: throw RuntimeException("Could not get default rarity.")

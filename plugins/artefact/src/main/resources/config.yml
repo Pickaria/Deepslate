@@ -52,6 +52,11 @@ artefacts:
     rarity: EPIC
     value: 15
 
+charged_lapis_name: 'chargé'
+charged_lapis_description:
+  - '<gray>Élément utilisé pour modifier'
+  - '<gray>les statiques d''un objet.'
+
 minimum_attribute: -0.05
 maximum_attribute: 0.1
 

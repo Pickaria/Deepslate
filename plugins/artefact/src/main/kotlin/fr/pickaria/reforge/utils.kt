@@ -1,7 +1,9 @@
 package fr.pickaria.reforge
 
+import fr.pickaria.artefact.Config
 import fr.pickaria.reforgeNamespace
 import fr.pickaria.shared.GlowEnchantment
+import fr.pickaria.shared.MiniMessage
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
 import net.kyori.adventure.text.format.TextDecoration
@@ -16,12 +18,17 @@ fun getAttributeItem(): ItemStack {
 		it.addEnchant(GlowEnchantment.instance, 1, true)
 		it.displayName(
 			Component.translatable(Material.LAPIS_LAZULI.translationKey())
-				.append(Component.text(" chargé"))
+				.appendSpace()
+				.append(Component.text(Config.chargedLapisName))
 				.decoration(TextDecoration.ITALIC, TextDecoration.State.FALSE)
 				.color(NamedTextColor.GOLD)
 		)
 
-		it.lore(listOf(Component.text("Élément utilisé pour modifier les statiques d'un objet.", NamedTextColor.GRAY)))
+		val description = Config.chargedLapisDescription.map { line ->
+			MiniMessage(line).message.decoration(TextDecoration.ITALIC, TextDecoration.State.FALSE)
+		}
+
+		it.lore(description)
 	}
 	return itemStack
 }
