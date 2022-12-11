@@ -1,21 +1,15 @@
 package fr.pickaria.reforge
 
-import fr.pickaria.artefact.Config
-import fr.pickaria.artefact.isAttributeItem
-import fr.pickaria.artefact.updateRarity
+import fr.pickaria.artefact.*
 import fr.pickaria.shared.GlowEnchantment
-import org.bukkit.Bukkit
+import fr.pickaria.updateRarity
 import org.bukkit.attribute.Attribute
-import org.bukkit.attribute.AttributeModifier
 import org.bukkit.enchantments.EnchantmentOffer
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.enchantment.EnchantItemEvent
 import org.bukkit.event.enchantment.PrepareItemEnchantEvent
 import org.bukkit.inventory.EnchantingInventory
-import org.bukkit.inventory.EquipmentSlot
-import java.util.*
-import kotlin.random.Random
 
 class EnchantListeners: Listener {
 	companion object {
@@ -37,46 +31,18 @@ class EnchantListeners: Listener {
 	fun onEnchantItem(event: EnchantItemEvent) {
 		with(event) {
 			val inventory = (event.inventory as EnchantingInventory)
+
 			inventory.secondary?.let {
 				if (it.isAttributeItem()) {
 					enchantsToAdd.clear()
 					enchantsToAdd[GlowEnchantment.instance] = 1
-					val slot = item.type.equipmentSlot
 					val power = whichButton()
 
-					item.editMeta { meta ->
-						// Clear all previous attributes
-						meta.removeAttributeModifier(slot)
+					item.addDefaultAttributes()
 
-						// Re-add default attributes
-						item.type.getDefaultAttributeModifiers(slot).forEach { attribute, modifier ->
-							val newModifier = AttributeModifier(
-								UUID.randomUUID(),
-								"default",
-								modifier.amount,
-								modifier.operation,
-								modifier.slot
-							)
-
-							meta.addAttributeModifier(attribute, newModifier)
-						}
-
-						// Add random attributes
-						AUTHORIZED_ATTRIBUTES.shuffled().slice(0..power).forEach { attribute ->
-							val amount = Random.nextDouble(Config.minimumAttribute, Config.maximumAttribute)
-							val modifier = AttributeModifier(
-								UUID.randomUUID(),
-								"custom",
-								amount,
-								AttributeModifier.Operation.ADD_SCALAR,
-								slot
-							)
-
-							meta.addAttributeModifier(
-								attribute,
-								modifier
-							)
-						}
+					// Add random attributes
+					for (attribute in AUTHORIZED_ATTRIBUTES.shuffled().slice(0..power)) {
+						item.addRandomAttribute(attribute)
 					}
 
 					it.amount -= (power + 1)
@@ -90,9 +56,12 @@ class EnchantListeners: Listener {
 	@EventHandler
 	fun onPrepareItemEnchant(event: PrepareItemEnchantEvent) {
 		with(event) {
+			// Check if item can be enchanted
+			if (!item.type.canBeEnchanted) return;
+
 			val inventory = (event.inventory as EnchantingInventory)
 			inventory.secondary?.let {
-				if (it.isAttributeItem()) { // TODO: Verify event.item can be enchanted
+				if (it.isAttributeItem()) {
 					isCancelled = false
 
 					offers[0] = if (it.amount >= 1 && enchanter.level >= 1) {

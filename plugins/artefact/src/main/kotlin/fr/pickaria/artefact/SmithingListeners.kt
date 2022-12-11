@@ -1,14 +1,20 @@
 package fr.pickaria.artefact
 
 import com.destroystokyo.paper.event.inventory.PrepareResultEvent
+import fr.pickaria.reforge.addDefaultAttributes
+import fr.pickaria.updateRarity
 import net.kyori.adventure.key.Key
 import net.kyori.adventure.sound.Sound
+import org.bukkit.Bukkit
 import org.bukkit.Particle
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.inventory.InventoryClickEvent
+import org.bukkit.event.inventory.InventoryMoveItemEvent
+import org.bukkit.event.inventory.InventoryPickupItemEvent
 import org.bukkit.event.inventory.InventoryType
 import org.bukkit.event.inventory.PrepareItemCraftEvent
+import org.bukkit.event.player.PlayerAttemptPickupItemEvent
 import org.bukkit.inventory.SmithingInventory
 
 internal class SmithingListeners : Listener {
@@ -66,6 +72,7 @@ internal class SmithingListeners : Listener {
 				result = null
 			}
 
+			result?.addDefaultAttributes()
 			result?.updateRarity()
 		}
 	}
