@@ -29,6 +29,7 @@ class Main : JavaPlugin() {
 		reforgeNamespace = NamespacedKey(this, "reforge")
 
 		getCommand("reforge")?.setExecutor(ReforgeCommand())
+		getCommand("placereforge")?.setExecutor(PlaceShopCommand())
 		server.pluginManager.registerEvents(EnchantListeners(), this)
 	}
 }

@@ -10,3 +10,5 @@ depend:
 commands:
   reforge:
     usage: /reforge
+  placereforge:
+    usage: /placereforge

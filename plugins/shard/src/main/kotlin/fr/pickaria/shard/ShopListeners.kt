@@ -20,10 +20,8 @@ internal class ShopListeners : Listener, CurrencyExtensions(Shard, Credit, Key) 
 
 	private fun Player.hasAll(ingredients: List<ItemStack>): Boolean {
 		for (ingredient in ingredients) {
-			ingredient.currency?.let { currency ->
-				if (!has(currency, ingredient.amount.toDouble())) {
-					return false
-				}
+			if (!(this has ingredient)) {
+				return false
 			}
 		}
 
@@ -65,9 +63,7 @@ internal class ShopListeners : Listener, CurrencyExtensions(Shard, Credit, Key) 
 
 			if (hasAll) {
 				trade.ingredients.forEach {
-					it.currency?.let { currency ->
-						player.withdraw(currency, it.amount.toDouble())
-					}
+					player withdraw it
 				}
 
 				player.playSound(Config.tradeSound)

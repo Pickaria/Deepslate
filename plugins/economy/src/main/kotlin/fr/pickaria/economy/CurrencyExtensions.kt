@@ -63,4 +63,32 @@ abstract class CurrencyExtensions(vararg currencies: Currency) {
 			EconomyResponse.ResponseType.FAILURE,
 			"Tried to deposit an item that is not a currency."
 		)
+
+	infix fun OfflinePlayer.has(itemStack: ItemStack): Boolean =
+		itemStack.currency?.let {
+			has(it, itemStack.totalValue)
+		} ?: false
+
+	infix fun OfflinePlayer.withdraw(itemStack: ItemStack): EconomyResponse =
+		itemStack.currency?.let {
+			if (has(it, itemStack.totalValue)) {
+				val response = withdraw(it, itemStack.totalValue)
+				if (this is Player) {
+					it.message(this, -response.amount)
+				}
+				response
+			} else {
+				EconomyResponse(
+					0.0,
+					balance(it),
+					EconomyResponse.ResponseType.FAILURE,
+					"Player do not have enough money."
+				)
+			}
+		} ?: EconomyResponse(
+			0.0,
+			0.0,
+			EconomyResponse.ResponseType.FAILURE,
+			"Tried to deposit an item that is not a currency."
+		)
 }
