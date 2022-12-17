@@ -21,4 +21,5 @@ internal object Config: ConfigProvider() {
 	val cantPurchaseReward by miniMessageDeserializer
 	val rewardCloseSound: Sound by this
 	val rewardOpenSound: Sound by this
+	val maximumStreak: Int by this
 }

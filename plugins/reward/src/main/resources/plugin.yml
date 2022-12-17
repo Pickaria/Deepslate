@@ -15,3 +15,5 @@ commands:
     usage: /reward [reward tier]
   placereward:
     usage: /placereward
+  collect:
+    usage: /collect [day]

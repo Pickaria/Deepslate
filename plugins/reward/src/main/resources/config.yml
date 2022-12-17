@@ -28,3 +28,9 @@ not_enough_money: '<red>Vous n''avez pas assez d''argent pour acheter cette réc
 cant_purchase_reward: '<red>Cette récompense ne peut pas être achetée.'
 reward_close_sound: item.bundle.drop_contents
 reward_open_sound: item.bundle.insert
+maximum_streak: 7 # Maximum amount of days to get rewards
+special_rewards:
+  - day: 4
+    reward: uncommon
+  - day: 7
+    reward: rare

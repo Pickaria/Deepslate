@@ -15,6 +15,7 @@ class Main : JavaPlugin() {
 
 		getCommand("reward")?.setExecutor(RewardCommand())
 		getCommand("placereward")?.setExecutor(PlaceShopCommand())
+		getCommand("collect")?.setExecutor(CollectCommand())
 		server.pluginManager.registerEvents(RewardListeners(), this)
 
 		rewardMenu()
