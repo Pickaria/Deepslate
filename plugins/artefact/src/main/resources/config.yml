@@ -9,6 +9,10 @@ artefacts:
       - ''
       - '<gray>Peut s''appliquer sur :'
       - '<dark_gray>Bottes'
+      - ''
+      - '<red>Une fois appliqué sur un équipement,'
+      - '<red>le seul moyen de l''enlever est'
+      - '<red>la destruction de l''objet.'
     # Possible values: ARMOR, ARMOR_FEET, ARMOR_LEGS, ARMOR_TORSO, ARMOR_HEAD, WEAPON, TOOL
     #                  BOW, FISHING_ROD, BREAKABLE, WEARABLE, TRIDENT, CROSSBOW, VANISHABLE
     target: ARMOR_FEET
@@ -25,6 +29,10 @@ artefacts:
       - ''
       - '<gray>Peut s''appliquer sur :'
       - '<dark_gray>Armures'
+      - ''
+      - '<red>Une fois appliqué sur un équipement,'
+      - '<red>le seul moyen de l''enlever est'
+      - '<red>la destruction de l''objet.'
     target: ARMOR
     rarity: RARE
     value: 10
@@ -36,6 +44,10 @@ artefacts:
       - ''
       - '<gray>Peut s''appliquer sur :'
       - '<dark_gray>Armes'
+      - ''
+      - '<red>Une fois appliqué sur un équipement,'
+      - '<red>le seul moyen de l''enlever est'
+      - '<red>la destruction de l''objet.'
     target: WEAPON
     rarity: UNCOMMON
     value: 5
@@ -48,6 +60,10 @@ artefacts:
       - ''
       - '<gray>Peut s''appliquer sur :'
       - '<dark_gray>Outils'
+      - ''
+      - '<red>Une fois appliqué sur un équipement,'
+      - '<red>le seul moyen de l''enlever est'
+      - '<red>la destruction de l''objet.'
     target: TOOL
     rarity: EPIC
     value: 15
