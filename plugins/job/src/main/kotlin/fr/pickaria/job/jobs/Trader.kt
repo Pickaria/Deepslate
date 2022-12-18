@@ -3,12 +3,10 @@ package fr.pickaria.job.jobs
 import fr.pickaria.job.hasJob
 import fr.pickaria.job.jobConfig
 import fr.pickaria.job.jobPayPlayer
-import org.bukkit.entity.Player
+import io.papermc.paper.event.player.PlayerTradeEvent
 import org.bukkit.event.EventHandler
 import org.bukkit.event.EventPriority
 import org.bukkit.event.Listener
-import org.bukkit.event.inventory.InventoryClickEvent
-import org.bukkit.event.inventory.InventoryType
 
 class Trader: Listener {
 	companion object {
@@ -17,15 +15,9 @@ class Trader: Listener {
 	}
 
 	@EventHandler(priority = EventPriority.MONITOR)
-	fun onInventoryClick(event: InventoryClickEvent) {
-		val player = event.whoClicked as Player
-
-		if (!event.isCancelled &&
-			player hasJob JOB_NAME &&
-			event.inventory.type == InventoryType.MERCHANT &&
-			event.slotType == InventoryType.SlotType.RESULT) {
-
-			jobPayPlayer(player, 0.2, config, 1)
+	fun onInventoryClick(event: PlayerTradeEvent) {
+		if (!event.isCancelled && event.player hasJob JOB_NAME) {
+			jobPayPlayer(event.player, 0.2, config, 1)
 		}
 	}
 }
