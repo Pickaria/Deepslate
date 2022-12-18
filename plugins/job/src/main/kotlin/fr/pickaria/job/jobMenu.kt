@@ -3,7 +3,7 @@ package fr.pickaria.job
 import fr.pickaria.menu.Result
 import fr.pickaria.menu.closeItem
 import fr.pickaria.menu.fill
-import fr.pickaria.deepslate.addToHome
+import fr.pickaria.home.addToHome
 import fr.pickaria.menu.menu
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor

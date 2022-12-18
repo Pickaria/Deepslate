@@ -1,4 +1,4 @@
-package fr.pickaria.deepslate
+package fr.pickaria.home
 
 import fr.pickaria.DEFAULT_MENU
 import fr.pickaria.menu.*

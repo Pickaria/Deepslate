@@ -2,8 +2,8 @@ package fr.pickaria
 
 import fr.pickaria.artefact.ArtefactListeners
 import fr.pickaria.artefact.SmithingListeners
-import fr.pickaria.deepslate.foodMenu
-import fr.pickaria.deepslate.homeMenu
+import fr.pickaria.home.foodMenu
+import fr.pickaria.home.homeMenu
 import fr.pickaria.menu.unregister
 import fr.pickaria.reforge.EnchantListeners
 import fr.pickaria.reforge.ReforgeCommand

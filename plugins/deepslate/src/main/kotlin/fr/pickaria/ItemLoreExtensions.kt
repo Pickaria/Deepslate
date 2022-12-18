@@ -11,6 +11,7 @@ import net.kyori.adventure.text.format.Style
 import net.kyori.adventure.text.format.TextDecoration
 import org.bukkit.attribute.Attribute
 import org.bukkit.attribute.AttributeModifier
+import org.bukkit.inventory.EquipmentSlot
 import org.bukkit.inventory.ItemFlag
 import org.bukkit.inventory.ItemStack
 import java.text.DecimalFormat
@@ -62,13 +63,6 @@ fun ItemStack.updateLore(): ItemStack {
 	if (!type.canBeEnchanted) return this
 	val rarity = artefactRarity
 
-	// If is not default rarity, add glow enchant
-	if (rarity.attributes != 0) {
-		addUnsafeEnchantment(GlowEnchantment.instance, 1)
-	} else {
-		removeEnchantment(GlowEnchantment.instance)
-	}
-
 	editMeta {
 		it.addItemFlags(ItemFlag.HIDE_ATTRIBUTES)
 
@@ -105,10 +99,12 @@ fun ItemStack.updateLore(): ItemStack {
 			val customAttributes = mutableListOf<Component>()
 
 			it.attributeModifiers?.forEach { attribute, modifier ->
-				if (modifier.name == "default") {
-					defaultAttributes.add(attributeLore(attribute, modifier))
-				} else {
-					customAttributes.add(attributeLore(attribute, modifier))
+				if (modifier.operation == AttributeModifier.Operation.ADD_NUMBER && modifier.amount != 0.0 || modifier.operation != AttributeModifier.Operation.ADD_NUMBER) {
+					if (modifier.name == "default") {
+						defaultAttributes.add(attributeLore(attribute, modifier, type.equipmentSlot))
+					} else {
+						customAttributes.add(attributeLore(attribute, modifier, type.equipmentSlot))
+					}
 				}
 			}
 
@@ -137,23 +133,26 @@ fun ItemStack.updateLore(): ItemStack {
 	return this
 }
 
-private fun attributeLore(attribute: Attribute, modifier: AttributeModifier): Component {
-	val amount = when (modifier.operation) {
-		AttributeModifier.Operation.ADD_NUMBER -> {
-			val component = if (attribute == Attribute.GENERIC_ATTACK_SPEED) {
-				Component.text(formatter.format(4 + modifier.amount))
-			} else {
-				Component.text(formatter.format(modifier.amount))
-			}
-
-			Component.space().append(component)
+private fun attributeLore(attribute: Attribute, modifier: AttributeModifier, slot: EquipmentSlot): Component {
+	val amount = if (modifier.operation == AttributeModifier.Operation.ADD_NUMBER) {
+		val formatted = if (attribute == Attribute.GENERIC_ATTACK_SPEED) {
+			formatter.format(4 + modifier.amount)
+		} else {
+			formatter.format(modifier.amount)
 		}
 
-		AttributeModifier.Operation.ADD_SCALAR -> Component.text(percentFormatter.format(modifier.amount))
-		AttributeModifier.Operation.MULTIPLY_SCALAR_1 -> Component.text(percentFormatter.format(modifier.amount))
+		val base = if (slot.isHand) {
+			Component.space()
+		} else {
+			Component.text('+')
+		}
+
+		base.append(Component.text(formatted))
+	} else {
+		Component.text(percentFormatter.format(modifier.amount))
 	}
 
-	val color = if (modifier.name == "default") {
+	val color = if (modifier.name == "default" && modifier.operation == AttributeModifier.Operation.ADD_NUMBER && slot == EquipmentSlot.HAND) {
 		NamedTextColor.DARK_GREEN
 	} else if (modifier.amount >= 0) {
 		NamedTextColor.BLUE

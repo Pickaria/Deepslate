@@ -83,6 +83,7 @@ charged_lapis_description:
 
 minimum_attribute: -0.05
 maximum_attribute: 0.1
+enchant_sound: block.enchantment_table.use
 
 rarities:
   # For any item
