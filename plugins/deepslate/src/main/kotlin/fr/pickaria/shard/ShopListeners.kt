@@ -68,13 +68,13 @@ internal class ShopListeners : Listener, CurrencyExtensions(Shard, Credit, Key) 
 					player withdraw it
 				}
 
-				val response = player deposit trade.result
-				if (response.type == EconomyResponse.ResponseType.SUCCESS) {
-					inventory.removeItem(trade.result)
-					inventory.clear()
-					player.updateInventory()
-					result = Event.Result.DENY
-					isCancelled = true
+				inventory.getItem(2)?.let {
+					val response = player deposit it
+					if (response.type == EconomyResponse.ResponseType.SUCCESS) {
+						inventory.removeItem(trade.result)
+						inventory.clear()
+						player.updateInventory()
+					}
 				}
 
 				player.playSound(Config.tradeSound)

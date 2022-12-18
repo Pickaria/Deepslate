@@ -2,6 +2,7 @@ package fr.pickaria.economy
 
 import fr.pickaria.shared.GlowEnchantment
 import net.milkbowl.vault.economy.EconomyResponse
+import org.bukkit.Bukkit
 import org.bukkit.OfflinePlayer
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack

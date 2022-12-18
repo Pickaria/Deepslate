@@ -68,23 +68,9 @@ class EnchantListeners: Listener {
 				if (it.isAttributeItem()) {
 					isCancelled = false
 
-					offers[0] = if (it.amount >= 1 && (enchanter.level >= 1 || enchanter.gameMode == GameMode.CREATIVE)) {
-						EnchantmentOffer(GlowEnchantment.instance, 1, 1)
-					} else {
-						null
-					}
-
-					offers[1] = if (it.amount >= 2 && (enchanter.level >= 2 || enchanter.gameMode == GameMode.CREATIVE)) {
-						EnchantmentOffer(GlowEnchantment.instance, 1, 2)
-					} else {
-						null
-					}
-
-					offers[2] = if (it.amount >= 3 && (enchanter.level >= 3 || enchanter.gameMode == GameMode.CREATIVE)) {
-						EnchantmentOffer(GlowEnchantment.instance, 1, 3)
-					} else {
-						null
-					}
+					offers[0] = EnchantmentOffer(GlowEnchantment.instance, 1, 1)
+					offers[1] = EnchantmentOffer(GlowEnchantment.instance, 1, 2)
+					offers[2] = EnchantmentOffer(GlowEnchantment.instance, 1, 3)
 				}
 			}
 		}
