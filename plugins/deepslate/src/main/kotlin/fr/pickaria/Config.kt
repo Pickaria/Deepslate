@@ -1,18 +1,17 @@
-package fr.pickaria.artefact
+package fr.pickaria
 
-import fr.pickaria.artefactNamespace
-import fr.pickaria.receptacleNamespace
 import fr.pickaria.shared.ConfigProvider
 import fr.pickaria.shared.GlowEnchantment
 import fr.pickaria.shared.MiniMessage
 import io.papermc.paper.inventory.ItemRarity
+import net.kyori.adventure.sound.Sound
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.TextDecoration
 import org.bukkit.Material
 import org.bukkit.enchantments.EnchantmentTarget
 import org.bukkit.inventory.ItemStack
 import org.bukkit.persistence.PersistentDataType
-import fr.pickaria.artefact.Config as ArtefactConfig
+import fr.pickaria.Config as ArtefactConfig
 
 class Artefact : ConfigProvider() {
 	val label by miniMessageDeserializer
@@ -60,11 +59,14 @@ class Rarity : ConfigProvider() {
 }
 
 object Config : ConfigProvider() {
+	// Artefacts
 	val artefactReceptacleName: String by this
 	private val artefacts by sectionLoader<Artefact>()
 	val lazyArtefacts by lazy {
 		artefacts
 	}
+
+	// Reforge
 	private val rarities by sectionLoader<Rarity>()
 	val minimumAttribute: Double by this
 	val maximumAttribute: Double by this
@@ -77,4 +79,13 @@ object Config : ConfigProvider() {
 	val sortedRarities by lazy {
 		rarities.values.sortedByDescending { it.attributes }
 	}
+
+	// Shard
+	val tradeSelectSound: Sound by this
+	val tradeSound: Sound by this
+	val openSound: Sound by this
+	val closeSound: Sound by this
+	val grindPlaceSound: Sound by this
+	val grindLoss: Double by this
+	val grindCoinValue: Double by this
 }

@@ -1,5 +1,6 @@
 package fr.pickaria.artefact
 
+import fr.pickaria.Config
 import org.bukkit.Material
 import org.bukkit.Particle
 import org.bukkit.entity.Entity
@@ -11,7 +12,6 @@ import org.bukkit.event.block.BlockBreakEvent
 import org.bukkit.event.entity.EntityDamageByEntityEvent
 import org.bukkit.event.entity.EntityTargetEvent
 import org.bukkit.event.player.PlayerMoveEvent
-import org.bukkit.inventory.EquipmentSlot
 import org.bukkit.inventory.ItemStack
 
 

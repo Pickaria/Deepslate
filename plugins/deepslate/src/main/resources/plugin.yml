@@ -1,8 +1,19 @@
-name: Pickaria
+name: PickariaDeepslate
 version: 1.0
 api-version: 1.19
-main: fr.pickaria.deepslate.Main
+main: fr.pickaria.Main
 author: Quozul
 depend:
+  - PickariaEconomy
   - PickariaLib
-  - PickariaShard
+  - PickariaSpawner
+  - Vault
+
+commands:
+  reforge:
+    usage: /reforge
+  placereforge:
+    usage: /placereforge
+  place:
+    usage: /place
+    description: Place un nouveau magasin à l'endroit où se situe le joueur.

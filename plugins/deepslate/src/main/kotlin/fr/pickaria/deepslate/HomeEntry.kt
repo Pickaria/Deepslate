@@ -1,4 +1,4 @@
-package fr.pickaria.deepslate.home
+package fr.pickaria.deepslate
 
 import fr.pickaria.menu.Entry
 import net.kyori.adventure.text.Component

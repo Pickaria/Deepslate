@@ -1,8 +1,7 @@
 package fr.pickaria.reforge
 
-import fr.pickaria.artefact.Config
+import fr.pickaria.Config
 import fr.pickaria.reforgeNamespace
-import org.bukkit.Bukkit
 import org.bukkit.Material
 import org.bukkit.attribute.Attribute
 import org.bukkit.attribute.AttributeModifier

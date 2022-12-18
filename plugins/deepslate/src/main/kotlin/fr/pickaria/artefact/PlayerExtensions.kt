@@ -1,5 +1,6 @@
 package fr.pickaria.artefact
 
+import fr.pickaria.Artefact
 import org.bukkit.entity.Player
 import org.bukkit.inventory.EquipmentSlot
 

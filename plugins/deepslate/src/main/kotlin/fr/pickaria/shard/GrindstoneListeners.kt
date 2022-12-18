@@ -1,6 +1,7 @@
 package fr.pickaria.shard
 
 import com.destroystokyo.paper.event.inventory.PrepareResultEvent
+import fr.pickaria.Config
 import fr.pickaria.artefact.artefact
 import fr.pickaria.economy.Credit
 import fr.pickaria.economy.CurrencyExtensions

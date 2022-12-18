@@ -72,11 +72,7 @@ abstract class CurrencyExtensions(vararg currencies: Currency) {
 	infix fun OfflinePlayer.withdraw(itemStack: ItemStack): EconomyResponse =
 		itemStack.currency?.let {
 			if (has(it, itemStack.totalValue)) {
-				val response = withdraw(it, itemStack.totalValue)
-				if (this is Player) {
-					it.message(this, -response.amount)
-				}
-				response
+				withdraw(it, itemStack.totalValue)
 			} else {
 				EconomyResponse(
 					0.0,

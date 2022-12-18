@@ -1,6 +1,6 @@
 package fr.pickaria.reforge
 
-import fr.pickaria.artefact.Config
+import fr.pickaria.Config
 import fr.pickaria.reforgeNamespace
 import fr.pickaria.shared.GlowEnchantment
 import fr.pickaria.shared.MiniMessage

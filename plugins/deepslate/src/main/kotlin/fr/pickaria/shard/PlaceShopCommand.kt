@@ -11,7 +11,7 @@ import org.bukkit.entity.Player
 import org.bukkit.entity.Villager
 import org.bukkit.inventory.Merchant
 import org.bukkit.inventory.MerchantRecipe
-import fr.pickaria.artefact.Config as ArtefactConfig
+import fr.pickaria.Config as ArtefactConfig
 
 internal class PlaceShopCommand : CommandExecutor {
 	override fun onCommand(sender: CommandSender, command: Command, label: String, args: Array<out String>?): Boolean {

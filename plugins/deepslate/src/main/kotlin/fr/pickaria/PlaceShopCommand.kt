@@ -2,7 +2,6 @@ package fr.pickaria
 
 import fr.pickaria.economy.Credit
 import fr.pickaria.economy.Key
-import fr.pickaria.economy.Shard
 import fr.pickaria.reforge.getAttributeItem
 import fr.pickaria.spawner.spawnVillager
 import net.kyori.adventure.text.Component
@@ -13,7 +12,6 @@ import org.bukkit.entity.Player
 import org.bukkit.entity.Villager
 import org.bukkit.inventory.Merchant
 import org.bukkit.inventory.MerchantRecipe
-import fr.pickaria.artefact.Config as ArtefactConfig
 
 internal class PlaceShopCommand : CommandExecutor {
 	override fun onCommand(sender: CommandSender, command: Command, label: String, args: Array<out String>?): Boolean {

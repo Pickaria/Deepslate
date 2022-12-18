@@ -11,6 +11,8 @@ import org.bukkit.inventory.Inventory
 import org.bukkit.inventory.ItemStack
 import org.bukkit.potion.PotionEffect
 import org.bukkit.potion.PotionEffectType
+import fr.pickaria.Config
+import net.milkbowl.vault.economy.EconomyResponse
 
 internal class ShopListeners : Listener, CurrencyExtensions(Shard, Credit, Key) {
 	companion object {
@@ -64,6 +66,15 @@ internal class ShopListeners : Listener, CurrencyExtensions(Shard, Credit, Key) 
 			if (hasAll) {
 				trade.ingredients.forEach {
 					player withdraw it
+				}
+
+				val response = player deposit trade.result
+				if (response.type == EconomyResponse.ResponseType.SUCCESS) {
+					inventory.removeItem(trade.result)
+					inventory.clear()
+					player.updateInventory()
+					result = Event.Result.DENY
+					isCancelled = true
 				}
 
 				player.playSound(Config.tradeSound)

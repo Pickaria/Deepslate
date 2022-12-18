@@ -1,3 +1,7 @@
+#############
+# ARTEFACTS #
+#############
+
 artefact_receptacle_name: 'Réceptacle d''artefact'
 
 artefacts:
@@ -68,6 +72,10 @@ artefacts:
     rarity: EPIC
     value: 15
 
+###########
+# REFORGE #
+###########
+
 charged_lapis_name: 'chargé'
 charged_lapis_description:
   - '<gray>Élément utilisé pour modifier'
@@ -119,3 +127,18 @@ rarities:
     name: 'Mythique'
     color: '<red><name>'
     attributes: 5
+
+##########
+# SHARDS #
+##########
+
+shop_name: 'Marché de Pickaria'
+
+grind_loss: 0.5
+grind_coin_value: 100.0
+
+trade_select_sound: block.large_amethyst_bud.place
+trade_sound: block.large_amethyst_bud.break
+open_sound: block.ender_chest.open
+close_sound: block.ender_chest.close
+grind_place_sound: block.amethyst_cluster.place

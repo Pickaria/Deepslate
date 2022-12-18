@@ -1,5 +1,7 @@
 package fr.pickaria.artefact
 
+import fr.pickaria.Artefact
+import fr.pickaria.Config
 import fr.pickaria.artefactNamespace
 import fr.pickaria.receptacleNamespace
 import fr.pickaria.shared.GlowEnchantment
