@@ -2,6 +2,7 @@ package fr.pickaria.economy
 
 import fr.pickaria.shared.GlowEnchantment
 import net.milkbowl.vault.economy.EconomyResponse
+import org.bukkit.Bukkit
 import org.bukkit.OfflinePlayer
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
@@ -58,6 +59,30 @@ abstract class CurrencyExtensions(vararg currencies: Currency) {
 
 	infix fun OfflinePlayer.silentDeposit(itemStack: ItemStack): EconomyResponse =
 		itemStack.currency?.collect(this, itemStack) ?: EconomyResponse(
+			0.0,
+			0.0,
+			EconomyResponse.ResponseType.FAILURE,
+			"Tried to deposit an item that is not a currency."
+		)
+
+	infix fun OfflinePlayer.has(itemStack: ItemStack): Boolean =
+		itemStack.currency?.let {
+			has(it, itemStack.totalValue)
+		} ?: false
+
+	infix fun OfflinePlayer.withdraw(itemStack: ItemStack): EconomyResponse =
+		itemStack.currency?.let {
+			if (has(it, itemStack.totalValue)) {
+				withdraw(it, itemStack.totalValue)
+			} else {
+				EconomyResponse(
+					0.0,
+					balance(it),
+					EconomyResponse.ResponseType.FAILURE,
+					"Player do not have enough money."
+				)
+			}
+		} ?: EconomyResponse(
 			0.0,
 			0.0,
 			EconomyResponse.ResponseType.FAILURE,

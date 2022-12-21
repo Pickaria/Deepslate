@@ -4,7 +4,7 @@ import fr.pickaria.economy.Key
 import fr.pickaria.economy.Shard
 import fr.pickaria.menu.Result
 import fr.pickaria.menu.closeItem
-import fr.pickaria.deepslate.home.addToHome
+import fr.pickaria.home.addToHome
 import fr.pickaria.menu.menu
 import net.kyori.adventure.text.Component
 import org.bukkit.Material
