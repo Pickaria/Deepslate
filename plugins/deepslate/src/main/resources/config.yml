@@ -158,8 +158,7 @@ villagers:
     name: "Ignis"
     type: PLAINS
     profession: TOOLSMITH
-    uuid:
-      c9663abe-8aff-4c31-8720-efe1471d937f
+    uuid: c9663abe-8aff-4c31-8720-efe1471d937f
   # Sells charged lapis & keys
   bank:
     position:
@@ -169,8 +168,7 @@ villagers:
     name: "Orphéo"
     type: PLAINS
     profession: LIBRARIAN
-    uuid:
-      c46c60be-b294-4181-9715-57464dad9c4e
+    uuid: c46c60be-b294-4181-9715-57464dad9c4e
   # Sells potions
   potions:
     position:
@@ -180,8 +178,7 @@ villagers:
     name: "Elixiria"
     type: PLAINS
     profession: CLERIC
-    uuid:
-      51283ec2-8ecc-47ea-8f99-43bf0802b53a
+    uuid: 51283ec2-8ecc-47ea-8f99-43bf0802b53a
   # Sells rewards
   rewards:
     position:
@@ -191,8 +188,7 @@ villagers:
     name: "Argyris"
     type: PLAINS
     profession: FARMER
-    uuid:
-      2058fe03-3bbe-4459-9ecc-91b4b5795c02
+    uuid: 2058fe03-3bbe-4459-9ecc-91b4b5795c02
   # Opens the market menu
   market:
     position:
@@ -202,5 +198,14 @@ villagers:
     name: "Perceval"
     type: PLAINS
     profession: BUTCHER
-    uuid:
-      d0f1b0ed-94f7-48a0-8ac1-00da5d5d1a60
+    uuid: d0f1b0ed-94f7-48a0-8ac1-00da5d5d1a60
+  # Opens the job menu
+  job:
+    position:
+      - 0
+      - 0
+      - 0
+    name: "Zoltar"
+    type: PLAINS
+    profession: MASON
+    uuid: c622ce38-b990-4a26-9e6e-a0da059ccb4e

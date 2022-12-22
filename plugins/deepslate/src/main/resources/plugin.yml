@@ -12,8 +12,6 @@ depend:
   - Vault
 
 commands:
-  reforge:
-    usage: /reforge
   placeshop:
     usage: /placeshop
     description: Place un nouveau magasin à l'endroit où se situe le joueur.

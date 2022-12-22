@@ -1,25 +1,25 @@
-package fr.pickaria.shard
+package fr.pickaria.shops
 
-import fr.pickaria.economy.*
+import fr.pickaria.Config
+import fr.pickaria.economy.Credit
+import fr.pickaria.economy.CurrencyExtensions
+import fr.pickaria.economy.Key
+import fr.pickaria.economy.Shard
+import fr.pickaria.menu.open
+import fr.pickaria.menuNamespace
 import fr.pickaria.spawner.event.*
+import net.milkbowl.vault.economy.EconomyResponse
 import org.bukkit.Particle
 import org.bukkit.entity.Player
 import org.bukkit.event.Event
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
+import org.bukkit.event.player.PlayerInteractAtEntityEvent
 import org.bukkit.inventory.Inventory
 import org.bukkit.inventory.ItemStack
-import org.bukkit.potion.PotionEffect
-import org.bukkit.potion.PotionEffectType
-import fr.pickaria.Config
-import net.milkbowl.vault.economy.EconomyResponse
+import org.bukkit.persistence.PersistentDataType
 
 internal class ShopListeners : Listener, CurrencyExtensions(Shard, Credit, Key) {
-	companion object {
-		private val openPotionEffectType = PotionEffectType.BLINDNESS
-		private val openPotionEffect = PotionEffect(openPotionEffectType, Integer.MAX_VALUE, 1, true, false, false)
-	}
-
 	private fun Player.hasAll(ingredients: List<ItemStack>): Boolean {
 		for (ingredient in ingredients) {
 			if (!(this has ingredient)) {
@@ -40,7 +40,7 @@ internal class ShopListeners : Listener, CurrencyExtensions(Shard, Credit, Key) 
 	}
 
 	@EventHandler
-	fun onTradeSelected(event: PlayerSelectTradeEvent) {
+	fun onPlayerSelectTrade(event: PlayerSelectTradeEvent) {
 		with(event) {
 			val hasAll = player.hasAll(selectedRecipe.ingredients)
 
@@ -59,7 +59,7 @@ internal class ShopListeners : Listener, CurrencyExtensions(Shard, Credit, Key) 
 	}
 
 	@EventHandler
-	fun onPlayerTrade(event: PlayerBuyEvent) {
+	fun onPlayerBuy(event: PlayerBuyEvent) {
 		with(event) {
 			val hasAll = player.hasAll(trade.ingredients)
 
@@ -87,10 +87,20 @@ internal class ShopListeners : Listener, CurrencyExtensions(Shard, Credit, Key) 
 	}
 
 	@EventHandler
-	fun onChestOpened(event: PlayerOpenShopEvent) {
+	fun onPlayerClickOnVillager(event: PlayerInteractAtEntityEvent) {
+		with(event) {
+			rightClicked.persistentDataContainer.get(menuNamespace, PersistentDataType.STRING)?.let {
+				if (player open it) {
+					isCancelled = true
+				}
+			}
+		}
+	}
+
+	@EventHandler
+	fun onPlayerOpenShop(event: PlayerOpenShopEvent) {
 		// TODO: Adjust max uses
 		event.player.playSound(Config.openSound)
-		event.player.addPotionEffect(openPotionEffect)
 	}
 
 	/**
@@ -106,10 +116,9 @@ internal class ShopListeners : Listener, CurrencyExtensions(Shard, Credit, Key) 
 	 * Prevents items from being dropped by the custom inventories.
 	 */
 	@EventHandler
-	fun onInventoryClose(event: PlayerCloseShopEvent) {
+	fun onPlayerCloseShop(event: PlayerCloseShopEvent) {
 		with(event) {
 			inventory.removeCurrencies()
-			player.removePotionEffect(openPotionEffectType)
 			player.playSound(Config.closeSound)
 		}
 	}
