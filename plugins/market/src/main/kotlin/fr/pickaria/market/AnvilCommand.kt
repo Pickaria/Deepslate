@@ -4,33 +4,42 @@ import fr.pickaria.database.models.Order
 import fr.pickaria.database.models.OrderType
 import fr.pickaria.economy.Main
 import fr.pickaria.menu.Lore
-import fr.pickaria.shared.give
-import fr.pickaria.spawner.event.PlayerOpenShopEvent
+import fr.pickaria.spawner.spawnVillager
 import net.kyori.adventure.text.Component
 import net.wesjd.anvilgui.AnvilGUI
 import net.wesjd.anvilgui.AnvilGUI.ResponseAction
-import org.bukkit.Bukkit
 import org.bukkit.Material
+import org.bukkit.NamespacedKey
 import org.bukkit.command.Command
 import org.bukkit.command.CommandExecutor
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
+import org.bukkit.entity.Villager
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
-import org.bukkit.event.inventory.InventoryClickEvent
 import org.bukkit.event.inventory.PrepareAnvilEvent
 import org.bukkit.event.player.PlayerInteractAtEntityEvent
-import org.bukkit.inventory.InventoryView
 import org.bukkit.inventory.ItemStack
+import org.bukkit.persistence.PersistentDataType
 import org.bukkit.plugin.java.JavaPlugin
-import org.bukkit.potion.PotionEffectType
 import kotlin.math.max
 
 
 internal class AnvilCommand : CommandExecutor, Listener {
 	private val plugin = JavaPlugin.getProvidingPlugin(Main::class.java)
+	private val namespace = NamespacedKey(plugin, "market")
 
 	override fun onCommand(sender: CommandSender, command: Command, label: String, args: Array<out String>): Boolean {
+		if (sender is Player) {
+			val villager = spawnVillager(sender.location, "Marché")
+			villager.persistentDataContainer.set(namespace, PersistentDataType.BYTE, 1)
+			villager.villagerType = Villager.Type.TAIGA
+			villager.profession = Villager.Profession.NITWIT
+			villager.resetOffers()
+			villager.customName(Component.text("Dumbbell"))
+			villager.isCustomNameVisible = true
+		}
+
 		return true
 	}
 
@@ -73,16 +82,9 @@ internal class AnvilCommand : CommandExecutor, Listener {
 	}
 
 	@EventHandler
-	fun onPlayerInteractAtEntity(event: PlayerOpenShopEvent) {
-		event.player.removePotionEffect(PotionEffectType.BLINDNESS)
+	fun onPlayerInteractAtEntity(event: PlayerInteractAtEntityEvent) {
+		if (!event.rightClicked.persistentDataContainer.has(namespace)) return
 		val initialContent = event.player.inventory.contents
-
-		// Clear main inventory
-		event.player.inventory.apply {
-			for (i in 9..35) {
-				this.setItem(i, null)
-			}
-		}
 
 		val stack = ItemStack(Material.PAPER).apply {
 			editMeta {
@@ -91,9 +93,9 @@ internal class AnvilCommand : CommandExecutor, Listener {
 		}
 
 		AnvilGUI.Builder()
-			.onClose { player: Player ->
-				player.inventory.contents = initialContent
-			}
+				.onClose { player: Player ->
+					player.inventory.contents = initialContent
+				}
 			.onComplete { completion: AnvilGUI.Completion ->
 				completion.player.sendMessage(completion.text)
 				if (completion.text.equals("you", ignoreCase = true)) {
@@ -107,6 +109,13 @@ internal class AnvilCommand : CommandExecutor, Listener {
 			.title("Marché")
 			.plugin(plugin)
 			.open(event.player)
+
+		// Clear main inventory
+		event.player.inventory.apply {
+			for (i in 9..35) {
+				this.setItem(i, null)
+			}
+		}
 
 		event.isCancelled = true
 	}

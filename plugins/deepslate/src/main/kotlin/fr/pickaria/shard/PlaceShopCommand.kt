@@ -35,7 +35,7 @@ internal class PlaceShopCommand : CommandExecutor {
 				}
 			}
 
-			villager.customName(Component.text("Bertrand"))
+			villager.customName(Component.text("Plume"))
 			villager.isCustomNameVisible = true
 		}
 
