@@ -1,4 +1,12 @@
 rootProject.name = "plugin-collection"
+
+pluginManagement {
+	repositories {
+		maven("https://maven.quozul.dev/snapshots")
+		gradlePluginPortal()
+	}
+}
+
 include(
 	"chat",
 	"database",

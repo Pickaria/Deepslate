@@ -25,6 +25,12 @@ class Main : JavaPlugin() {
 		getCommand("market")?.setExecutor(MarketCommand())
 		getCommand("cancel")?.setExecutor(CancelOrderCommand())
 		getCommand("fake")?.setExecutor(FakeSellCommand())
+
+		val anvil = AnvilCommand()
+
+		getCommand("anvil")?.setExecutor(anvil)
+		server.pluginManager.registerEvents(anvil, this)
+
 		orderListingMenu()
 		ownOrdersMenu()
 

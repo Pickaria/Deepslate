@@ -93,6 +93,31 @@ class Order private constructor(private val row: ResultRow) {
 				}
 		}
 
+		fun getListing(type: OrderType, material: Material): Listing? = transaction {
+			val minPrice = Orders.price.min()
+			val avgPrice = Orders.price.avg()
+			val maxPrice = Orders.price.max()
+			val sumAmount = Orders.amount.sum()
+
+			Orders
+				.slice(Orders.material, sumAmount, minPrice, avgPrice, maxPrice)
+				.select {
+					(Orders.type eq type) and
+							(Orders.amount greater 0) and
+							(Orders.material eq material.name)
+				}
+				.groupBy(Orders.material)
+				.map {
+					Listing(
+						Material.getMaterial(it[Orders.material]) ?: DEFAULT_MATERIAL,
+						it[sumAmount] ?: 0,
+						it[minPrice]?.toDouble() ?: 0.0,
+						it[avgPrice]?.toDouble() ?: 0.0,
+						it[maxPrice]?.toDouble() ?: 0.0,
+					)
+				}.firstOrNull()
+		}
+
 		fun count(type: OrderType): Long = transaction {
 			Orders
 				.slice(Orders.material)

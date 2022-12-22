@@ -8,4 +8,5 @@ dependencies {
 	compileOnly(project(":lib"))
 	compileOnly(project(":deepslate"))
 	compileOnly("com.github.MilkBowl:VaultAPI:1.7.1")
+	implementation("net.wesjd:anvilgui:1.6.3-SNAPSHOT")
 }
