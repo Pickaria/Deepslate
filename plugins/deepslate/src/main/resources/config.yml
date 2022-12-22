@@ -143,3 +143,64 @@ trade_sound: block.large_amethyst_bud.break
 open_sound: block.ender_chest.open
 close_sound: block.ender_chest.close
 grind_place_sound: block.amethyst_cluster.place
+
+#############
+# VILLAGERS #
+#############
+
+villagers:
+  # Sells artefacts
+  artefacts:
+    position:
+      - 0
+      - 0
+      - 0
+    name: "Ignis"
+    type: PLAINS
+    profession: TOOLSMITH
+    uuid:
+      c9663abe-8aff-4c31-8720-efe1471d937f
+  # Sells charged lapis & keys
+  bank:
+    position:
+      - 0
+      - 0
+      - 0
+    name: "Orphéo"
+    type: PLAINS
+    profession: LIBRARIAN
+    uuid:
+      c46c60be-b294-4181-9715-57464dad9c4e
+  # Sells potions
+  potions:
+    position:
+      - 0
+      - 0
+      - 0
+    name: "Elixiria"
+    type: PLAINS
+    profession: CLERIC
+    uuid:
+      51283ec2-8ecc-47ea-8f99-43bf0802b53a
+  # Sells rewards
+  rewards:
+    position:
+      - 0
+      - 0
+      - 0
+    name: "Argyris"
+    type: PLAINS
+    profession: FARMER
+    uuid:
+      2058fe03-3bbe-4459-9ecc-91b4b5795c02
+  # Opens the market menu
+  market:
+    position:
+      - 0
+      - 0
+      - 0
+    name: "Perceval"
+    type: PLAINS
+    profession: BUTCHER
+    uuid:
+      d0f1b0ed-94f7-48a0-8ac1-00da5d5d1a60

@@ -18,7 +18,7 @@ internal class PotionListener : CommandExecutor, TabCompleter, Listener {
 	override fun onCommand(sender: CommandSender, command: Command, label: String, args: Array<out String>?): Boolean {
 		if (sender is Player) {
 			args?.getOrNull(0)?.let {
-				potionConfig.potions[it]
+				Config.potions[it]
 			}?.let {
 				val amount = try {
 					args.getOrNull(1)?.toInt() ?: 1
@@ -26,7 +26,7 @@ internal class PotionListener : CommandExecutor, TabCompleter, Listener {
 					1
 				}
 
-				val itemStack = createPotion(it, amount)
+				val itemStack = it.create(amount)
 				sender.give(itemStack)
 			}
 
@@ -42,7 +42,7 @@ internal class PotionListener : CommandExecutor, TabCompleter, Listener {
 		label: String,
 		args: Array<out String>?,
 	): MutableList<String> {
-		return potionConfig.potions.keys.toMutableList()
+		return Config.potions.keys.toMutableList()
 	}
 
 	@EventHandler
@@ -51,7 +51,7 @@ internal class PotionListener : CommandExecutor, TabCompleter, Listener {
 			val potion = (event.item.itemMeta as PotionMeta)
 
 			potion.persistentDataContainer.get(namespace, PersistentDataType.STRING)?.let {
-				potionConfig.potions[it]?.let { config ->
+				Config.potions[it]?.let { config ->
 					potionController.addPotionEffect(config, event.player)
 					event.setItem(null)
 				}

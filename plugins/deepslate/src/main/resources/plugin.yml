@@ -6,14 +6,14 @@ author: Quozul
 depend:
   - PickariaEconomy
   - PickariaLib
+  - PickariaPotion
+  - PickariaReward
   - PickariaSpawner
   - Vault
 
 commands:
   reforge:
     usage: /reforge
-  placereforge:
-    usage: /placereforge
-  place:
-    usage: /place
+  placeshop:
+    usage: /placeshop
     description: Place un nouveau magasin à l'endroit où se situe le joueur.

@@ -6,11 +6,8 @@ author: Quozul
 depend:
   - PickariaEconomy
   - PickariaLib
-  - PickariaDeepslate
   - Vault
 
 commands:
   reward:
     usage: /reward [reward tier]
-  placereward:
-    usage: /placereward

@@ -1,5 +1,6 @@
 package fr.pickaria.job
 
+import fr.pickaria.potion.PotionConfig
 import net.kyori.adventure.text.Component
 import org.bukkit.Bukkit
 import org.bukkit.Material
@@ -47,10 +48,12 @@ class JobConfig(config: FileConfiguration) {
 	val experienceIncrease = config.getDouble("ascent.experience_increase")
 	val moneyIncrease = config.getDouble("ascent.money_increase")
 
-	val potion = potionController?.registerNewPotion(
-		"job_experience_boost_potion",
-		config.getConfigurationSection("job_experience_boost_potion")!!
-	)
+//	val potion = potionController?.registerNewPotion(
+//		"job_experience_boost_potion",
+//		config.getConfigurationSection("job_experience_boost_potion")!!
+//	)
+
+	val potion: PotionConfig? = null
 
 	val ranks: Map<Int, Component> = config.getConfigurationSection("ranks")!!.run {
 		this.getKeys(false)

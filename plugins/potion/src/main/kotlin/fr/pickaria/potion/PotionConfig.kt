@@ -1,27 +1,27 @@
 package fr.pickaria.potion
 
+import fr.pickaria.shared.ConfigProvider
+import fr.pickaria.shared.GlowEnchantment
 import net.kyori.adventure.bossbar.BossBar
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
 import net.kyori.adventure.text.format.TextDecoration
-import org.bukkit.Bukkit.getLogger
 import org.bukkit.Color
-import org.bukkit.configuration.ConfigurationSection
-import org.bukkit.configuration.file.FileConfiguration
+import org.bukkit.Material
+import org.bukkit.inventory.ItemFlag
+import org.bukkit.inventory.ItemStack
+import org.bukkit.inventory.meta.PotionMeta
+import org.bukkit.persistence.PersistentDataType
 
-class PotionConfig(config: FileConfiguration) {
-	data class Configuration(
-		val key: String,
-		val label: Component,
-		val potionColor: Color,
-		val bossBarColor: BossBar.Color,
-		val duration: Long,
-		val description: String,
-		val power: Int,
-		val lore: List<Component>,
-	)
+class PotionConfig : ConfigProvider() {
+	val label: Component by this
+	val color: BossBar.Color by this
+	val duration: Int by this
+	val description: String by this
+	val effectName: String by this
+	val power: Int by this
 
-	private fun getColor(color: BossBar.Color): Color =
+	private val potionColor: Color by lazy {
 		when (color) {
 			BossBar.Color.PINK -> Color.FUCHSIA
 			BossBar.Color.BLUE -> Color.BLUE
@@ -31,23 +31,18 @@ class PotionConfig(config: FileConfiguration) {
 			BossBar.Color.PURPLE -> Color.PURPLE
 			BossBar.Color.WHITE -> Color.WHITE
 		}
+	}
 
-	internal fun registerNewPotion(key: String, section: ConfigurationSection): Configuration {
-		getLogger().info("Loading potion '$key'")
+	private val minutes by lazy {
+		duration / 60
+	}
 
-		val color = section.getString("color")!!
-		val bossBarColor = BossBar.Color.valueOf(color)
-		val potionColor = getColor(bossBarColor)
+	private val seconds by lazy {
+		duration % 60
+	}
 
-		val duration = section.getLong("duration")
-		val minutes = duration / 60
-		val seconds = duration % 60
-
-		val description = section.getString("description")!!
-		val effectName = section.getString("effect_name")!!
-		val power = section.getInt("power")
-
-		val lore = listOf<Component>(
+	private val lore: List<Component>
+		get() = listOf<Component>(
 			Component.text("$description ($minutes:$seconds)", NamedTextColor.BLUE)
 				.decoration(TextDecoration.ITALIC, TextDecoration.State.FALSE),
 			Component.text(""),
@@ -57,26 +52,20 @@ class PotionConfig(config: FileConfiguration) {
 				.decoration(TextDecoration.ITALIC, TextDecoration.State.FALSE),
 		)
 
-		val label = Component.text(section.getString("label")!!, NamedTextColor.WHITE)
-			.decoration(TextDecoration.ITALIC, TextDecoration.State.FALSE)
+	fun create(amount: Int): ItemStack {
+		val itemStack = ItemStack(Material.POTION, amount)
+		val potion = (itemStack.itemMeta as PotionMeta)
 
-		return Configuration(
-			key,
-			label,
-			potionColor,
-			bossBarColor,
-			duration,
-			description,
-			power,
-			lore,
-		)
+		potion.color = potionColor
+		potion.persistentDataContainer.set(namespace, PersistentDataType.STRING, section!!.name)
+		potion.addEnchant(GlowEnchantment.instance, 1, true)
+		potion.addItemFlags(ItemFlag.HIDE_POTION_EFFECTS)
+
+		potion.displayName(label)
+		potion.lore(lore)
+
+		itemStack.itemMeta = potion
+
+		return itemStack
 	}
-
-	internal val potions: MutableMap<String, Configuration> = config.getConfigurationSection("potions")!!
-		.getKeys(false)
-		.associateWith {
-			val section = config.getConfigurationSection("potions.$it")!!
-			registerNewPotion(it, section)
-		}
-		.toMutableMap()
 }

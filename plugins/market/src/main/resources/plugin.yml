@@ -7,7 +7,6 @@ depend:
   - PickariaDatabase
   - PickariaEconomy
   - PickariaLib
-  - PickariaDeepslate
   - Vault
 
 commands:

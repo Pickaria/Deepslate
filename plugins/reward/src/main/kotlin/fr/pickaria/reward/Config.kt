@@ -5,7 +5,7 @@ import net.kyori.adventure.sound.Sound
 import org.bukkit.Material
 import org.bukkit.loot.LootTable
 
-internal class RewardConfig: ConfigProvider() {
+class RewardConfig : ConfigProvider() {
 	val lootTable: LootTable by this
 	val material: Material by this
 	val name by miniMessageDeserializer
@@ -15,7 +15,7 @@ internal class RewardConfig: ConfigProvider() {
 	val description: List<String> by this
 }
 
-internal object Config: ConfigProvider() {
+object Config : ConfigProvider() {
 	val rewards by sectionLoader<RewardConfig>()
 	val notEnoughMoney by miniMessageDeserializer
 	val cantPurchaseReward by miniMessageDeserializer

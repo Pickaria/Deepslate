@@ -1,6 +1,5 @@
 package fr.pickaria.artefact
 
-import fr.pickaria.Artefact
 import fr.pickaria.Config
 import fr.pickaria.artefactNamespace
 import fr.pickaria.receptacleNamespace
@@ -12,7 +11,7 @@ import org.bukkit.persistence.PersistentDataType
  * Returns the artefact of the item if any.
  */
 val ItemStack.artefact
-	get(): Artefact? =
+	get(): ArtefactConfig? =
 		itemMeta?.persistentDataContainer?.get(artefactNamespace, PersistentDataType.STRING)?.let {
 			Config.lazyArtefacts[it]
 		}
@@ -37,7 +36,7 @@ fun ItemStack.isReceptacle(): Boolean =
 /**
  * Sets the artefact on the ItemStack.
  */
-fun ItemStack.setArtefact(artefact: Artefact): ItemStack {
+fun ItemStack.setArtefact(artefact: ArtefactConfig): ItemStack {
 	editMeta {
 		it.addEnchant(GlowEnchantment.instance, 1, true)
 		it.persistentDataContainer.set(artefactNamespace, PersistentDataType.STRING, artefact.section!!.name)

@@ -6,7 +6,6 @@ import org.bukkit.plugin.ServicePriority
 import org.bukkit.plugin.java.JavaPlugin
 
 internal lateinit var potionController: PotionController
-internal lateinit var potionConfig: PotionConfig
 internal lateinit var namespace: NamespacedKey
 
 class Main : JavaPlugin() {
@@ -16,7 +15,7 @@ class Main : JavaPlugin() {
 		saveDefaultConfig()
 
 		namespace = NamespacedKey(this, "potion")
-		potionConfig = PotionConfig(this.config)
+		Config.setConfig(config)
 
 		val potionListener = PotionListener()
 

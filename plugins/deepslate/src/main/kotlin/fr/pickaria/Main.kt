@@ -9,6 +9,7 @@ import fr.pickaria.reforge.EnchantListeners
 import fr.pickaria.reforge.ReforgeCommand
 import fr.pickaria.shard.GrindstoneListeners
 import fr.pickaria.shard.ShopListeners
+import fr.pickaria.shops.CreateShops
 import org.bukkit.Bukkit
 import org.bukkit.NamespacedKey
 import org.bukkit.plugin.java.JavaPlugin
@@ -40,7 +41,8 @@ class Main : JavaPlugin() {
 		server.pluginManager.registerEvents(EnchantListeners(), this)
 
 		// Shards
-		getCommand("place")?.setExecutor(fr.pickaria.shard.PlaceShopCommand()) ?: server.logger.warning("Command `place` could not be registered")
+		getCommand("placeshop")?.setExecutor(CreateShops())
+			?: server.logger.warning("Command `place` could not be registered")
 
 		Bukkit.getServer().pluginManager.registerEvents(ShopListeners(), this)
 		Bukkit.getServer().pluginManager.registerEvents(GrindstoneListeners(), this)

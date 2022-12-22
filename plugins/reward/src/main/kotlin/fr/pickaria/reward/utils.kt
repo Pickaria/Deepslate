@@ -6,7 +6,7 @@ import org.bukkit.inventory.ItemFlag
 import org.bukkit.inventory.ItemStack
 import org.bukkit.persistence.PersistentDataType
 
-internal fun createReward(key: String, amount: Int = 1) = Config.rewards[key]?.let { reward ->
+fun createReward(key: String, amount: Int = 1) = Config.rewards[key]?.let { reward ->
 	ItemStack(reward.material, amount).also { item ->
 		item.editMeta { meta ->
 			meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES, ItemFlag.HIDE_ENCHANTS)
