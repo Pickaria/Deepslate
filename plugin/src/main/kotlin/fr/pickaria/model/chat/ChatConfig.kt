@@ -2,7 +2,7 @@ package fr.pickaria.model.chat
 
 import com.charleskorn.kaml.Yaml
 import com.charleskorn.kaml.decodeFromStream
-import fr.pickaria.model.getResourceFileStream
+import fr.pickaria.model.datasources.getResourceFileStream
 import fr.pickaria.model.serializers.MiniMessageSerializable
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable

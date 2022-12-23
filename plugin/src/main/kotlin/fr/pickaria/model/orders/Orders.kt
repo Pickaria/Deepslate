@@ -1,4 +1,4 @@
-package fr.pickaria.database.models
+package fr.pickaria.model.orders
 
 import org.bukkit.Bukkit
 import org.bukkit.Material

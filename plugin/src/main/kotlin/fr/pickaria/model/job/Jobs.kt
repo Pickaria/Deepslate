@@ -1,17 +1,20 @@
-package fr.pickaria.database.models
+package fr.pickaria.model.job
 
+import kotlinx.datetime.Clock
+import kotlinx.datetime.LocalDateTime
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.toLocalDateTime
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
-import org.jetbrains.exposed.sql.javatime.datetime
+import org.jetbrains.exposed.sql.kotlin.datetime.datetime
 import org.jetbrains.exposed.sql.transactions.transaction
-import java.time.LocalDateTime
 import java.util.*
 
 internal object Jobs : Table() {
 	val playerUuid = uuid("player_uuid")
 	val job = varchar("job", 16)
 	val experience = double("experience").default(0.0)
-	val lastUsed = datetime("last_used").default(LocalDateTime.now())
+	val lastUsed = datetime("last_used").default(Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()))
 	val active = bool("active").default(false)
 	val ascentPoints = integer("ascent_points").default(0)
 
@@ -23,8 +26,8 @@ class Job(private val row: ResultRow) {
 		fun create(playerId: UUID, job: String, active: Boolean = false) = transaction {
 			Jobs.insert {
 				it[playerUuid] = playerId
-				it[this.job] = job
-				it[this.active] = active
+				it[Jobs.job] = job
+				it[Jobs.active] = active
 			}.resultedValues?.firstOrNull()
 		}?.let { Job(it) }
 
@@ -54,7 +57,7 @@ class Job(private val row: ResultRow) {
 		get() = row[Jobs.experience]
 		set(value) = transaction {
 			Jobs.update({ whereClause() }) {
-				it[Jobs.experience] = value
+				it[experience] = value
 			}
 		}
 
@@ -62,7 +65,7 @@ class Job(private val row: ResultRow) {
 		get() = row[Jobs.active]
 		set(value) = transaction {
 			Jobs.update({ whereClause() }) {
-				it[Jobs.active] = value
+				it[active] = value
 			}
 		}
 
@@ -70,7 +73,7 @@ class Job(private val row: ResultRow) {
 		get() = row[Jobs.lastUsed]
 		set(value) = transaction {
 			Jobs.update({ whereClause() }) {
-				it[Jobs.lastUsed] = value
+				it[lastUsed] = value
 			}
 		}
 
@@ -78,7 +81,7 @@ class Job(private val row: ResultRow) {
 		get() = row[Jobs.ascentPoints]
 		set(value) = transaction {
 			Jobs.update({ whereClause() }) {
-				it[Jobs.ascentPoints] = value
+				it[ascentPoints] = value
 			}
 		}
 }

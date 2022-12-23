@@ -1,4 +1,4 @@
-package fr.pickaria.model
+package fr.pickaria.model.datasources
 
 import fr.pickaria.Main
 import org.bukkit.plugin.java.JavaPlugin

@@ -1,4 +1,4 @@
-package fr.pickaria.database.models
+package fr.pickaria.model.economy
 
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
@@ -62,7 +62,7 @@ class BankAccount(private val row: ResultRow) {
 		get() = row[BankAccounts.balance]
 		set(value) = transaction {
 			BankAccounts.update({ whereClause() }) {
-				it[BankAccounts.balance] = value
+				it[balance] = value
 			}
 		}
 }
