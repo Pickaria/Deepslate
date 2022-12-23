@@ -28,6 +28,7 @@ internal fun jobMenu() = menu("job") {
 	rows = 6
 
 	val playerJobs = opener.jobs().mapNotNull { it.config?.let { config -> config to it } }.toMap()
+	// FIXME: Active jobs are not displayed
 	val activeJobs = playerJobs.filter { (_, job) -> job.active }
 
 	var x = 4 - activeJobs.size / 2
