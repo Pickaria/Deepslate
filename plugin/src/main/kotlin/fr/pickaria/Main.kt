@@ -13,9 +13,10 @@ import fr.pickaria.vue.economy.MoneyCommand
 import fr.pickaria.vue.economy.PayCommand
 import fr.pickaria.vue.home.foodMenu
 import fr.pickaria.vue.home.homeMenu
+import fr.pickaria.vue.market.*
 import fr.pickaria.vue.reforge.EnchantListeners
 import fr.pickaria.vue.shard.GrindstoneListeners
-import fr.pickaria.vue.shop.CreateShops
+import fr.pickaria.vue.shop.PlaceShop
 import fr.pickaria.vue.shop.ShopListeners
 import org.bukkit.plugin.java.JavaPlugin
 
@@ -52,8 +53,8 @@ class Main : JavaPlugin() {
 		server.pluginManager.registerEvents(EnchantListeners(), this)
 
 		// Shards
-		getCommand("placeshop")?.setExecutor(CreateShops())
-			?: server.logger.warning("Command `place` could not be registered")
+		PlaceShop.setupContext(manager.commandContexts, manager.commandCompletions)
+		manager.registerCommand(PlaceShop())
 
 		server.pluginManager.registerEvents(ShopListeners(), this)
 		server.pluginManager.registerEvents(GrindstoneListeners(), this)
@@ -61,5 +62,15 @@ class Main : JavaPlugin() {
 		// Deepslate
 		homeMenu()
 		foodMenu()
+
+		// Market
+		getCommand("sell")?.setExecutor(CreateSellOrderCommand())
+		getCommand("buy")?.setExecutor(BuyOrderCommand())
+		manager.registerCommand(MarketCommand())
+		manager.registerCommand(FakeSellCommand())
+		getCommand("cancel")?.setExecutor(CancelOrderCommand())
+
+		orderListingMenu()
+		ownOrdersMenu()
 	}
 }

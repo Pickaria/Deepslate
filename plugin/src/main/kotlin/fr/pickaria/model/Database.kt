@@ -2,7 +2,7 @@ package fr.pickaria.model
 
 import fr.pickaria.model.economy.BankAccounts
 import fr.pickaria.model.job.Jobs
-import fr.pickaria.model.orders.Orders
+import fr.pickaria.model.market.Orders
 import org.bukkit.Bukkit
 import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.SchemaUtils

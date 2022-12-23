@@ -1,6 +1,6 @@
 package fr.pickaria.job
 
-import fr.pickaria.potion.PotionConfig
+import fr.pickaria.model.potion.PotionConfig
 import fr.pickaria.shared.ConfigProvider
 import net.kyori.adventure.text.Component
 import org.bukkit.Material

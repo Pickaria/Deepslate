@@ -11,9 +11,22 @@ softdepend:
   - Vault
 
 commands:
-  placeshop:
-    usage: /placeshop
-    description: Place un nouveau magasin à l'endroit où se situe le joueur.
   menu:
     usage: /menu
     description: Ouvre le menu du serveur.
+  sell:
+    usage: /sell [material] [quantity] [minimum sell price]
+    description: Creates a sell order for the item in player's hand.
+    permission: pickaria.market.sell
+  buy:
+    usage: /buy <material> [quantity] [maximum buy price]
+    description: Creates a buy order.
+    permission: pickaria.market.buy
+  cancel:
+    usage: /cancel <order id>
+    description: Cancels an order only if the command's sender created id.
+    permission: pickaria.market.cancel
+  market:
+    usage: /market
+    description: Open the market menu.
+    permission: pickaria.market.market

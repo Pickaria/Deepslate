@@ -1,6 +1,6 @@
 package fr.pickaria.job
 
-import fr.pickaria.potion.PotionController
+import fr.pickaria.controller.potion.PotionController
 import fr.pickaria.shared.setupEconomy
 import net.kyori.adventure.text.minimessage.MiniMessage
 import net.milkbowl.vault.economy.Economy
