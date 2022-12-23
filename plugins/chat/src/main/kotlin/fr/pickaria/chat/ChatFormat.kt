@@ -10,10 +10,10 @@ import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 
 
-internal class ChatFormat: Listener {
+internal class ChatFormat : Listener {
 	companion object {
 		val renderer = ChatRenderer { _: Player, sourceDisplayName: Component, message: Component, _: Audience ->
-			sourceDisplayName.append(chatConfig.chatFormat)
+			sourceDisplayName.append(Config.chatFormat)
 				.append(message.color(NamedTextColor.WHITE))
 		}
 	}

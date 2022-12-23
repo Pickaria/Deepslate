@@ -16,7 +16,7 @@ import org.bukkit.event.player.PlayerQuitEvent
 import org.bukkit.scheduler.BukkitRunnable
 import org.bukkit.scheduler.BukkitTask
 import java.util.concurrent.ConcurrentHashMap
-import kotlin.math.*
+import kotlin.math.abs
 
 class JobController(private val plugin: Main) : Listener {
 	private val bossBars: ConcurrentHashMap<Player, BossBar> = ConcurrentHashMap()
@@ -54,9 +54,9 @@ class JobController(private val plugin: Main) : Listener {
 	/**
 	 * Adds experience to a player's job and fire level up events if necessary.
 	 */
-	private fun addExperience(player: Player, job: JobConfig.Configuration, exp: Int): Pair<Int, Double>? =
+	private fun addExperience(player: Player, job: JobConfig, exp: Int): Pair<Int, Double>? =
 		Job.get(player.uniqueId, job.key)?.let {
-			val potionBoost = jobConfig.potion?.let { potion ->
+			val potionBoost = Config.potion.let { potion ->
 				val active = potionController?.hasActivePotionEffect(potion) ?: false
 
 				if (active) {
@@ -64,9 +64,9 @@ class JobController(private val plugin: Main) : Listener {
 				} else {
 					1
 				}
-			} ?: 1
+			}
 
-			val experienceIncrease = (exp + exp * it.ascentPoints * jobConfig.experienceIncrease) * potionBoost
+			val experienceIncrease = (exp + exp * it.ascentPoints * Config.ascent.experienceIncrease) * potionBoost
 
 			val previousLevel = getLevelFromExperience(job, it.experience)
 			val newLevel = getLevelFromExperience(job, it.experience + experienceIncrease)
@@ -76,9 +76,9 @@ class JobController(private val plugin: Main) : Listener {
 			val isNewLevel = newLevel > previousLevel
 
 			if (isNewLevel) {
-				val type = if (newLevel == jobConfig.ascentStartLevel) {
+				val type = if (newLevel == Config.ascent.startLevel) {
 					LevelUpType.ASCENT_UNLOCKED
-				} else if (newLevel >= jobConfig.maxLevel) {
+				} else if (newLevel >= Config.maxLevel) {
 					LevelUpType.MAX_LEVEL_REACHED
 				} else {
 					LevelUpType.NEW_LEVEL
@@ -93,7 +93,7 @@ class JobController(private val plugin: Main) : Listener {
 	/**
 	 * Adds experience and displays a boss bar with information.
 	 */
-	fun addExperienceAndAnnounce(player: Player, job: JobConfig.Configuration, exp: Int) {
+	fun addExperienceAndAnnounce(player: Player, job: JobConfig, exp: Int) {
 		addExperience(player, job, exp)?.also { (level, experience) ->
 			val currentLevelExperience = getExperienceFromLevel(job, level - 1)
 			val nextLevelExperience = getExperienceFromLevel(job, level)

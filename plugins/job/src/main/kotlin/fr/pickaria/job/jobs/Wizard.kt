@@ -1,17 +1,17 @@
 package fr.pickaria.job.jobs
 
+import fr.pickaria.job.Config
 import fr.pickaria.job.hasJob
-import fr.pickaria.job.jobConfig
 import fr.pickaria.job.jobPayPlayer
 import org.bukkit.event.EventHandler
 import org.bukkit.event.EventPriority
 import org.bukkit.event.Listener
 import org.bukkit.event.enchantment.EnchantItemEvent
 
-class Wizard: Listener {
+class Wizard : Listener {
 	companion object {
 		private const val JOB_NAME = "wizard"
-		private val config = jobConfig.jobs[JOB_NAME]!!
+		private val config = Config.jobs[JOB_NAME]!!
 	}
 
 	private val levels = mapOf(

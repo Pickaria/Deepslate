@@ -1,9 +1,9 @@
 package fr.pickaria.job
 
+import fr.pickaria.home.addToHome
 import fr.pickaria.menu.Result
 import fr.pickaria.menu.closeItem
 import fr.pickaria.menu.fill
-import fr.pickaria.home.addToHome
 import fr.pickaria.menu.menu
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
@@ -53,7 +53,7 @@ internal fun jobMenu() = menu("job") {
 
 	x = 1
 
-	jobConfig.jobs.forEach { (key, config) ->
+	Config.jobs.forEach { (key, config) ->
 		val job = playerJobs[config]
 		val isCurrentJob = job?.active ?: false
 
@@ -78,8 +78,8 @@ internal fun jobMenu() = menu("job") {
 
 						if (it.ascentPoints > 0) {
 							"Points d'ascension" to it.ascentPoints
-							"Bonus d'expérience" to "+${decimalFormat.format(it.ascentPoints * jobConfig.experienceIncrease * 100)}%"
-							"Bonus de revenus" to "+${decimalFormat.format(it.ascentPoints * jobConfig.moneyIncrease * 100)}%"
+							"Bonus d'expérience" to "+${decimalFormat.format(it.ascentPoints * Config.ascent.experienceIncrease * 100)}%"
+							"Bonus de revenus" to "+${decimalFormat.format(it.ascentPoints * Config.ascent.moneyIncrease * 100)}%"
 						}
 					}
 				}

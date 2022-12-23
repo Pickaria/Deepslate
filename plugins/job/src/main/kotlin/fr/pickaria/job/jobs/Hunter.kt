@@ -1,7 +1,7 @@
 package fr.pickaria.job.jobs
 
+import fr.pickaria.job.Config
 import fr.pickaria.job.hasJob
-import fr.pickaria.job.jobConfig
 import fr.pickaria.job.jobPayPlayer
 import org.bukkit.entity.EntityType
 import org.bukkit.event.EventHandler
@@ -13,7 +13,7 @@ import org.bukkit.event.entity.EntityDeathEvent
 class Hunter : Listener {
 	companion object {
 		private const val JOB_NAME = "hunter"
-		private val config = jobConfig.jobs[JOB_NAME]!!
+		private val config = Config.jobs[JOB_NAME]!!
 	}
 
 	private val monsters = mapOf(
@@ -63,7 +63,7 @@ class Hunter : Listener {
 	@EventHandler(priority = EventPriority.LOW)
 	fun onEntityDeath(event: EntityDeathEvent) {
 		event.entity.killer?.let { player ->
-			if (player hasJob  JOB_NAME) {
+			if (player hasJob JOB_NAME) {
 				monsters[event.entityType]?.let {
 					jobPayPlayer(player, it.first, config, it.second)
 				}

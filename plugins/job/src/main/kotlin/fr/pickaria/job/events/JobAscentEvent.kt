@@ -8,7 +8,7 @@ import org.bukkit.event.HandlerList
 
 class JobAscentEvent internal constructor(
 	val player: Player,
-	val job: JobConfig.Configuration,
+	val job: JobConfig,
 	val ascentPoints: Int
 ) : Event(), Cancellable {
 	private var isCancelled = false

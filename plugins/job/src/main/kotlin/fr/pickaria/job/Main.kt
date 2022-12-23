@@ -8,7 +8,6 @@ import org.bukkit.Bukkit.getServicesManager
 import org.bukkit.plugin.java.JavaPlugin
 
 internal lateinit var jobController: JobController
-internal lateinit var jobConfig: JobConfig
 internal lateinit var economy: Economy
 internal val miniMessage: MiniMessage = MiniMessage.miniMessage()
 internal val potionController: PotionController? = try {
@@ -26,7 +25,7 @@ class Main : JavaPlugin() {
 
 			saveDefaultConfig()
 
-			jobConfig = JobConfig(this.config)
+			Config.setConfig(config)
 
 			jobMenu()
 

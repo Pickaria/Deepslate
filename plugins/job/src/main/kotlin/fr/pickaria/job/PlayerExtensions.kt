@@ -47,12 +47,13 @@ internal infix fun Player.leaveJob(jobName: String) {
  */
 internal fun Player.getRank(): Component {
 	val ascendPoints = Job.get(uniqueId).sumOf { it.ascentPoints }
-	for ((points, suffix) in jobConfig.ranks) {
+	for ((points, suffix) in Config.ranks) {
 		if (ascendPoints >= points) {
 			return suffix.hoverEvent(
 				HoverEvent.showText(
-				miniMessage.deserialize(jobConfig.rankHover, Placeholder.parsed("points", ascendPoints.toString()))
-			))
+					miniMessage.deserialize(Config.rankHover, Placeholder.parsed("points", ascendPoints.toString()))
+				)
+			)
 		}
 	}
 	return Component.empty()
@@ -62,7 +63,7 @@ internal fun Player.getRank(): Component {
  * Returns the time in minutes before the player can leave the given job.
  */
 internal fun Player.getJobCooldown(jobName: String): Int {
-	val previousDay = LocalDateTime.now().minusHours(jobConfig.cooldown)
+	val previousDay = LocalDateTime.now().minusHours(Config.cooldown)
 
 	val job = Job.get(uniqueId, jobName)
 	return if (job == null || !job.active) {
@@ -74,7 +75,7 @@ internal fun Player.getJobCooldown(jobName: String): Int {
 
 internal infix fun Player.ascentJob(jobName: String): Boolean =
 	Job.get(uniqueId, jobName)?.let { job ->
-		jobConfig.jobs[jobName]?.let { config ->
+		Config.jobs[jobName]?.let { config ->
 			val ascentPoints = getAscentPoints(job, config)
 			if (ascentPoints > 0) {
 				ascentJob(config, job, ascentPoints)
@@ -86,7 +87,7 @@ internal infix fun Player.ascentJob(jobName: String): Boolean =
 		} ?: false
 	} ?: false
 
-internal fun Player.ascentJob(config: JobConfig.Configuration, job: Job, ascentPoints: Int) {
+internal fun Player.ascentJob(config: JobConfig, job: Job, ascentPoints: Int) {
 	job.ascentPoints += ascentPoints
 	job.experience = 0.0
 
@@ -103,5 +104,5 @@ internal fun Player.refreshDisplayName() {
 
 internal fun Player.jobs() = Job.get(uniqueId)
 
-internal val Job.config: JobConfig.Configuration?
-	get() = jobConfig.jobs[this.job]
+internal val Job.config: JobConfig?
+	get() = Config.jobs[this.job]

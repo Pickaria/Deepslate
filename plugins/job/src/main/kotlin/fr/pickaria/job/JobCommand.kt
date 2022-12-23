@@ -10,16 +10,16 @@ import org.bukkit.entity.Player
 
 class JobCommand : CommandExecutor, TabCompleter {
 	companion object {
-		private val SUB_COMMANDS = listOf("ascent", "join", "leave", "menu","top")
+		private val SUB_COMMANDS = listOf("ascent", "join", "leave", "menu", "top")
 	}
 
 	override fun onCommand(sender: CommandSender, command: Command, label: String, args: Array<out String>): Boolean {
 		if (sender is Player) {
 			if (args.isEmpty()) {
 				val message = if (sender.jobCount() == 0) {
-				 	"§cVous n'exercez actuellement pas de métier."
+					"§cVous n'exercez actuellement pas de métier."
 				} else {
-					val jobs = Job.get(sender.uniqueId).filter { it.active }.mapNotNull { jobConfig.jobs[it.job]?.label }
+					val jobs = Job.get(sender.uniqueId).filter { it.active }.mapNotNull { Config.jobs[it.job]?.label }
 					"§7Vous exercez le(s) métier(s) : ${jobs.joinToString(", ")}."
 				}
 				sender.sendMessage(message)
@@ -36,15 +36,15 @@ class JobCommand : CommandExecutor, TabCompleter {
 				return false
 			}
 
-			val job = jobConfig.jobs[args[1].lowercase()] ?: run {
+			val job = Config.jobs[args[1].lowercase()] ?: run {
 				sender.sendMessage("§cCe métier n'existe pas.")
 				return true
 			}
 
 			when (args[0]) {
 				"join" -> {
-					if (sender.jobCount() >= jobConfig.maxJobs) {
-						sender.sendMessage("§cVous ne pouvez pas avoir plus de ${jobConfig.maxJobs} métier(s).")
+					if (sender.jobCount() >= Config.maxJobs) {
+						sender.sendMessage("§cVous ne pouvez pas avoir plus de ${Config.maxJobs} métier(s).")
 					} else if (sender.hasJob(job.key)) {
 						sender.sendMessage("§cVous exercez déjà ce métier.")
 					} else {
@@ -100,7 +100,7 @@ class JobCommand : CommandExecutor, TabCompleter {
 				1 -> SUB_COMMANDS.filter { it.startsWith(args[0]) }.toMutableList()
 
 				2 -> when (args[0]) {
-					"top", "join" -> jobConfig.jobs.keys.map { it.lowercase() }.filter { it.startsWith(args[1]) }
+					"top", "join" -> Config.jobs.keys.map { it.lowercase() }.filter { it.startsWith(args[1]) }
 						.toMutableList()
 
 					"leave", "ascent" -> Job.get(sender.uniqueId)

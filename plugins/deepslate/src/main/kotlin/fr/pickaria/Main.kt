@@ -26,14 +26,14 @@ class Main : JavaPlugin() {
 		Config.setConfig(config)
 
 		// Artefacts
-		artefactNamespace = NamespacedKey(this, "artefact")
-		receptacleNamespace = NamespacedKey(this, "receptacle")
+		artefactNamespace = NamespacedKey("pickaria", "artefact")
+		receptacleNamespace = NamespacedKey("pickaria", "receptacle")
 
 		server.pluginManager.registerEvents(ArtefactListeners(), this)
 		server.pluginManager.registerEvents(SmithingListeners(), this)
 
 		// Reforge
-		reforgeNamespace = NamespacedKey(this, "reforge")
+		reforgeNamespace = NamespacedKey("pickaria", "reforge")
 
 		server.pluginManager.registerEvents(EnchantListeners(), this)
 
@@ -49,7 +49,7 @@ class Main : JavaPlugin() {
 		foodMenu()
 
 		// Shops
-		menuNamespace = NamespacedKey(this, "menu")
+		menuNamespace = NamespacedKey("pickaria", "menu")
 	}
 
 	override fun onDisable() {

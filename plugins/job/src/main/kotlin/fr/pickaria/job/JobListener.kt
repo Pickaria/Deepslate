@@ -28,7 +28,8 @@ class JobListener : Listener {
 			player.showTitle(title)
 		} else if (type == LevelUpType.MAX_LEVEL_REACHED) {
 			val mainTitle = Component.text("Niveau maximum atteint", NamedTextColor.GOLD)
-			val subtitle = Component.text("Vous avez atteint le niveau maximum dans le métier $label !", NamedTextColor.GRAY)
+			val subtitle =
+				Component.text("Vous avez atteint le niveau maximum dans le métier $label !", NamedTextColor.GRAY)
 			val title = Title.title(mainTitle, subtitle)
 
 			player.showTitle(title)
@@ -41,13 +42,13 @@ class JobListener : Listener {
 		val label = event.job.label
 		val ascentPoints = event.ascentPoints
 
-		val experienceBoost = jobConfig.experienceIncrease * ascentPoints * 100
-		val moneyBoost = jobConfig.moneyIncrease * ascentPoints * 100
+		val experienceBoost = Config.ascent.experienceIncrease * ascentPoints * 100
+		val moneyBoost = Config.ascent.moneyIncrease * ascentPoints * 100
 
 		player.playSound(player.location, Sound.ENTITY_PLAYER_LEVELUP, 1.0f, 1.0f)
 		player.sendMessage(
 			"§7Vous avez effectué une ascension et collecté §6$ascentPoints§7 points d'ascension dans le métier §6$label§7.\n" +
-			"§7Vous obtenez un bonus de §6$experienceBoost%§7 d'expérience ainsi que §6$moneyBoost%§7 de revenus supplémentaires."
+					"§7Vous obtenez un bonus de §6$experienceBoost%§7 d'expérience ainsi que §6$moneyBoost%§7 de revenus supplémentaires."
 		)
 	}
 }

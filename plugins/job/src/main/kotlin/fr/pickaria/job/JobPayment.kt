@@ -3,9 +3,9 @@ package fr.pickaria.job
 import fr.pickaria.database.models.Job
 import net.kyori.adventure.text.Component
 import net.milkbowl.vault.economy.EconomyResponse
+import org.bukkit.Bukkit.getLogger
 import org.bukkit.Sound
 import org.bukkit.entity.Player
-import org.bukkit.Bukkit.getLogger
 import kotlin.math.pow
 
 private val lastPayment = mutableMapOf<Player, Long>()
@@ -13,7 +13,7 @@ private val lastPayment = mutableMapOf<Player, Long>()
 private fun jobPayPlayer(player: Player, amount: Double): Boolean {
 	val now = System.currentTimeMillis() // This uses 32 bit, alert for future us
 
-	if (now - (lastPayment[player] ?: 0L) < jobConfig.lastPaymentDelay) {
+	if (now - (lastPayment[player] ?: 0L) < Config.lastPaymentDelay) {
 		return false
 	}
 	lastPayment[player] = now
@@ -30,11 +30,11 @@ private fun jobPayPlayer(player: Player, amount: Double): Boolean {
 	}
 }
 
-fun jobPayPlayer(player: Player, amount: Double, config: JobConfig.Configuration, experienceToGive: Int = 0) {
+fun jobPayPlayer(player: Player, amount: Double, config: JobConfig, experienceToGive: Int = 0) {
 	Job.get(player.uniqueId, config.key)?.let {
 		val level = getLevelFromExperience(config, it.experience)
 		val amountToPay = amount * config.revenueIncrease.pow(level)
-		val amountIncrease = amountToPay + amountToPay * it.ascentPoints * jobConfig.moneyIncrease
+		val amountIncrease = amountToPay + amountToPay * it.ascentPoints * Config.ascent.moneyIncrease
 
 		if (jobPayPlayer(player, amountIncrease) && experienceToGive > 0) {
 			jobController.addExperienceAndAnnounce(player, config, experienceToGive)

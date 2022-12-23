@@ -11,7 +11,7 @@ class Main : JavaPlugin() {
 
 		saveDefaultConfig()
 		Config.setConfig(config)
-		namespace = NamespacedKey(this, "reward")
+		namespace = NamespacedKey("pickaria", "reward")
 
 		getCommand("reward")?.setExecutor(RewardCommand())
 		server.pluginManager.registerEvents(RewardListeners(), this)

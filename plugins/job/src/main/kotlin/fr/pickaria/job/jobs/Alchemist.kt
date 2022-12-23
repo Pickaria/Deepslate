@@ -1,7 +1,7 @@
 package fr.pickaria.job.jobs
 
+import fr.pickaria.job.Config
 import fr.pickaria.job.hasJob
-import fr.pickaria.job.jobConfig
 import fr.pickaria.job.jobPayPlayer
 import org.bukkit.Location
 import org.bukkit.Material
@@ -15,16 +15,17 @@ import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.meta.PotionMeta
 
-class Alchemist: Listener {
+class Alchemist : Listener {
 	companion object {
 		private const val JOB_NAME = "alchemist"
-		private val config = jobConfig.jobs[JOB_NAME]!!
+		private val config = Config.jobs[JOB_NAME]!!
 	}
 
 	private fun isPotion(itemStack: ItemStack): Boolean {
 		return if (itemStack.type == Material.POTION ||
 			itemStack.type == Material.SPLASH_POTION ||
-			itemStack.type == Material.LINGERING_POTION) {
+			itemStack.type == Material.LINGERING_POTION
+		) {
 			(itemStack.itemMeta as PotionMeta).basePotionData.type.effectType != null
 		} else {
 			false

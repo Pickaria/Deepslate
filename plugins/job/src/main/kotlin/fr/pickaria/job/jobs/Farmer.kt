@@ -1,7 +1,7 @@
 package fr.pickaria.job.jobs
 
+import fr.pickaria.job.Config
 import fr.pickaria.job.hasJob
-import fr.pickaria.job.jobConfig
 import fr.pickaria.job.jobPayPlayer
 import org.bukkit.Material
 import org.bukkit.block.data.Ageable
@@ -14,7 +14,7 @@ import org.bukkit.event.world.StructureGrowEvent
 class Farmer : Listener {
 	companion object {
 		private const val JOB_NAME = "farmer"
-		private val config = jobConfig.jobs[JOB_NAME]!!
+		private val config = Config.jobs[JOB_NAME]!!
 	}
 
 	private val crops = mapOf(

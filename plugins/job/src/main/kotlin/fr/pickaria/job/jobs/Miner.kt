@@ -1,7 +1,7 @@
 package fr.pickaria.job.jobs
 
+import fr.pickaria.job.Config
 import fr.pickaria.job.hasJob
-import fr.pickaria.job.jobConfig
 import fr.pickaria.job.jobPayPlayer
 import org.bukkit.Material
 import org.bukkit.enchantments.Enchantment
@@ -10,10 +10,10 @@ import org.bukkit.event.EventPriority
 import org.bukkit.event.Listener
 import org.bukkit.event.block.BlockBreakEvent
 
-class Miner: Listener {
+class Miner : Listener {
 	companion object {
 		private const val JOB_NAME = "miner"
-		private val config = jobConfig.jobs[JOB_NAME]!!
+		private val config = Config.jobs[JOB_NAME]!!
 	}
 
 	private val materials = mapOf(

@@ -14,7 +14,7 @@ class Main : JavaPlugin() {
 
 		saveDefaultConfig()
 
-		namespace = NamespacedKey(this, "potion")
+		namespace = NamespacedKey("pickaria", "potion")
 		Config.setConfig(config)
 
 		val potionListener = PotionListener()

@@ -1,7 +1,7 @@
 package fr.pickaria.job.jobs
 
+import fr.pickaria.job.Config
 import fr.pickaria.job.hasJob
-import fr.pickaria.job.jobConfig
 import fr.pickaria.job.jobPayPlayer
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
@@ -10,10 +10,10 @@ import org.bukkit.event.Listener
 import org.bukkit.event.entity.EntityBreedEvent
 import org.bukkit.event.entity.EntityTameEvent
 
-class Breeder: Listener {
+class Breeder : Listener {
 	companion object {
 		private const val JOB_NAME = "breeder"
-		private val config = jobConfig.jobs[JOB_NAME]!!
+		private val config = Config.jobs[JOB_NAME]!!
 	}
 
 	@EventHandler(priority = EventPriority.MONITOR)
