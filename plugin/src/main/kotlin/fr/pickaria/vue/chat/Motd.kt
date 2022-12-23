@@ -1,5 +1,6 @@
-package fr.pickaria.chat
+package fr.pickaria.vue.chat
 
+import fr.pickaria.model.chat.chatConfig
 import fr.pickaria.shared.MiniMessage
 import org.bukkit.Bukkit
 import org.bukkit.event.EventHandler
@@ -16,7 +17,7 @@ internal class Motd : Listener {
 		val minutes = ticks % 1000 * 60 / 1000
 
 		val time = String.format("%02d:%02d", hours, minutes)
-		val motd = MiniMessage(Config.messageOfTheDay) {
+		val motd = MiniMessage(chatConfig.messageOfTheDay.joinToString("<newline>")) {
 			"time" to time
 		}.message
 		event.motd(motd)
