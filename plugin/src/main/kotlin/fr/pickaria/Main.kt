@@ -73,8 +73,10 @@ class Main : JavaPlugin() {
 		foodMenu()
 
 		// Market
-		getCommand("sell")?.setExecutor(CreateSellOrderCommand())
+//		getCommand("sell")?.setExecutor(CreateSellOrderCommand())
+		SellCommand.setupContext(manager.commandContexts, manager.commandCompletions)
 		getCommand("buy")?.setExecutor(BuyOrderCommand())
+		manager.registerCommand(SellCommand())
 		manager.registerCommand(MarketCommand())
 		manager.registerCommand(FakeSellCommand())
 		getCommand("cancel")?.setExecutor(CancelOrderCommand())

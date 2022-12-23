@@ -4,6 +4,7 @@ import co.aikar.commands.BaseCommand
 import co.aikar.commands.annotation.CommandAlias
 import co.aikar.commands.annotation.CommandPermission
 import co.aikar.commands.annotation.Default
+import co.aikar.commands.annotation.Description
 import fr.pickaria.model.market.Order
 import fr.pickaria.model.market.OrderType
 import org.bukkit.Material
@@ -13,6 +14,7 @@ import kotlin.random.Random
 
 @CommandAlias("fakesell")
 @CommandPermission("pickaria.developer.command.fake")
+@Description("Met en vente tous les matériaux du jeu.")
 class FakeSellCommand : BaseCommand() {
 	@Default
 	fun onDefault(sender: Player) {
@@ -20,7 +22,7 @@ class FakeSellCommand : BaseCommand() {
 		var amount = 0
 
 		val materials = Material.values().toList().filter {
-			it.isBlock || it.isItem
+			(it.isBlock || it.isItem) && !it.isEmpty
 		}
 
 		val start = System.currentTimeMillis()
