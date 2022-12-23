@@ -14,8 +14,8 @@ class VillagerController(val model: VillagerConfig) {
 		get() = when (model.type) {
 			ShopType.ARTEFACTS -> getArtefactsOffers()
 			ShopType.BANK -> getBankOffers()
-			/*ShopType.POTIONS -> getPotionsOffers()
-			ShopType.REWARDS -> getRewardsOffers()*/
+			ShopType.POTIONS -> getPotionsOffers()
+			ShopType.REWARDS -> getRewardsOffers()
 			else -> emptyList()
 		}
 

@@ -1,6 +1,7 @@
 package fr.pickaria
 
 import fr.pickaria.controller.initCommandManager
+import fr.pickaria.controller.potion.runnable
 import fr.pickaria.model.openDatabase
 import fr.pickaria.vue.PingCommand
 import fr.pickaria.vue.artefact.ArtefactListeners
@@ -14,10 +15,15 @@ import fr.pickaria.vue.economy.PayCommand
 import fr.pickaria.vue.home.foodMenu
 import fr.pickaria.vue.home.homeMenu
 import fr.pickaria.vue.market.*
+import fr.pickaria.vue.potion.PotionCommand
+import fr.pickaria.vue.potion.PotionListener
 import fr.pickaria.vue.reforge.EnchantListeners
+import fr.pickaria.vue.reward.RewardCommand
+import fr.pickaria.vue.reward.RewardListeners
 import fr.pickaria.vue.shard.GrindstoneListeners
 import fr.pickaria.vue.shop.PlaceShop
 import fr.pickaria.vue.shop.ShopListeners
+import org.bukkit.Bukkit
 import org.bukkit.plugin.java.JavaPlugin
 
 class Main : JavaPlugin() {
@@ -72,5 +78,16 @@ class Main : JavaPlugin() {
 
 		orderListingMenu()
 		ownOrdersMenu()
+
+		// Potion
+		PotionCommand.setupContext(manager.commandContexts, manager.commandCompletions)
+		manager.registerCommand(PotionCommand())
+		server.pluginManager.registerEvents(PotionListener(), this)
+		Bukkit.getScheduler().runTaskTimerAsynchronously(this, runnable, 0, 20)
+
+		// Reward
+		RewardCommand.setupContext(manager.commandContexts, manager.commandCompletions)
+		manager.registerCommand(RewardCommand())
+		server.pluginManager.registerEvents(RewardListeners(), this)
 	}
 }

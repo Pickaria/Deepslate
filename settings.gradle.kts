@@ -13,13 +13,11 @@ include("plugin", "libraries")
 /*include(
 	"deepslate",
 	"job",
-	"market",
 	"potion",
 	"reward"
 )
 project(":deepslate").projectDir = File("plugins/deepslate")
 project(":job").projectDir = File("plugins/job")
-project(":market").projectDir = File("plugins/market")
 project(":potion").projectDir = File("plugins/potion")
 project(":reward").projectDir = File("plugins/reward")*/
 

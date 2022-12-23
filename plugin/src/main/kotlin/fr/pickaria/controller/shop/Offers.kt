@@ -7,6 +7,10 @@ import fr.pickaria.model.economy.Credit
 import fr.pickaria.model.economy.Key
 import fr.pickaria.model.economy.Shard
 import fr.pickaria.model.economy.toController
+import fr.pickaria.model.potion.potionConfig
+import fr.pickaria.model.potion.toController
+import fr.pickaria.model.reward.rewardConfig
+import fr.pickaria.model.reward.toController
 import org.bukkit.inventory.MerchantRecipe
 
 fun getArtefactsOffers(): List<MerchantRecipe> =
@@ -63,20 +67,19 @@ fun getBankOffers(): List<MerchantRecipe> {
 	)
 }
 
-/*fun getRewardsOffers(): List<MerchantRecipe> =
-	rewardConfig.rewards.filter { it.value.purchasable }.map { (key, config) ->
-		createReward(key)?.let { item ->
-			MerchantRecipe(item.clone().apply { amount = 1 }, Int.MAX_VALUE).apply {
-				uses = 0
-				addIngredient(keyController.item(config.keys))
-				addIngredient(Shard.item(config.shards))
-			}
+fun getRewardsOffers(): List<MerchantRecipe> =
+	rewardConfig.rewards.filter { it.value.purchasable }.map { (_, reward) ->
+		val item = reward.toController().create()
+		MerchantRecipe(item.clone().apply { amount = 1 }, Int.MAX_VALUE).apply {
+			uses = 0
+			addIngredient(Key.toController().item(reward.keys))
+			addIngredient(Shard.toController().item(reward.shards))
 		}
-	}.filterNotNull()
-
-fun getPotionsOffers(): List<MerchantRecipe> = PotionConfig.potions.map { (key, config) ->
-	MerchantRecipe(config.create(1).apply { amount = 1 }, Int.MAX_VALUE).apply {
-		uses = 0
-		addIngredient(creditController.item(5))
 	}
-}*/
+
+fun getPotionsOffers(): List<MerchantRecipe> = potionConfig.potions.map { (_, config) ->
+	MerchantRecipe(config.toController().create().apply { amount = 1 }, Int.MAX_VALUE).apply {
+		uses = 0
+		addIngredient(Credit.toController().item(5))
+	}
+}
