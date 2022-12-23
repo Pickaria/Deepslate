@@ -1,6 +1,6 @@
-package fr.pickaria.economy
+package fr.pickaria.controller.economy
 
-import fr.pickaria.database.models.BankAccount
+import fr.pickaria.model.economy.BankAccount
 import net.milkbowl.vault.economy.AbstractEconomy
 import net.milkbowl.vault.economy.EconomyResponse
 import net.milkbowl.vault.economy.EconomyResponse.ResponseType

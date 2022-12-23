@@ -1,20 +1,23 @@
 package fr.pickaria
 
-import co.aikar.commands.PaperCommandManager
+import fr.pickaria.controller.acf.initCommandManager
 import fr.pickaria.model.datasources.openDatabase
 import fr.pickaria.vue.PingCommand
 import fr.pickaria.vue.chat.ChatFormat
 import fr.pickaria.vue.chat.Motd
 import fr.pickaria.vue.chat.PlayerJoin
+import fr.pickaria.vue.economy.BalanceTopCommand
+import fr.pickaria.vue.economy.MoneyCommand
+import fr.pickaria.vue.economy.PayCommand
 import org.bukkit.plugin.java.JavaPlugin
 
 class Main : JavaPlugin() {
 	override fun onEnable() {
 		super.onEnable()
-		val manager = PaperCommandManager(this)
-		manager.registerCommand(PingCommand())
-
 		saveDefaultConfig()
+
+		val manager = initCommandManager(this)
+		manager.registerCommand(PingCommand())
 
 		// Chat
 		server.pluginManager.let {
@@ -25,5 +28,10 @@ class Main : JavaPlugin() {
 
 		// Database
 		openDatabase(dataFolder.absolutePath + "/database")
+
+		// Economy
+		manager.registerCommand(PayCommand())
+		manager.registerCommand(MoneyCommand())
+		manager.registerCommand(BalanceTopCommand())
 	}
 }

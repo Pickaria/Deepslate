@@ -17,8 +17,8 @@ fun getResourceFileStream(filename: String): FileInputStream {
 	val customConfigFile = File(plugin.dataFolder, filename)
 	if (!customConfigFile.exists()) {
 		customConfigFile.parentFile.mkdirs()
-		plugin.saveResource(filename, false)
 	}
+	plugin.saveResource(filename, true) // TODO: Do not replace default configuration
 
 	return customConfigFile.inputStream()
 }

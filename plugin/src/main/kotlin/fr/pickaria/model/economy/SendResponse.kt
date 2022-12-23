@@ -1,4 +1,4 @@
-package fr.pickaria.economy
+package fr.pickaria.model.economy
 
 enum class SendResponse {
 	RECEIVE_ERROR,

@@ -1,16 +1,17 @@
-package fr.pickaria.economy
+package fr.pickaria.controller.economy
 
+import fr.pickaria.model.economy.currencyNamespace
+import fr.pickaria.model.economy.valueNamespace
 import fr.pickaria.shared.GlowEnchantment
 import net.milkbowl.vault.economy.EconomyResponse
-import org.bukkit.Bukkit
 import org.bukkit.OfflinePlayer
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 import org.bukkit.persistence.PersistentDataType
 
-abstract class CurrencyExtensions(vararg currencies: Currency) {
-	private val currencies = currencies.associateBy { it.account }
-	private val accounts = currencies.map { it.account }
+abstract class CurrencyExtensions(vararg currencies: CurrencyController) {
+	private val currencies = currencies.associateBy { it.model.account }
+	private val accounts = currencies.map { it.model.account }
 
 	// ItemStack extensions
 
@@ -31,7 +32,7 @@ abstract class CurrencyExtensions(vararg currencies: Currency) {
 	/**
 	 * The currency of the current item if any.
 	 */
-	val ItemStack.currency: Currency?
+	val ItemStack.currency: CurrencyController?
 		get() = if (isCurrency()) {
 			currencies[account]
 		} else {
@@ -67,17 +68,17 @@ abstract class CurrencyExtensions(vararg currencies: Currency) {
 
 	infix fun OfflinePlayer.has(itemStack: ItemStack): Boolean =
 		itemStack.currency?.let {
-			has(it, itemStack.totalValue)
+			has(it.model, itemStack.totalValue)
 		} ?: false
 
 	infix fun OfflinePlayer.withdraw(itemStack: ItemStack): EconomyResponse =
 		itemStack.currency?.let {
-			if (has(it, itemStack.totalValue)) {
-				withdraw(it, itemStack.totalValue)
+			if (has(it.model, itemStack.totalValue)) {
+				withdraw(it.model, itemStack.totalValue)
 			} else {
 				EconomyResponse(
 					0.0,
-					balance(it),
+					balance(it.model),
 					EconomyResponse.ResponseType.FAILURE,
 					"Player do not have enough money."
 				)

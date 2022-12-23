@@ -1,5 +1,7 @@
-package fr.pickaria.economy
+package fr.pickaria.controller.economy
 
+import fr.pickaria.model.economy.currencyNamespace
+import fr.pickaria.model.economy.valueNamespace
 import org.bukkit.inventory.ItemStack
 import org.bukkit.persistence.PersistentDataType
 

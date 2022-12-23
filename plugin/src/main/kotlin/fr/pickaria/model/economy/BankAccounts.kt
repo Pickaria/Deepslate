@@ -47,6 +47,14 @@ class BankAccount(private val row: ResultRow) {
 			BankAccounts.select { BankAccounts.accountName eq account }
 				.count()
 		}
+
+		fun getAccounts(playerId: UUID) = transaction {
+			BankAccounts
+				.slice(BankAccounts.accountName)
+				.select {
+					(BankAccounts.playerUuid eq playerId)
+				}.map { it[BankAccounts.accountName] }
+		}
 	}
 
 	private val whereClause =
