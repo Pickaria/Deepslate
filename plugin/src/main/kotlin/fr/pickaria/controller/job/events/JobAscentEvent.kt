@@ -1,17 +1,15 @@
-package fr.pickaria.job.events
+package fr.pickaria.controller.job.events
 
-import fr.pickaria.job.JobConfig
-import fr.pickaria.job.LevelUpType
+import fr.pickaria.model.job.Job
 import org.bukkit.entity.Player
 import org.bukkit.event.Cancellable
 import org.bukkit.event.Event
 import org.bukkit.event.HandlerList
 
-class JobLevelUpEvent internal constructor(
+class JobAscentEvent internal constructor(
 	val player: Player,
-	val type: LevelUpType,
-	val job: JobConfig,
-	val level: Int
+	val job: Job,
+	val ascentPoints: Int
 ) : Event(), Cancellable {
 	private var isCancelled = false
 

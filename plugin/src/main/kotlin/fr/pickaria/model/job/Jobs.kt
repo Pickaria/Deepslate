@@ -21,7 +21,7 @@ internal object Jobs : Table() {
 	override val primaryKey = PrimaryKey(playerUuid, job)
 }
 
-class Job(private val row: ResultRow) {
+class JobModel(private val row: ResultRow) {
 	companion object {
 		fun create(playerId: UUID, job: String, active: Boolean = false) = transaction {
 			Jobs.insert {
@@ -29,23 +29,23 @@ class Job(private val row: ResultRow) {
 				it[Jobs.job] = job
 				it[Jobs.active] = active
 			}.resultedValues?.firstOrNull()
-		}?.let { Job(it) }
+		}?.let { JobModel(it) }
 
 		fun get(playerId: UUID, job: String) = transaction {
 			Jobs.select {
 				(Jobs.playerUuid eq playerId) and (Jobs.job eq job)
 			}.firstOrNull()
-		}?.let { Job(it) }
+		}?.let { JobModel(it) }
 
 		fun get(playerId: UUID) = transaction {
 			Jobs.select {
 				Jobs.playerUuid eq playerId
-			}.map { Job(it) }
+			}.map { JobModel(it) }
 		}
 	}
 
 	private val whereClause =
-		{ (Jobs.playerUuid eq this@Job.playerUuid) and (Jobs.job eq this@Job.job) }
+		{ (Jobs.playerUuid eq this@JobModel.playerUuid) and (Jobs.job eq this@JobModel.job) }
 
 	val playerUuid: UUID
 		get() = row[Jobs.playerUuid]

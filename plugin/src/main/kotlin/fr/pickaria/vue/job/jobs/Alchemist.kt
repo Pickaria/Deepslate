@@ -1,8 +1,8 @@
-package fr.pickaria.job.jobs
+package fr.pickaria.vue.job.jobs
 
-import fr.pickaria.job.Config
-import fr.pickaria.job.hasJob
-import fr.pickaria.job.jobPayPlayer
+import fr.pickaria.controller.job.hasJob
+import fr.pickaria.controller.job.jobPayPlayer
+import fr.pickaria.model.job.JobType
 import org.bukkit.Location
 import org.bukkit.Material
 import org.bukkit.entity.Player
@@ -17,8 +17,7 @@ import org.bukkit.inventory.meta.PotionMeta
 
 class Alchemist : Listener {
 	companion object {
-		private const val JOB_NAME = "alchemist"
-		private val config = Config.jobs[JOB_NAME]!!
+		private val config = JobType.ALCHEMIST.toJob()
 	}
 
 	private fun isPotion(itemStack: ItemStack): Boolean {
@@ -38,7 +37,7 @@ class Alchemist : Listener {
 	@EventHandler
 	fun onPlayerInteract(event: PlayerInteractEvent) {
 		if (event.clickedBlock == null) return
-		if (!(event.player hasJob JOB_NAME)) return
+		if (!(event.player hasJob JobType.ALCHEMIST)) return
 		brewingStands.putIfAbsent(event.clickedBlock!!.location, event.player)
 	}
 
@@ -51,7 +50,7 @@ class Alchemist : Listener {
 	fun onBrew(event: BrewEvent) {
 		val location = event.block.location
 		val player = brewingStands[location]
-		if (event.isCancelled || player == null || !(player hasJob JOB_NAME)) return
+		if (event.isCancelled || player == null || !(player hasJob JobType.ALCHEMIST)) return
 
 		event.results.forEach {
 			if (isPotion(it)) {

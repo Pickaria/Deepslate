@@ -1,8 +1,8 @@
-package fr.pickaria.job.jobs
+package fr.pickaria.vue.job.jobs
 
-import fr.pickaria.job.Config
-import fr.pickaria.job.hasJob
-import fr.pickaria.job.jobPayPlayer
+import fr.pickaria.controller.job.hasJob
+import fr.pickaria.controller.job.jobPayPlayer
+import fr.pickaria.model.job.JobType
 import org.bukkit.Material
 import org.bukkit.enchantments.Enchantment
 import org.bukkit.event.EventHandler
@@ -12,8 +12,7 @@ import org.bukkit.event.block.BlockBreakEvent
 
 class Miner : Listener {
 	companion object {
-		private const val JOB_NAME = "miner"
-		private val config = Config.jobs[JOB_NAME]!!
+		private val config = JobType.MINER.toJob()
 	}
 
 	private val materials = mapOf(
@@ -49,7 +48,7 @@ class Miner : Listener {
 	@EventHandler(priority = EventPriority.MONITOR)
 	fun onBlockBreak(event: BlockBreakEvent) {
 		val player = event.player
-		if (event.isCancelled || !(player hasJob JOB_NAME)) return
+		if (event.isCancelled || !(player hasJob JobType.MINER)) return
 
 		// check if player is using silk touch
 		val itemInHand = player.inventory.itemInMainHand

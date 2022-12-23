@@ -10,16 +10,6 @@ pluginManagement {
 rootProject.name = "deepslate"
 
 include("plugin", "libraries")
-/*include(
-	"deepslate",
-	"job",
-	"potion",
-	"reward"
-)
-project(":deepslate").projectDir = File("plugins/deepslate")
-project(":job").projectDir = File("plugins/job")
-project(":potion").projectDir = File("plugins/potion")
-project(":reward").projectDir = File("plugins/reward")*/
 
 dependencyResolutionManagement {
 	versionCatalogs {

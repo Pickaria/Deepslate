@@ -1,7 +1,9 @@
-package fr.pickaria.job
+package fr.pickaria.vue.job
 
-import fr.pickaria.database.models.Job
+import fr.pickaria.controller.job.*
 import fr.pickaria.menu.open
+import fr.pickaria.model.job.JobModel
+import fr.pickaria.model.job.jobConfig
 import org.bukkit.command.Command
 import org.bukkit.command.CommandExecutor
 import org.bukkit.command.CommandSender
@@ -19,7 +21,8 @@ class JobCommand : CommandExecutor, TabCompleter {
 				val message = if (sender.jobCount() == 0) {
 					"§cVous n'exercez actuellement pas de métier."
 				} else {
-					val jobs = Job.get(sender.uniqueId).filter { it.active }.mapNotNull { Config.jobs[it.job]?.label }
+					val jobs =
+						JobModel.get(sender.uniqueId).filter { it.active }.mapNotNull { jobConfig.jobs[it.job]?.label }
 					"§7Vous exercez le(s) métier(s) : ${jobs.joinToString(", ")}."
 				}
 				sender.sendMessage(message)
@@ -36,46 +39,46 @@ class JobCommand : CommandExecutor, TabCompleter {
 				return false
 			}
 
-			val job = Config.jobs[args[1].lowercase()] ?: run {
+			val job = jobConfig.jobs[args[1].lowercase()] ?: run {
 				sender.sendMessage("§cCe métier n'existe pas.")
 				return true
 			}
 
 			when (args[0]) {
 				"join" -> {
-					if (sender.jobCount() >= Config.maxJobs) {
-						sender.sendMessage("§cVous ne pouvez pas avoir plus de ${Config.maxJobs} métier(s).")
-					} else if (sender.hasJob(job.key)) {
+					if (sender.jobCount() >= jobConfig.maxJobs) {
+						sender.sendMessage("§cVous ne pouvez pas avoir plus de ${jobConfig.maxJobs} métier(s).")
+					} else if (sender.hasJob(job.type)) {
 						sender.sendMessage("§cVous exercez déjà ce métier.")
 					} else {
-						val cooldown = sender.getJobCooldown(job.key)
+						val cooldown = sender.getJobCooldown(job.type)
 
 						if (cooldown > 0) {
 							sender.sendMessage("§cVous devez attendre $cooldown minutes avant de changer de métier.")
 						} else {
-							sender joinJob job.key
+							sender joinJob job.type
 							sender.sendMessage("§7Vous avez rejoint le métier ${job.label}.")
 						}
 					}
 				}
 
 				"leave" -> {
-					if (!(sender hasJob job.key)) {
+					if (!(sender hasJob job.type)) {
 						sender.sendMessage("§cVous n'exercez pas ce métier.")
 					} else {
-						val cooldown = sender.getJobCooldown(job.key)
+						val cooldown = sender.getJobCooldown(job.type)
 
 						if (cooldown > 0) {
 							sender.sendMessage("§cVous devez attendre $cooldown minutes avant de changer de métier.")
 						} else {
-							sender leaveJob job.key
+							sender leaveJob job.type
 							sender.sendMessage("§7Vous avez quitté le métier ${job.label}.")
 						}
 					}
 				}
 
 				"ascent" -> {
-					if (!(sender ascentJob job.key)) {
+					if (!(sender ascentJob job.type)) {
 						sender.sendMessage("§7Vous ne pouvez pas effectuer une ascension pour le métier ${job.label}.")
 					}
 				}
@@ -100,10 +103,10 @@ class JobCommand : CommandExecutor, TabCompleter {
 				1 -> SUB_COMMANDS.filter { it.startsWith(args[0]) }.toMutableList()
 
 				2 -> when (args[0]) {
-					"top", "join" -> Config.jobs.keys.map { it.lowercase() }.filter { it.startsWith(args[1]) }
+					"top", "join" -> jobConfig.jobs.keys.map { it.lowercase() }.filter { it.startsWith(args[1]) }
 						.toMutableList()
 
-					"leave", "ascent" -> Job.get(sender.uniqueId)
+					"leave", "ascent" -> JobModel.get(sender.uniqueId)
 						.filter { it.active }
 						.map { it.job.lowercase() }
 						.filter { it.startsWith(args[1]) }

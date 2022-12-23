@@ -1,10 +1,15 @@
-package fr.pickaria.job
+package fr.pickaria.vue.job
 
+import fr.pickaria.controller.home.addToHome
+import fr.pickaria.controller.job.config
+import fr.pickaria.controller.job.getAscentPoints
+import fr.pickaria.controller.job.getLevelFromExperience
+import fr.pickaria.controller.job.jobs
 import fr.pickaria.menu.Result
 import fr.pickaria.menu.closeItem
 import fr.pickaria.menu.fill
 import fr.pickaria.menu.menu
-import fr.pickaria.vue.home.addToHome
+import fr.pickaria.model.job.jobConfig
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
 import net.kyori.adventure.text.format.TextDecoration
@@ -41,7 +46,7 @@ internal fun jobMenu() = menu("job") {
 					"Points d'ascension à récupérer" to ascentPoints
 				}
 			}
-			leftClick = Result.CLOSE to "/job ascent ${config.key}"
+			leftClick = Result.CLOSE to "/job ascent ${config.type}"
 			editMeta {
 				it.addItemFlags(ItemFlag.HIDE_ATTRIBUTES, ItemFlag.HIDE_ENCHANTS)
 				if (ascentPoints > 0) {
@@ -53,7 +58,7 @@ internal fun jobMenu() = menu("job") {
 
 	x = 1
 
-	Config.jobs.forEach { (key, config) ->
+	jobConfig.jobs.forEach { (key, config) ->
 		val job = playerJobs[config]
 		val isCurrentJob = job?.active ?: false
 
@@ -78,8 +83,8 @@ internal fun jobMenu() = menu("job") {
 
 						if (it.ascentPoints > 0) {
 							"Points d'ascension" to it.ascentPoints
-							"Bonus d'expérience" to "+${decimalFormat.format(it.ascentPoints * Config.ascent.experienceIncrease * 100)}%"
-							"Bonus de revenus" to "+${decimalFormat.format(it.ascentPoints * Config.ascent.moneyIncrease * 100)}%"
+							"Bonus d'expérience" to "+${decimalFormat.format(it.ascentPoints * jobConfig.ascent.experienceIncrease * 100)}%"
+							"Bonus de revenus" to "+${decimalFormat.format(it.ascentPoints * jobConfig.ascent.moneyIncrease * 100)}%"
 						}
 					}
 				}

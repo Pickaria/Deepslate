@@ -1,4 +1,4 @@
-package fr.pickaria.job
+package fr.pickaria.model.job
 
 enum class LevelUpType {
 	NEW_LEVEL,

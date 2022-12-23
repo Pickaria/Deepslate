@@ -14,6 +14,9 @@ import fr.pickaria.vue.economy.MoneyCommand
 import fr.pickaria.vue.economy.PayCommand
 import fr.pickaria.vue.home.foodMenu
 import fr.pickaria.vue.home.homeMenu
+import fr.pickaria.vue.job.ExperienceListener
+import fr.pickaria.vue.job.JobCommand
+import fr.pickaria.vue.job.jobMenu
 import fr.pickaria.vue.market.*
 import fr.pickaria.vue.potion.PotionCommand
 import fr.pickaria.vue.potion.PotionListener
@@ -89,5 +92,12 @@ class Main : JavaPlugin() {
 		RewardCommand.setupContext(manager.commandContexts, manager.commandCompletions)
 		manager.registerCommand(RewardCommand())
 		server.pluginManager.registerEvents(RewardListeners(), this)
+
+		// Jobs
+		val jobCommand = JobCommand()
+		getCommand("job")?.setExecutor(jobCommand) ?: server.logger.warning("Command job could not be registered")
+		getCommand("jobs")?.setExecutor(jobCommand) ?: server.logger.warning("Command job could not be registered")
+		jobMenu()
+		server.pluginManager.registerEvents(ExperienceListener(this), this)
 	}
 }

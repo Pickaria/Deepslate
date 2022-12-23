@@ -1,8 +1,8 @@
-package fr.pickaria.job.jobs
+package fr.pickaria.vue.job.jobs
 
-import fr.pickaria.job.Config
-import fr.pickaria.job.hasJob
-import fr.pickaria.job.jobPayPlayer
+import fr.pickaria.controller.job.hasJob
+import fr.pickaria.controller.job.jobPayPlayer
+import fr.pickaria.model.job.JobType
 import org.bukkit.event.EventHandler
 import org.bukkit.event.EventPriority
 import org.bukkit.event.Listener
@@ -10,8 +10,7 @@ import org.bukkit.event.enchantment.EnchantItemEvent
 
 class Wizard : Listener {
 	companion object {
-		private const val JOB_NAME = "wizard"
-		private val config = Config.jobs[JOB_NAME]!!
+		private val config = JobType.WIZARD.toJob()
 	}
 
 	private val levels = mapOf(
@@ -22,7 +21,7 @@ class Wizard : Listener {
 
 	@EventHandler(priority = EventPriority.MONITOR)
 	fun onEnchantItem(event: EnchantItemEvent) {
-		if (event.isCancelled || !(event.enchanter hasJob JOB_NAME)) return
+		if (event.isCancelled || !(event.enchanter hasJob JobType.WIZARD)) return
 
 		jobPayPlayer(event.enchanter, levels[event.whichButton()] ?: 0.15, config, 1)
 	}

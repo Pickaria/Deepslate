@@ -30,3 +30,11 @@ commands:
     usage: /market
     description: Open the market menu.
     permission: pickaria.market.market
+  job:
+    description: Rejoindre ou quitter un métier
+    usage: /job <join|leave|top|menu> [métier]
+    permission: pickaria.job.command.job
+  jobs:
+    description: Rejoindre ou quitter un métier
+    usage: /jobs <join|leave|top|menu> [métier]
+    permission: pickaria.job.command.job

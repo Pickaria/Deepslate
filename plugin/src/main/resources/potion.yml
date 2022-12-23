@@ -12,5 +12,5 @@ potions:
     # +100% expérience de métier"
     description: 'Boost d''expérience'
     effect_name: 'expérience de métier'
-    power: 100 # Power in percentage
+    power: 200 # Power in percentage
     type: JOB_EXPERIENCE

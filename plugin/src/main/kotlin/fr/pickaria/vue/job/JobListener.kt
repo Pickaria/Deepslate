@@ -1,7 +1,9 @@
-package fr.pickaria.job
+package fr.pickaria.vue.job
 
-import fr.pickaria.job.events.JobAscentEvent
-import fr.pickaria.job.events.JobLevelUpEvent
+import fr.pickaria.controller.job.events.JobAscentEvent
+import fr.pickaria.controller.job.events.JobLevelUpEvent
+import fr.pickaria.model.job.LevelUpType
+import fr.pickaria.model.job.jobConfig
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
 import net.kyori.adventure.title.Title
@@ -42,8 +44,8 @@ class JobListener : Listener {
 		val label = event.job.label
 		val ascentPoints = event.ascentPoints
 
-		val experienceBoost = Config.ascent.experienceIncrease * ascentPoints * 100
-		val moneyBoost = Config.ascent.moneyIncrease * ascentPoints * 100
+		val experienceBoost = jobConfig.ascent.experienceIncrease * ascentPoints * 100
+		val moneyBoost = jobConfig.ascent.moneyIncrease * ascentPoints * 100
 
 		player.playSound(player.location, Sound.ENTITY_PLAYER_LEVELUP, 1.0f, 1.0f)
 		player.sendMessage(

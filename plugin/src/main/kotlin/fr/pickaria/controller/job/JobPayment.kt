@@ -1,6 +1,9 @@
-package fr.pickaria.job
+package fr.pickaria.controller.job
 
-import fr.pickaria.database.models.Job
+import fr.pickaria.model.economy.Credit
+import fr.pickaria.model.job.Job
+import fr.pickaria.model.job.JobModel
+import fr.pickaria.model.job.jobConfig
 import net.kyori.adventure.text.Component
 import net.milkbowl.vault.economy.EconomyResponse
 import org.bukkit.Bukkit.getLogger
@@ -13,13 +16,13 @@ private val lastPayment = mutableMapOf<Player, Long>()
 private fun jobPayPlayer(player: Player, amount: Double): Boolean {
 	val now = System.currentTimeMillis() // This uses 32 bit, alert for future us
 
-	if (now - (lastPayment[player] ?: 0L) < Config.lastPaymentDelay) {
+	if (now - (lastPayment[player] ?: 0L) < jobConfig.lastPaymentDelay) {
 		return false
 	}
 	lastPayment[player] = now
 
-	return if (economy.depositPlayer(player, amount).type === EconomyResponse.ResponseType.SUCCESS) {
-		player.sendActionBar(Component.text("§6+ ${economy.format(amount)}"))
+	return if (Credit.economy.depositPlayer(player, amount).type === EconomyResponse.ResponseType.SUCCESS) {
+		player.sendActionBar(Component.text("§6+ ${Credit.economy.format(amount)}"))
 
 		val location = player.location
 		player.playSound(location, Sound.ITEM_ARMOR_EQUIP_CHAIN, 1f, 1f)
@@ -30,14 +33,14 @@ private fun jobPayPlayer(player: Player, amount: Double): Boolean {
 	}
 }
 
-fun jobPayPlayer(player: Player, amount: Double, config: JobConfig, experienceToGive: Int = 0) {
-	Job.get(player.uniqueId, config.key)?.let {
+fun jobPayPlayer(player: Player, amount: Double, config: Job, experienceToGive: Int = 0) {
+	JobModel.get(player.uniqueId, config.type.name)?.let {
 		val level = getLevelFromExperience(config, it.experience)
 		val amountToPay = amount * config.revenueIncrease.pow(level)
-		val amountIncrease = amountToPay + amountToPay * it.ascentPoints * Config.ascent.moneyIncrease
+		val amountIncrease = amountToPay + amountToPay * it.ascentPoints * jobConfig.ascent.moneyIncrease
 
 		if (jobPayPlayer(player, amountIncrease) && experienceToGive > 0) {
-			jobController.addExperienceAndAnnounce(player, config, experienceToGive)
+			addExperienceAndAnnounce(player, config, experienceToGive)
 		}
 	}
 }

@@ -1,8 +1,8 @@
-package fr.pickaria.job.jobs
+package fr.pickaria.vue.job.jobs
 
-import fr.pickaria.job.Config
-import fr.pickaria.job.hasJob
-import fr.pickaria.job.jobPayPlayer
+import fr.pickaria.controller.job.hasJob
+import fr.pickaria.controller.job.jobPayPlayer
+import fr.pickaria.model.job.JobType
 import org.bukkit.Material
 import org.bukkit.block.data.Ageable
 import org.bukkit.event.EventHandler
@@ -13,8 +13,7 @@ import org.bukkit.event.world.StructureGrowEvent
 
 class Farmer : Listener {
 	companion object {
-		private const val JOB_NAME = "farmer"
-		private val config = Config.jobs[JOB_NAME]!!
+		private val config = JobType.FARMER.toJob()
 	}
 
 	private val crops = mapOf(
@@ -39,7 +38,7 @@ class Farmer : Listener {
 	@EventHandler(priority = EventPriority.MONITOR)
 	fun onBlockBreak(event: BlockBreakEvent) {
 		if (event.isCancelled) return
-		if (!(event.player hasJob JOB_NAME)) return
+		if (!(event.player hasJob JobType.FARMER)) return
 
 		crops[event.block.type]?.let {
 			(event.block.blockData as? Ageable)?.let { blockData ->
@@ -57,7 +56,7 @@ class Farmer : Listener {
 		if (event.isCancelled) return
 
 		event.player?.let {
-			if (!(it hasJob JOB_NAME)) return
+			if (!(it hasJob JobType.FARMER)) return
 			if (event.isFromBonemeal) {
 				jobPayPlayer(it, 0.05, config)
 			}
