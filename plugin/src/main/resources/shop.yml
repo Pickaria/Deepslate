@@ -1,0 +1,57 @@
+grind_loss: 0.5
+
+trade_select_sound: block.large_amethyst_bud.place
+trade_sound: block.large_amethyst_bud.break
+open_sound: block.ender_chest.open
+close_sound: block.ender_chest.close
+grind_place_sound: block.amethyst_cluster.place
+grind_coin_value: 100.0
+
+villagers:
+  # Sells artefacts
+  artefacts:
+    name: "Ignis"
+    villager_type: PLAINS
+    profession: TOOLSMITH
+    uuid: c9663abe-8aff-4c31-8720-efe1471d937f
+    type: ARTEFACTS
+
+  # Sells charged lapis & keys
+  bank:
+    name: "Orphéo"
+    villager_type: PLAINS
+    profession: LIBRARIAN
+    uuid: c46c60be-b294-4181-9715-57464dad9c4e
+    type: BANK
+
+  # Sells potions
+  potions:
+    name: "Elixiria"
+    villager_type: PLAINS
+    profession: CLERIC
+    uuid: 51283ec2-8ecc-47ea-8f99-43bf0802b53a
+    type: POTIONS
+
+  # Sells rewards
+  rewards:
+    name: "Argyris"
+    villager_type: PLAINS
+    profession: FARMER
+    uuid: 2058fe03-3bbe-4459-9ecc-91b4b5795c02
+    type: REWARDS
+
+  # Opens the market menu
+  market:
+    name: "Perceval"
+    villager_type: PLAINS
+    profession: BUTCHER
+    uuid: d0f1b0ed-94f7-48a0-8ac1-00da5d5d1a60
+    type: MARKET
+
+  # Opens the job menu
+  job:
+    name: "Zoltar"
+    villager_type: PLAINS
+    profession: MASON
+    uuid: c622ce38-b990-4a26-9e6e-a0da059ccb4e
+    type: JOB

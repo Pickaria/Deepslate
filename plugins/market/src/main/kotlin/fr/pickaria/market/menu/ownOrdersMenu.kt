@@ -3,12 +3,8 @@ package fr.pickaria.market.menu
 import fr.pickaria.database.models.Order
 import fr.pickaria.database.models.OrderType
 import fr.pickaria.market.economy
-import fr.pickaria.menu.Result
-import fr.pickaria.menu.closeItem
-import fr.pickaria.home.addToHome
-import fr.pickaria.menu.menu
-import fr.pickaria.menu.nextPage
-import fr.pickaria.menu.previousPage
+import fr.pickaria.menu.*
+import fr.pickaria.vue.home.addToHome
 import net.kyori.adventure.text.Component
 import org.bukkit.Material
 

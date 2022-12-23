@@ -5,7 +5,7 @@ import fr.pickaria.database.models.OrderType
 import fr.pickaria.market.Config
 import fr.pickaria.market.economy
 import fr.pickaria.menu.*
-import fr.pickaria.home.addToHome
+import fr.pickaria.vue.home.addToHome
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
 import net.kyori.adventure.text.format.TextDecoration

@@ -1,7 +1,8 @@
 package fr.pickaria.model.economy
 
+import fr.pickaria.controller.economy.CurrencyController
 import fr.pickaria.controller.economy.Economy
-import fr.pickaria.model.serializers.SoundSerializable
+import fr.pickaria.model.serializers.SoundSerializer
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import net.kyori.adventure.sound.Sound
@@ -24,7 +25,7 @@ data class Currency(
 	@SerialName("collect_message")
 	val collectMessage: String,
 
-	@Serializable(with = SoundSerializable::class)
+	@Serializable(with = SoundSerializer::class)
 	@SerialName("collect_sound")
 	val collectSound: Sound,
 
@@ -35,3 +36,5 @@ data class Currency(
 		Economy(nameSingular, namePlural, account, format)
 	}
 }
+
+fun Currency.toController(): CurrencyController = CurrencyController(this)

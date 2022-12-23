@@ -28,7 +28,7 @@ currencies:
     collect_sound: block.amethyst_block.fall
     collect_message: '<gray>Vous avez collecté <gold><amount><gray>.'
     material: GOLD_NUGGET
-    account: default
+    account: credits # The account name must be the same as the key
     format: '###,##0.00'
   shards:
     description:

@@ -9,3 +9,11 @@ depend:
   - PickariaSpawner
 softdepend:
   - Vault
+
+commands:
+  placeshop:
+    usage: /placeshop
+    description: Place un nouveau magasin à l'endroit où se situe le joueur.
+  menu:
+    usage: /menu
+    description: Ouvre le menu du serveur.
