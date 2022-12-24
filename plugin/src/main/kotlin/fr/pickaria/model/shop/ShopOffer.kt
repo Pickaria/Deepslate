@@ -1,6 +1,6 @@
 package fr.pickaria.model.shop
 
-enum class ShopType {
+enum class ShopOffer {
 	ARTEFACTS,
 	BANK,
 	POTIONS,

@@ -11,7 +11,7 @@ import java.util.*
 
 @Serializable
 data class VillagerConfig(
-	val type: ShopType,
+	val offers: ShopOffer? = null,
 
 	@Serializable(with = MiniMessageSerializer::class)
 	val name: Component,
@@ -23,6 +23,8 @@ data class VillagerConfig(
 
 	@Serializable(with = UUIDSerializer::class)
 	val uuid: UUID, // TODO: Make uuid optional and generate a random one
+
+	val menu: String? = null,
 )
 
 fun VillagerConfig.toController() = VillagerController(this)

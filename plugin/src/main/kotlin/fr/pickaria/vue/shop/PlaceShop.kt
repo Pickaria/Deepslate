@@ -2,7 +2,7 @@ package fr.pickaria.vue.shop
 
 import co.aikar.commands.*
 import co.aikar.commands.annotation.*
-import fr.pickaria.model.shop.ShopType
+import fr.pickaria.model.shop.ShopOffer
 import fr.pickaria.model.shop.shopConfig
 import fr.pickaria.model.shop.toController
 import org.bukkit.entity.Player
@@ -16,18 +16,18 @@ class PlaceShop : BaseCommand() {
 			commandContexts: CommandContexts<BukkitCommandExecutionContext>,
 			commandCompletions: CommandCompletions<BukkitCommandCompletionContext>
 		) {
-			commandContexts.registerContext(ShopType::class.java) {
+			commandContexts.registerContext(ShopOffer::class.java) {
 				val arg: String = it.popFirstArg()
 
 				try {
-					ShopType.valueOf(arg.uppercase())
+					ShopOffer.valueOf(arg.uppercase())
 				} catch (_: IllegalArgumentException) {
 					throw InvalidCommandArgument("Shop of type '$arg' does not exists.")
 				}
 			}
 
 			commandCompletions.registerCompletion("shoptype") {
-				ShopType.values().map { it.name.lowercase() }
+				ShopOffer.values().map { it.name.lowercase() }
 			}
 		}
 	}
@@ -35,7 +35,7 @@ class PlaceShop : BaseCommand() {
 	@Default
 	@Syntax("[shop type]")
 	@CommandCompletion("@shoptype")
-	fun onCommand(sender: Player, @Optional type: ShopType?) {
+	fun onCommand(sender: Player, @Optional type: ShopOffer?) {
 		if (type == null) {
 			shopConfig.villagers.forEach {
 				it.value.toController().create(sender.location)

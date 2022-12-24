@@ -1,6 +1,6 @@
 package fr.pickaria.controller.shop
 
-import fr.pickaria.model.shop.ShopType
+import fr.pickaria.model.shop.ShopOffer
 import fr.pickaria.model.shop.VillagerConfig
 import fr.pickaria.model.shop.menuNamespace
 import fr.pickaria.spawner.spawnVillager
@@ -11,19 +11,12 @@ import org.bukkit.persistence.PersistentDataType
 
 class VillagerController(val model: VillagerConfig) {
 	private val offers
-		get() = when (model.type) {
-			ShopType.ARTEFACTS -> getArtefactsOffers()
-			ShopType.BANK -> getBankOffers()
-			ShopType.POTIONS -> getPotionsOffers()
-			ShopType.REWARDS -> getRewardsOffers()
+		get() = when (model.offers) {
+			ShopOffer.ARTEFACTS -> getArtefactsOffers()
+			ShopOffer.BANK -> getBankOffers()
+			ShopOffer.POTIONS -> getPotionsOffers()
+			ShopOffer.REWARDS -> getRewardsOffers()
 			else -> emptyList()
-		}
-
-	private val menu
-		get() = when (model.type) {
-			ShopType.MARKET -> "market"
-			ShopType.JOB -> "job"
-			else -> null
 		}
 
 	fun create(location: Location): Villager {
@@ -40,7 +33,7 @@ class VillagerController(val model: VillagerConfig) {
 		val merchant = villager as Merchant
 		merchant.recipes = offers
 
-		menu?.let {
+		model.menu?.let {
 			villager.persistentDataContainer.set(menuNamespace, PersistentDataType.STRING, it)
 		}
 
