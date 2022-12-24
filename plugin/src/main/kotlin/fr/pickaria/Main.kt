@@ -1,8 +1,13 @@
 package fr.pickaria
 
+import fr.pickaria.controller.acf.enumCompletion
+import fr.pickaria.controller.acf.limitCondition
 import fr.pickaria.controller.initCommandManager
 import fr.pickaria.controller.potion.runnable
 import fr.pickaria.model.openDatabase
+import fr.pickaria.model.potion.PotionType
+import fr.pickaria.model.shop.ShopOffer
+import fr.pickaria.model.town.BannerType
 import fr.pickaria.vue.PingCommand
 import fr.pickaria.vue.artefact.ArtefactListeners
 import fr.pickaria.vue.artefact.SmithingListeners
@@ -26,6 +31,10 @@ import fr.pickaria.vue.reward.RewardListeners
 import fr.pickaria.vue.shard.GrindstoneListeners
 import fr.pickaria.vue.shop.PlaceShop
 import fr.pickaria.vue.shop.ShopListeners
+import fr.pickaria.vue.town.BannerCommand
+import fr.pickaria.vue.town.BannerEvent
+import fr.pickaria.vue.town.BookEvents
+import fr.pickaria.vue.town.townMenu
 import org.bukkit.Bukkit
 import org.bukkit.plugin.java.JavaPlugin
 
@@ -37,69 +46,63 @@ class Main : JavaPlugin() {
 		enableBedrockLibrary()
 
 		val manager = initCommandManager(this)
-		manager.registerCommand(PingCommand())
-
-		// Chat
-		server.pluginManager.let {
-			it.registerEvents(PlayerJoin(), this)
-			it.registerEvents(ChatFormat(), this)
-			it.registerEvents(Motd(), this)
-		}
-
-		// Database
 		openDatabase(dataFolder.absolutePath + "/database")
 
-		// Economy
-		manager.registerCommand(PayCommand())
-		manager.registerCommand(MoneyCommand())
-		manager.registerCommand(BalanceTopCommand())
+		// Events
+		server.pluginManager.let {
+			it.registerEvents(ArtefactListeners(), this)
+			it.registerEvents(BannerEvent(this), this)
+			it.registerEvents(BookEvents(), this)
+			it.registerEvents(ChatFormat(), this)
+			it.registerEvents(EnchantListeners(), this)
+			it.registerEvents(ExperienceListener(this), this)
+			it.registerEvents(GrindstoneListeners(), this)
+			it.registerEvents(Motd(), this)
+			it.registerEvents(PlayerJoin(), this)
+			it.registerEvents(PotionListener(), this)
+			it.registerEvents(RewardListeners(), this)
+			it.registerEvents(ShopListeners(), this)
+			it.registerEvents(SmithingListeners(), this)
+		}
 
-		// Artefacts
-		server.pluginManager.registerEvents(ArtefactListeners(), this)
-		server.pluginManager.registerEvents(SmithingListeners(), this)
-
-		// Reforge
-		server.pluginManager.registerEvents(EnchantListeners(), this)
-
-		// Shards
-		PlaceShop.setupContext(manager.commandContexts, manager.commandCompletions)
-		manager.registerCommand(PlaceShop())
-
-		server.pluginManager.registerEvents(ShopListeners(), this)
-		server.pluginManager.registerEvents(GrindstoneListeners(), this)
-
-		// Deepslate
-		homeMenu()
-		foodMenu()
-
-		// Market
-		SellCommand.setupContext(manager.commandCompletions)
-		CancelOrderCommand.setupContext(manager.commandContexts, manager.commandCompletions)
+		// Command contexts
 		BuyCommand.setupContext(manager)
-		manager.registerCommand(SellCommand())
+		CancelOrderCommand.setupContext(manager.commandContexts, manager.commandCompletions)
+		JobCommand.setupContext(manager)
+		RewardCommand.setupContext(manager.commandContexts, manager.commandCompletions)
+		SellCommand.setupContext(manager.commandCompletions)
+		limitCondition(manager)
+
+		// Command completions
+		enumCompletion<BannerType>(manager, "banner_type", "Cette bannière n'existe pas.")
+		enumCompletion<PotionType>(manager, "potion_type", "Cette potion n'existe pas.")
+		enumCompletion<ShopOffer>(manager, "shop_type", "Ce magasin n'existe pas.")
+
+		// Commands
+		manager.registerCommand(BalanceTopCommand())
+		manager.registerCommand(BannerCommand())
 		manager.registerCommand(BuyCommand())
 		manager.registerCommand(CancelOrderCommand())
-		manager.registerCommand(MarketCommand())
 		manager.registerCommand(FakeSellCommand())
+		manager.registerCommand(JobCommand())
+		manager.registerCommand(MarketCommand())
+		manager.registerCommand(MoneyCommand())
+		manager.registerCommand(PayCommand())
+		manager.registerCommand(PingCommand())
+		manager.registerCommand(PlaceShop())
+		manager.registerCommand(PotionCommand())
+		manager.registerCommand(RewardCommand())
+		manager.registerCommand(SellCommand())
 
+		// Menus
+		foodMenu()
+		homeMenu()
+		jobMenu()
 		orderListingMenu()
 		ownOrdersMenu()
+		townMenu()
 
-		// Potion
-		PotionCommand.setupContext(manager.commandContexts, manager.commandCompletions)
-		manager.registerCommand(PotionCommand())
-		server.pluginManager.registerEvents(PotionListener(), this)
+		// Scheduler
 		Bukkit.getScheduler().runTaskTimerAsynchronously(this, runnable, 0, 20)
-
-		// Reward
-		RewardCommand.setupContext(manager.commandContexts, manager.commandCompletions)
-		manager.registerCommand(RewardCommand())
-		server.pluginManager.registerEvents(RewardListeners(), this)
-
-		// Jobs
-		JobCommand.setupContext(manager)
-		manager.registerCommand(JobCommand())
-		jobMenu()
-		server.pluginManager.registerEvents(ExperienceListener(this), this)
 	}
 }

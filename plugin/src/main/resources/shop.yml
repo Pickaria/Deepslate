@@ -40,6 +40,14 @@ villagers:
     uuid: 2058fe03-3bbe-4459-9ecc-91b4b5795c02
     offers: REWARDS
 
+  # Sells blank flags
+  flags:
+    name: "Solaria"
+    villager_type: PLAINS
+    profession: CARTOGRAPHER
+    uuid: 1318ceef-d516-4249-8e9b-c9d70b8c7404
+    offers: FLAGS
+
   # Opens the market menu
   market:
     name: "Perceval"

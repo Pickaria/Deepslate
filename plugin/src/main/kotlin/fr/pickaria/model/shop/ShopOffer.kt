@@ -5,6 +5,5 @@ enum class ShopOffer {
 	BANK,
 	POTIONS,
 	REWARDS,
-	MARKET,
-	JOB;
+	FLAGS;
 }

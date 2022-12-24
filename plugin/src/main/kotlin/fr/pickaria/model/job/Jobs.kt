@@ -1,9 +1,7 @@
 package fr.pickaria.model.job
 
-import kotlinx.datetime.Clock
+import fr.pickaria.model.now
 import kotlinx.datetime.LocalDateTime
-import kotlinx.datetime.TimeZone
-import kotlinx.datetime.toLocalDateTime
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.kotlin.datetime.datetime
@@ -14,7 +12,7 @@ internal object Jobs : Table() {
 	val playerUuid = uuid("player_uuid")
 	val job = enumerationByName<JobType>("job", 9)
 	val experience = double("experience").default(0.0)
-	val lastUsed = datetime("last_used").default(Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()))
+	val lastUsed = datetime("last_used").default(now())
 	val active = bool("active").default(false)
 	val ascentPoints = integer("ascent_points").default(0)
 

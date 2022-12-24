@@ -34,7 +34,7 @@ class PotionCommand : BaseCommand() {
 
 	@Default
 	@Syntax("<potion type> [amount]")
-	@CommandCompletion("@potiontype")
+	@CommandCompletion("@potion_type")
 	fun onCommand(sender: Player, potionType: PotionType, @Default("1") amount: Int) {
 		val itemStack = potionConfig.potions[potionType.name.lowercase()]?.toController()?.create(amount)
 			?: throw InvalidCommandArgument("Potion item could not be created.")

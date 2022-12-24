@@ -3,6 +3,10 @@ package fr.pickaria.model
 import fr.pickaria.model.economy.BankAccounts
 import fr.pickaria.model.job.Jobs
 import fr.pickaria.model.market.Orders
+import fr.pickaria.model.town.Towns
+import kotlinx.datetime.Clock
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.toLocalDateTime
 import org.bukkit.Bukkit
 import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.SchemaUtils
@@ -20,15 +24,15 @@ fun openDatabase(path: String): Database {
 
 	transaction {
 		SchemaUtils.create(
-			BankAccounts, Jobs, Orders
+			BankAccounts, Jobs, Orders, Towns
 		)
 	}
 
 	transaction {
 		SchemaUtils.statementsRequiredToActualizeScheme(
-			BankAccounts, Jobs, Orders
+			BankAccounts, Jobs, Orders, Towns
 		) + SchemaUtils.addMissingColumnsStatements(
-			BankAccounts, Jobs, Orders
+			BankAccounts, Jobs, Orders, Towns
 		)
 	}.forEach {
 		transaction {
@@ -52,3 +56,5 @@ object BukkitLogger : SqlLogger {
 		Bukkit.getLogger().info("SQL: ${context.expandArgs(transaction)}")
 	}
 }
+
+fun now() = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault())

@@ -1,6 +1,7 @@
 package fr.pickaria.controller.shop
 
 import fr.pickaria.controller.reforge.getAttributeItem
+import fr.pickaria.controller.town.createTownBanner
 import fr.pickaria.model.artefact.artefactConfig
 import fr.pickaria.model.artefact.toController
 import fr.pickaria.model.economy.Credit
@@ -11,6 +12,7 @@ import fr.pickaria.model.potion.potionConfig
 import fr.pickaria.model.potion.toController
 import fr.pickaria.model.reward.rewardConfig
 import fr.pickaria.model.reward.toController
+import fr.pickaria.model.town.BannerType
 import org.bukkit.inventory.MerchantRecipe
 
 fun getArtefactsOffers(): List<MerchantRecipe> =
@@ -35,34 +37,9 @@ fun getBankOffers(): List<MerchantRecipe> {
 			uses = 0
 			addIngredient(creditController.item(8, 128.0))
 		},
-		MerchantRecipe(keyController.item(2), Int.MAX_VALUE).apply {
-			uses = 0
-			addIngredient(creditController.item(16, 128.0))
-		},
-		MerchantRecipe(keyController.item(4), Int.MAX_VALUE).apply {
-			uses = 0
-			addIngredient(creditController.item(32, 128.0))
-		},
-		MerchantRecipe(keyController.item(8), Int.MAX_VALUE).apply {
-			uses = 0
-			addIngredient(creditController.item(64, 128.0))
-		},
-
 		MerchantRecipe(attributeItem.asQuantity(3), Int.MAX_VALUE).apply {
 			uses = 0
 			addIngredient(creditController.item(1, 128.0))
-		},
-		MerchantRecipe(attributeItem.asQuantity(6), Int.MAX_VALUE).apply {
-			uses = 0
-			addIngredient(creditController.item(6, 128.0))
-		},
-		MerchantRecipe(attributeItem.asQuantity(9), Int.MAX_VALUE).apply {
-			uses = 0
-			addIngredient(creditController.item(9, 128.0))
-		},
-		MerchantRecipe(attributeItem.asQuantity(64), Int.MAX_VALUE).apply {
-			uses = 0
-			addIngredient(creditController.item(64, 128.0))
 		},
 	)
 }
@@ -81,5 +58,12 @@ fun getPotionsOffers(): List<MerchantRecipe> = potionConfig.potions.map { (_, co
 	MerchantRecipe(config.toController().create().apply { amount = 1 }, Int.MAX_VALUE).apply {
 		uses = 0
 		addIngredient(Credit.toController().item(5))
+	}
+}
+
+fun getFlagOffers(): List<MerchantRecipe> = BannerType.values().map {
+	MerchantRecipe(createTownBanner(it), Int.MAX_VALUE).apply {
+		uses = 0
+		addIngredient(Credit.toController().item(10))
 	}
 }

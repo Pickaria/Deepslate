@@ -8,7 +8,7 @@ kotlinx-serialization = "1.4.1"
 acf = "0.5.1-SNAPSHOT"
 vault = "1.7.1"
 h2 = "2.1.214"
-pickaria-bedrock = "1.0.11-SNAPSHOT"
+pickaria-bedrock = "1.0.12-SNAPSHOT"
 pickaria-spawner = "1.0.7-SNAPSHOT"
 kaml = "0.49.0"
 

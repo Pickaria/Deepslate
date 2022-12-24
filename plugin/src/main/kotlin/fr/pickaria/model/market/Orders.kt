@@ -18,7 +18,7 @@ internal object Orders : Table() {
 	val material = varchar("material", 256)
 	val price = double("price").default(0.0)
 	val amount = integer("amount").default(1)
-	val type = enumeration<OrderType>("type")
+	val type = enumeration<OrderType>("type") // TODO: Remove type column
 
 	override val primaryKey = PrimaryKey(id)
 }

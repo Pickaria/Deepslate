@@ -6,6 +6,7 @@ import fr.pickaria.model.job.Job
 import fr.pickaria.model.job.JobModel
 import fr.pickaria.model.job.JobType
 import fr.pickaria.model.job.jobConfig
+import fr.pickaria.model.now
 import fr.pickaria.shared.MiniMessage
 import fr.pickaria.shared.suffix
 import fr.pickaria.shared.updateDisplayName
@@ -33,7 +34,7 @@ internal fun Player.jobCount(): Int = JobModel.get(uniqueId).filter { it.active 
 internal infix fun Player.joinJob(jobType: JobType) {
 	JobModel.get(uniqueId, jobType)?.apply {
 		active = true
-		lastUsed = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault())
+		lastUsed = now()
 	} ?: JobModel.create(uniqueId, jobType, true)
 	CustomAdvancement.JOIN_JOB.grant(this)
 }

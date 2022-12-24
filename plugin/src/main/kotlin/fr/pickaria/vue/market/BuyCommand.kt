@@ -28,23 +28,6 @@ class BuyCommand : BaseCommand() {
 				}
 			}
 
-			manager.commandConditions.addCondition(
-				Int::class.java,
-				"limits"
-			) { context, _, value ->
-				if (value == null) {
-					return@addCondition
-				}
-				if (context.hasConfig("min") && context.getConfigValue("min", 0) > value) {
-					val min = context.getConfigValue("min", 0)
-					throw ConditionFailedException("La valeur doit être supérieure à $min.")
-				}
-				if (context.hasConfig("max") && context.getConfigValue("max", 3) < value) {
-					val max = context.getConfigValue("max", 3)
-					throw ConditionFailedException("La valeur doit être inférieure à $max.")
-				}
-			}
-
 			manager.commandCompletions.registerCompletion("selling_material") { context ->
 				Order.getMaterials().map { it.name.lowercase() }.filter { it.startsWith(context.input) }
 			}
