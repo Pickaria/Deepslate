@@ -39,4 +39,4 @@ kaml = { module = "com.charleskorn.kaml:kaml", version.ref = "kaml" }
 
 [plugins]
 shadow = { id = "com.github.johnrengelman.shadow", version = "7.1.2" }
-serialization = { id = "plugin.serialization", version = "1.7.20" }
+serialization = { id = "plugin.serialization", version = "1.7.22" }
