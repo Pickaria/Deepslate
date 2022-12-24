@@ -1,0 +1,16 @@
+name: Deepslate
+version: 1.0
+api-version: 1.19
+main: fr.pickaria.Main
+author: Quozul
+description: The main plugin of Pickaria.
+depend:
+  - Bookshelf
+  - PickariaSpawner
+softdepend:
+  - Vault
+
+commands:
+  menu:
+    usage: /menu
+    description: Ouvre le menu du serveur.

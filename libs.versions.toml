@@ -1,0 +1,42 @@
+[versions]
+kotlin = "1.7.22"  # Note: Plugin versions must be updated in the build.gradle.kts too
+
+paper = "1.19.3-R0.1-SNAPSHOT"
+exposed = "0.41.1"
+kotlinx-datetime = "0.4.0"
+kotlinx-serialization = "1.4.1"
+acf = "0.5.1-SNAPSHOT"
+vault = "1.7.1"
+h2 = "2.1.214"
+pickaria-bedrock = "1.0.11-SNAPSHOT"
+pickaria-spawner = "1.0.7-SNAPSHOT"
+kaml = "0.49.0"
+
+[libraries]
+# Kotlin
+kotlin-stdlib = { module = "org.jetbrains.kotlin:kotlin-stdlib", version.ref = "kotlin" }
+kotlin-reflect = { module = "org.jetbrains.kotlin:kotlin-reflect", version.ref = "kotlin" }
+kotlinx-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version.ref = "kotlinx-datetime" }
+
+# Minecraft
+paper = { module = "io.papermc.paper:paper-api", version.ref = "paper" }
+acf = { module = "co.aikar:acf-paper", version.ref = "acf" }
+vault = { module = "com.github.MilkBowl:VaultAPI", version.ref = "vault" }
+
+# Database
+exposed-core = { module = "org.jetbrains.exposed:exposed-core", version.ref = "exposed" }
+exposed-dao = { module = "org.jetbrains.exposed:exposed-dao", version.ref = "exposed" }
+exposed-jdbc = { module = "org.jetbrains.exposed:exposed-jdbc", version.ref = "exposed" }
+exposed-kotlin-datetime = { module = "org.jetbrains.exposed:exposed-kotlin-datetime", version.ref = "exposed" }
+h2 = { module = "com.h2database:h2", version.ref = "h2" }
+
+# Pickaria
+pickaria-bedrock = { module = "fr.pickaria:bedrock", version.ref = "pickaria-bedrock" }
+pickaria-spawner = { module = "fr.pickaria:spawner", version.ref = "pickaria-spawner" }
+
+# Other libs
+kaml = { module = "com.charleskorn.kaml:kaml", version.ref = "kaml" }
+
+[plugins]
+shadow = { id = "com.github.johnrengelman.shadow", version = "7.1.2" }
+serialization = { id = "plugin.serialization", version = "1.7.22" }

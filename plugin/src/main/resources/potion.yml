@@ -1,0 +1,16 @@
+potions:
+  job_experience:
+    label: 'Potion d''exemple' # Display name of the item
+    color: RED # Must be a boss bar supported color
+    duration: 15 # Duration in seconds
+
+    # Will be displayed as:
+    #
+    # "Boost d'expérience
+    #
+    # When Applied:
+    # +100% expérience de métier"
+    description: 'Boost d''expérience'
+    effect_name: 'expérience de métier'
+    power: 200 # Power in percentage
+    type: JOB_EXPERIENCE

@@ -1,0 +1,6 @@
+name: Bookshelf
+version: 1.0
+api-version: 1.19
+main: fr.pickaria.Main
+author: Quozul
+description: A plugin including all dependencies required for the main plugin.

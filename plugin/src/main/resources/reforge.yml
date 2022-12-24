@@ -1,0 +1,54 @@
+charged_lapis_name: 'chargé'
+charged_lapis_description:
+  - '<gray>Élément utilisé pour modifier'
+  - '<gray>les statiques d''un objet.'
+
+minimum_attribute: -0.05
+maximum_attribute: 0.1
+enchant_sound: block.enchantment_table.use
+
+rarities:
+  # For any item
+  broken:
+    name: 'Détruit'
+    color: '<dark_purple><name>'
+    attributes: -100
+  damaged:
+    name: 'Endommagé'
+    color: '<dark_red><name>'
+    attributes: -3
+  rusted:
+    name: 'Rouillé'
+    color: '<dark_gray><name>'
+    attributes: -2
+  used:
+    name: 'Usé'
+    color: '<dark_green><name>'
+    attributes: -1
+  common:
+    name: 'Commun'
+    color: '<grey><name>'
+    attributes: 0 # Attributes required
+  # When the item has at least 1 custom element applied onto it
+  uncommon:
+    name: 'Peu commun'
+    color: '<yellow><name>'
+    attributes: 1
+  rare:
+    name: 'Rare'
+    color: '<blue><name>'
+    attributes: 2
+  epic:
+    name: 'Épique'
+    color: '<light_purple><name>'
+    attributes: 3
+    advancement: pickaria:epic_stuff
+  legendary:
+    name: 'Légendaire'
+    color: '<rainbow><name>'
+    attributes: 4
+    advancement: pickaria:legendary_stuff
+  mythic:
+    name: 'Mythique'
+    color: '<red><name>'
+    attributes: 5

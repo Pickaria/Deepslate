@@ -1,21 +1,29 @@
-rootProject.name = "plugin-collection"
-include(
-	"chat",
-	"database",
-	"deepslate",
-	"economy",
-	"job",
-	"lib",
-	"market",
-	"potion",
-	"reward"
-)
-project(":chat").projectDir = File("plugins/chat")
-project(":database").projectDir = File("plugins/database")
-project(":deepslate").projectDir = File("plugins/deepslate")
-project(":economy").projectDir = File("plugins/economy")
-project(":job").projectDir = File("plugins/job")
-project(":lib").projectDir = File("plugins/lib")
-project(":market").projectDir = File("plugins/market")
-project(":potion").projectDir = File("plugins/potion")
-project(":reward").projectDir = File("plugins/reward")
+pluginManagement {
+	plugins {
+		// Update this in libs.version.toml when you change it here
+		kotlin("jvm") version "1.7.22"
+		kotlin("plugin.serialization") version "1.7.22"
+		id("com.github.johnrengelman.shadow") version "7.1.2"
+	}
+}
+
+rootProject.name = "deepslate"
+
+include("plugin", "libraries")
+
+dependencyResolutionManagement {
+	versionCatalogs {
+		create("libs") {
+			from(files("libs.versions.toml"))
+		}
+	}
+
+	repositories {
+		mavenCentral()
+		maven("https://oss.sonatype.org/content/groups/public/")
+		maven("https://repo.papermc.io/repository/maven-public/") // Paper
+		maven("https://maven.quozul.dev/snapshots")
+		maven("https://repo.aikar.co/content/groups/aikar/") // ACF
+		maven("https://jitpack.io") // Vault
+	}
+}
