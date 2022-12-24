@@ -112,6 +112,3 @@ internal fun Player.refreshDisplayName() {
 }
 
 internal fun Player.jobs() = JobModel.get(uniqueId)
-
-internal val JobModel.config: Job?
-	get() = jobConfig.jobs[this.job.name]

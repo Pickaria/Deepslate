@@ -1,7 +1,6 @@
 package fr.pickaria.vue.job
 
 import fr.pickaria.controller.home.addToHome
-import fr.pickaria.controller.job.config
 import fr.pickaria.controller.job.getAscentPoints
 import fr.pickaria.controller.job.getLevelFromExperience
 import fr.pickaria.controller.job.jobs
@@ -27,8 +26,7 @@ internal fun jobMenu() = menu("job") {
 	title = Component.text("Métiers", NamedTextColor.GOLD, TextDecoration.BOLD)
 	rows = 6
 
-	val playerJobs = opener.jobs().mapNotNull { it.config?.let { config -> config to it } }.toMap()
-	// FIXME: Active jobs are not displayed
+	val playerJobs = opener.jobs().associateBy { it.job.toJob() }
 	val activeJobs = playerJobs.filter { (_, job) -> job.active }
 
 	var x = 4 - activeJobs.size / 2

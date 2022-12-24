@@ -115,9 +115,6 @@ internal fun buy(player: Player, material: Material, amount: Int): Int {
 	return info.totalAmount
 }
 
-// TODO: Create `sell` function, any item bought will be placed in dematerialized inventory (#31)
-
-// TODO: Give to OfflinePlayer through their dematerialized inventory (#31)
 internal fun giveItems(player: Player, material: Material, amountToGive: Int) {
 	if (material.maxStackSize == 0) {
 		throw InvalidParameterException("Material has a maxStackSize of 0.")
