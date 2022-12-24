@@ -14,19 +14,3 @@ commands:
   menu:
     usage: /menu
     description: Ouvre le menu du serveur.
-  buy:
-    usage: /buy <material> [quantity] [maximum buy price]
-    description: Creates a buy order.
-    permission: pickaria.market.buy
-  cancel:
-    usage: /cancel <order id>
-    description: Cancels an order only if the command's sender created id.
-    permission: pickaria.market.cancel
-  job:
-    description: Rejoindre ou quitter un métier
-    usage: /job <join|leave|top|menu> [métier]
-    permission: pickaria.job.command.job
-  jobs:
-    description: Rejoindre ou quitter un métier
-    usage: /jobs <join|leave|top|menu> [métier]
-    permission: pickaria.job.command.job
