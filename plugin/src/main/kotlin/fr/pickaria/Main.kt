@@ -73,13 +73,14 @@ class Main : JavaPlugin() {
 		foodMenu()
 
 		// Market
-//		getCommand("sell")?.setExecutor(CreateSellOrderCommand())
-		SellCommand.setupContext(manager.commandContexts, manager.commandCompletions)
-		getCommand("buy")?.setExecutor(BuyOrderCommand())
+		SellCommand.setupContext(manager.commandCompletions)
+		CancelOrderCommand.setupContext(manager.commandContexts, manager.commandCompletions)
+		BuyCommand.setupContext(manager)
 		manager.registerCommand(SellCommand())
+		manager.registerCommand(BuyCommand())
+		manager.registerCommand(CancelOrderCommand())
 		manager.registerCommand(MarketCommand())
 		manager.registerCommand(FakeSellCommand())
-		getCommand("cancel")?.setExecutor(CancelOrderCommand())
 
 		orderListingMenu()
 		ownOrdersMenu()
@@ -96,7 +97,7 @@ class Main : JavaPlugin() {
 		server.pluginManager.registerEvents(RewardListeners(), this)
 
 		// Jobs
-		JobCommand.setupContext(manager.commandContexts, manager.commandCompletions)
+		JobCommand.setupContext(manager)
 		manager.registerCommand(JobCommand())
 		jobMenu()
 		server.pluginManager.registerEvents(ExperienceListener(this), this)

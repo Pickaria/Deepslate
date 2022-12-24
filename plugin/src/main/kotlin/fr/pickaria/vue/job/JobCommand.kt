@@ -14,11 +14,8 @@ import org.bukkit.entity.Player
 @CommandPermission("pickaria.command.job")
 class JobCommand : BaseCommand() {
 	companion object {
-		fun setupContext(
-			commandContexts: CommandContexts<BukkitCommandExecutionContext>,
-			commandCompletions: CommandCompletions<BukkitCommandCompletionContext>
-		) {
-			commandContexts.registerContext(Job::class.java) {
+		fun setupContext(manager: PaperCommandManager) {
+			manager.commandContexts.registerContext(Job::class.java) {
 				val arg: String = it.popFirstArg()
 
 				try {
@@ -28,32 +25,36 @@ class JobCommand : BaseCommand() {
 				}
 			}
 
-			commandCompletions.registerCompletion("jobtype") {
+			manager.commandCompletions.registerCompletion("jobtype") {
 				JobType.values().map { it.name.lowercase() }
 			}
 
-			commandCompletions.registerCompletion("ownjobs") { context ->
+			manager.commandCompletions.registerCompletion("ownjobs") { context ->
 				JobModel.get(context.player.uniqueId)
 					.filter { it.active }
-					.map { it.job.lowercase() }
+					.map { it.job.name.lowercase() }
 					.filter { it.startsWith(context.input) }
+			}
+
+			manager.commandConditions.addCondition("must_have_job") {
+				if (it.issuer.player.jobCount() == 0) {
+					throw ConditionFailedException("Vous n'exercez actuellement pas de métier.")
+				}
 			}
 		}
 	}
 
 	@Default
+	@Description("Indique les métiers que le joueur exerce actuellement.")
+	@Conditions("must_have_job")
 	fun onDefault(sender: Player) {
-		val message = if (sender.jobCount() == 0) {
-			throw InvalidCommandArgument("Vous n'exercez actuellement pas de métier.")
-		} else {
-			val jobs =
-				JobModel.get(sender.uniqueId).filter { it.active }.mapNotNull { jobConfig.jobs[it.job]?.label }
-			"§7Vous exercez le(s) métier(s) : ${jobs.joinToString(", ")}."
-		}
+		val jobs = JobModel.get(sender.uniqueId).filter { it.active }.mapNotNull { it.job.toJob().label }
+		val message = "§7Vous exercez le(s) métier(s) : ${jobs.joinToString(", ")}."
 		sender.sendMessage(message)
 	}
 
 	@Subcommand("menu")
+	@Description("Ouvre le menu des métiers.")
 	fun onMenu(sender: Player) {
 		sender open "job"
 	}
@@ -61,16 +62,17 @@ class JobCommand : BaseCommand() {
 	@Subcommand("join")
 	@Syntax("[job name]")
 	@CommandCompletion("@jobtype")
+	@Description("Rejoint le métier indiqué.")
 	fun onJoin(sender: Player, job: Job) {
 		if (sender.jobCount() >= jobConfig.maxJobs) {
-			throw InvalidCommandArgument("Vous ne pouvez pas avoir plus de ${jobConfig.maxJobs} métier(s).")
+			throw ConditionFailedException("Vous ne pouvez pas avoir plus de ${jobConfig.maxJobs} métier(s).")
 		} else if (sender.hasJob(job.type)) {
-			throw InvalidCommandArgument("Vous exercez déjà ce métier.")
+			throw ConditionFailedException("Vous exercez déjà ce métier.")
 		} else {
 			val cooldown = sender.getJobCooldown(job.type)
 
 			if (cooldown > 0) {
-				throw InvalidCommandArgument("Vous devez attendre $cooldown minutes avant de changer de métier.")
+				throw ConditionFailedException("Vous devez attendre $cooldown minutes avant de changer de métier.")
 			} else {
 				sender joinJob job.type
 				sender.sendMessage("§7Vous avez rejoint le métier ${job.label}.")
@@ -81,14 +83,15 @@ class JobCommand : BaseCommand() {
 	@Subcommand("leave")
 	@Syntax("[job name]")
 	@CommandCompletion("@ownjobs")
+	@Description("Quitte le métier indiqué.")
 	fun onLeave(sender: Player, job: Job) {
 		if (!(sender hasJob job.type)) {
-			throw InvalidCommandArgument("Vous n'exercez pas ce métier.")
+			throw ConditionFailedException("Vous n'exercez pas ce métier.")
 		} else {
 			val cooldown = sender.getJobCooldown(job.type)
 
 			if (cooldown > 0) {
-				throw InvalidCommandArgument("Vous devez attendre $cooldown minutes avant de changer de métier.")
+				throw ConditionFailedException("Vous devez attendre $cooldown minutes avant de changer de métier.")
 			} else {
 				sender leaveJob job.type
 				sender.sendMessage("§7Vous avez quitté le métier ${job.label}.")
@@ -99,16 +102,24 @@ class JobCommand : BaseCommand() {
 	@Subcommand("ascent")
 	@Syntax("[job name]")
 	@CommandCompletion("@ownjobs")
+	@Description("Réalise une ascenssion dans le métier indiqué.")
 	fun onAscent(sender: Player, job: Job) {
 		if (!(sender ascentJob job.type)) {
-			throw InvalidCommandArgument("Vous ne pouvez pas effectuer une ascension pour le métier ${job.label}.")
+			throw ConditionFailedException("Vous ne pouvez pas effectuer une ascension pour le métier ${job.label}.")
 		}
 	}
 
 	@Subcommand("top")
 	@Syntax("[job name]")
 	@CommandCompletion("@jobtype")
+	@Description("Affiche le classement des meilleurs joueurs dans le métier indiqué.")
 	fun onTop(sender: Player, job: Job) {
 		throw InvalidCommandArgument("Currently not implemented.")
+	}
+
+	@HelpCommand
+	@Syntax("")
+	fun doHelp(help: CommandHelp) {
+		help.showHelp()
 	}
 }

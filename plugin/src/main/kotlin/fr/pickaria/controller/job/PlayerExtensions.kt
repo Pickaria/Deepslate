@@ -19,7 +19,7 @@ import kotlin.time.DurationUnit
 /**
  * Checks if the player is currently using the given job.
  */
-internal infix fun Player.hasJob(jobType: JobType): Boolean = JobModel.get(uniqueId, jobType.name)?.active == true
+internal infix fun Player.hasJob(jobType: JobType): Boolean = JobModel.get(uniqueId, jobType)?.active == true
 
 /**
  * Returns the amount of active jobs a player has.
@@ -30,17 +30,17 @@ internal fun Player.jobCount(): Int = JobModel.get(uniqueId).filter { it.active 
  * Sets the current job as `active` and updates the `last used` field.
  */
 internal infix fun Player.joinJob(jobType: JobType) {
-	JobModel.get(uniqueId, jobType.name)?.apply {
+	JobModel.get(uniqueId, jobType)?.apply {
 		active = true
 		lastUsed = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault())
-	} ?: JobModel.create(uniqueId, jobType.name, true)
+	} ?: JobModel.create(uniqueId, jobType, true)
 }
 
 /**
  * Sets the given job as not active.
  */
 internal infix fun Player.leaveJob(jobType: JobType) {
-	JobModel.get(uniqueId, jobType.name)?.apply {
+	JobModel.get(uniqueId, jobType)?.apply {
 		active = false
 	}
 }
@@ -69,7 +69,7 @@ internal fun Player.getRank(): Component {
  */
 internal fun Player.getJobCooldown(jobType: JobType): Int {
 	val previousDay = Clock.System.now() - jobConfig.cooldown.hours
-	val job = JobModel.get(uniqueId, jobType.name)
+	val job = JobModel.get(uniqueId, jobType)
 
 	return if (job == null || !job.active) {
 		0
@@ -79,7 +79,7 @@ internal fun Player.getJobCooldown(jobType: JobType): Int {
 	}
 }
 
-internal infix fun Player.ascentJob(jobType: JobType): Boolean = JobModel.get(uniqueId, jobType.name)?.let { job ->
+internal infix fun Player.ascentJob(jobType: JobType): Boolean = JobModel.get(uniqueId, jobType)?.let { job ->
 	jobType.toJob().let { config ->
 		val ascentPoints = getAscentPoints(job, config)
 		if (ascentPoints > 0) {
@@ -112,4 +112,4 @@ internal fun Player.refreshDisplayName() {
 internal fun Player.jobs() = JobModel.get(uniqueId)
 
 internal val JobModel.config: Job?
-	get() = jobConfig.jobs[this.job]
+	get() = jobConfig.jobs[this.job.name]

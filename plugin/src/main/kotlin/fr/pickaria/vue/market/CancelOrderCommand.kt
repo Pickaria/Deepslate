@@ -1,71 +1,58 @@
 package fr.pickaria.vue.market
 
+import co.aikar.commands.*
+import co.aikar.commands.annotation.*
 import fr.pickaria.controller.market.giveItems
+import fr.pickaria.menu.open
 import fr.pickaria.model.market.Order
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
-import org.bukkit.command.Command
-import org.bukkit.command.CommandExecutor
-import org.bukkit.command.CommandSender
-import org.bukkit.command.TabCompleter
 import org.bukkit.entity.Player
 
+@CommandAlias("cancel")
+@CommandPermission("pickaria.commands.cancel")
+@Description("Ouvre le menu ou annule une vente.")
+class CancelOrderCommand : BaseCommand() {
+	companion object {
+		fun setupContext(
+			commandContexts: CommandContexts<BukkitCommandExecutionContext>,
+			commandCompletions: CommandCompletions<BukkitCommandCompletionContext>
+		) {
+			commandContexts.registerContext(Order::class.java) {
+				val arg: String = it.popFirstArg()
 
-/*
- * /cancel <order id>
- *
- * Cancels an order.
- */
-internal class CancelOrderCommand : CommandExecutor, TabCompleter {
-	override fun onCommand(sender: CommandSender, command: Command, label: String, args: Array<out String>): Boolean {
-		if (sender is Player) {
-			val orderId = args.getOrNull(0)?.let {
 				try {
-					it.toInt()
-				} catch (_: NumberFormatException) {
-					val message = Component.text(
-						"L'identifiant de l'ordre que vous avez entré est incorrect.",
-						NamedTextColor.RED
-					)
-					sender.sendMessage(message)
-					return true
+					Order.get(arg.toInt())
+				} catch (_: IllegalArgumentException) {
+					throw InvalidCommandArgument("Order '$arg' not found.")
 				}
-			} ?: run {
-				sender.sendMessage(Component.text("Vous devez entrer un identifiant.", NamedTextColor.RED))
-				return false
 			}
 
-			// Try to delete order
-			Order.get(sender, orderId)?.let {
-				it.delete()
-				giveItems(sender, it.material, it.amount)
-				val message = Component.text("Ordre supprimé avec succès.", NamedTextColor.GRAY)
-				sender.sendMessage(message)
-			} ?: run {
-				val message = Component.text("Cet ordre n'existe pas.", NamedTextColor.RED)
-				sender.sendMessage(message)
+			commandCompletions.registerCompletion("ownorders") { context ->
+				Order.get(context.player).map { it.id.toString() }
 			}
 		}
-
-		return true
 	}
 
-	override fun onTabComplete(
-		sender: CommandSender,
-		command: Command,
-		label: String,
-		args: Array<out String>
-	): List<String> {
-		if (sender is Player) {
-			return when (args.size) {
-				1 -> {
-					Order.get(sender).map { it.id.toString() }
-				}
-
-				else -> listOf()
-			}
+	@Default
+	@Syntax("<order id>")
+	@CommandCompletion("@ownorders")
+	fun onDefault(sender: Player, @Optional order: Order?) {
+		if (order == null) {
+			sender open "orders"
+			return
 		}
 
-		return listOf()
+		if (order.seller != sender) {
+			throw InvalidCommandArgument("Vous n'êtes pas autorisé à annuler cet vente.")
+		}
+
+		if (order.delete() >= 1) {
+			giveItems(sender, order.material, order.amount)
+			val message = Component.text("Ordre supprimé avec succès.", NamedTextColor.GRAY)
+			sender.sendMessage(message)
+		} else {
+			throw InvalidCommandArgument("Une erreur est survenue lors de l'annulation de la vente.")
+		}
 	}
 }

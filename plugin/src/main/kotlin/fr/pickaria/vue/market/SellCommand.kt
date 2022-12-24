@@ -21,10 +21,7 @@ class SellCommand : BaseCommand() {
 	companion object {
 		private val formatter = DecimalFormat("#.##")
 
-		fun setupContext(
-			commandContexts: CommandContexts<BukkitCommandExecutionContext>,
-			commandCompletions: CommandCompletions<BukkitCommandCompletionContext>
-		) {
+		fun setupContext(commandCompletions: CommandCompletions<BukkitCommandCompletionContext>) {
 			commandCompletions.registerCompletion("inventory") { context ->
 				context.player.inventory.contents.filterNotNull().map { it.type.name.lowercase() }.toSet()
 			}
@@ -56,13 +53,13 @@ class SellCommand : BaseCommand() {
 		val material = item.type
 
 		if (material.isAir || item.hasItemMeta()) {
-			throw InvalidCommandArgument("Cet objet ne peut pas être vendu.")
+			throw ConditionFailedException("Cet objet ne peut pas être vendu.")
 		}
 
 		val quantity = sender.inventory.filter { it?.type == material }.sumOf { it.amount }
 
 		if (quantity <= 0) {
-			throw InvalidCommandArgument("La quantité que vous avez entré est incorrecte.")
+			throw ConditionFailedException("La quantité que vous avez entré est incorrecte.")
 		}
 
 		val isSelling = Order.get(material, OrderType.SELL).isNotEmpty()
@@ -70,11 +67,11 @@ class SellCommand : BaseCommand() {
 		val price = if (isSelling) {
 			getPrices(material).first
 		} else {
-			throw InvalidCommandArgument("Vous devez entrer un prix unitaire pour vendre cet objet.")
+			throw ConditionFailedException("Vous devez entrer un prix unitaire pour vendre cet objet.")
 		}
 
 		if (price < marketConfig.minimumPrice) {
-			throw InvalidCommandArgument("Le prix doit être supérieur ou égal à ${marketConfig.minimumPrice}.")
+			throw ConditionFailedException("Le prix doit être supérieur ou égal à ${marketConfig.minimumPrice}.")
 		}
 
 		createOrder(sender, material, quantity, price)
@@ -103,7 +100,12 @@ class SellCommand : BaseCommand() {
 	@Default
 	@Syntax("<material> <quantity> <sell price>")
 	@CommandCompletion("@inventory @sellcount @sellprices")
-	fun onSell(sender: Player, @Optional material: Material?, @Optional quantity: Int?, @Optional sellPrice: Double?) {
+	fun onSell(
+		sender: Player,
+		@Optional material: Material?,
+		@Conditions("limits:min=1") @Optional quantity: Int?,
+		@Optional sellPrice: Double?
+	) {
 		val isQuickSell = material == null && quantity == null && sellPrice == null
 		if (isQuickSell) {
 			quickSell(sender)
@@ -111,13 +113,13 @@ class SellCommand : BaseCommand() {
 		}
 
 		if (material!!.isAir) {
-			throw InvalidCommandArgument("Cet objet ne peut pas être vendu.")
+			throw ConditionFailedException("Cet objet ne peut pas être vendu.")
 		}
 
 		val quantity = quantity ?: material.maxStackSize
 
 		if (quantity <= 0) {
-			throw InvalidCommandArgument("La quantité que vous avez entré est incorrecte.")
+			throw ConditionFailedException("La quantité que vous avez entré est incorrecte.")
 		}
 
 		val price: Double = sellPrice ?: run {
@@ -126,12 +128,12 @@ class SellCommand : BaseCommand() {
 			if (isSelling) {
 				getPrices(material).first
 			} else {
-				throw InvalidCommandArgument("Vous devez entrer un prix unitaire pour vendre cet objet.")
+				throw ConditionFailedException("Vous devez entrer un prix unitaire pour vendre cet objet.")
 			}
 		}
 
 		if (price < marketConfig.minimumPrice) {
-			throw InvalidCommandArgument("Le prix doit être supérieur ou égal à ${marketConfig.minimumPrice}.")
+			throw ConditionFailedException("Le prix doit être supérieur ou égal à ${marketConfig.minimumPrice}.")
 		}
 
 		val item = ItemStack(material)

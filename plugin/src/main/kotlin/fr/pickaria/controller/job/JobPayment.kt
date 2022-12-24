@@ -34,7 +34,7 @@ private fun jobPayPlayer(player: Player, amount: Double): Boolean {
 }
 
 fun jobPayPlayer(player: Player, amount: Double, config: Job, experienceToGive: Int = 0) {
-	JobModel.get(player.uniqueId, config.type.name)?.let {
+	JobModel.get(player.uniqueId, config.type)?.let {
 		val level = getLevelFromExperience(config, it.experience)
 		val amountToPay = amount * config.revenueIncrease.pow(level)
 		val amountIncrease = amountToPay + amountToPay * it.ascentPoints * jobConfig.ascent.moneyIncrease

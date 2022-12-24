@@ -27,7 +27,7 @@ private val bossBarsTasks: ConcurrentHashMap<BossBar, BukkitTask> = ConcurrentHa
  * Adds experience to a player's job and fire level up events if necessary.
  */
 private fun addExperience(player: Player, job: Job, exp: Int): Pair<Int, Double>? =
-	JobModel.get(player.uniqueId, job.type.name)?.let {
+	JobModel.get(player.uniqueId, job.type)?.let {
 		val potion = PotionType.JOB_EXPERIENCE.toPotion()
 		val active = hasActivePotionEffect(potion)
 

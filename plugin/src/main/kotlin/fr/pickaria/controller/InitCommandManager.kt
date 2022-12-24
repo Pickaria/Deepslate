@@ -1,6 +1,5 @@
 package fr.pickaria.controller
 
-import co.aikar.commands.BukkitCommandCompletionContext
 import co.aikar.commands.MessageType
 import co.aikar.commands.PaperCommandManager
 import fr.pickaria.model.economy.BankAccount
@@ -11,10 +10,13 @@ import java.util.*
 fun initCommandManager(plugin: JavaPlugin): PaperCommandManager {
 	val manager = PaperCommandManager(plugin)
 
+	manager.enableUnstableAPI("brigadier");
+	manager.enableUnstableAPI("help")
+
 	manager.locales.defaultLocale = Locale.FRENCH
 
-	manager.commandCompletions.registerCompletion("accounts") { c: BukkitCommandCompletionContext ->
-		BankAccount.getAccounts(c.player.uniqueId)
+	manager.commandCompletions.registerCompletion("accounts") {
+		BankAccount.getAccounts(it.player.uniqueId)
 	}
 
 	manager.setFormat(MessageType.ERROR, ChatColor.RED, ChatColor.GOLD, ChatColor.RED)

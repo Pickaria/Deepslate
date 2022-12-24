@@ -12,7 +12,7 @@ import java.util.*
 
 internal object Jobs : Table() {
 	val playerUuid = uuid("player_uuid")
-	val job = varchar("job", 16)
+	val job = enumerationByName<JobType>("job", 9)
 	val experience = double("experience").default(0.0)
 	val lastUsed = datetime("last_used").default(Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()))
 	val active = bool("active").default(false)
@@ -23,7 +23,7 @@ internal object Jobs : Table() {
 
 class JobModel(private val row: ResultRow) {
 	companion object {
-		fun create(playerId: UUID, job: String, active: Boolean = false) = transaction {
+		fun create(playerId: UUID, job: JobType, active: Boolean = false) = transaction {
 			Jobs.insert {
 				it[playerUuid] = playerId
 				it[Jobs.job] = job
@@ -31,7 +31,7 @@ class JobModel(private val row: ResultRow) {
 			}.resultedValues?.firstOrNull()
 		}?.let { JobModel(it) }
 
-		fun get(playerId: UUID, job: String) = transaction {
+		fun get(playerId: UUID, job: JobType) = transaction {
 			Jobs.select {
 				(Jobs.playerUuid eq playerId) and (Jobs.job eq job)
 			}.firstOrNull()
@@ -50,7 +50,7 @@ class JobModel(private val row: ResultRow) {
 	val playerUuid: UUID
 		get() = row[Jobs.playerUuid]
 
-	val job: String
+	val job: JobType
 		get() = row[Jobs.job]
 
 	var experience: Double

@@ -13,6 +13,7 @@ import org.bukkit.Material
 import org.bukkit.OfflinePlayer
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
+import java.security.InvalidParameterException
 import kotlin.math.max
 import kotlin.math.min
 
@@ -118,6 +119,9 @@ internal fun buy(player: Player, material: Material, amount: Int): Int {
 
 // TODO: Give to OfflinePlayer through their dematerialized inventory (#31)
 internal fun giveItems(player: Player, material: Material, amountToGive: Int) {
+	if (material.maxStackSize == 0) {
+		throw InvalidParameterException("Material has a maxStackSize of 0.")
+	}
 	var restToGive = amountToGive
 	val item = ItemStack(material)
 

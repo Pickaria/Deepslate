@@ -56,6 +56,16 @@ class Order private constructor(private val row: ResultRow) {
 		}
 
 		/**
+		 * Get one sell order by id.
+		 */
+		fun get(id: Int): Order? = transaction {
+			Orders.select { Orders.id eq id }
+				.firstOrNull()?.let {
+					Order(it)
+				}
+		}
+
+		/**
 		 * Get all specific material's orders with given type.
 		 */
 		fun get(material: Material, type: OrderType): List<Order> = transaction {
@@ -232,10 +242,8 @@ class Order private constructor(private val row: ResultRow) {
 
 	private val whereClause = { Orders.id eq this.id }
 
-	fun delete() {
-		transaction {
-			Orders.deleteWhere { whereClause() }
-		}
+	fun delete() = transaction {
+		Orders.deleteWhere { whereClause() }
 	}
 
 	val id: Int
