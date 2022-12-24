@@ -42,10 +42,12 @@ rarities:
     name: 'Épique'
     color: '<light_purple><name>'
     attributes: 3
+    advancement: pickaria:epic_stuff
   legendary:
     name: 'Légendaire'
     color: '<rainbow><name>'
     attributes: 4
+    advancement: pickaria:legendary_stuff
   mythic:
     name: 'Mythique'
     color: '<red><name>'

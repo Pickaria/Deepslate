@@ -2,6 +2,7 @@ package fr.pickaria.vue.shop
 
 import fr.pickaria.controller.economy.*
 import fr.pickaria.menu.open
+import fr.pickaria.model.advancements.CustomAdvancement
 import fr.pickaria.model.shop.menuNamespace
 import fr.pickaria.model.shop.shopConfig
 import fr.pickaria.spawner.event.*
@@ -71,6 +72,7 @@ internal class ShopListeners : Listener {
 						inventory.removeItem(trade.result)
 						inventory.clear()
 						player.updateInventory()
+						CustomAdvancement.VILLAGER_BUY.grant(player)
 					}
 				}
 

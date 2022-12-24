@@ -1,5 +1,6 @@
 package fr.pickaria.vue.reward
 
+import fr.pickaria.controller.artefact.grantAdvancement
 import fr.pickaria.controller.economy.currency
 import fr.pickaria.controller.economy.deposit
 import fr.pickaria.controller.economy.silentDeposit
@@ -37,7 +38,7 @@ internal class RewardListeners : Listener {
 					} catch (_: IllegalArgumentException) {
 						null
 					}
-				}?.let {
+				}?.let { reward ->
 					val holder = RewardHolder()
 					val inventory = Bukkit.createInventory(
 						holder,
@@ -56,10 +57,14 @@ internal class RewardListeners : Listener {
 						.lootingModifier(LootContext.DEFAULT_LOOT_MODIFIER)
 						.build()
 
-					it.lootTable.fillInventory(inventory, Random(), lootContext)
+					reward.lootTable.fillInventory(inventory, Random(), lootContext)
 
 					player.playSound(rewardConfig.rewardOpenSound)
 					player.openInventory(inventory)
+
+					reward.advancement?.let {
+						player.grantAdvancement(it)
+					}
 
 					isCancelled = true
 

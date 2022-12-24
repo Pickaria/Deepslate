@@ -1,6 +1,7 @@
 package fr.pickaria.controller.job
 
 import fr.pickaria.controller.job.events.JobAscentEvent
+import fr.pickaria.model.advancements.CustomAdvancement
 import fr.pickaria.model.job.Job
 import fr.pickaria.model.job.JobModel
 import fr.pickaria.model.job.JobType
@@ -34,6 +35,7 @@ internal infix fun Player.joinJob(jobType: JobType) {
 		active = true
 		lastUsed = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault())
 	} ?: JobModel.create(uniqueId, jobType, true)
+	CustomAdvancement.JOIN_JOB.grant(this)
 }
 
 /**

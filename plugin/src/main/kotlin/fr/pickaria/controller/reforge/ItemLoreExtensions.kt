@@ -39,7 +39,7 @@ val ItemStack.artefactRarity: Rarity
 /**
  * Sums the amount of all attribute modifiers.
  */
-fun ItemStack.getRarityLevel(): Int {
+private fun ItemStack.getRarityLevel(): Int {
 	var attributeLevel = if (isArtefact()) 1 else 0
 	var hasCustomAttributes = false
 

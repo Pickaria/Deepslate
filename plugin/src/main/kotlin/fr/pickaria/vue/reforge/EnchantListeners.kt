@@ -1,6 +1,8 @@
 package fr.pickaria.vue.reforge
 
+import fr.pickaria.controller.artefact.grantAdvancement
 import fr.pickaria.controller.reforge.*
+import fr.pickaria.model.advancements.CustomAdvancement
 import fr.pickaria.model.reforge.reforgeConfig
 import fr.pickaria.shared.GlowEnchantment
 import org.bukkit.attribute.Attribute
@@ -48,11 +50,17 @@ class EnchantListeners : Listener {
 					enchanter.level -= (power + 1)
 
 					enchanter.playSound(reforgeConfig.enchantSound)
+
+					CustomAdvancement.FIRST_REFORGE.grant(enchanter)
 				}
 			}
 
 			item.updateDefaultAttributes(enchantsToAdd)
 			item.updateLore()
+
+			item.artefactRarity.advancement?.let {
+				enchanter.grantAdvancement(it)
+			}
 		}
 	}
 

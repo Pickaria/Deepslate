@@ -2,6 +2,7 @@ package fr.pickaria.vue.job
 
 import fr.pickaria.controller.job.events.JobAscentEvent
 import fr.pickaria.controller.job.events.JobLevelUpEvent
+import fr.pickaria.model.advancements.CustomAdvancement
 import fr.pickaria.model.job.LevelUpType
 import fr.pickaria.model.job.jobConfig
 import net.kyori.adventure.text.Component
@@ -35,22 +36,25 @@ class JobListener : Listener {
 			val title = Title.title(mainTitle, subtitle)
 
 			player.showTitle(title)
+			CustomAdvancement.MAXIMUM_JOB_LEVEL.grant(player)
 		}
 	}
 
 	@EventHandler
 	fun onJobAscent(event: JobAscentEvent) {
-		val player = event.player
-		val label = event.job.label
-		val ascentPoints = event.ascentPoints
+		with(event) {
+			val label = job.label
 
-		val experienceBoost = jobConfig.ascent.experienceIncrease * ascentPoints * 100
-		val moneyBoost = jobConfig.ascent.moneyIncrease * ascentPoints * 100
+			val experienceBoost = jobConfig.ascent.experienceIncrease * ascentPoints * 100
+			val moneyBoost = jobConfig.ascent.moneyIncrease * ascentPoints * 100
 
-		player.playSound(player.location, Sound.ENTITY_PLAYER_LEVELUP, 1.0f, 1.0f)
-		player.sendMessage(
-			"§7Vous avez effectué une ascension et collecté §6$ascentPoints§7 points d'ascension dans le métier §6$label§7.\n" +
-					"§7Vous obtenez un bonus de §6$experienceBoost%§7 d'expérience ainsi que §6$moneyBoost%§7 de revenus supplémentaires."
-		)
+			player.playSound(player.location, Sound.ENTITY_PLAYER_LEVELUP, 1.0f, 1.0f)
+			player.sendMessage(
+				"§7Vous avez effectué une ascension et collecté §6$ascentPoints§7 points d'ascension dans le métier §6$label§7.\n" +
+						"§7Vous obtenez un bonus de §6$experienceBoost%§7 d'expérience ainsi que §6$moneyBoost%§7 de revenus supplémentaires."
+			)
+
+			CustomAdvancement.ASCEND_JOB.grant(player)
+		}
 	}
 }

@@ -9,6 +9,7 @@ rewards:
       - '<gray>Conteneur de trésors de l''end.'
     type: common
     purchasable: true
+    advancement: pickaria:reward
 
   uncommon:
     loot_table: minecraft:chests/buried_treasure
