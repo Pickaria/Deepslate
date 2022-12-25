@@ -1,9 +1,16 @@
 pluginManagement {
+	repositories {
+		maven("https://maven.quozul.dev/snapshots")
+		mavenCentral()
+		gradlePluginPortal()
+	}
+
 	plugins {
 		// Update this in libs.version.toml when you change it here
 		kotlin("jvm") version "1.7.22"
 		kotlin("plugin.serialization") version "1.7.22"
 		id("com.github.johnrengelman.shadow") version "7.1.2"
+		id("fr.pickaria.redstone") version "1.2.3"
 	}
 }
 

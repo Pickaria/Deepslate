@@ -4,7 +4,7 @@ plugins {
 	kotlin("jvm")
 	kotlin("plugin.serialization")
 	id("com.github.johnrengelman.shadow")
-
+	id("fr.pickaria.redstone")
 }
 
 group = "fr.pickaria"
