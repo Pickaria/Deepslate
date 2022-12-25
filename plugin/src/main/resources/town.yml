@@ -3,13 +3,15 @@ town_name_missing: <red>Veuillez entrer un nom de ville.
 town_name_exist: <red>Une ville avec ce nom existe déjà.
 town_not_created: <red>La ville n'a pas pu être créée.
 page: |-2
-  Livret de la ville <u><town-name></u>
+  <b><town-name></b>
 
-  <b>Actions :</b>
-  <gold><hover:show_text:/town balance>[Relevé de compte]</hover>
-  <gold><hover:show_text:/town deposit>[Déposer de l'argent]</hover>
-  <gold><hover:show_text:/town deposit>[Déposer de l'argent]</hover>
-  <gold><hover:show_text:/town invite>[Inviter un joueur]</hover>
-  <gold><hover:show_text:/town flag clone>[Récupérer une copie du drapeau]</hover>
-  <red><hover:show_text:/town leave>[Quitter la ville]</hover>
-  <red><hover:show_text:/town delete>[Supprimer la ville]</hover>
+  ⇒ <hover:show_text:'Actions de la ville'><blue><u>Actions</u></blue></hover>
+
+  ⇒ <hover:show_text:'Liste des résidents'><blue><u>Résidents</u></blue></hover>
+
+  ⇒ <hover:show_text:'Situation bancaire de la ville'><blue><u>Banque</u></blue></hover>
+
+  ⇒ <hover:show_text:'Actions sur les territoires de la ville'><blue><u>Territoire</u></blue></hover>
+
+  ⇒ <hover:show_text:'Actions à la mairie'><blue><u>Mairie</u></blue></hover>
+

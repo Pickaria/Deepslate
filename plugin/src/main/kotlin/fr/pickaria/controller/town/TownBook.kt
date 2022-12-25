@@ -17,7 +17,7 @@ fun getTownBook(town: Town, owner: Player): ItemStack {
 	val item = ItemStack(Material.WRITTEN_BOOK)
 	val meta = item.itemMeta as BookMeta
 
-	meta.persistentDataContainer.set(townNamespace, PersistentDataType.INTEGER, town.id)
+	meta.persistentDataContainer.set(townNamespace, PersistentDataType.INTEGER, town.id.value)
 
 	val title = town.flag.itemMeta.displayName()!!
 		.decoration(TextDecoration.ITALIC, TextDecoration.State.FALSE)

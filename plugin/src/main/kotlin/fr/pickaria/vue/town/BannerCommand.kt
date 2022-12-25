@@ -16,6 +16,7 @@ import org.bukkit.block.banner.PatternType
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.meta.BannerMeta
+import org.jetbrains.exposed.sql.transactions.transaction
 
 @CommandAlias("banner")
 @CommandPermission("pickaria.command.banner")
@@ -71,7 +72,12 @@ class BannerCommand : BaseCommand() {
 				max = size
 			}
 
-			Town.create("abc", item)
+			transaction {
+				Town.new {
+					identifier = "abc"
+					flag = item
+				}
+			}
 		}
 		player.sendMessage("Biggest serialized banner size: $max bytes")
 	}

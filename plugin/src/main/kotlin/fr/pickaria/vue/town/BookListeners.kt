@@ -13,9 +13,10 @@ import org.bukkit.event.block.BlockBreakEvent
 import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.event.player.PlayerTakeLecternBookEvent
 import org.bukkit.inventory.LecternInventory
+import org.jetbrains.exposed.sql.transactions.transaction
 import org.bukkit.block.data.type.Lectern as LecternData
 
-class BookEvents : Listener {
+class BookListeners : Listener {
 	@EventHandler
 	fun onPlayerTakeLecternBook(event: PlayerTakeLecternBookEvent) {
 		with(event) {
@@ -61,9 +62,11 @@ class BookEvents : Listener {
 				}
 
 				townId?.let { id ->
-					Town.get(id)?.let {
-						player.openTownBook(it)
-						isCancelled = true
+					transaction {
+						Town[id].let {
+							player.openTownBook(it)
+							isCancelled = true
+						}
 					}
 				}
 			}

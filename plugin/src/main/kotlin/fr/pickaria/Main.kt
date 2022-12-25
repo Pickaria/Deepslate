@@ -32,8 +32,8 @@ import fr.pickaria.vue.shard.GrindstoneListeners
 import fr.pickaria.vue.shop.PlaceShop
 import fr.pickaria.vue.shop.ShopListeners
 import fr.pickaria.vue.town.BannerCommand
-import fr.pickaria.vue.town.BannerEvent
-import fr.pickaria.vue.town.BookEvents
+import fr.pickaria.vue.town.BannerListeners
+import fr.pickaria.vue.town.BookListeners
 import fr.pickaria.vue.town.townMenu
 import org.bukkit.Bukkit
 import org.bukkit.plugin.java.JavaPlugin
@@ -51,8 +51,8 @@ class Main : JavaPlugin() {
 		// Events
 		server.pluginManager.let {
 			it.registerEvents(ArtefactListeners(), this)
-			it.registerEvents(BannerEvent(this), this)
-			it.registerEvents(BookEvents(), this)
+			it.registerEvents(BannerListeners(this), this)
+			it.registerEvents(BookListeners(), this)
 			it.registerEvents(ChatFormat(), this)
 			it.registerEvents(EnchantListeners(), this)
 			it.registerEvents(ExperienceListener(this), this)
@@ -98,7 +98,6 @@ class Main : JavaPlugin() {
 		foodMenu()
 		homeMenu()
 		jobMenu()
-		orderListingMenu()
 		ownOrdersMenu()
 		townMenu()
 
