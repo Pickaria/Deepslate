@@ -19,6 +19,8 @@ dependencies {
 	compileOnly(libs.paper)
 	compileOnly(libs.vault)
 	compileOnly(libs.acf)
+	compileOnly(libs.mccoroutine.api)
+	compileOnly(libs.mccoroutine.core)
 
 	compileOnly(libs.exposed.core)
 	compileOnly(libs.exposed.dao)

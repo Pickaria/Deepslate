@@ -1,5 +1,6 @@
 package fr.pickaria
 
+import com.github.shynixn.mccoroutine.bukkit.SuspendingJavaPlugin
 import fr.pickaria.controller.acf.enumCompletion
 import fr.pickaria.controller.acf.limitCondition
 import fr.pickaria.controller.initCommandManager
@@ -36,9 +37,8 @@ import fr.pickaria.vue.town.BannerListeners
 import fr.pickaria.vue.town.BookListeners
 import fr.pickaria.vue.town.townMenu
 import org.bukkit.Bukkit
-import org.bukkit.plugin.java.JavaPlugin
 
-class Main : JavaPlugin() {
+class Main : SuspendingJavaPlugin() {
 	override fun onEnable() {
 		super.onEnable()
 		saveDefaultConfig()
@@ -99,6 +99,7 @@ class Main : JavaPlugin() {
 		homeMenu()
 		jobMenu()
 		ownOrdersMenu()
+		orderListingMenu()
 		townMenu()
 
 		// Scheduler

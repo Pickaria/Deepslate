@@ -5,23 +5,29 @@ paper = "1.19.3-R0.1-SNAPSHOT"
 exposed = "0.41.1"
 kotlinx-datetime = "0.4.0"
 kotlinx-serialization = "1.4.1"
+kotlinx-coroutines = "1.6.4"
 acf = "0.5.1-SNAPSHOT"
 vault = "1.7.1"
 h2 = "2.1.214"
 pickaria-bedrock = "1.0.12-SNAPSHOT"
 pickaria-spawner = "1.0.7-SNAPSHOT"
 kaml = "0.49.0"
+mccoroutine-api = "2.9.0"
+mccoroutine-core = "2.9.0"
 
 [libraries]
 # Kotlin
 kotlin-stdlib = { module = "org.jetbrains.kotlin:kotlin-stdlib", version.ref = "kotlin" }
 kotlin-reflect = { module = "org.jetbrains.kotlin:kotlin-reflect", version.ref = "kotlin" }
 kotlinx-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version.ref = "kotlinx-datetime" }
+kotlinx-coroutines = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinx-coroutines" }
 
 # Minecraft
 paper = { module = "io.papermc.paper:paper-api", version.ref = "paper" }
 acf = { module = "co.aikar:acf-paper", version.ref = "acf" }
 vault = { module = "com.github.MilkBowl:VaultAPI", version.ref = "vault" }
+mccoroutine-api = { module = "com.github.shynixn.mccoroutine:mccoroutine-bukkit-api", version.ref = "mccoroutine-api" }
+mccoroutine-core = { module = "com.github.shynixn.mccoroutine:mccoroutine-bukkit-core", version.ref = "mccoroutine-core" }
 
 # Database
 exposed-core = { module = "org.jetbrains.exposed:exposed-core", version.ref = "exposed" }
