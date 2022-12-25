@@ -1,16 +1,15 @@
 package fr.pickaria.vue.town
 
+import fr.pickaria.controller.town.TownController
 import fr.pickaria.menu.*
-import fr.pickaria.model.town.Town
 import net.kyori.adventure.text.Component
-import org.jetbrains.exposed.sql.transactions.transaction
 import kotlin.math.ceil
 
 @OptIn(ItemBuilderUnsafe::class)
 fun townMenu() = menu("towns") {
 	title = Component.text("Villes")
 
-	val count = transaction { Town.count() }
+	val count = TownController.count()
 
 	rows = (ceil(count / 9.0).toInt())
 		.inc()
@@ -19,7 +18,7 @@ fun townMenu() = menu("towns") {
 
 	val pageSize = size - 9
 	val start = page * pageSize
-	val towns = transaction { Town.all().limit(pageSize, start.toLong()) }
+	val towns = TownController.all(pageSize, start.toLong())
 	val maxPage = (count - 1) / pageSize
 
 	towns.forEachIndexed { index, town ->

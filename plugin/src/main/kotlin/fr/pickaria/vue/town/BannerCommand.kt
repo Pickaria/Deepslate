@@ -3,10 +3,10 @@ package fr.pickaria.vue.town
 import co.aikar.commands.*
 import co.aikar.commands.annotation.*
 import fr.pickaria.controller.economy.withdraw
+import fr.pickaria.controller.town.TownController
 import fr.pickaria.controller.town.createTownBanner
 import fr.pickaria.model.economy.Credit
 import fr.pickaria.model.town.BannerType
-import fr.pickaria.model.town.Town
 import fr.pickaria.model.town.townConfig
 import fr.pickaria.shared.give
 import net.kyori.adventure.text.Component
@@ -16,7 +16,6 @@ import org.bukkit.block.banner.PatternType
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.meta.BannerMeta
-import org.jetbrains.exposed.sql.transactions.transaction
 
 @CommandAlias("banner")
 @CommandPermission("pickaria.command.banner")
@@ -72,12 +71,7 @@ class BannerCommand : BaseCommand() {
 				max = size
 			}
 
-			transaction {
-				Town.new {
-					identifier = "abc"
-					flag = item
-				}
-			}
+			TownController("abc", item)
 		}
 		player.sendMessage("Biggest serialized banner size: $max bytes")
 	}

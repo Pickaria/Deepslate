@@ -1,9 +1,9 @@
 package fr.pickaria.vue.town
 
+import fr.pickaria.controller.town.TownController
 import fr.pickaria.controller.town.isTownBook
 import fr.pickaria.controller.town.openTownBook
 import fr.pickaria.controller.town.townId
-import fr.pickaria.model.town.Town
 import org.bukkit.Material
 import org.bukkit.block.Lectern
 import org.bukkit.event.EventHandler
@@ -13,7 +13,6 @@ import org.bukkit.event.block.BlockBreakEvent
 import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.event.player.PlayerTakeLecternBookEvent
 import org.bukkit.inventory.LecternInventory
-import org.jetbrains.exposed.sql.transactions.transaction
 import org.bukkit.block.data.type.Lectern as LecternData
 
 class BookListeners : Listener {
@@ -62,11 +61,9 @@ class BookListeners : Listener {
 				}
 
 				townId?.let { id ->
-					transaction {
-						Town[id].let {
-							player.openTownBook(it)
-							isCancelled = true
-						}
+					TownController[id]?.let {
+						player.openTownBook(it)
+						isCancelled = true
 					}
 				}
 			}

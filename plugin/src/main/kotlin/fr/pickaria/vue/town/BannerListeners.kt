@@ -1,10 +1,9 @@
 package fr.pickaria.vue.town
 
+import fr.pickaria.controller.town.TownController
 import fr.pickaria.controller.town.getTownBook
 import fr.pickaria.controller.town.isTownBanner
 import fr.pickaria.controller.town.townId
-import fr.pickaria.model.town.Town
-import fr.pickaria.model.town.Towns
 import fr.pickaria.model.town.townConfig
 import fr.pickaria.model.town.townNamespace
 import fr.pickaria.shared.give
@@ -25,7 +24,6 @@ import org.bukkit.event.block.BlockPlaceEvent
 import org.bukkit.persistence.PersistentDataType
 import org.bukkit.plugin.java.JavaPlugin
 import org.bukkit.scheduler.BukkitRunnable
-import org.jetbrains.exposed.sql.transactions.transaction
 import kotlin.math.PI
 import kotlin.math.cos
 import kotlin.math.sin
@@ -82,9 +80,7 @@ class BannerListeners(private val plugin: JavaPlugin) : Listener {
 		with(event) {
 			block.townId?.let {
 				player.sendMessage("VILLE SUPPRIMÉE")
-				transaction {
-					Town[it].delete()
-				}
+				TownController[it]?.delete()
 			}
 		}
 	}
@@ -102,23 +98,13 @@ class BannerListeners(private val plugin: JavaPlugin) : Listener {
 				val displayName = itemInHand.itemMeta.displayName
 
 				// TODO: Create a TownController that makes all the requests and processing for towns
-				transaction {
-					Town.find {
-						Towns.identifier eq displayName
-					}.firstOrNull()
-				}?.let {
+				TownController[displayName]?.let {
 					player.sendMessage(townConfig.townNameExist)
 					setBuild(false)
 					return
 				}
 
-				val town =
-					transaction {
-						Town.new {
-							identifier = displayName
-							flag = itemInHand
-						}
-					}
+				val town = TownController(displayName, itemInHand)
 
 				townCreatedAnimation(block.location, player, itemInHand.itemMeta.displayName() ?: Component.empty())
 
@@ -126,7 +112,7 @@ class BannerListeners(private val plugin: JavaPlugin) : Listener {
 				banner.persistentDataContainer.set(
 					townNamespace,
 					PersistentDataType.INTEGER,
-					town.id.value
+					town.id
 				)
 				banner.update()
 
