@@ -10,6 +10,8 @@ vault = "1.7.1"
 h2 = "2.1.214"
 pickaria-bedrock = "1.0.11-SNAPSHOT"
 pickaria-spawner = "1.0.7-SNAPSHOT"
+mccoroutine-api = "2.9.0"
+mccoroutine-core = "2.9.0"
 kaml = "0.49.0"
 
 [libraries]
@@ -22,6 +24,8 @@ kotlinx-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version.
 paper = { module = "io.papermc.paper:paper-api", version.ref = "paper" }
 acf = { module = "co.aikar:acf-paper", version.ref = "acf" }
 vault = { module = "com.github.MilkBowl:VaultAPI", version.ref = "vault" }
+mccoroutine-api = { module = "com.github.shynixn.mccoroutine:mccoroutine-bukkit-api", version.ref = "mccoroutine-api" }
+mccoroutine-core = { module = "com.github.shynixn.mccoroutine:mccoroutine-bukkit-core", version.ref = "mccoroutine-core" }
 
 # Database
 exposed-core = { module = "org.jetbrains.exposed:exposed-core", version.ref = "exposed" }

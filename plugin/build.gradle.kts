@@ -4,7 +4,7 @@ plugins {
 	kotlin("jvm")
 	kotlin("plugin.serialization")
 	id("com.github.johnrengelman.shadow")
-
+	id("fr.pickaria.redstone")
 }
 
 group = "fr.pickaria"
@@ -19,6 +19,8 @@ dependencies {
 	compileOnly(libs.paper)
 	compileOnly(libs.vault)
 	compileOnly(libs.acf)
+	compileOnly(libs.mccoroutine.api)
+	compileOnly(libs.mccoroutine.core)
 
 	compileOnly(libs.exposed.core)
 	compileOnly(libs.exposed.dao)
@@ -30,10 +32,6 @@ dependencies {
 	compileOnly(libs.pickaria.bedrock)
 
 	compileOnly(libs.kaml)
-}
-
-tasks.test {
-	useJUnitPlatform()
 }
 
 tasks.withType<KotlinCompile> {

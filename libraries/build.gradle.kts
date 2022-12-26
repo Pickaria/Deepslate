@@ -15,8 +15,9 @@ dependencies {
 	implementation(libs.kotlinx.datetime)
 
 	compileOnly(libs.paper)
-	compileOnly(libs.vault)
 	implementation(libs.acf)
+	implementation(libs.mccoroutine.api)
+	implementation(libs.mccoroutine.core)
 
 	implementation(libs.exposed.core)
 	implementation(libs.exposed.dao)
@@ -28,10 +29,6 @@ dependencies {
 	implementation(libs.pickaria.bedrock)
 
 	implementation(libs.kaml)
-}
-
-tasks.test {
-	useJUnitPlatform()
 }
 
 tasks.withType<KotlinCompile> {

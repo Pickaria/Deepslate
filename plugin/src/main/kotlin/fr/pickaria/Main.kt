@@ -1,5 +1,6 @@
 package fr.pickaria
 
+import com.github.shynixn.mccoroutine.bukkit.SuspendingJavaPlugin
 import fr.pickaria.controller.initCommandManager
 import fr.pickaria.controller.potion.runnable
 import fr.pickaria.model.openDatabase
@@ -27,9 +28,8 @@ import fr.pickaria.vue.shard.GrindstoneListeners
 import fr.pickaria.vue.shop.PlaceShop
 import fr.pickaria.vue.shop.ShopListeners
 import org.bukkit.Bukkit
-import org.bukkit.plugin.java.JavaPlugin
 
-class Main : JavaPlugin() {
+class Main : SuspendingJavaPlugin() {
 	override fun onEnable() {
 		super.onEnable()
 		saveDefaultConfig()
