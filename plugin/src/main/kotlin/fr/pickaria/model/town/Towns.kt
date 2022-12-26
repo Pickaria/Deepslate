@@ -12,6 +12,7 @@ object Towns : IntIdTable() {
 	var identifier = varchar("town_id", 32).uniqueIndex()
 	var flag = binary("flag", 1024)
 	val creationDate = datetime("creation_date").clientDefault { now() }
+	var balance = double("balance").default(0.0)
 }
 
 class Town(id: EntityID<Int>) : IntEntity(id) {
@@ -19,7 +20,9 @@ class Town(id: EntityID<Int>) : IntEntity(id) {
 
 	var identifier by Towns.identifier
 	private var flagByteArray by Towns.flag
-	var creationDate by Towns.creationDate
+	val creationDate by Towns.creationDate
+	var balance by Towns.balance
+	val residents by Resident referrersOn Residents.townId
 
 	var flag: ItemStack
 		get() = ItemStack.deserializeBytes(flagByteArray)

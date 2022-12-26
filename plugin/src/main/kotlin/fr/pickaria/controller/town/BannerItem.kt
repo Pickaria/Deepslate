@@ -1,6 +1,5 @@
 package fr.pickaria.controller.town
 
-import fr.pickaria.model.town.BannerType
 import fr.pickaria.model.town.bannerNamespace
 import fr.pickaria.model.town.townNamespace
 import org.bukkit.Material
@@ -26,16 +25,6 @@ private val Material.isBanner
 			this == Material.GREEN_BANNER ||
 			this == Material.RED_BANNER ||
 			this == Material.BLACK_BANNER
-
-fun createTownBanner(type: BannerType): ItemStack {
-	val itemStack = ItemStack(type.material)
-
-	itemStack.editMeta {
-		it.persistentDataContainer.set(bannerNamespace, PersistentDataType.BYTE, 1)
-	}
-
-	return itemStack
-}
 
 fun ItemStack.isTownBanner() = type.isBanner && itemMeta.persistentDataContainer.has(bannerNamespace)
 

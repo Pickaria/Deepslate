@@ -9,6 +9,7 @@ import fr.pickaria.model.openDatabase
 import fr.pickaria.model.potion.PotionType
 import fr.pickaria.model.shop.ShopOffer
 import fr.pickaria.model.town.BannerType
+import fr.pickaria.model.town.ResidentRank
 import fr.pickaria.vue.PingCommand
 import fr.pickaria.vue.artefact.ArtefactListeners
 import fr.pickaria.vue.artefact.SmithingListeners
@@ -32,10 +33,7 @@ import fr.pickaria.vue.reward.RewardListeners
 import fr.pickaria.vue.shard.GrindstoneListeners
 import fr.pickaria.vue.shop.PlaceShop
 import fr.pickaria.vue.shop.ShopListeners
-import fr.pickaria.vue.town.BannerCommand
-import fr.pickaria.vue.town.BannerListeners
-import fr.pickaria.vue.town.BookListeners
-import fr.pickaria.vue.town.townMenu
+import fr.pickaria.vue.town.*
 import org.bukkit.Bukkit
 
 class Main : SuspendingJavaPlugin() {
@@ -65,18 +63,20 @@ class Main : SuspendingJavaPlugin() {
 			it.registerEvents(SmithingListeners(), this)
 		}
 
+		// Command completions
+		enumCompletion<BannerType>(manager, "banner_type", "Cette bannière n'existe pas.")
+		enumCompletion<PotionType>(manager, "potion_type", "Cette potion n'existe pas.")
+		enumCompletion<ShopOffer>(manager, "shop_type", "Ce magasin n'existe pas.")
+		enumCompletion<ResidentRank>(manager, "ranks", "Ce rôle n'existe pas.")
+
 		// Command contexts
 		BuyCommand.setupContext(manager)
 		CancelOrderCommand.setupContext(manager.commandContexts, manager.commandCompletions)
 		JobCommand.setupContext(manager)
 		RewardCommand.setupContext(manager.commandContexts, manager.commandCompletions)
 		SellCommand.setupContext(manager.commandCompletions)
+		TownCommand.setupContext(manager)
 		limitCondition(manager)
-
-		// Command completions
-		enumCompletion<BannerType>(manager, "banner_type", "Cette bannière n'existe pas.")
-		enumCompletion<PotionType>(manager, "potion_type", "Cette potion n'existe pas.")
-		enumCompletion<ShopOffer>(manager, "shop_type", "Ce magasin n'existe pas.")
 
 		// Commands
 		manager.registerCommand(BalanceTopCommand())
@@ -93,6 +93,7 @@ class Main : SuspendingJavaPlugin() {
 		manager.registerCommand(PotionCommand())
 		manager.registerCommand(RewardCommand())
 		manager.registerCommand(SellCommand())
+		manager.registerCommand(TownCommand())
 
 		// Menus
 		foodMenu()

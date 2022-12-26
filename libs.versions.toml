@@ -9,11 +9,12 @@ kotlinx-coroutines = "1.6.4"
 acf = "0.5.1-SNAPSHOT"
 vault = "1.7.1"
 h2 = "2.1.214"
-pickaria-bedrock = "1.0.12-SNAPSHOT"
+pickaria-bedrock = "1.0.13-SNAPSHOT"
 pickaria-spawner = "1.0.7-SNAPSHOT"
 kaml = "0.49.0"
 mccoroutine-api = "2.9.0"
 mccoroutine-core = "2.9.0"
+towny = "0.98.4.15"
 
 [libraries]
 # Kotlin
@@ -28,6 +29,7 @@ acf = { module = "co.aikar:acf-paper", version.ref = "acf" }
 vault = { module = "com.github.MilkBowl:VaultAPI", version.ref = "vault" }
 mccoroutine-api = { module = "com.github.shynixn.mccoroutine:mccoroutine-bukkit-api", version.ref = "mccoroutine-api" }
 mccoroutine-core = { module = "com.github.shynixn.mccoroutine:mccoroutine-bukkit-core", version.ref = "mccoroutine-core" }
+towny = { module = "com.palmergames.bukkit.towny:towny", version.ref = "towny" }
 
 # Database
 exposed-core = { module = "org.jetbrains.exposed:exposed-core", version.ref = "exposed" }

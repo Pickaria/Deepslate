@@ -1,9 +1,6 @@
 package fr.pickaria.vue.town
 
-import fr.pickaria.controller.town.TownController
-import fr.pickaria.controller.town.getTownBook
-import fr.pickaria.controller.town.isTownBanner
-import fr.pickaria.controller.town.townId
+import fr.pickaria.controller.town.*
 import fr.pickaria.model.town.townConfig
 import fr.pickaria.model.town.townNamespace
 import fr.pickaria.shared.give
@@ -79,11 +76,12 @@ class BannerListeners(private val plugin: JavaPlugin) : Listener {
 	fun onBannerBreak(event: BlockBreakEvent) {
 		with(event) {
 			block.townId?.let {
-				player.sendMessage("VILLE SUPPRIMÉE")
-				TownController[it]?.delete()
+				isCancelled = true
 			}
 		}
 	}
+
+	// TODO: Cancel BlockBreakBlockEvent
 
 	@EventHandler
 	fun onBannerPlaced(event: BlockPlaceEvent) {
@@ -104,7 +102,13 @@ class BannerListeners(private val plugin: JavaPlugin) : Listener {
 					return
 				}
 
-				val town = TownController(displayName, itemInHand)
+				player.town?.let {
+					player.sendMessage(townConfig.alreadyInTown)
+					setBuild(false)
+					return
+				}
+
+				val town = TownController(displayName, itemInHand, player)
 
 				townCreatedAnimation(block.location, player, itemInHand.itemMeta.displayName() ?: Component.empty())
 

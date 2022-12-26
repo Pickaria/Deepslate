@@ -11,27 +11,6 @@ import org.bukkit.entity.Player
 @CommandAlias("givepotion")
 @CommandPermission("pickaria.admin.command.givepotion")
 class PotionCommand : BaseCommand() {
-	companion object {
-		fun setupContext(
-			commandContexts: CommandContexts<BukkitCommandExecutionContext>,
-			commandCompletions: CommandCompletions<BukkitCommandCompletionContext>
-		) {
-			commandContexts.registerContext(PotionType::class.java) {
-				val arg = it.popFirstArg()
-
-				try {
-					PotionType.valueOf(arg.uppercase())
-				} catch (_: IllegalArgumentException) {
-					throw InvalidCommandArgument("Potion of type '$arg' does not exists.")
-				}
-			}
-
-			commandCompletions.registerCompletion("potiontype") {
-				PotionType.values().map { it.name.lowercase() }
-			}
-		}
-	}
-
 	@Default
 	@Syntax("<potion type> [amount]")
 	@CommandCompletion("@potion_type")

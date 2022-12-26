@@ -1,6 +1,8 @@
 package fr.pickaria.model.town
 
 import org.bukkit.Material
+import org.bukkit.inventory.ItemStack
+import org.bukkit.persistence.PersistentDataType
 
 enum class BannerType(val material: Material) {
 	WHITE(Material.WHITE_BANNER),
@@ -19,4 +21,14 @@ enum class BannerType(val material: Material) {
 	GREEN(Material.GREEN_BANNER),
 	RED(Material.RED_BANNER),
 	BLACK(Material.BLACK_BANNER);
+
+	fun item(): ItemStack {
+		val itemStack = ItemStack(material)
+
+		itemStack.editMeta {
+			it.persistentDataContainer.set(bannerNamespace, PersistentDataType.BYTE, 1)
+		}
+
+		return itemStack
+	}
 }

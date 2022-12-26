@@ -12,7 +12,7 @@ internal object Jobs : Table() {
 	val playerUuid = uuid("player_uuid")
 	val job = enumerationByName<JobType>("job", 9)
 	val experience = double("experience").default(0.0)
-	val lastUsed = datetime("last_used").default(now())
+	val lastUsed = datetime("last_used").clientDefault { now() }
 	val active = bool("active").default(false)
 	val ascentPoints = integer("ascent_points").default(0)
 

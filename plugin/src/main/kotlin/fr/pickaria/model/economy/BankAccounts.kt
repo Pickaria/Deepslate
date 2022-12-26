@@ -5,7 +5,7 @@ import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.transactions.transaction
 import java.util.*
 
-internal const val DEFAULT_ACCOUNT = "default"
+internal const val DEFAULT_ACCOUNT = "credits"
 
 internal object BankAccounts : Table() {
 	val playerUuid = uuid("player_uuid")

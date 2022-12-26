@@ -1,7 +1,6 @@
 package fr.pickaria.controller.shop
 
 import fr.pickaria.controller.reforge.getAttributeItem
-import fr.pickaria.controller.town.createTownBanner
 import fr.pickaria.model.artefact.artefactConfig
 import fr.pickaria.model.artefact.toController
 import fr.pickaria.model.economy.Credit
@@ -62,7 +61,7 @@ fun getPotionsOffers(): List<MerchantRecipe> = potionConfig.potions.map { (_, co
 }
 
 fun getFlagOffers(): List<MerchantRecipe> = BannerType.values().map {
-	MerchantRecipe(createTownBanner(it), Int.MAX_VALUE).apply {
+	MerchantRecipe(it.item(), Int.MAX_VALUE).apply {
 		uses = 0
 		addIngredient(Credit.toController().item(10))
 	}

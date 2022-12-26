@@ -3,6 +3,7 @@ package fr.pickaria.model
 import fr.pickaria.model.economy.BankAccounts
 import fr.pickaria.model.job.Jobs
 import fr.pickaria.model.market.Orders
+import fr.pickaria.model.town.Residents
 import fr.pickaria.model.town.Towns
 import kotlinx.datetime.Clock
 import kotlinx.datetime.TimeZone
@@ -24,15 +25,15 @@ fun openDatabase(path: String): Database {
 
 	transaction {
 		SchemaUtils.create(
-			BankAccounts, Jobs, Orders, Towns
+			BankAccounts, Jobs, Orders, Towns, Residents
 		)
 	}
 
 	transaction {
 		SchemaUtils.statementsRequiredToActualizeScheme(
-			BankAccounts, Jobs, Orders, Towns
+			BankAccounts, Jobs, Orders, Towns, Residents
 		) + SchemaUtils.addMissingColumnsStatements(
-			BankAccounts, Jobs, Orders, Towns
+			BankAccounts, Jobs, Orders, Towns, Residents
 		)
 	}.forEach {
 		transaction {
