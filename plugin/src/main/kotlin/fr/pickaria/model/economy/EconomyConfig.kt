@@ -48,6 +48,9 @@ data class EconomyConfig(
 	@SerialName("not_much_pages")
 	val notMuchPages: String,
 
+	@SerialName("bundle_description")
+	val bundleDescription: String,
+
 	@SerialName("send_success")
 	val sendSuccess: String,
 
@@ -57,6 +60,9 @@ data class EconomyConfig(
 	val header: String,
 	val row: String,
 	val footer: String,
+
+	@SerialName("vault_currency")
+	val vaultCurrency: String,
 )
 
 val economyConfig = Yaml.default.decodeFromStream<EconomyConfig>(getResourceFileStream("economy.yml"))

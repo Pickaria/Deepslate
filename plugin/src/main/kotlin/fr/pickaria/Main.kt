@@ -13,6 +13,7 @@ import fr.pickaria.vue.chat.PlayerJoin
 import fr.pickaria.vue.economy.BalanceTopCommand
 import fr.pickaria.vue.economy.MoneyCommand
 import fr.pickaria.vue.economy.PayCommand
+import fr.pickaria.vue.economy.currencyMenu
 import fr.pickaria.vue.home.foodMenu
 import fr.pickaria.vue.home.homeMenu
 import fr.pickaria.vue.job.ExperienceListener
@@ -71,6 +72,7 @@ class Main : SuspendingJavaPlugin() {
 		// Deepslate
 		homeMenu()
 		foodMenu()
+		currencyMenu()
 
 		// Market
 		SellCommand.setupContext(manager.commandCompletions)
