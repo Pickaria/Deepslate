@@ -81,7 +81,7 @@ class CurrencyController(val model: Currency) {
 			meta.persistentDataContainer.set(currencyNamespace, PersistentDataType.STRING, model.account)
 			meta.persistentDataContainer.set(valueNamespace, PersistentDataType.DOUBLE, totalValue)
 
-			meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES)
+			meta.addItemFlags(ItemFlag.HIDE_POTION_EFFECTS)
 
 			items.forEach {
 				(meta as BundleMeta).addItem(it)

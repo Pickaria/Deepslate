@@ -54,6 +54,6 @@ fun getPotionsOffers(): List<MerchantRecipe> = potionConfig.potions.map { (_, co
 
 fun getTestOffers(): List<MerchantRecipe> = (0..50).map {
 	CurrencyBundle(ItemStack(Material.DIRT)) {
-		Credit to Random.nextDouble(0.0, 68719476736.99)
+		Credit to Random.nextDouble(0.0, 68_719_476_736.99)
 	}
 }
