@@ -79,6 +79,7 @@ internal fun jobMenu() = menu("job") {
 
 					keyValues {
 						"Niveau" to "$level"
+						"Expérience totale" to "${decimalFormat.format(job.totalExperience + job.experience)}"
 
 						if (it.ascentPoints > 0) {
 							"Points d'ascension" to it.ascentPoints

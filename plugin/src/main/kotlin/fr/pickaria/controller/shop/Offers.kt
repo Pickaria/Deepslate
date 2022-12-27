@@ -48,7 +48,7 @@ fun getRewardsOffers(): List<MerchantRecipe> = rewardConfig.rewards.filter { it.
 fun getPotionsOffers(): List<MerchantRecipe> = potionConfig.potions.map { (_, config) ->
 	val item = config.toController().create()
 	CurrencyBundle(item) {
-		Credit to 16777216 + Random.nextInt(65, 262143) + Random.nextDouble(0.01, 0.99)
+		Credit to 50
 	}
 }
 
