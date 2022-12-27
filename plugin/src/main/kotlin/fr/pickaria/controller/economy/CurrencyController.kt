@@ -61,20 +61,20 @@ class CurrencyController(val model: Currency) {
 		}
 	}
 
-	fun bundle(totalValue: Double): ItemStack = ItemStack(Material.BUNDLE).apply {
+	fun bundle(totalValue: Double, items: List<ItemStack>) = ItemStack(Material.BUNDLE).apply {
 		editMeta { meta ->
 			meta.addEnchant(GlowEnchantment.instance, 1, true)
 
 			val name = Component.text("Sacoche de")
 				.append(Component.space())
 				.append(currencyDisplayName)
+				.decoration(TextDecoration.ITALIC, TextDecoration.State.FALSE)
 
 			meta.displayName(name)
 
 			val line = MiniMessage(economyConfig.bundleDescription) {
-				"value" to format(totalValue)
+				"value" to this@CurrencyController.format(totalValue)
 			}.message.decoration(TextDecoration.ITALIC, TextDecoration.State.FALSE)
-
 
 			meta.lore(listOf(line))
 
@@ -83,11 +83,13 @@ class CurrencyController(val model: Currency) {
 
 			meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES)
 
-			items(totalValue).forEach {
+			items.forEach {
 				(meta as BundleMeta).addItem(it)
 			}
 		}
 	}
+
+	fun bundle(totalValue: Double): ItemStack = bundle(totalValue, items(totalValue))
 
 	/**
 	 * Creates a new ItemStack for the currency.

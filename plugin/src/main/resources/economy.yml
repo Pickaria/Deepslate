@@ -33,10 +33,22 @@ currencies:
     account: credits # The account name must be the same as the key
     format: '###,##0.00'
     physical_currencies:
+      - value: 0.01
+        material: GLOWSTONE_DUST
+      - value: 0.1
+        material: GUNPOWDER
       - value: 1.0
         material: IRON_NUGGET
       - value: 64.0
         material: GOLD_NUGGET
+      - value: 4096.0
+        material: GOLD_INGOT
+      - value: 262144.0
+        material: GOLD_BLOCK
+      - value: 16777216.0
+        material: NETHERITE_INGOT
+      - value: 1073741824.0
+        material: NETHERITE_BLOCK
 
   shards:
     description:

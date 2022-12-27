@@ -16,7 +16,7 @@ rewards:
     material: YELLOW_SHULKER_BOX
     name: '<yellow>Récompense peu commune'
     keys: 5
-    shards: 0
+    shards: 1
     description:
       - '<gray>Conteneur de trésors de l''océan.'
     type: uncommon

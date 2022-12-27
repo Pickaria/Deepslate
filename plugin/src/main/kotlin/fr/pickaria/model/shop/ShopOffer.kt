@@ -6,5 +6,6 @@ enum class ShopOffer {
 	POTIONS,
 	REWARDS,
 	MARKET,
+	TEST,
 	JOB;
 }

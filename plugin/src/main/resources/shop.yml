@@ -55,3 +55,11 @@ villagers:
     profession: MASON
     uuid: c622ce38-b990-4a26-9e6e-a0da059ccb4e
     menu: job
+
+  # Opens the job menu
+  test:
+    name: "[DEBUG]"
+    villager_type: PLAINS
+    profession: MASON
+    uuid: b0d91031-756f-4fe0-81a9-e89aeba064e4
+    offers: TEST
