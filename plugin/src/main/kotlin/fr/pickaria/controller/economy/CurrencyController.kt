@@ -28,10 +28,16 @@ class CurrencyController(val model: Currency) {
 		}, NamedTextColor.GOLD).decoration(TextDecoration.ITALIC, TextDecoration.State.FALSE)
 	}
 
+	/**
+	 * All the physical currencies sorted by descending value.
+	 */
 	private val physicalCurrencies by lazy {
 		model.physicalCurrencies.sortedByDescending { it.value }
 	}
 
+	/**
+	 * Get the items required to match a specified total value.
+	 */
 	fun items(totalValue: Double): List<ItemStack> {
 		var remaining = totalValue
 		val coins = mutableMapOf<PhysicalCurrency, Int>()
@@ -61,6 +67,9 @@ class CurrencyController(val model: Currency) {
 		}
 	}
 
+	/**
+	 * Put all items for a specified total value in a bundle.
+	 */
 	fun bundle(totalValue: Double, items: List<ItemStack>) = ItemStack(Material.BUNDLE).apply {
 		editMeta { meta ->
 			meta.addEnchant(GlowEnchantment.instance, 1, true)
@@ -89,6 +98,9 @@ class CurrencyController(val model: Currency) {
 		}
 	}
 
+	/**
+	 * Creates a bundle containing all items for a specified total value.
+	 */
 	fun bundle(totalValue: Double): ItemStack = bundle(totalValue, items(totalValue))
 
 	/**
@@ -96,7 +108,7 @@ class CurrencyController(val model: Currency) {
 	 * @param amount Size of the stack, must be between 0 and `Material.maxStackSize`, defaults to 1.
 	 * @param value Value of each currency item, defaults to 1.0.
 	 */
-	@Deprecated("Use items(totalValue) instead")
+	@Deprecated("Use items(totalValue).first() instead")
 	fun item(amount: Int = 1, value: Double = 1.0): ItemStack {
 		val itemStack = ItemStack(model.physicalCurrencies.first().material, amount)
 

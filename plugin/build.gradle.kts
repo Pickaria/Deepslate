@@ -21,6 +21,7 @@ dependencies {
 	compileOnly(libs.acf)
 	compileOnly(libs.mccoroutine.api)
 	compileOnly(libs.mccoroutine.core)
+	compileOnly(libs.towny)
 
 	compileOnly(libs.exposed.core)
 	compileOnly(libs.exposed.dao)

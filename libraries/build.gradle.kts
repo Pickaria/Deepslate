@@ -25,7 +25,6 @@ dependencies {
 	implementation(libs.exposed.kotlin.datetime)
 	implementation(libs.h2)
 
-	compileOnly(libs.pickaria.spawner)
 	implementation(libs.pickaria.bedrock)
 
 	implementation(libs.kaml)

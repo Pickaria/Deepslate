@@ -36,4 +36,7 @@ data class Currency(
 	}
 }
 
+/**
+ * Get a controller for this currency.
+ */
 fun Currency.toController(): CurrencyController = CurrencyController(this)

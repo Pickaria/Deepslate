@@ -27,6 +27,10 @@ class CurrencyBundle {
 			}
 		}
 
+		/**
+		 * Converts the currencies provided to a merchant recipe.
+		 * If the amount of items exceeds 2 per currency, use a bundle.
+		 */
 		fun toMerchantRecipe(): MerchantRecipe {
 			if (currencies.isEmpty()) {
 				throw InvalidParameterException("A merchant recipe must have at least 1 currency ingredient.")
