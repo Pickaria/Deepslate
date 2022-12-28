@@ -4,8 +4,7 @@ import co.aikar.commands.*
 import co.aikar.commands.annotation.*
 import fr.pickaria.controller.economy.has
 import fr.pickaria.controller.economy.withdraw
-import fr.pickaria.controller.reward.collect
-import fr.pickaria.controller.reward.dailyReward
+import fr.pickaria.controller.reward.*
 import fr.pickaria.menu.open
 import fr.pickaria.model.economy.Key
 import fr.pickaria.model.economy.Shard
@@ -13,6 +12,8 @@ import fr.pickaria.model.reward.Reward
 import fr.pickaria.model.reward.rewardConfig
 import fr.pickaria.model.reward.toController
 import fr.pickaria.shared.give
+import net.kyori.adventure.text.Component
+import net.kyori.adventure.text.format.NamedTextColor
 import net.milkbowl.vault.economy.EconomyResponse
 import org.bukkit.entity.Player
 
@@ -69,12 +70,19 @@ class RewardCommand : BaseCommand() {
 	@Subcommand("claim")
 	@Description("Permet de récupérer une récompense journalière.")
 	fun onClaim(sender: Player) {
-		if (sender.dailyReward.collect()) {
-			rewardConfig.rewards["common"]?.let {
-				val item = it.toController().create()
-				sender.give(item)
-			}
+		sender.dailyReward.let {
+			it.rewards().getOrNull(it.collected())?.let { reward ->
+				if (it.collect()) {
+					val item = reward.toController().create()
+					sender.give(item)
 
+					val feedback = reward.name.color(NamedTextColor.GOLD).appendSpace()
+						.append(Component.text("récupérée !", NamedTextColor.GRAY))
+					sender.sendMessage(feedback)
+				} else {
+					throw ConditionFailedException("Il vous manque ${rewardConfig.dailyPointsToCollect - it.dailyPoints()} points.")
+				}
+			} ?: throw ConditionFailedException("Plus aucune récompense pour aujourd'hui.")
 		}
 	}
 }

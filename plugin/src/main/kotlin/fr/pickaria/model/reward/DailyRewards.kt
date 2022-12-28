@@ -26,5 +26,7 @@ class DailyReward(id: EntityID<Int>) : IntEntity(id) {
 	var lastDay by DailyRewards.lastDay
 	var lastCollectedDate by DailyRewards.lastCollectedDate
 	var streak by DailyRewards.streak
+
+	// Amount of rewards collected at `lastCollectedDate`
 	var collectedToday by DailyRewards.collectedToday
 }

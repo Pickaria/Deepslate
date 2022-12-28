@@ -38,7 +38,7 @@ rewards:
     type: epic
     loot_table: pickaria:rewards/epic
     material: PURPLE_SHULKER_BOX
-    name: '<purple>Récompense épique'
+    name: '<dark_purple>Récompense épique'
 
   redstone:
     type: redstone
@@ -91,4 +91,15 @@ reward_open_sound: item.bundle.insert
 daily_points_to_collect: 100
 daily_reward_is_ready: '<gold>Votre récompense du jour est prête à être récupérée.'
 daily_reward_sound: entity.experience_orb.pickup
-reward_per_day: 2
+reward_per_day: 1
+
+special_days:
+  12-28: epic
+  12-29: uncommon
+
+default_reward: common
+
+streak_rewards:
+  - redstone
+
+streak_reward_every: 7

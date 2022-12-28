@@ -6,14 +6,12 @@ import fr.pickaria.menu.Result
 import fr.pickaria.menu.closeItem
 import fr.pickaria.menu.menu
 import fr.pickaria.model.reward.rewardConfig
+import fr.pickaria.model.reward.toController
 import fr.pickaria.shared.GlowEnchantment
-import fr.pickaria.shared.MiniMessage
 import kotlinx.datetime.toKotlinLocalDate
 import net.kyori.adventure.text.Component
-import net.kyori.adventure.text.format.TextDecoration
 import org.bukkit.Material
 import org.bukkit.inventory.ItemFlag
-import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.meta.BundleMeta
 import java.time.LocalDateTime
 import java.time.LocalTime
@@ -44,6 +42,9 @@ fun rewardMenu() = menu("reward") {
 		val isDayToCollect = !isCollected && remaining in 0..24
 		val unlockIn = today.until(day.with(LocalTime.MIN), ChronoUnit.HOURS)
 
+		val collected = playerReward.collected(date)
+		val rewards = playerReward.rewards(date)
+
 		item {
 			slot = x + 1
 			title = Component.text(dayOfWeek)
@@ -51,19 +52,24 @@ fun rewardMenu() = menu("reward") {
 			lore {
 				if (!isDayToCollect) {
 					description {
-						if (0 <= unlockIn) {
-							-MiniMessage("<gray>Se débloque dans <gold>$unlockIn</gold> heures.").message
-								.decoration(TextDecoration.ITALIC, TextDecoration.State.FALSE)
-						} else {
+						if (0 > unlockIn) {
 							-"Cette récompense ne peut plus être récupérée."
 						}
+					}
+					keyValues {
+						if (0 <= unlockIn) {
+							"Déblocage" to "$unlockIn heures"
+						}
+						"Série" to "${playerReward.streak(date)}?"
 					}
 				} else {
 					keyValues {
 						"Temps restants" to "$remaining heures"
 						"Points collectés" to "${playerReward.dailyPoints(date)} / ${rewardConfig.dailyPointsToCollect}"
-						"Récompenses récupérées" to "${playerReward.collected(date)} / ${rewardConfig.rewardPerDay}"
-						"Série" to playerReward.rewardStreak(date)
+						"Points totaux" to "${playerReward.totalDailyPoints(date)}"
+						"Récompenses récupérées" to "$collected / ${playerReward.rewardCount(date)}"
+						"Série" to playerReward.streak(date)
+						"Restantes" to playerReward.remainingToCollect(date)
 					}
 				}
 			}
@@ -75,8 +81,8 @@ fun rewardMenu() = menu("reward") {
 			editMeta { meta ->
 				val bundle = (meta as BundleMeta)
 				if (0 <= remaining && !isCollected) {
-					for (i in 1..playerReward.remainingToCollect(date)) {
-						bundle.addItem(ItemStack(Material.YELLOW_SHULKER_BOX))
+					rewards.drop(collected).forEach {
+						bundle.addItem(it.toController().create())
 					}
 				}
 

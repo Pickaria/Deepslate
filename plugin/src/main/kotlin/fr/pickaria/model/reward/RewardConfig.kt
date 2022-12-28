@@ -30,10 +30,10 @@ data class RewardConfig(
 	val rewardOpenSound: Sound,
 
 	@SerialName("daily_points_to_collect")
-	val dailyPointsToCollect: Int,
+	val dailyPointsToCollect: Int, // TODO: Use a permission to define this per player basis
 
 	@SerialName("reward_per_day")
-	val rewardPerDay: Int,
+	val rewardPerDay: Int, // TODO: Use a permission to define this per player basis
 
 	@Serializable(with = MiniMessageSerializer::class)
 	@SerialName("daily_reward_is_ready")
@@ -42,6 +42,18 @@ data class RewardConfig(
 	@Serializable(with = SoundSerializer::class)
 	@SerialName("daily_reward_sound")
 	val dailyRewardSound: Sound,
+
+	@SerialName("special_days")
+	val specialDays: Map<MonthDay, String>,
+
+	@SerialName("streak_rewards")
+	val streakRewards: List<String>,
+
+	@SerialName("streak_reward_every")
+	val streakRewardEvery: Int,
+
+	@SerialName("default_reward")
+	val defaultReward: String,
 )
 
 val rewardConfig = Yaml.default.decodeFromStream<RewardConfig>(getResourceFileStream("reward.yml"))

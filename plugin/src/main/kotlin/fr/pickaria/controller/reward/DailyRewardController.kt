@@ -1,9 +1,7 @@
 package fr.pickaria.controller.reward
 
 import fr.pickaria.controller.reward.events.DailyRewardReadyEvent
-import fr.pickaria.model.reward.DailyReward
-import fr.pickaria.model.reward.DailyRewards
-import fr.pickaria.model.reward.rewardConfig
+import fr.pickaria.model.reward.*
 import kotlinx.datetime.*
 import kotlinx.datetime.TimeZone.Companion.currentSystemDefault
 import org.bukkit.entity.Player
@@ -65,9 +63,9 @@ fun DailyReward.canCollect(date: LocalDate = Clock.System.todayIn(currentSystemD
  */
 fun DailyReward.remainingToCollect(date: LocalDate = Clock.System.todayIn(currentSystemDefault())): Int =
 	if (lastCollectedDate == date) {
-		rewardConfig.rewardPerDay - collectedToday
+		rewardCount(date) - collectedToday
 	} else {
-		rewardConfig.rewardPerDay
+		rewardCount(date)
 	}
 
 /**
@@ -76,8 +74,20 @@ fun DailyReward.remainingToCollect(date: LocalDate = Clock.System.todayIn(curren
 fun DailyReward.dailyPoints(date: LocalDate = Clock.System.todayIn(currentSystemDefault())): Int =
 	if (lastCollectedDate == date) {
 		dailyPoints - (collectedToday * rewardConfig.dailyPointsToCollect)
-	} else {
+	} else if (lastDay == date) {
 		dailyPoints
+	} else {
+		0
+	}
+
+/**
+ * Returns the amount of points before the next reward.
+ */
+fun DailyReward.totalDailyPoints(date: LocalDate = Clock.System.todayIn(currentSystemDefault())): Int =
+	if (lastDay == date) {
+		dailyPoints
+	} else {
+		0
 	}
 
 /**
@@ -93,31 +103,76 @@ fun DailyReward.collected(date: LocalDate = Clock.System.todayIn(currentSystemDe
 /**
  * Returns the streak of collected rewards taking date into account.
  */
-fun DailyReward.rewardStreak(date: LocalDate = Clock.System.todayIn(currentSystemDefault())): Int =
-	if (lastCollectedDate == date.minus(1, DateTimeUnit.DAY)) {
-		streak
-	} else {
-		0
-	}
+fun DailyReward.streak(date: LocalDate = Clock.System.todayIn(currentSystemDefault())): Int =
+	when (lastCollectedDate) {
+		date.minus(1, DateTimeUnit.DAY) -> {
+			streak
+		}
 
+		date -> {
+			streak - 1
+		}
+
+		else -> {
+			0
+		}
+	}
 
 fun DailyReward.collect(): Boolean {
 	val today = Clock.System.todayIn(currentSystemDefault())
 
 	return if (canCollect(today) > 0) {
 		transaction {
+			// Increment streak only if last collected was yesterday
+			if (lastCollectedDate == today.minus(1, DateTimeUnit.DAY)) {
+				streak = streak() + 1
+			}
+
 			collectedToday = if (today == lastCollectedDate) {
 				collectedToday + 1
 			} else {
 				lastCollectedDate = today
 				1
 			}
-
-			streak = rewardStreak() + 1
 		}
 
 		true
 	} else {
 		false
 	}
+}
+
+/**
+ * Returns the amount of rewards a player can claim a specific day.
+ */
+fun DailyReward.rewardCount(date: LocalDate = Clock.System.todayIn(currentSystemDefault())): Int {
+	val streakNumber = streak(date) / rewardConfig.streakRewardEvery
+	var amount = rewardConfig.rewardPerDay
+
+	if (rewardConfig.specialDays.contains(date.toMonthDay())) {
+		amount++
+	}
+
+	if (streakNumber > 0) {
+		amount++
+	}
+
+	return amount
+}
+
+fun DailyReward.rewards(date: LocalDate = Clock.System.todayIn(currentSystemDefault())): List<Reward> {
+	val streakNumber = streak(date) / rewardConfig.streakRewardEvery
+
+	val streakReward = if (streakNumber > 0) {
+		rewardConfig.rewards[rewardConfig.streakRewards[streakNumber % rewardConfig.streakRewards.size]]
+	} else {
+		null
+	}
+
+	val specialReward = rewardConfig.rewards[rewardConfig.specialDays[date.toMonthDay()]]
+	val defaultReward = rewardConfig.rewards[rewardConfig.defaultReward]
+
+	return (1..rewardConfig.rewardPerDay).mapNotNull {
+		defaultReward
+	} + listOfNotNull(streakReward, specialReward)
 }
