@@ -8,6 +8,7 @@ import co.aikar.commands.annotation.Default
 import fr.pickaria.model.economy.BankAccount
 import fr.pickaria.model.economy.Credit
 import fr.pickaria.model.economy.economyConfig
+import fr.pickaria.model.economy.toController
 import fr.pickaria.shared.MiniMessage
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.event.ClickEvent
@@ -54,7 +55,7 @@ class BalanceTopCommand : BaseCommand() {
 					+MiniMessage(economyConfig.row) {
 						"position" to (index + 1 + pageStart)
 						"player" to (player.name ?: "N/A")
-						"balance" to Credit.economy.format(account.balance)
+						"balance" to Credit.toController().format(account.balance)
 					}
 				)
 		}

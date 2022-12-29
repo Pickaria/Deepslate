@@ -3,6 +3,7 @@ package fr.pickaria.vue.market
 import fr.pickaria.controller.home.addToHome
 import fr.pickaria.menu.*
 import fr.pickaria.model.economy.Credit
+import fr.pickaria.model.economy.toController
 import fr.pickaria.model.market.Order
 import fr.pickaria.model.market.OrderType
 import net.kyori.adventure.text.Component
@@ -33,7 +34,7 @@ internal fun ownOrdersMenu() = menu("orders") {
 					"Identifiant" to order.id
 					"Type d'ordre" to orderType
 					"Quantité en vente" to order.amount
-					"Prix de vente" to Credit.economy.format(order.price)
+					"Prix de vente" to Credit.toController().format(order.price)
 				}
 				leftClick = "Clic-gauche pour retirer de la vente"
 			}

@@ -8,6 +8,7 @@ import fr.pickaria.controller.economy.sendTo
 import fr.pickaria.model.economy.Credit
 import fr.pickaria.model.economy.SendResponse
 import fr.pickaria.model.economy.economyConfig
+import fr.pickaria.model.economy.toController
 import fr.pickaria.shared.MiniMessage
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
@@ -33,7 +34,7 @@ class PayCommand : BaseCommand() {
 			SendResponse.RECEIVE_ERROR -> sender.sendMessage(economyConfig.receiveError)
 			SendResponse.REFUND_ERROR -> sender.sendMessage(economyConfig.refundError)
 			SendResponse.SUCCESS -> {
-				val format = Credit.economy.format(amount)
+				val format = Credit.toController().format(amount)
 
 				MiniMessage(economyConfig.receiveSuccess) {
 					"sender" to sender.displayName()

@@ -7,6 +7,7 @@ import co.aikar.commands.annotation.Default
 import fr.pickaria.controller.economy.balance
 import fr.pickaria.model.economy.Credit
 import fr.pickaria.model.economy.economyConfig
+import fr.pickaria.model.economy.toController
 import fr.pickaria.shared.MiniMessage
 import org.bukkit.entity.Player
 
@@ -16,7 +17,7 @@ class MoneyCommand : BaseCommand() {
 	@Default
 	fun onDefault(player: Player) {
 		MiniMessage(economyConfig.balanceMessage) {
-			"balance" to Credit.economy.format(player.balance(Credit))
+			"balance" to Credit.toController().format(player.balance(Credit))
 		}.send(player)
 	}
 }

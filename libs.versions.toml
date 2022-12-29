@@ -21,6 +21,7 @@ kotlin-reflect = { module = "org.jetbrains.kotlin:kotlin-reflect", version.ref =
 kotlin-stdlib = { module = "org.jetbrains.kotlin:kotlin-stdlib", version.ref = "kotlin" }
 kotlinx-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version.ref = "kotlinx-datetime" }
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinx-serialization" }
+kotlin-annotation-processing = { module = "org.jetbrains.kotlin:kotlin-annotation-processing", version.ref = "kotlin" }
 
 # Minecraft
 acf = { module = "co.aikar:acf-paper", version.ref = "acf" }

@@ -8,6 +8,7 @@ import fr.pickaria.menu.closeItem
 import fr.pickaria.menu.fill
 import fr.pickaria.menu.menu
 import fr.pickaria.model.economy.Credit
+import fr.pickaria.model.economy.toController
 import fr.pickaria.model.market.Order
 import fr.pickaria.model.market.OrderType
 import net.kyori.adventure.text.Component
@@ -22,7 +23,7 @@ internal fun buyMenu(material: Material) = menu {
 		.decorate(TextDecoration.BOLD)
 	rows = 4
 
-	val unitPrice = Credit.economy.format(Order.getPrices(material).first)
+	val unitPrice = Credit.toController().format(Order.getPrices(material).first)
 	val stocks = Order.getSumAmount(OrderType.SELL, material)
 
 	getMenuItems(material, stocks).forEach { (amount, x) ->
@@ -41,7 +42,7 @@ internal fun buyMenu(material: Material) = menu {
 					leftClick = "Clic-gauche pour acheter $amount"
 					keyValues {
 						"Prix unitaire à partir de" to unitPrice
-						"Prix total" to Credit.economy.format(info.totalPrice)
+						"Prix total" to Credit.toController().format(info.totalPrice)
 					}
 				}
 
@@ -55,7 +56,7 @@ internal fun buyMenu(material: Material) = menu {
 						-"d'argent pour acheter ceci."
 					}
 					keyValues {
-						"Prix total" to Credit.economy.format(info.totalPrice)
+						"Prix total" to Credit.toController().format(info.totalPrice)
 					}
 				}
 			} else {

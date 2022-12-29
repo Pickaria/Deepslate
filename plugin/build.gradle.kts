@@ -5,13 +5,39 @@ plugins {
 	kotlin("plugin.serialization")
 	id("com.github.johnrengelman.shadow")
 	id("fr.pickaria.redstone")
+	id("com.google.devtools.ksp") version "1.7.22-1.0.8"
+	id("io.gitlab.arturbosch.detekt").version("1.22.0")
+}
+
+detekt {
+	toolVersion = "1.22.0"
+	config = files("${rootDir}/detekt.yml")
+	buildUponDefaultConfig = true
+}
+
+tasks.withType<io.gitlab.arturbosch.detekt.Detekt>().configureEach {
+	reports {
+		xml.required.set(true)
+		html.required.set(true)
+		txt.required.set(true)
+		sarif.required.set(true)
+		md.required.set(true)
+	}
 }
 
 group = "fr.pickaria"
 version = "1.0-SNAPSHOT"
 
+buildscript {
+	dependencies {
+		classpath(kotlin("gradle-plugin", version = "1.7.22"))
+	}
+}
+
 dependencies {
-	testImplementation(kotlin("test"))
+	implementation(project(":processor"))
+	ksp(project(":processor"))
+
 	compileOnly(libs.kotlin.stdlib)
 	compileOnly(libs.kotlin.reflect)
 	compileOnly(libs.kotlinx.datetime)

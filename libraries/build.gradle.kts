@@ -9,7 +9,6 @@ group = "fr.pickaria"
 version = "1.0-SNAPSHOT"
 
 dependencies {
-	testImplementation(kotlin("test"))
 	implementation(libs.kotlin.reflect)
 	implementation(libs.kotlin.stdlib)
 	implementation(libs.kotlinx.datetime)

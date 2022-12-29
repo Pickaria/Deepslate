@@ -16,7 +16,7 @@ pluginManagement {
 
 rootProject.name = "deepslate"
 
-include("plugin", "libraries")
+include("plugin", "libraries", "processor")
 
 dependencyResolutionManagement {
 	versionCatalogs {

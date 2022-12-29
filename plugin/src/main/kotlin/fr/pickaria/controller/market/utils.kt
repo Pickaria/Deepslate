@@ -4,6 +4,7 @@ import fr.pickaria.controller.economy.has
 import fr.pickaria.controller.economy.sendTo
 import fr.pickaria.model.economy.Credit
 import fr.pickaria.model.economy.SendResponse
+import fr.pickaria.model.economy.toController
 import fr.pickaria.model.market.Order
 import fr.pickaria.model.market.marketConfig
 import fr.pickaria.shared.give
@@ -89,7 +90,7 @@ internal fun buy(player: Player, material: Material, amount: Int): Int {
 	val message = Component.text("${info.totalAmount} ", NamedTextColor.GOLD)
 		.append(Component.translatable(material.translationKey(), NamedTextColor.GOLD))
 		.append(Component.text(" acheté(s) pour ", NamedTextColor.GRAY))
-		.append(Component.text(Credit.economy.format(info.totalPrice), NamedTextColor.GOLD))
+		.append(Component.text(Credit.toController().format(info.totalPrice), NamedTextColor.GOLD))
 		.append(Component.text(".", NamedTextColor.GRAY))
 
 	player.sendMessage(message)
@@ -106,7 +107,7 @@ internal fun buy(player: Player, material: Material, amount: Int): Int {
 						.color(NamedTextColor.GOLD)
 				)
 				.append(Component.text(" pour ", NamedTextColor.GRAY))
-				.append(Component.text(Credit.economy.format(price), NamedTextColor.GOLD))
+				.append(Component.text(Credit.toController().format(price), NamedTextColor.GOLD))
 				.append(Component.text(".", NamedTextColor.GRAY))
 
 			(seller as Player).sendMessage(message)

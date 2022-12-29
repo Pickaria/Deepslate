@@ -1,6 +1,8 @@
 package fr.pickaria.controller.job
 
+import fr.pickaria.controller.economy.deposit
 import fr.pickaria.model.economy.Credit
+import fr.pickaria.model.economy.toController
 import fr.pickaria.model.job.Job
 import fr.pickaria.model.job.JobModel
 import fr.pickaria.model.job.jobConfig
@@ -21,8 +23,8 @@ private fun jobPayPlayer(player: Player, amount: Double): Boolean {
 	}
 	lastPayment[player] = now
 
-	return if (Credit.economy.depositPlayer(player, amount).type === EconomyResponse.ResponseType.SUCCESS) {
-		player.sendActionBar(Component.text("§6+ ${Credit.economy.format(amount)}"))
+	return if (player.deposit(Credit, amount).type === EconomyResponse.ResponseType.SUCCESS) {
+		player.sendActionBar(Component.text("§6+ ${Credit.toController().format(amount)}"))
 
 		val location = player.location
 		player.playSound(location, Sound.ITEM_ARMOR_EQUIP_CHAIN, 1f, 1f)
