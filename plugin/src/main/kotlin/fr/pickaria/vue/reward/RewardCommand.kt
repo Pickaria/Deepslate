@@ -45,7 +45,6 @@ class RewardCommand : BaseCommand() {
 	@CommandCompletion("@reward")
 	@Description("Permet d'acheter une récompense.")
 	@Subcommand("buy")
-	@Syntax("<reward type> [amount]")
 	fun onBuy(sender: Player, reward: Reward, @Default("1") amount: Int) {
 		if (!reward.purchasable) {
 			throw ConditionFailedException(rewardConfig.cantPurchaseReward)

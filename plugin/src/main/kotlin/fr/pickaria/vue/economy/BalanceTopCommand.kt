@@ -5,7 +5,6 @@ import co.aikar.commands.InvalidCommandArgument
 import co.aikar.commands.annotation.CommandAlias
 import co.aikar.commands.annotation.CommandPermission
 import co.aikar.commands.annotation.Default
-import co.aikar.commands.annotation.Syntax
 import fr.pickaria.model.economy.BankAccount
 import fr.pickaria.model.economy.Credit
 import fr.pickaria.model.economy.economyConfig
@@ -24,7 +23,6 @@ class BalanceTopCommand : BaseCommand() {
 	}
 
 	@Default
-	@Syntax("[page=0]")
 	fun onDefault(player: CommandSender, @Default("0") page: Int) {
 		if (page < 0) {
 			throw InvalidCommandArgument(economyConfig.notMuchPages)

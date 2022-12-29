@@ -33,7 +33,6 @@ class PotionCommand : BaseCommand() {
 	}
 
 	@Default
-	@Syntax("<potion type> [amount]")
 	@CommandCompletion("@potiontype")
 	fun onCommand(sender: Player, potionType: PotionType, @Default("1") amount: Int) {
 		val itemStack = potionConfig.potions[potionType.name.lowercase()]?.toController()?.create(amount)

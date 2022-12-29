@@ -35,7 +35,6 @@ class MiniBlockCommand : BaseCommand() {
 	}
 
 	@HelpCommand
-	@Syntax("")
 	fun doHelp(help: CommandHelp) {
 		help.showHelp()
 	}

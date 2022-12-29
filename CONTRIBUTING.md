@@ -78,7 +78,6 @@ Elles doivent impérativement être documentées avec les annotations requises, 
 @CommandCompletion("@reward") // Défini quelle méthode utiliser pour l'auto complétion.
 @CommandPermission("pickaria.command.reward") // Quelle permission doit avoir le joueur
 @Description("Permet d'acheter une récompense.") // Ajoute une description à la commande
-@Syntax("<reward-type> [amount]") // La syntaxe à utiliser pour la commande
 fun onCommand() {
 }
 ```
