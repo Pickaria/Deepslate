@@ -22,6 +22,27 @@ artefacts:
     value: 1
     type: FLAME_COSMETICS # The type must be the key to uppercase
 
+  explosion_cosmetics:
+    label: '<dark_purple>Fusées'
+    description:
+      - '<gray>Fait apparaitre des petites explosions'
+      - '<gray>lorsque son porteur atterrit au sol.'
+      - ''
+      - '<gray>Peut s''appliquer sur :'
+      - '<dark_gray>Bottes'
+      - ''
+      - '<red>Une fois appliqué sur un équipement,'
+      - '<red>le seul moyen de l''enlever est'
+      - '<red>la destruction de l''objet.'
+    # Possible values: ARMOR, ARMOR_FEET, ARMOR_LEGS, ARMOR_TORSO, ARMOR_HEAD, WEAPON, TOOL
+    #                  BOW, FISHING_ROD, BREAKABLE, WEARABLE, TRIDENT, CROSSBOW, VANISHABLE
+    target: ARMOR_FEET
+    # Possible values: COMMON, UNCOMMON, RARE, EPIC
+    rarity: COMMON
+    # Value must be between 1 and 64
+    value: 8
+    type: EXPLOSION_COSMETICS # The type must be the key to uppercase
+
   stealth:
     label: '<dark_purple>Armure de furtivité'
     description:

@@ -66,6 +66,17 @@ internal class ArtefactListeners : Listener {
 			if (player.isWearingArtefact(ArtefactType.FLAME_COSMETICS)) {
 				player.world.spawnParticle(Particle.FLAME, player.location, 2, 0.1, 0.1, 0.1, 0.01)
 			}
+
+			if (player.isWearingArtefact(ArtefactType.EXPLOSION_COSMETICS)) {
+				if (player.fallDistance > 0 && player.isOnGround) {
+					Particle.FIREWORKS_SPARK.builder()
+						.location(player.location)
+						.count(10)
+						.offset(0.0, 0.0, 0.0)
+						.extra(0.1)
+						.spawn()
+				}
+			}
 		}
 	}
 }
