@@ -4,6 +4,7 @@ import fr.pickaria.controller.home.addToHome
 import fr.pickaria.controller.reward.*
 import fr.pickaria.menu.Result
 import fr.pickaria.menu.closeItem
+import fr.pickaria.menu.fill
 import fr.pickaria.menu.menu
 import fr.pickaria.model.reward.rewardConfig
 import fr.pickaria.model.reward.toController
@@ -15,14 +16,17 @@ import org.bukkit.inventory.ItemFlag
 import org.bukkit.inventory.meta.BundleMeta
 import java.time.LocalDateTime
 import java.time.LocalTime
-import java.time.format.TextStyle
+import java.time.format.DateTimeFormatter
 import java.time.temporal.ChronoUnit
 import java.time.temporal.WeekFields
 import java.util.*
 
+private val formatter = DateTimeFormatter.ofPattern("EEEE d MMMM")
+	.withLocale(Locale.FRENCH)
+
 fun rewardMenu() = menu("reward") {
 	title = Component.text("Récompenses")
-	rows = 3
+	rows = 4
 
 	val playerReward = opener.dailyReward
 	val field = WeekFields.of(Locale.FRANCE).dayOfWeek()
@@ -32,7 +36,7 @@ fun rewardMenu() = menu("reward") {
 	for (x in 0..6) {
 		val day = firstDayOfWeek.plusDays(x.toLong())
 		val date = day.toLocalDate().toKotlinLocalDate()
-		val dayOfWeek = day.dayOfWeek.getDisplayName(TextStyle.FULL, Locale.FRENCH)
+		val dayOfWeek = formatter.format(day)
 			.replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString() }
 
 		val canCollect = playerReward.canCollect(date)
@@ -46,7 +50,7 @@ fun rewardMenu() = menu("reward") {
 		val rewards = playerReward.rewards(date)
 
 		item {
-			slot = x + 1
+			position = x + 1 to 1
 			title = Component.text(dayOfWeek)
 			material = Material.BUNDLE
 			lore {
@@ -56,20 +60,17 @@ fun rewardMenu() = menu("reward") {
 							-"Cette récompense ne peut plus être récupérée."
 						}
 					}
-					keyValues {
-						if (0 <= unlockIn) {
-							"Déblocage" to "$unlockIn heures"
+					if (0 <= unlockIn) {
+						keyValues {
+							"Déblocage dans" to "$unlockIn heures"
 						}
-						"Série" to "${playerReward.streak(date)}?"
 					}
 				} else {
 					keyValues {
 						"Temps restants" to "$remaining heures"
 						"Points collectés" to "${playerReward.dailyPoints(date)} / ${rewardConfig.dailyPointsToCollect}"
-						"Points totaux" to "${playerReward.totalDailyPoints(date)}"
 						"Récompenses récupérées" to "$collected / ${playerReward.rewardCount(date)}"
 						"Série" to playerReward.streak(date)
-						"Restantes" to playerReward.remainingToCollect(date)
 					}
 				}
 			}
@@ -95,6 +96,7 @@ fun rewardMenu() = menu("reward") {
 		}
 	}
 
+	fill(Material.WHITE_STAINED_GLASS_PANE, true)
 	closeItem()
 }.addToHome(Material.SHULKER_BOX, Component.text("Récompenses")) {
 	description {

@@ -146,14 +146,13 @@ fun DailyReward.collect(): Boolean {
  * Returns the amount of rewards a player can claim a specific day.
  */
 fun DailyReward.rewardCount(date: LocalDate = Clock.System.todayIn(currentSystemDefault())): Int {
-	val streakNumber = streak(date) / rewardConfig.streakRewardEvery
 	var amount = rewardConfig.rewardPerDay
 
 	if (rewardConfig.specialDays.contains(date.toMonthDay())) {
 		amount++
 	}
 
-	if (streakNumber > 0) {
+	if (streak(date) % rewardConfig.streakRewardEvery == 0) {
 		amount++
 	}
 
@@ -161,9 +160,10 @@ fun DailyReward.rewardCount(date: LocalDate = Clock.System.todayIn(currentSystem
 }
 
 fun DailyReward.rewards(date: LocalDate = Clock.System.todayIn(currentSystemDefault())): List<Reward> {
-	val streakNumber = streak(date) / rewardConfig.streakRewardEvery
+	val streak = streak(date)
 
-	val streakReward = if (streakNumber > 0) {
+	val streakReward = if (streak % rewardConfig.streakRewardEvery == 0) {
+		val streakNumber = streak / rewardConfig.streakRewardEvery
 		rewardConfig.rewards[rewardConfig.streakRewards[streakNumber % rewardConfig.streakRewards.size]]
 	} else {
 		null

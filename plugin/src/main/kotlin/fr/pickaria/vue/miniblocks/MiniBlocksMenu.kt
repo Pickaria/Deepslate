@@ -10,6 +10,18 @@ import net.kyori.adventure.text.Component
 import org.bukkit.Material
 import java.util.*
 
+private val miniBlockMenuItem = miniBlocksConfig.miniBlocks.random().toController().create().apply {
+	editMeta {
+		it.displayName(Component.text("Mini blocs"))
+		val lore = Lore {
+			description {
+				-"Répertoire des mini blocs."
+			}
+		}
+		it.lore(lore.build())
+	}
+}
+
 @OptIn(ItemBuilderUnsafe::class)
 fun miniBlocksMenu() = menu("miniblocks") {
 	title = Component.text("Mini blocs")
@@ -45,8 +57,4 @@ fun miniBlocksMenu() = menu("miniblocks") {
 	previousPage()
 	closeItem()
 	nextPage(maxPage)
-}.addToHome(Material.PLAYER_HEAD, Component.text("Mini blocs")) {
-	description {
-		-"Répertoire des mini blocs."
-	}
-}
+}.addToHome(miniBlockMenuItem)

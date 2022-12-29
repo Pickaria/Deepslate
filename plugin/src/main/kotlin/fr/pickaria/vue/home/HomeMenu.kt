@@ -23,10 +23,11 @@ internal fun homeMenu() = menu(DEFAULT_MENU) {
 	homeEntries.forEachIndexed { index, entry ->
 		item {
 			position = index + 1 to 3
-			material = entry.material
-			title = entry.title
-			lore = entry.lore
+			material = entry.itemStack.type
+			title = entry.itemStack.itemMeta.displayName()
+			lore = entry.itemStack.itemMeta.lore() ?: emptyList()
 			leftClick = Result.NONE to "/menu ${entry.entry.key}"
+			setMeta(entry.itemStack.itemMeta)
 			editMeta {
 				it.addItemFlags(ItemFlag.HIDE_ATTRIBUTES)
 			}

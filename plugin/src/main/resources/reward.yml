@@ -89,7 +89,7 @@ cant_purchase_reward: 'Cette récompense ne peut pas être achetée.'
 reward_close_sound: item.bundle.drop_contents
 reward_open_sound: item.bundle.insert
 daily_points_to_collect: 100
-daily_reward_is_ready: '<gold>Votre récompense du jour est prête à être récupérée.'
+daily_reward_is_ready: '<gray>Votre récompense du jour est prête à être récupérée.<newline>Faites <gold><click:run_command:/reward claim>/reward claim</click><gray> pour récupérer la récompense.'
 daily_reward_sound: entity.experience_orb.pickup
 reward_per_day: 1
 
