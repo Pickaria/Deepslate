@@ -15,6 +15,7 @@ dependencies {
 	compileOnly(libs.kotlin.stdlib)
 	compileOnly(libs.kotlin.reflect)
 	compileOnly(libs.kotlinx.datetime)
+	compileOnly(libs.kotlinx.serialization.json)
 
 	compileOnly(libs.paper)
 	compileOnly(libs.vault)
@@ -39,6 +40,12 @@ tasks.withType<KotlinCompile> {
 	kotlinOptions.jvmTarget = "17"
 }
 
-tasks.shadowJar {
-	destinationDirectory.set(file("$rootDir/server/plugins")) // Output to test server's plugins folder
+tasks {
+	shadowJar {
+		destinationDirectory.set(file("$rootDir/server/plugins")) // Output to test server's plugins folder
+	}
+
+	compileKotlin {
+		kotlinOptions.javaParameters = true
+	}
 }

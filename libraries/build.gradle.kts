@@ -13,6 +13,7 @@ dependencies {
 	implementation(libs.kotlin.reflect)
 	implementation(libs.kotlin.stdlib)
 	implementation(libs.kotlinx.datetime)
+	implementation(libs.kotlinx.serialization.json)
 
 	compileOnly(libs.paper)
 	implementation(libs.acf)

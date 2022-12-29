@@ -20,6 +20,8 @@ import fr.pickaria.vue.job.ExperienceListener
 import fr.pickaria.vue.job.JobCommand
 import fr.pickaria.vue.job.jobMenu
 import fr.pickaria.vue.market.*
+import fr.pickaria.vue.miniblocks.MiniBlockCommand
+import fr.pickaria.vue.miniblocks.miniBlocksMenu
 import fr.pickaria.vue.potion.PotionCommand
 import fr.pickaria.vue.potion.PotionListener
 import fr.pickaria.vue.reforge.EnchantListeners
@@ -107,5 +109,10 @@ class Main : SuspendingJavaPlugin() {
 		manager.registerCommand(JobCommand())
 		jobMenu()
 		server.pluginManager.registerEvents(ExperienceListener(this), this)
+
+		// Miniblocks
+		miniBlocksMenu()
+		MiniBlockCommand.setupContext(manager)
+		manager.registerCommand(MiniBlockCommand())
 	}
 }

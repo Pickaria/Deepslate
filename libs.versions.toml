@@ -10,7 +10,7 @@ kotlinx-serialization = "1.4.1"
 mccoroutine-api = "2.9.0"
 mccoroutine-core = "2.9.0"
 paper = "1.19.3-R0.1-SNAPSHOT"
-pickaria-bedrock = "1.0.15-SNAPSHOT"
+pickaria-bedrock = "1.0.17-SNAPSHOT"
 pickaria-spawner = "1.0.7-SNAPSHOT"
 towny = "0.98.4.0"
 vault = "1.7.1"
@@ -20,6 +20,7 @@ vault = "1.7.1"
 kotlin-reflect = { module = "org.jetbrains.kotlin:kotlin-reflect", version.ref = "kotlin" }
 kotlin-stdlib = { module = "org.jetbrains.kotlin:kotlin-stdlib", version.ref = "kotlin" }
 kotlinx-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version.ref = "kotlinx-datetime" }
+kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinx-serialization" }
 
 # Minecraft
 acf = { module = "co.aikar:acf-paper", version.ref = "acf" }
