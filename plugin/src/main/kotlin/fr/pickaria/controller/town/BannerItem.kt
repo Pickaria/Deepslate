@@ -7,6 +7,7 @@ import org.bukkit.block.Banner
 import org.bukkit.block.Block
 import org.bukkit.inventory.ItemStack
 import org.bukkit.persistence.PersistentDataType
+import java.util.*
 
 private val Material.isBanner
 	get() = this == Material.WHITE_BANNER ||
@@ -28,14 +29,18 @@ private val Material.isBanner
 
 fun ItemStack.isTownBanner() = type.isBanner && itemMeta.persistentDataContainer.has(bannerNamespace)
 
-val ItemStack.townId: Int?
-	get() = itemMeta.persistentDataContainer.get(
-		townNamespace,
-		PersistentDataType.INTEGER
+val ItemStack.townId: UUID?
+	get() = UUID.fromString(
+		itemMeta.persistentDataContainer.get(
+			townNamespace,
+			PersistentDataType.STRING
+		)
 	)
 
-val Block.townId: Int?
-	get() = if (type.isBanner) (state as Banner).persistentDataContainer.get(
-		townNamespace,
-		PersistentDataType.INTEGER
+val Block.townId: UUID?
+	get() = if (type.isBanner) UUID.fromString(
+		(state as Banner).persistentDataContainer.get(
+			townNamespace,
+			PersistentDataType.STRING
+		)
 	) else null

@@ -1,32 +1,37 @@
 package fr.pickaria.model.town
 
-import fr.pickaria.model.now
+import com.palmergames.bukkit.towny.`object`.Town
+import com.palmergames.bukkit.towny.`object`.metadata.StringDataField
+import kotlinx.serialization.cbor.Cbor
+import kotlinx.serialization.decodeFromByteArray
+import kotlinx.serialization.encodeToByteArray
+import org.bukkit.Material
 import org.bukkit.inventory.ItemStack
-import org.jetbrains.exposed.dao.IntEntity
-import org.jetbrains.exposed.dao.IntEntityClass
-import org.jetbrains.exposed.dao.id.EntityID
-import org.jetbrains.exposed.dao.id.IntIdTable
-import org.jetbrains.exposed.sql.kotlin.datetime.datetime
+import org.bukkit.inventory.meta.BannerMeta
+import java.util.*
 
-object Towns : IntIdTable() {
-	var identifier = varchar("town_id", 32).uniqueIndex()
-	var flag = binary("flag", 1024)
-	val creationDate = datetime("creation_date").clientDefault { now() }
-	var balance = double("balance").default(0.0)
-}
+private fun ByteArray.toBase64(): String = String(Base64.getEncoder().encode(this))
+private fun String.fromBase64(): ByteArray = Base64.getDecoder().decode(this)
 
-class Town(id: EntityID<Int>) : IntEntity(id) {
-	companion object : IntEntityClass<Town>(Towns)
+var Town.flag: ItemStack
+	get() {
+		val metadata = getMetadata("flag", StringDataField::class.java) ?: return ItemStack(Material.WHITE_BANNER)
+		val decoded = Cbor.decodeFromByteArray<Flag>(metadata.value.fromBase64())
 
-	var identifier by Towns.identifier
-	private var flagByteArray by Towns.flag
-	val creationDate by Towns.creationDate
-	var balance by Towns.balance
-	val residents by Resident referrersOn Residents.townId
-
-	var flag: ItemStack
-		get() = ItemStack.deserializeBytes(flagByteArray)
-		set(value) {
-			flagByteArray = value.serializeAsBytes()
+		return ItemStack(decoded.material).apply {
+			editMeta { meta ->
+				(meta as BannerMeta).patterns = decoded.patterns.map { pattern -> pattern.toPattern() }
+			}
 		}
-}
+	}
+	set(value) {
+		val patterns = (value.itemMeta as BannerMeta).patterns.map {
+			SerializedPattern(it.color, it.pattern)
+		}
+
+		val flag = Cbor.encodeToByteArray(Flag(value.type, patterns))
+		val flagData = StringDataField("flag", flag.toBase64())
+
+		addMetaData(flagData)
+		save()
+	}

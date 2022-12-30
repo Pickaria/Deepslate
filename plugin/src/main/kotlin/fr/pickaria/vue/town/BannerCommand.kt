@@ -3,23 +3,19 @@ package fr.pickaria.vue.town
 import co.aikar.commands.*
 import co.aikar.commands.annotation.*
 import fr.pickaria.controller.economy.withdraw
-import fr.pickaria.controller.town.TownController
 import fr.pickaria.model.economy.Credit
 import fr.pickaria.model.town.BannerType
 import fr.pickaria.model.town.townConfig
 import fr.pickaria.shared.give
 import net.kyori.adventure.text.Component
-import org.bukkit.Bukkit
 import org.bukkit.DyeColor
 import org.bukkit.block.banner.Pattern
 import org.bukkit.block.banner.PatternType
 import org.bukkit.entity.Player
 import org.bukkit.inventory.meta.BannerMeta
-import org.jetbrains.exposed.exceptions.ExposedSQLException
 import java.util.*
 
-@CommandAlias("town")
-@Subcommand("flag")
+@CommandAlias("flag")
 @Description("Permet d'obtenir une nouvelle bannière ou une copie de la bannière de sa ville.")
 class BannerCommand : BaseCommand() {
 	@Subcommand("buy")
@@ -94,12 +90,6 @@ class BannerCommand : BaseCommand() {
 
 			item.itemMeta = meta
 			player.give(item)
-
-			try {
-				TownController(name, item, Bukkit.getOfflinePlayer(UUID.randomUUID()))
-			} catch (_: ExposedSQLException) {
-				
-			}
 		}
 	}
 }

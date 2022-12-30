@@ -3,13 +3,13 @@ package fr.pickaria
 import com.github.shynixn.mccoroutine.bukkit.SuspendingJavaPlugin
 import fr.pickaria.controller.acf.enumCompletion
 import fr.pickaria.controller.acf.limitCondition
+import fr.pickaria.controller.economy.initVaultCurrency
 import fr.pickaria.controller.initCommandManager
 import fr.pickaria.controller.potion.runnable
 import fr.pickaria.model.openDatabase
 import fr.pickaria.model.potion.PotionType
 import fr.pickaria.model.shop.ShopOffer
 import fr.pickaria.model.town.BannerType
-import fr.pickaria.model.town.ResidentRank
 import fr.pickaria.vue.PingCommand
 import fr.pickaria.vue.artefact.ArtefactListeners
 import fr.pickaria.vue.artefact.SmithingListeners
@@ -36,8 +36,17 @@ import fr.pickaria.vue.reward.rewardMenu
 import fr.pickaria.vue.shard.GrindstoneListeners
 import fr.pickaria.vue.shop.PlaceShop
 import fr.pickaria.vue.shop.ShopListeners
-import fr.pickaria.vue.town.*
+import fr.pickaria.vue.town.BannerCommand
+import fr.pickaria.vue.town.BannerListeners
+import fr.pickaria.vue.town.BookListeners
+import fr.pickaria.vue.town.townMenu
+import kotlinx.serialization.json.Json
 import org.bukkit.Bukkit
+
+val json = Json {
+	prettyPrint = false
+	useArrayPolymorphism = true
+}
 
 class Main : SuspendingJavaPlugin() {
 	override fun onEnable() {
@@ -45,6 +54,8 @@ class Main : SuspendingJavaPlugin() {
 		saveDefaultConfig()
 
 		enableBedrockLibrary()
+		initVaultCurrency(this)
+
 
 		val manager = initCommandManager(this)
 		openDatabase(dataFolder.absolutePath + "/database")
@@ -71,7 +82,6 @@ class Main : SuspendingJavaPlugin() {
 		enumCompletion<BannerType>(manager, "banner_type", "Cette bannière n'existe pas.")
 		enumCompletion<PotionType>(manager, "potion_type", "Cette potion n'existe pas.")
 		enumCompletion<ShopOffer>(manager, "shop_type", "Ce magasin n'existe pas.")
-		enumCompletion<ResidentRank>(manager, "ranks", "Ce rôle n'existe pas.")
 
 		// Command contexts
 		BuyCommand.setupContext(manager)
@@ -80,7 +90,7 @@ class Main : SuspendingJavaPlugin() {
 		MiniBlockCommand.setupContext(manager)
 		RewardCommand.setupContext(manager.commandContexts, manager.commandCompletions)
 		SellCommand.setupContext(manager.commandCompletions)
-		TownCommand.setupContext(manager)
+		//TownCommand.setupContext(manager)
 		limitCondition(manager)
 
 		// Commands
@@ -99,7 +109,7 @@ class Main : SuspendingJavaPlugin() {
 		manager.registerCommand(PotionCommand())
 		manager.registerCommand(RewardCommand())
 		manager.registerCommand(SellCommand())
-		manager.registerCommand(TownCommand())
+		// manager.registerCommand(TownCommand())
 
 		// Menus
 		homeMenu()

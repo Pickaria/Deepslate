@@ -1,12 +1,15 @@
 package fr.pickaria.vue.town
 
-import fr.pickaria.controller.town.TownController
-import fr.pickaria.controller.town.hasTownPermission
+import com.palmergames.bukkit.towny.TownyAPI
+import fr.pickaria.controller.home.addToHome
 import fr.pickaria.menu.*
-import fr.pickaria.model.economy.Credit
-import fr.pickaria.model.town.TownPermission
+import fr.pickaria.model.town.flag
+import kotlinx.datetime.Instant
+import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toJavaLocalDateTime
+import kotlinx.datetime.toLocalDateTime
 import net.kyori.adventure.text.Component
+import org.bukkit.Material
 import org.bukkit.inventory.ItemFlag
 import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
@@ -17,7 +20,8 @@ import kotlin.math.ceil
 fun townMenu() = menu("towns") {
 	title = Component.text("Villes")
 
-	val count = TownController.count()
+	val towny = TownyAPI.getInstance()
+	val count = towny.towns.size
 
 	rows = (ceil(count / 9.0).toInt())
 		.inc()
@@ -26,7 +30,7 @@ fun townMenu() = menu("towns") {
 
 	val pageSize = (size - 9).coerceAtLeast(9)
 	val start = page * pageSize
-	val towns = TownController.all(pageSize, start.toLong())
+	val towns = towny.towns.slice(start until (start + pageSize).coerceAtMost(count))
 	val maxPage = (count - 1) / pageSize
 
 	towns.forEachIndexed { index, town ->
@@ -34,26 +38,34 @@ fun townMenu() = menu("towns") {
 			addItemFlags(ItemFlag.HIDE_ATTRIBUTES, ItemFlag.HIDE_POTION_EFFECTS)
 		}
 
+		val registered = Instant.fromEpochMilliseconds(town.registered)
+			.toLocalDateTime(TimeZone.currentSystemDefault())
+			.toJavaLocalDateTime()
+
 		val formatted = DateTimeFormatter
 			.ofLocalizedDate(FormatStyle.FULL)
 			.localizedBy(Locale.FRENCH)
-			.format(town.creationDate.toJavaLocalDateTime())
+			.format(registered)
 
 		item {
-			material = flag.type
-			title = flag.itemMeta.displayName()
+			flag.let {
+				material = it.type
+				setMeta(it.itemMeta)
+			}
+
+			title = Component.text(town.name)
 			slot = index
-			setMeta(flag.itemMeta)
+
 			lore {
 				keyValues {
-					"Solde" to Credit.economy.format(town.balance)
-					"Résidents" to town.residentCount
+//					"Solde" to Credit.toController().format(town.account.holdingBalance)
+					"Résidents" to town.numResidents
 					"Date de création" to formatted
 				}
 
 				leftClick = "Clic-gauche pour visiter la ville"
 
-				if (opener.hasTownPermission(town, TownPermission.JOIN)) {
+				if (town.isOpen) {
 					rightClick = "Clic-droit pour rejoindre la ville"
 				}
 			}
@@ -62,5 +74,9 @@ fun townMenu() = menu("towns") {
 
 	previousPage()
 	closeItem()
-	nextPage(maxPage.toInt())
+	nextPage(maxPage)
+}.addToHome(Material.WHITE_BANNER, Component.text("Villes")) {
+	description {
+		-"Répertoire des villes du serveur."
+	}
 }

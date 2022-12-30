@@ -16,6 +16,7 @@ dependencies {
 	compileOnly(libs.kotlin.reflect)
 	compileOnly(libs.kotlinx.datetime)
 	compileOnly(libs.kotlinx.serialization.json)
+	compileOnly(libs.kotlinx.serialization.cbor)
 
 	compileOnly(libs.paper)
 	compileOnly(libs.vault)

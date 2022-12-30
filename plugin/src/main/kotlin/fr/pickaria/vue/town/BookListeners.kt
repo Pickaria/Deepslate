@@ -1,6 +1,6 @@
 package fr.pickaria.vue.town
 
-import fr.pickaria.controller.town.TownController
+import com.palmergames.bukkit.towny.TownyAPI
 import fr.pickaria.controller.town.isTownBook
 import fr.pickaria.controller.town.openTownBook
 import fr.pickaria.controller.town.townId
@@ -13,6 +13,7 @@ import org.bukkit.event.block.BlockBreakEvent
 import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.event.player.PlayerTakeLecternBookEvent
 import org.bukkit.inventory.LecternInventory
+import java.util.*
 import org.bukkit.block.data.type.Lectern as LecternData
 
 class BookListeners : Listener {
@@ -45,7 +46,7 @@ class BookListeners : Listener {
 				val isLectern = clickedBlock?.type == Material.LECTERN
 				val isItemBook = item?.isTownBook() == true
 
-				val townId: Int? = if (!isLectern && isItemBook) {
+				val townId: UUID? = if (!isLectern && isItemBook) {
 					item?.townId
 				} else if (isLectern) {
 					clickedBlock?.let { block ->
@@ -61,7 +62,7 @@ class BookListeners : Listener {
 				}
 
 				townId?.let { id ->
-					TownController[id]?.let {
+					TownyAPI.getInstance().getTown(id)?.let {
 						player.openTownBook(it)
 						isCancelled = true
 					}

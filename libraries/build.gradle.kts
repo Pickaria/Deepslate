@@ -14,6 +14,7 @@ dependencies {
 	implementation(libs.kotlin.stdlib)
 	implementation(libs.kotlinx.datetime)
 	implementation(libs.kotlinx.serialization.json)
+	implementation(libs.kotlinx.serialization.cbor)
 
 	compileOnly(libs.paper)
 	implementation(libs.acf)

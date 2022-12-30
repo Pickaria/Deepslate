@@ -4,6 +4,7 @@ import fr.pickaria.model.economy.BankAccount
 import net.milkbowl.vault.economy.AbstractEconomy
 import net.milkbowl.vault.economy.EconomyResponse
 import net.milkbowl.vault.economy.EconomyResponse.ResponseType
+import org.bukkit.Bukkit
 import org.bukkit.OfflinePlayer
 import java.text.DecimalFormat
 
@@ -104,12 +105,21 @@ class Economy(
 
 	override fun getBanks(): MutableList<String> = mutableListOf()
 
+	@Deprecated("Deprecated in Java")
+	override fun isBankOwner(name: String?, playerName: String?): EconomyResponse =
+		EconomyResponse(0.0, 0.0, ResponseType.NOT_IMPLEMENTED, "We do not support bank accounts!")
+
+	@Deprecated("Deprecated in Java")
+	override fun isBankMember(name: String?, playerName: String?): EconomyResponse =
+		EconomyResponse(0.0, 0.0, ResponseType.NOT_IMPLEMENTED, "We do not support bank accounts!")
+
+	override fun isBankMember(name: String?, player: OfflinePlayer?): EconomyResponse =
+		EconomyResponse(0.0, 0.0, ResponseType.NOT_IMPLEMENTED, "We do not support bank accounts!")
+
 	// Deprecated methods
 
 	@Deprecated("Deprecated in Java")
-	override fun hasAccount(playerName: String?): Boolean {
-		TODO("Not yet implemented")
-	}
+	override fun hasAccount(playerName: String): Boolean = hasAccount(Bukkit.getOfflinePlayer(playerName))
 
 	@Deprecated("Deprecated in Java")
 	override fun hasAccount(playerName: String?, worldName: String?): Boolean {
@@ -117,9 +127,7 @@ class Economy(
 	}
 
 	@Deprecated("Deprecated in Java")
-	override fun getBalance(playerName: String?): Double {
-		TODO("Not yet implemented")
-	}
+	override fun getBalance(playerName: String): Double = getBalance(Bukkit.getOfflinePlayer(playerName))
 
 	@Deprecated("Deprecated in Java")
 	override fun getBalance(playerName: String?, world: String?): Double {
@@ -127,9 +135,7 @@ class Economy(
 	}
 
 	@Deprecated("Deprecated in Java")
-	override fun has(playerName: String?, amount: Double): Boolean {
-		TODO("Not yet implemented")
-	}
+	override fun has(playerName: String, amount: Double): Boolean = has(Bukkit.getOfflinePlayer(playerName), amount)
 
 	@Deprecated("Deprecated in Java")
 	override fun has(playerName: String?, worldName: String?, amount: Double): Boolean {
@@ -137,9 +143,8 @@ class Economy(
 	}
 
 	@Deprecated("Deprecated in Java")
-	override fun withdrawPlayer(playerName: String?, amount: Double): EconomyResponse {
-		TODO("Not yet implemented")
-	}
+	override fun withdrawPlayer(playerName: String, amount: Double): EconomyResponse =
+		withdrawPlayer(Bukkit.getOfflinePlayer(playerName), amount)
 
 	@Deprecated("Deprecated in Java")
 	override fun withdrawPlayer(playerName: String?, worldName: String?, amount: Double): EconomyResponse {
@@ -147,9 +152,8 @@ class Economy(
 	}
 
 	@Deprecated("Deprecated in Java")
-	override fun depositPlayer(playerName: String?, amount: Double): EconomyResponse {
-		TODO("Not yet implemented")
-	}
+	override fun depositPlayer(playerName: String, amount: Double): EconomyResponse =
+		depositPlayer(Bukkit.getOfflinePlayer(playerName), amount)
 
 	@Deprecated("Deprecated in Java")
 	override fun depositPlayer(playerName: String?, worldName: String?, amount: Double): EconomyResponse {
@@ -157,26 +161,11 @@ class Economy(
 	}
 
 	@Deprecated("Deprecated in Java")
-	override fun isBankOwner(name: String?, playerName: String?): EconomyResponse {
-		TODO("Not yet implemented")
-	}
-
-	@Deprecated("Deprecated in Java")
-	override fun isBankMember(name: String?, playerName: String?): EconomyResponse {
-		TODO("Not yet implemented")
-	}
-
-	@Deprecated("Deprecated in Java")
-	override fun createPlayerAccount(playerName: String?): Boolean {
-		TODO("Not yet implemented")
-	}
+	override fun createPlayerAccount(playerName: String): Boolean =
+		createPlayerAccount(Bukkit.getOfflinePlayer(playerName))
 
 	@Deprecated("Deprecated in Java")
 	override fun createPlayerAccount(playerName: String?, worldName: String?): Boolean {
-		TODO("Not yet implemented")
-	}
-
-	override fun isBankMember(name: String?, player: OfflinePlayer?): EconomyResponse {
 		TODO("Not yet implemented")
 	}
 }

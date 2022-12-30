@@ -60,8 +60,7 @@ fun getTestOffers(): List<MerchantRecipe> = (0..50).map {
 }
 
 fun getFlagOffers(): List<MerchantRecipe> = BannerType.values().map {
-	MerchantRecipe(it.item(), Int.MAX_VALUE).apply {
-		uses = 0
-		addIngredient(Credit.toController().item(10))
+	CurrencyBundle(it.item()) {
+		Credit to 100
 	}
 }

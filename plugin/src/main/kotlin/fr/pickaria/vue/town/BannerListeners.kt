@@ -1,6 +1,13 @@
 package fr.pickaria.vue.town
 
-import fr.pickaria.controller.town.*
+import com.palmergames.bukkit.towny.TownyAPI
+import com.palmergames.bukkit.towny.TownyUniverse
+import com.palmergames.bukkit.towny.command.TownCommand
+import com.palmergames.bukkit.towny.exceptions.TownyException
+import fr.pickaria.controller.town.getTownBook
+import fr.pickaria.controller.town.isTownBanner
+import fr.pickaria.controller.town.townId
+import fr.pickaria.model.town.flag
 import fr.pickaria.model.town.townConfig
 import fr.pickaria.model.town.townNamespace
 import fr.pickaria.shared.give
@@ -83,6 +90,7 @@ class BannerListeners(private val plugin: JavaPlugin) : Listener {
 
 	// TODO: Cancel BlockBreakBlockEvent
 
+
 	@EventHandler
 	fun onBannerPlaced(event: BlockPlaceEvent) {
 		with(event) {
@@ -95,33 +103,41 @@ class BannerListeners(private val plugin: JavaPlugin) : Listener {
 
 				val displayName = itemInHand.itemMeta.displayName
 
-				// TODO: Create a TownController that makes all the requests and processing for towns
-				TownController[displayName]?.let {
-					player.sendMessage(townConfig.townNameExist)
-					setBuild(false)
-					return
+				val town = try {
+					TownCommand.newTown(
+						player,
+						displayName,
+						TownyUniverse.getInstance().getResident(player.uniqueId),
+						true
+					)
+
+					TownyAPI.getInstance().getTown(displayName)
+				} catch (exception: TownyException) {
+					val message = exception.getMessage(player)
+					player.sendMessage(message)
+					null
 				}
 
-				player.town?.let {
-					player.sendMessage(townConfig.alreadyInTown)
+				if (town != null) {
+					town.flag = itemInHand
+					town.save()
+
+					townCreatedAnimation(block.location, player, itemInHand.itemMeta.displayName() ?: Component.empty())
+
+					val banner = block.state as Banner
+					banner.persistentDataContainer.set(
+						townNamespace,
+						PersistentDataType.STRING,
+						town.uuid.toString()
+					)
+					banner.update()
+
+					val book = getTownBook(town)
+					player.give(book)
+				} else {
+					player.sendMessage("Unknown error")
 					setBuild(false)
-					return
 				}
-
-				val town = TownController(displayName, itemInHand, player)
-
-				townCreatedAnimation(block.location, player, itemInHand.itemMeta.displayName() ?: Component.empty())
-
-				val banner = block.state as Banner
-				banner.persistentDataContainer.set(
-					townNamespace,
-					PersistentDataType.INTEGER,
-					town.id
-				)
-				banner.update()
-
-				val book = getTownBook(town, player)
-				player.give(book)
 			}
 		}
 	}
