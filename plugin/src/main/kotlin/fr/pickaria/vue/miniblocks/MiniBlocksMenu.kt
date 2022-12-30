@@ -4,7 +4,6 @@ import fr.pickaria.controller.home.addToHome
 import fr.pickaria.controller.toController
 import fr.pickaria.menu.*
 import fr.pickaria.model.economy.Credit
-import fr.pickaria.model.economy.toController
 import fr.pickaria.model.miniblocks.miniBlocksConfig
 import net.kyori.adventure.text.Component
 import org.bukkit.Material
@@ -43,7 +42,7 @@ fun miniBlocksMenu() = menu("miniblocks") {
 			lore {
 				keyValues {
 					"Bloc" to Component.translatable(miniBlock.material.translationKey()).asComponent()
-					"Prix unitaire" to Credit.toController().format(miniBlock.price ?: miniBlocksConfig.defaultPrice)
+					"Prix unitaire" to Credit.economy.format(miniBlock.price ?: miniBlocksConfig.defaultPrice)
 				}
 				leftClick = "Clic-gauche pour acheter"
 			}

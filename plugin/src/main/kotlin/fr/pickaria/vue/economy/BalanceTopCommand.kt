@@ -6,8 +6,8 @@ import co.aikar.commands.annotation.CommandAlias
 import co.aikar.commands.annotation.CommandPermission
 import co.aikar.commands.annotation.Default
 import fr.pickaria.controller.acf.listing
-import fr.pickaria.model.economy.BankAccount
 import fr.pickaria.model.economy.Credit
+import fr.pickaria.model.economy.LegacyBankAccount
 import fr.pickaria.model.economy.economyConfig
 import org.bukkit.command.CommandSender
 
@@ -25,8 +25,8 @@ class BalanceTopCommand : BaseCommand() {
 		}
 
 		val pageStart = page * PAGE_SIZE
-		val top = BankAccount.top(page, limit = PAGE_SIZE)
-		val count = BankAccount.count()
+		val top = LegacyBankAccount.top(page, limit = PAGE_SIZE)
+		val count = LegacyBankAccount.count()
 
 		val component = listing(
 			economyConfig.header,

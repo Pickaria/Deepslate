@@ -26,7 +26,11 @@ class BannerCommand : BaseCommand() {
 		if (player.withdraw(Credit, townConfig.bannerPrice).transactionSuccess()) {
 			player.give(bannerType.item())
 		} else {
-			throw ConditionFailedException("Il faut ${Credit.economy.format(townConfig.bannerPrice)} pour acheter une bannière de ville.")
+			throw ConditionFailedException(
+				"Il faut ${
+					Credit.economy.format(townConfig.bannerPrice)
+				} pour acheter une bannière de ville."
+			)
 		}
 	}
 

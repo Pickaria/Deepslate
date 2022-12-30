@@ -58,7 +58,7 @@ fun townMenu() = menu("towns") {
 
 			lore {
 				keyValues {
-//					"Solde" to Credit.toController().format(town.account.holdingBalance)
+//					"Solde" to Credit.economy.format(town.account.holdingBalance)
 					"Résidents" to town.numResidents
 					"Date de création" to formatted
 				}

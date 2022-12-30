@@ -1,11 +1,13 @@
 package fr.pickaria.controller.economy
 
 import fr.pickaria.model.economy.BankAccount
+import fr.pickaria.model.economy.BankAccounts
 import net.milkbowl.vault.economy.AbstractEconomy
 import net.milkbowl.vault.economy.EconomyResponse
 import net.milkbowl.vault.economy.EconomyResponse.ResponseType
-import org.bukkit.Bukkit
 import org.bukkit.OfflinePlayer
+import org.jetbrains.exposed.sql.and
+import org.jetbrains.exposed.sql.transactions.transaction
 import java.text.DecimalFormat
 
 class Economy(
@@ -26,12 +28,11 @@ class Economy(
 
 	override fun fractionalDigits(): Int = -1
 
-	override fun format(amount: Double): String =
-		if (amount <= 1.0) {
-			"${formatter.format(amount)} ${currencyNameSingular()}"
-		} else {
-			"${formatter.format(amount)} ${currencyNamePlural()}"
-		}
+	override fun format(amount: Double): String = if (amount <= 1.0) {
+		"${formatter.format(amount)} ${currencyNameSingular()}"
+	} else {
+		"${formatter.format(amount)} ${currencyNamePlural()}"
+	}
 
 	override fun isEnabled(): Boolean = true
 
@@ -43,45 +44,63 @@ class Economy(
 
 	// Logic methods
 
-	override fun hasAccount(player: OfflinePlayer): Boolean =
-		BankAccount.get(player.uniqueId, account)?.let {
-			true
-		} ?: false
+	private fun getAccount(player: OfflinePlayer): BankAccount? = try {
+		transaction {
+			BankAccount.find {
+				(BankAccounts.playerUuid eq player.uniqueId) and (BankAccounts.accountName eq account)
+			}.single()
+		}
+	} catch (_: NoSuchElementException) {
+		null // Empty
+	} catch (_: IllegalArgumentException) {
+		null // More than one
+	}
 
-	override fun getBalance(player: OfflinePlayer): Double =
-		BankAccount.get(player.uniqueId, account)?.balance ?: 0.0
+	override fun hasAccount(player: OfflinePlayer): Boolean = getAccount(player) != null
 
-	override fun has(player: OfflinePlayer, amount: Double): Boolean =
-		getBalance(player) >= amount
+	override fun getBalance(player: OfflinePlayer): Double = getAccount(player)?.balance ?: 0.0
 
-	override fun withdrawPlayer(player: OfflinePlayer, amount: Double): EconomyResponse =
-		player.uniqueId.let {
-			if (!hasAccount(player)) {
-				BankAccount.create(it, account)
-			} else {
-				BankAccount.get(it, account)
+	override fun has(player: OfflinePlayer, amount: Double): Boolean = getBalance(player) >= amount
+
+	/**
+	 * Deposits a negative amount into the player's account (basically withdraws).
+	 * Any balance check must be made independently.
+	 */
+	override fun withdrawPlayer(player: OfflinePlayer, amount: Double): EconomyResponse = depositPlayer(player, -amount)
+
+	/**
+	 * Deposits an amount into the player's account.
+	 * Any balance check must be made independently.
+	 */
+	override fun depositPlayer(player: OfflinePlayer, amount: Double): EconomyResponse = transaction {
+		try {
+			val account = BankAccount.find {
+				(BankAccounts.playerUuid eq player.uniqueId) and (BankAccounts.accountName eq account)
+			}.single()
+			account.balance += amount
+			EconomyResponse(amount, account.balance, ResponseType.SUCCESS, "")
+		} catch (_: NoSuchElementException) {
+			// Account not found, create a new one
+			val account = BankAccount.new {
+				playerUuid = player.uniqueId
+				accountName = account
+				balance = amount
 			}
-		}?.let {
-			it.balance -= amount
-			EconomyResponse(amount, it.balance, ResponseType.SUCCESS, "")
-		} ?: EconomyResponse(0.0, 0.0, ResponseType.FAILURE, "")
+			EconomyResponse(amount, account.balance, ResponseType.SUCCESS, "")
+		} catch (_: IllegalArgumentException) {
+			// Too many accounts (???)
+			EconomyResponse(0.0, 0.0, ResponseType.FAILURE, "Too many account for this player.")
+		}
+	}
 
-	override fun depositPlayer(player: OfflinePlayer, amount: Double): EconomyResponse =
-		player.uniqueId.let {
-			if (!hasAccount(player)) {
-				BankAccount.create(it, account)
-			} else {
-				BankAccount.get(it, account)
-			}
-		}?.let {
-			it.balance += amount
-			EconomyResponse(amount, it.balance, ResponseType.SUCCESS, "")
-		} ?: EconomyResponse(0.0, 0.0, ResponseType.FAILURE, "")
+	override fun createPlayerAccount(player: OfflinePlayer): Boolean = transaction {
+		BankAccount.new {
+			playerUuid = player.uniqueId
+			accountName = account
+		}
 
-	override fun createPlayerAccount(player: OfflinePlayer): Boolean =
-		BankAccount.create(player.uniqueId, account)?.let {
-			true
-		} ?: false
+		true
+	}
 
 	// Bank methods
 
@@ -119,7 +138,7 @@ class Economy(
 	// Deprecated methods
 
 	@Deprecated("Deprecated in Java")
-	override fun hasAccount(playerName: String): Boolean = hasAccount(Bukkit.getOfflinePlayer(playerName))
+	override fun hasAccount(playerName: String): Boolean = hasAccount(getOfflinePlayer(playerName))
 
 	@Deprecated("Deprecated in Java")
 	override fun hasAccount(playerName: String?, worldName: String?): Boolean {
@@ -127,7 +146,7 @@ class Economy(
 	}
 
 	@Deprecated("Deprecated in Java")
-	override fun getBalance(playerName: String): Double = getBalance(Bukkit.getOfflinePlayer(playerName))
+	override fun getBalance(playerName: String): Double = getBalance(getOfflinePlayer(playerName))
 
 	@Deprecated("Deprecated in Java")
 	override fun getBalance(playerName: String?, world: String?): Double {
@@ -135,7 +154,7 @@ class Economy(
 	}
 
 	@Deprecated("Deprecated in Java")
-	override fun has(playerName: String, amount: Double): Boolean = has(Bukkit.getOfflinePlayer(playerName), amount)
+	override fun has(playerName: String, amount: Double): Boolean = has(getOfflinePlayer(playerName), amount)
 
 	@Deprecated("Deprecated in Java")
 	override fun has(playerName: String?, worldName: String?, amount: Double): Boolean {
@@ -144,7 +163,7 @@ class Economy(
 
 	@Deprecated("Deprecated in Java")
 	override fun withdrawPlayer(playerName: String, amount: Double): EconomyResponse =
-		withdrawPlayer(Bukkit.getOfflinePlayer(playerName), amount)
+		withdrawPlayer(getOfflinePlayer(playerName), amount)
 
 	@Deprecated("Deprecated in Java")
 	override fun withdrawPlayer(playerName: String?, worldName: String?, amount: Double): EconomyResponse {
@@ -153,7 +172,7 @@ class Economy(
 
 	@Deprecated("Deprecated in Java")
 	override fun depositPlayer(playerName: String, amount: Double): EconomyResponse =
-		depositPlayer(Bukkit.getOfflinePlayer(playerName), amount)
+		depositPlayer(getOfflinePlayer(playerName), amount)
 
 	@Deprecated("Deprecated in Java")
 	override fun depositPlayer(playerName: String?, worldName: String?, amount: Double): EconomyResponse {
@@ -162,7 +181,7 @@ class Economy(
 
 	@Deprecated("Deprecated in Java")
 	override fun createPlayerAccount(playerName: String): Boolean =
-		createPlayerAccount(Bukkit.getOfflinePlayer(playerName))
+		createPlayerAccount(getOfflinePlayer(playerName))
 
 	@Deprecated("Deprecated in Java")
 	override fun createPlayerAccount(playerName: String?, worldName: String?): Boolean {

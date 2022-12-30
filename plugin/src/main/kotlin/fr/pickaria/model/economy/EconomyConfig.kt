@@ -61,8 +61,11 @@ data class EconomyConfig(
 	val row: String,
 	val footer: String,
 
-	@SerialName("vault_currency")
+	@SerialName("default_account")
 	val vaultCurrency: String,
+
+	@SerialName("vault_currency")
+	val defaultAccount: String,
 )
 
 val economyConfig = Yaml.default.decodeFromStream<EconomyConfig>(getResourceFileStream("economy.yml"))

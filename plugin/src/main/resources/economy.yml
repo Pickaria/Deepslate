@@ -19,6 +19,7 @@ header: '<gold>==== Baltop (<page>/<max>) ===='
 row: '<white><position>. <gray><player>, <balance>'
 footer: '<gray>Tapez <gold><next-page>/baltop <page></next-page></gold> pour lire la page suivante.'
 
+default_account: 'credits'
 vault_currency: 'credits'
 bundle_description: '<gray>Sacoche d''une valeur de <gold><value></gold>.'
 
