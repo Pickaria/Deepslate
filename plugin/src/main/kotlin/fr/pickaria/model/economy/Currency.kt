@@ -6,12 +6,10 @@ import fr.pickaria.model.serializers.SoundSerializer
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import net.kyori.adventure.sound.Sound
-import org.bukkit.Material
 import java.util.*
 
 @Serializable
 data class Currency(
-	val material: Material,
 	val description: List<String>,
 
 	@SerialName("name_singular")
@@ -29,12 +27,16 @@ data class Currency(
 	@SerialName("collect_sound")
 	val collectSound: Sound,
 
-	@SerialName("vault_support")
-	val vaultSupport: Boolean? = false,
+	@SerialName("physical_currencies")
+	val physicalCurrencies: List<PhysicalCurrency>,
 ) {
+	@Deprecated("Prefer using the CurrencyController instead.")
 	val economy by lazy {
 		Economy(nameSingular, namePlural, account, format)
 	}
 }
 
+/**
+ * Get a controller for this currency.
+ */
 fun Currency.toController(): CurrencyController = CurrencyController(this)

@@ -14,3 +14,14 @@ commands:
   menu:
     usage: /menu
     description: Ouvre le menu du serveur.
+
+permissions:
+  pickaria.messages.join:
+    description: Allow the join message to be visible.
+    default: op
+  pickaria.messages.quit:
+    description: Allow the quit message to be visible.
+    default: op
+  pickaria.messages.advancement:
+    description: Allow the advancement messages to be visible.
+    default: op

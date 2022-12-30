@@ -1,0 +1,31 @@
+name: Bug report
+description: File a bug report
+labels: [ "bug" ]
+body:
+  - type: dropdown
+    id: problem
+    attributes:
+      label: Qualify the bug
+      description: What is the type of bug?
+      options:
+        - Duplication
+        - Lag source
+        - Unexpected behaviour
+    validations:
+      required: true
+  - type: textarea
+    id: description
+    attributes:
+      label: What happened?
+      description: Tell us what went wrong and what you've been expecting.
+      placeholder: The commande `/reward` does nothing. It should open the reward menu instead.
+    validations:
+      required: true
+  - type: textarea
+    id: technical_details
+    attributes:
+      label: Technical details
+      description: Tell us if you've got any idea on how to implement this in the plugin.
+      placeholder: Add a `@Default` on the reward command class.
+    validations:
+      required: false

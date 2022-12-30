@@ -19,6 +19,9 @@ header: '<gold>==== Baltop (<page>/<max>) ===='
 row: '<white><position>. <gray><player>, <balance>'
 footer: '<gray>Tapez <gold><next-page>/baltop <page></next-page></gold> pour lire la page suivante.'
 
+vault_currency: 'credits'
+bundle_description: '<gray>Sacoche d''une valeur de <gold><value></gold>.'
+
 currencies:
   credits:
     name_singular: 'Crédit'
@@ -27,9 +30,26 @@ currencies:
       - '<gray>Pièce d''une valeur de <gold><value><gray>.'
     collect_sound: block.amethyst_block.fall
     collect_message: '<gray>Vous avez collecté <gold><amount><gray>.'
-    material: GOLD_NUGGET
     account: credits # The account name must be the same as the key
     format: '###,##0.00'
+    physical_currencies:
+      - value: 0.01
+        material: GLOWSTONE_DUST
+      - value: 0.1
+        material: GUNPOWDER
+      - value: 1.0
+        material: IRON_NUGGET
+      - value: 64.0
+        material: GOLD_NUGGET
+      - value: 4096.0
+        material: GOLD_INGOT
+      - value: 262144.0
+        material: GOLD_BLOCK
+      - value: 16777216.0
+        material: NETHERITE_INGOT
+      - value: 1073741824.0
+        material: NETHERITE_BLOCK
+
   shards:
     description:
       - '<gray>Fragment ancestral issu de la'
@@ -38,9 +58,12 @@ currencies:
     collect_sound: block.amethyst_cluster.break
     name_singular: 'Éclat de Pickarite'
     name_plural: 'Éclats de Pickarite'
-    material: ECHO_SHARD
     account: shards
     format: '###,##0'
+    physical_currencies:
+      - value: 1.0
+        material: ECHO_SHARD
+
   keys:
     description:
       - '<gray>Objet permettant l''achat de récompenses'
@@ -48,6 +71,8 @@ currencies:
     collect_sound: item.armor.equip_chain
     name_singular: 'Clé'
     name_plural: 'Clés'
-    material: TRIPWIRE_HOOK
     account: keys
     format: '###,##0'
+    physical_currencies:
+      - value: 1.0
+        material: TRIPWIRE_HOOK

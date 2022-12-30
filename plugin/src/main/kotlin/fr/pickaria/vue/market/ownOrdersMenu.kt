@@ -9,7 +9,7 @@ import net.kyori.adventure.text.Component
 import org.bukkit.Material
 
 internal fun ownOrdersMenu() = menu("orders") {
-	title = Component.text("Mes ordres")
+	title = Component.text("Mes ventes")
 
 	val count = Order.count(OrderType.SELL, opener)
 	val pageSize = size - 9
@@ -44,8 +44,8 @@ internal fun ownOrdersMenu() = menu("orders") {
 	previousPage()
 	closeItem()
 	nextPage(maxPage.toInt())
-}.addToHome(Material.PAPER, Component.text("Mes ordres")) {
+}.addToHome(Material.PAPER, Component.text("Mes ventes")) {
 	description {
-		-"Gérer ses ordres de vente et d'achat."
+		-"Gérer ses ventes au marché."
 	}
 }

@@ -13,9 +13,9 @@ dependencies {
 	implementation(libs.kotlin.reflect)
 	implementation(libs.kotlin.stdlib)
 	implementation(libs.kotlinx.datetime)
+	implementation(libs.kotlinx.serialization.json)
 
 	compileOnly(libs.paper)
-	compileOnly(libs.vault)
 	implementation(libs.acf)
 	implementation(libs.mccoroutine.api)
 	implementation(libs.mccoroutine.core)
@@ -26,14 +26,9 @@ dependencies {
 	implementation(libs.exposed.kotlin.datetime)
 	implementation(libs.h2)
 
-	compileOnly(libs.pickaria.spawner)
 	implementation(libs.pickaria.bedrock)
 
 	implementation(libs.kaml)
-}
-
-tasks.test {
-	useJUnitPlatform()
 }
 
 tasks.withType<KotlinCompile> {

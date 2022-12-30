@@ -60,6 +60,22 @@ villagers:
   job:
     name: "Zoltar"
     villager_type: PLAINS
-    profession: MASON
+    profession: BUTCHER
     uuid: c622ce38-b990-4a26-9e6e-a0da059ccb4e
     menu: job
+
+  # Opens the job menu
+  miniblocks:
+    name: "Gimli"
+    villager_type: PLAINS
+    profession: MASON
+    uuid: 19092324-e301-4399-9f9c-9d068f999f6d
+    menu: miniblocks
+
+  # Opens the job menu
+  test:
+    name: "[DEBUG]"
+    villager_type: PLAINS
+    profession: MASON
+    uuid: b0d91031-756f-4fe0-81a9-e89aeba064e4
+    offers: TEST

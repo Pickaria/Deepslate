@@ -19,17 +19,20 @@ import fr.pickaria.vue.chat.PlayerJoin
 import fr.pickaria.vue.economy.BalanceTopCommand
 import fr.pickaria.vue.economy.MoneyCommand
 import fr.pickaria.vue.economy.PayCommand
-import fr.pickaria.vue.home.foodMenu
 import fr.pickaria.vue.home.homeMenu
 import fr.pickaria.vue.job.ExperienceListener
 import fr.pickaria.vue.job.JobCommand
 import fr.pickaria.vue.job.jobMenu
 import fr.pickaria.vue.market.*
+import fr.pickaria.vue.miniblocks.MiniBlockCommand
+import fr.pickaria.vue.miniblocks.miniBlocksMenu
 import fr.pickaria.vue.potion.PotionCommand
 import fr.pickaria.vue.potion.PotionListener
 import fr.pickaria.vue.reforge.EnchantListeners
+import fr.pickaria.vue.reward.DailyRewardListeners
 import fr.pickaria.vue.reward.RewardCommand
 import fr.pickaria.vue.reward.RewardListeners
+import fr.pickaria.vue.reward.rewardMenu
 import fr.pickaria.vue.shard.GrindstoneListeners
 import fr.pickaria.vue.shop.PlaceShop
 import fr.pickaria.vue.shop.ShopListeners
@@ -52,6 +55,7 @@ class Main : SuspendingJavaPlugin() {
 			it.registerEvents(BannerListeners(this), this)
 			it.registerEvents(BookListeners(), this)
 			it.registerEvents(ChatFormat(), this)
+			it.registerEvents(DailyRewardListeners(), this)
 			it.registerEvents(EnchantListeners(), this)
 			it.registerEvents(ExperienceListener(this), this)
 			it.registerEvents(GrindstoneListeners(), this)
@@ -73,6 +77,7 @@ class Main : SuspendingJavaPlugin() {
 		BuyCommand.setupContext(manager)
 		CancelOrderCommand.setupContext(manager.commandContexts, manager.commandCompletions)
 		JobCommand.setupContext(manager)
+		MiniBlockCommand.setupContext(manager)
 		RewardCommand.setupContext(manager.commandContexts, manager.commandCompletions)
 		SellCommand.setupContext(manager.commandCompletions)
 		TownCommand.setupContext(manager)
@@ -86,6 +91,7 @@ class Main : SuspendingJavaPlugin() {
 		manager.registerCommand(FakeSellCommand())
 		manager.registerCommand(JobCommand())
 		manager.registerCommand(MarketCommand())
+		manager.registerCommand(MiniBlockCommand())
 		manager.registerCommand(MoneyCommand())
 		manager.registerCommand(PayCommand())
 		manager.registerCommand(PingCommand())
@@ -96,11 +102,12 @@ class Main : SuspendingJavaPlugin() {
 		manager.registerCommand(TownCommand())
 
 		// Menus
-		foodMenu()
 		homeMenu()
 		jobMenu()
-		ownOrdersMenu()
+		miniBlocksMenu()
 		orderListingMenu()
+		ownOrdersMenu()
+		rewardMenu()
 		townMenu()
 
 		// Scheduler

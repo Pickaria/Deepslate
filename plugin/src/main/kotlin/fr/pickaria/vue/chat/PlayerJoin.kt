@@ -4,20 +4,45 @@ import fr.pickaria.model.chat.chatConfig
 import fr.pickaria.shared.updateDisplayName
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
+import org.bukkit.event.player.PlayerAdvancementDoneEvent
 import org.bukkit.event.player.PlayerJoinEvent
 import org.bukkit.event.player.PlayerQuitEvent
 
 internal class PlayerJoin : Listener {
 	@EventHandler
 	fun onPlayerJoin(event: PlayerJoinEvent) {
-		event.player.let {
-			it.updateDisplayName()
-			event.joinMessage(chatConfig.join.append(it.displayName()))
+		with(event) {
+			player.updateDisplayName()
+
+			if (!player.hasPermission("pickaria.messages.join")) {
+				joinMessage(null)
+			} else {
+				joinMessage(chatConfig.join.append(player.displayName()))
+			}
 		}
 	}
 
 	@EventHandler
 	fun onPlayerQuit(event: PlayerQuitEvent) {
-		event.quitMessage(chatConfig.quit.append(event.player.displayName()))
+		with(event) {
+			player.updateDisplayName()
+
+			if (!player.hasPermission("pickaria.messages.quit")) {
+				quitMessage(null)
+			} else {
+				quitMessage(chatConfig.quit.append(player.displayName()))
+			}
+		}
+	}
+
+	@EventHandler
+	fun onPlayer(event: PlayerAdvancementDoneEvent) {
+		with(event) {
+			player.updateDisplayName()
+
+			if (!player.hasPermission("pickaria.messages.advancement")) {
+				message(null)
+			}
+		}
 	}
 }

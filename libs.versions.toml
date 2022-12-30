@@ -1,35 +1,36 @@
 [versions]
 kotlin = "1.7.22"  # Note: Plugin versions must be updated in the build.gradle.kts too
 
-paper = "1.19.3-R0.1-SNAPSHOT"
+acf = "0.5.1-SNAPSHOT"
 exposed = "0.41.1"
+h2 = "2.1.214"
+kaml = "0.49.0"
+kotlinx-coroutines = "1.6.4"
 kotlinx-datetime = "0.4.0"
 kotlinx-serialization = "1.4.1"
-kotlinx-coroutines = "1.6.4"
-acf = "0.5.1-SNAPSHOT"
-vault = "1.7.1"
-h2 = "2.1.214"
-pickaria-bedrock = "1.0.13-SNAPSHOT"
-pickaria-spawner = "1.0.7-SNAPSHOT"
-kaml = "0.49.0"
 mccoroutine-api = "2.9.0"
 mccoroutine-core = "2.9.0"
+paper = "1.19.3-R0.1-SNAPSHOT"
+pickaria-bedrock = "1.0.17-SNAPSHOT"
+pickaria-spawner = "1.0.7-SNAPSHOT"
 towny = "0.98.4.15"
+vault = "1.7.1"
 
 [libraries]
 # Kotlin
-kotlin-stdlib = { module = "org.jetbrains.kotlin:kotlin-stdlib", version.ref = "kotlin" }
 kotlin-reflect = { module = "org.jetbrains.kotlin:kotlin-reflect", version.ref = "kotlin" }
-kotlinx-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version.ref = "kotlinx-datetime" }
+kotlin-stdlib = { module = "org.jetbrains.kotlin:kotlin-stdlib", version.ref = "kotlin" }
 kotlinx-coroutines = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinx-coroutines" }
+kotlinx-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version.ref = "kotlinx-datetime" }
+kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinx-serialization" }
 
 # Minecraft
-paper = { module = "io.papermc.paper:paper-api", version.ref = "paper" }
 acf = { module = "co.aikar:acf-paper", version.ref = "acf" }
-vault = { module = "com.github.MilkBowl:VaultAPI", version.ref = "vault" }
 mccoroutine-api = { module = "com.github.shynixn.mccoroutine:mccoroutine-bukkit-api", version.ref = "mccoroutine-api" }
 mccoroutine-core = { module = "com.github.shynixn.mccoroutine:mccoroutine-bukkit-core", version.ref = "mccoroutine-core" }
+paper = { module = "io.papermc.paper:paper-api", version.ref = "paper" }
 towny = { module = "com.palmergames.bukkit.towny:towny", version.ref = "towny" }
+vault = { module = "com.github.MilkBowl:VaultAPI", version.ref = "vault" }
 
 # Database
 exposed-core = { module = "org.jetbrains.exposed:exposed-core", version.ref = "exposed" }
@@ -46,5 +47,5 @@ pickaria-spawner = { module = "fr.pickaria:spawner", version.ref = "pickaria-spa
 kaml = { module = "com.charleskorn.kaml:kaml", version.ref = "kaml" }
 
 [plugins]
-shadow = { id = "com.github.johnrengelman.shadow", version = "7.1.2" }
 serialization = { id = "plugin.serialization", version = "1.7.22" }
+shadow = { id = "com.github.johnrengelman.shadow", version = "7.1.2" }

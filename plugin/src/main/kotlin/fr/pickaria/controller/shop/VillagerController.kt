@@ -17,6 +17,7 @@ class VillagerController(val model: VillagerConfig) {
 			ShopOffer.POTIONS -> getPotionsOffers()
 			ShopOffer.REWARDS -> getRewardsOffers()
 			ShopOffer.FLAGS -> getFlagOffers()
+			ShopOffer.TEST -> getTestOffers()
 			else -> emptyList()
 		}
 

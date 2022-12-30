@@ -11,8 +11,8 @@ import org.bukkit.Material
 import org.bukkit.inventory.ItemStack
 import org.bukkit.persistence.PersistentDataType
 
-fun getAttributeItem(): ItemStack {
-	val itemStack = ItemStack(Material.LAPIS_LAZULI)
+fun getAttributeItem(amount: Int = 1): ItemStack {
+	val itemStack = ItemStack(Material.LAPIS_LAZULI, amount)
 	itemStack.editMeta {
 		it.persistentDataContainer.set(reforgeNamespace, PersistentDataType.BYTE, 1)
 		it.addEnchant(GlowEnchantment.instance, 1, true)

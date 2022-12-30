@@ -28,19 +28,64 @@ Les fonctionnalités suivantes doivent être utilisées afin de tirer parti de K
 - Le traitement des dates se fait avec [kotlinx-datetime](https://github.com/Kotlin/kotlinx-datetime) plutôt que
   l'implémentation Java ;
 
+### Nommage des variables
+
+> Utiliser des variables plus courtes ne permet pas d'avoir un code plus rapide !
+
+Écrivez des noms de variables et méthodes complets :
+
+```kt
+val delayBeforeNextPickup: Long = ...
+fun getTimeBeforeNextPickup(): LocalDateTime {}
+```
+
+Les exceptions autorisées :
+
+- Dans des boucles :
+  ```kt
+  for (i in 0..50) {
+    for (j in 0..50) {}
+  }
+  ```
+- Pour des positions :
+  ```kt
+  val x = 3
+  val y = 5
+  ```
+- `Config` au lieu de `Configuration`
+
 ## Architecture MVC
 
 Le plugin est utilisé l'architecture Model Vue Controller :
 
-- Model : contient les sources de données (fichiers de configuration, base de donnée, ...) ;
-- Controller : toute logique interne au plugin ;
-- Vue : ce que le joueur peut voir (menus, commandes, listeners) ;
+- __Model__ : contient les sources de données (fichiers de configuration, base de donnée, ...) ;
+- __Controller__ : toute logique interne au plugin ;
+- __Vue__ : ce que le joueur peut voir (menus, commandes, listeners) ;
 
 Pour simplifier la désignation, un Model est le niveau 0, un Controller le niveau 1 et une Vue le niveau 2.
 
 Globalement, un fichier ne doit jamais faire un appel à un fichier d'un niveau supérieur.
 > Un fichier Model ne peut faire appel au contenu d'un Controller ou d'une Vue.  
 > Un Controller ne peut pas faire appel à une Vue.
+
+## Écriture de commande
+
+Les commandes sont développées avec le framework [ACF](https://github.com/aikar/commands).  
+En règle générale, les commandes ne doivent pas faire d'appel à la base de données.  
+Elles doivent impérativement être documentées avec les annotations requises, exemple :
+
+```kt
+@CommandCompletion("@reward") // Défini quelle méthode utiliser pour l'auto complétion.
+@CommandPermission("pickaria.command.reward") // Quelle permission doit avoir le joueur
+@Description("Permet d'acheter une récompense.") // Ajoute une description à la commande
+fun onCommand() {
+}
+```
+
+### Syntaxe des commandes
+
+- `<reward-type>` : argument obligatoire
+- `[amount]` : argument facultatif
 
 ## Git flow
 

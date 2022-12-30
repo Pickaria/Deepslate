@@ -12,7 +12,6 @@ import org.bukkit.entity.Player
 @CommandPermission("pickaria.admin.command.placeshop")
 class PlaceShop : BaseCommand() {
 	@Default
-	@Syntax("[shop type]")
 	@CommandCompletion("@shop_type")
 	fun onCommand(sender: Player, @Optional type: ShopOffer?) {
 		if (type == null) {

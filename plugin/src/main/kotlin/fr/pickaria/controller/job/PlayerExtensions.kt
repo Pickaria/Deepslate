@@ -51,7 +51,7 @@ internal infix fun Player.leaveJob(jobType: JobType) {
 /**
  * Get the job rank of a player.
  */
-internal fun Player.getRank(): Component {
+private fun Player.getRank(): Component {
 	val ascendPoints = JobModel.get(uniqueId).sumOf { it.ascentPoints }
 	for ((points, suffix) in jobConfig.ranks) {
 		if (ascendPoints >= points) {
@@ -95,8 +95,9 @@ internal infix fun Player.ascentJob(jobType: JobType): Boolean = JobModel.get(un
 	}
 } ?: false
 
-internal fun Player.ascentJob(config: Job, job: JobModel, ascentPoints: Int) {
+private fun Player.ascentJob(config: Job, job: JobModel, ascentPoints: Int) {
 	job.ascentPoints += ascentPoints
+	job.totalExperience += job.experience
 	job.experience = 0.0
 
 	JobAscentEvent(this, config, ascentPoints).callEvent()

@@ -5,7 +5,11 @@ enum class ShopOffer {
 	BANK,
 	POTIONS,
 	REWARDS,
+	FLAGS,
+	TEST,
+
+	// Menus
 	MARKET,
-	JOB,
-	FLAGS;
+	MINIBLOCKS,
+	JOB;
 }

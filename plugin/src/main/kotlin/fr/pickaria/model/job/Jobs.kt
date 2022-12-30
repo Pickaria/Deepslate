@@ -15,6 +15,7 @@ internal object Jobs : Table() {
 	val lastUsed = datetime("last_used").clientDefault { now() }
 	val active = bool("active").default(false)
 	val ascentPoints = integer("ascent_points").default(0)
+	val totalExperience = double("total_experience").default(0.0)
 
 	override val primaryKey = PrimaryKey(playerUuid, job)
 }
@@ -56,6 +57,14 @@ class JobModel(private val row: ResultRow) {
 		set(value) = transaction {
 			Jobs.update({ whereClause() }) {
 				it[experience] = value
+			}
+		}
+
+	var totalExperience: Double
+		get() = row[Jobs.totalExperience]
+		set(value) = transaction {
+			Jobs.update({ whereClause() }) {
+				it[totalExperience] = value
 			}
 		}
 

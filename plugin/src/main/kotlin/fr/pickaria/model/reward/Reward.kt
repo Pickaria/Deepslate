@@ -19,10 +19,10 @@ data class Reward(
 	val material: Material,
 	@Serializable(with = MiniMessageSerializer::class)
 	val name: Component,
-	val keys: Int,
-	val shards: Int,
+	val keys: Int = 0,
+	val shards: Int = 0,
 	val purchasable: Boolean = false,
-	val description: List<String>,
+	val description: List<String> = emptyList(),
 	val type: String,
 	@Serializable(with = AdvancementSerializer::class)
 	val advancement: Advancement? = null,
