@@ -33,7 +33,6 @@ class PlaceShop : BaseCommand() {
 	}
 
 	@Default
-	@Syntax("[shop type]")
 	@CommandCompletion("@shoptype")
 	fun onCommand(sender: Player, @Optional type: ShopOffer?) {
 		if (type == null) {

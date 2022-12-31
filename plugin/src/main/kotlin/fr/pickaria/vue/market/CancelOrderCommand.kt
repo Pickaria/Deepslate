@@ -35,7 +35,6 @@ class CancelOrderCommand : BaseCommand() {
 	}
 
 	@Default
-	@Syntax("<order id>")
 	@CommandCompletion("@ownorders")
 	fun onDefault(sender: Player, @Optional order: Order?) {
 		if (order == null) {

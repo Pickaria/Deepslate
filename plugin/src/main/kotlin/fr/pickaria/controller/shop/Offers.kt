@@ -1,5 +1,6 @@
 package fr.pickaria.controller.shop
 
+import fr.pickaria.controller.economy.CurrencyBundle
 import fr.pickaria.controller.reforge.getAttributeItem
 import fr.pickaria.model.artefact.artefactConfig
 import fr.pickaria.model.artefact.toController
@@ -11,75 +12,48 @@ import fr.pickaria.model.potion.potionConfig
 import fr.pickaria.model.potion.toController
 import fr.pickaria.model.reward.rewardConfig
 import fr.pickaria.model.reward.toController
+import org.bukkit.Material
+import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.MerchantRecipe
+import kotlin.random.Random
 
-fun getArtefactsOffers(): List<MerchantRecipe> =
-	artefactConfig.artefacts.map { (_, artefact) ->
-		val item = artefact.toController().createReceptacle()
-		val price: Int = artefact.value
+fun getArtefactsOffers(): List<MerchantRecipe> = artefactConfig.artefacts.map { (_, artefact) ->
+	val item = artefact.toController().createReceptacle()
 
-		MerchantRecipe(item.clone().apply { amount = 1 }, Int.MAX_VALUE).apply {
-			uses = 0
-			addIngredient(Shard.toController().item(price))
-			addIngredient(Credit.toController().item(price * 4))
-		}
+	CurrencyBundle(item) {
+		Shard to artefact.value
+		Credit to artefact.value * 8
 	}
+}
 
 fun getBankOffers(): List<MerchantRecipe> {
-	val attributeItem = getAttributeItem()
-	val keyController = Key.toController()
-	val creditController = Credit.toController()
-
 	return listOf(
-		MerchantRecipe(keyController.item(), Int.MAX_VALUE).apply {
-			uses = 0
-			addIngredient(creditController.item(8, 128.0))
+		CurrencyBundle(Key.toController().item()) {
+			Credit to 1000
 		},
-		MerchantRecipe(keyController.item(2), Int.MAX_VALUE).apply {
-			uses = 0
-			addIngredient(creditController.item(16, 128.0))
-		},
-		MerchantRecipe(keyController.item(4), Int.MAX_VALUE).apply {
-			uses = 0
-			addIngredient(creditController.item(32, 128.0))
-		},
-		MerchantRecipe(keyController.item(8), Int.MAX_VALUE).apply {
-			uses = 0
-			addIngredient(creditController.item(64, 128.0))
-		},
-
-		MerchantRecipe(attributeItem.asQuantity(3), Int.MAX_VALUE).apply {
-			uses = 0
-			addIngredient(creditController.item(1, 128.0))
-		},
-		MerchantRecipe(attributeItem.asQuantity(6), Int.MAX_VALUE).apply {
-			uses = 0
-			addIngredient(creditController.item(6, 128.0))
-		},
-		MerchantRecipe(attributeItem.asQuantity(9), Int.MAX_VALUE).apply {
-			uses = 0
-			addIngredient(creditController.item(9, 128.0))
-		},
-		MerchantRecipe(attributeItem.asQuantity(64), Int.MAX_VALUE).apply {
-			uses = 0
-			addIngredient(creditController.item(64, 128.0))
+		CurrencyBundle(getAttributeItem(3)) {
+			Credit to 128
 		},
 	)
 }
 
-fun getRewardsOffers(): List<MerchantRecipe> =
-	rewardConfig.rewards.filter { it.value.purchasable }.map { (_, reward) ->
-		val item = reward.toController().create()
-		MerchantRecipe(item.clone().apply { amount = 1 }, Int.MAX_VALUE).apply {
-			uses = 0
-			addIngredient(Key.toController().item(reward.keys))
-			addIngredient(Shard.toController().item(reward.shards))
-		}
+fun getRewardsOffers(): List<MerchantRecipe> = rewardConfig.rewards.filter { it.value.purchasable }.map { (_, reward) ->
+	val item = reward.toController().create()
+	CurrencyBundle(item) {
+		Key to reward.keys
+		Shard to reward.shards
 	}
+}
 
 fun getPotionsOffers(): List<MerchantRecipe> = potionConfig.potions.map { (_, config) ->
-	MerchantRecipe(config.toController().create().apply { amount = 1 }, Int.MAX_VALUE).apply {
-		uses = 0
-		addIngredient(Credit.toController().item(5))
+	val item = config.toController().create()
+	CurrencyBundle(item) {
+		Credit to 50
+	}
+}
+
+fun getTestOffers(): List<MerchantRecipe> = (0..50).map {
+	CurrencyBundle(ItemStack(Material.DIRT)) {
+		Credit to Random.nextDouble(0.0, 68_719_476_736.99)
 	}
 }

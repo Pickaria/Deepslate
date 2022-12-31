@@ -1,38 +1,105 @@
 rewards:
   common:
-    loot_table: minecraft:chests/end_city_treasure
+    loot_table: pickaria:rewards/common
     material: WHITE_SHULKER_BOX
     name: '<white>Récompense commune'
     keys: 1
     shards: 0
     description:
-      - '<gray>Conteneur de trésors de l''end.'
+      - '<gray>Conteneur de récompenses communes.'
     type: common
     purchasable: true
     advancement: pickaria:reward
 
   uncommon:
-    loot_table: minecraft:chests/buried_treasure
+    loot_table: pickaria:rewards/uncommon
     material: YELLOW_SHULKER_BOX
     name: '<yellow>Récompense peu commune'
-    keys: 5
+    keys: 10
     shards: 0
     description:
-      - '<gray>Conteneur de trésors de l''océan.'
+      - '<gray>Conteneur de récompenses peu communes.'
     type: uncommon
     purchasable: true
 
   rare:
-    loot_table: minecraft:chests/bastion_treasure
+    loot_table: pickaria:rewards/rare
     material: CYAN_SHULKER_BOX
     name: '<aqua>Récompense rare'
-    keys: 10
+    keys: 20
     shards: 1
     description:
-      - '<gray>Conteneur de trésors de bastion.'
+      - '<gray>Conteneur de récompenses rares.'
+      - '<gray>Peut contenir des Éclats de Pickarite.'
     type: rare
+    purchasable: true
+
+  epic:
+    type: epic
+    loot_table: pickaria:rewards/epic
+    material: PURPLE_SHULKER_BOX
+    name: '<dark_purple>Récompense épique'
+
+  redstone:
+    type: redstone
+    loot_table: pickaria:rewards/redstone
+    material: RED_SHULKER_BOX
+    name: '<red>Récompense de redstone'
+    purchasable: true
+    keys: 5
+    shards: 0
+    description:
+      - '<gray>Conteneur de récompenses pour les redstoneurs.'
+
+  plants:
+    type: plants
+    loot_table: pickaria:rewards/plants
+    material: GREEN_SHULKER_BOX
+    name: '<green>Récompense de plantes'
+    purchasable: true
+    keys: 5
+    shards: 0
+    description:
+      - '<gray>Conteneur de récompenses pour les fermiers.'
+
+  music:
+    type: music
+    loot_table: pickaria:rewards/music
+    material: BLUE_SHULKER_BOX
+    name: '<blue>Récompense de musiques'
+    purchasable: true
+    keys: 5
+    shards: 0
+    description:
+      - '<gray>Conteneur de récompenses pour les musiciens.'
+
+  test:
+    type: test
+    loot_table: pickaria:rewards/test
+    material: BLACK_SHULKER_BOX
+    name: '<aqua>TEST'
+    purchasable: true
+    keys: 64
+    shards: 64
+    description:
+      - '<aqua>TEST.'
 
 not_enough_money: 'Vous n''avez pas assez d''argent pour acheter cette récompense.'
 cant_purchase_reward: 'Cette récompense ne peut pas être achetée.'
 reward_close_sound: item.bundle.drop_contents
 reward_open_sound: item.bundle.insert
+daily_points_to_collect: 100
+daily_reward_is_ready: '<gray>Votre récompense du jour est prête à être récupérée.<newline>Faites <gold><click:run_command:/reward claim>/reward claim</click><gray> pour récupérer la récompense.'
+daily_reward_sound: entity.experience_orb.pickup
+reward_per_day: 1
+
+special_days:
+  12-28: epic
+  12-29: uncommon
+
+default_reward: common
+
+streak_rewards:
+  - redstone
+
+streak_reward_every: 7

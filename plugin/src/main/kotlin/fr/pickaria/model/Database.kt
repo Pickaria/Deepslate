@@ -3,6 +3,7 @@ package fr.pickaria.model
 import fr.pickaria.model.economy.BankAccounts
 import fr.pickaria.model.job.Jobs
 import fr.pickaria.model.market.Orders
+import fr.pickaria.model.reward.DailyRewards
 import org.bukkit.Bukkit
 import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.SchemaUtils
@@ -20,15 +21,15 @@ fun openDatabase(path: String): Database {
 
 	transaction {
 		SchemaUtils.create(
-			BankAccounts, Jobs, Orders
+			BankAccounts, Jobs, Orders, DailyRewards
 		)
 	}
 
 	transaction {
 		SchemaUtils.statementsRequiredToActualizeScheme(
-			BankAccounts, Jobs, Orders
+			BankAccounts, Jobs, Orders, DailyRewards
 		) + SchemaUtils.addMissingColumnsStatements(
-			BankAccounts, Jobs, Orders
+			BankAccounts, Jobs, Orders, DailyRewards
 		)
 	}.forEach {
 		transaction {

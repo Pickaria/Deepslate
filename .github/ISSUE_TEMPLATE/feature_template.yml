@@ -1,0 +1,28 @@
+name: Feature
+description: Request a new feature
+labels: [ "feature" ]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem
+      description: Give a situation where this feature would be useful.
+      placeholder: I want to decorate my house. / I don't want my chests to be stolen.
+    validations:
+      required: true
+  - type: textarea
+    id: description
+    attributes:
+      label: Description of the feature
+      description: Quickly describe the feature you want to see added to the server.
+      placeholder: Add mini blocks on the server. / Be able to lock chests from other players.
+    validations:
+      required: true
+  - type: textarea
+    id: technical_details
+    attributes:
+      label: Technical details
+      description: Tell us if you've got any idea on how to implement this in the plugin.
+      placeholder: Using the `BaseCommand` class, add a new command `/miniblock buy <block>` to buy a mini block.
+    validations:
+      required: false

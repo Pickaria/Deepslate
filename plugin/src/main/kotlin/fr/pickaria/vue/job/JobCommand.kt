@@ -60,7 +60,6 @@ class JobCommand : BaseCommand() {
 	}
 
 	@Subcommand("join")
-	@Syntax("[job name]")
 	@CommandCompletion("@jobtype")
 	@Description("Rejoint le métier indiqué.")
 	fun onJoin(sender: Player, job: Job) {
@@ -81,7 +80,6 @@ class JobCommand : BaseCommand() {
 	}
 
 	@Subcommand("leave")
-	@Syntax("[job name]")
 	@CommandCompletion("@ownjobs")
 	@Description("Quitte le métier indiqué.")
 	fun onLeave(sender: Player, job: Job) {
@@ -100,7 +98,6 @@ class JobCommand : BaseCommand() {
 	}
 
 	@Subcommand("ascent")
-	@Syntax("[job name]")
 	@CommandCompletion("@ownjobs")
 	@Description("Réalise une ascenssion dans le métier indiqué.")
 	fun onAscent(sender: Player, job: Job) {
@@ -118,7 +115,6 @@ class JobCommand : BaseCommand() {
 	}
 
 	@HelpCommand
-	@Syntax("")
 	fun doHelp(help: CommandHelp) {
 		help.showHelp()
 	}

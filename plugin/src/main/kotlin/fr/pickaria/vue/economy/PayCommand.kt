@@ -16,7 +16,6 @@ import org.bukkit.entity.Player
 @CommandPermission("pickaria.command.pay")
 class PayCommand : BaseCommand() {
 	@Default
-	@Syntax("<recipient> <amount>")
 	@CommandCompletion("@players")
 	fun onDefault(player: CommandSender, onlinePlayer: OnlinePlayer, amount: Double) {
 		if (amount <= 0.01) {

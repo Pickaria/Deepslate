@@ -1,5 +1,6 @@
 package fr.pickaria
 
+import com.github.shynixn.mccoroutine.bukkit.SuspendingJavaPlugin
 import fr.pickaria.controller.initCommandManager
 import fr.pickaria.controller.potion.runnable
 import fr.pickaria.model.openDatabase
@@ -12,24 +13,26 @@ import fr.pickaria.vue.chat.PlayerJoin
 import fr.pickaria.vue.economy.BalanceTopCommand
 import fr.pickaria.vue.economy.MoneyCommand
 import fr.pickaria.vue.economy.PayCommand
-import fr.pickaria.vue.home.foodMenu
 import fr.pickaria.vue.home.homeMenu
 import fr.pickaria.vue.job.ExperienceListener
 import fr.pickaria.vue.job.JobCommand
 import fr.pickaria.vue.job.jobMenu
 import fr.pickaria.vue.market.*
+import fr.pickaria.vue.miniblocks.MiniBlockCommand
+import fr.pickaria.vue.miniblocks.miniBlocksMenu
 import fr.pickaria.vue.potion.PotionCommand
 import fr.pickaria.vue.potion.PotionListener
 import fr.pickaria.vue.reforge.EnchantListeners
+import fr.pickaria.vue.reward.DailyRewardListeners
 import fr.pickaria.vue.reward.RewardCommand
 import fr.pickaria.vue.reward.RewardListeners
+import fr.pickaria.vue.reward.rewardMenu
 import fr.pickaria.vue.shard.GrindstoneListeners
 import fr.pickaria.vue.shop.PlaceShop
 import fr.pickaria.vue.shop.ShopListeners
 import org.bukkit.Bukkit
-import org.bukkit.plugin.java.JavaPlugin
 
-class Main : JavaPlugin() {
+class Main : SuspendingJavaPlugin() {
 	override fun onEnable() {
 		super.onEnable()
 		saveDefaultConfig()
@@ -70,7 +73,6 @@ class Main : JavaPlugin() {
 
 		// Deepslate
 		homeMenu()
-		foodMenu()
 
 		// Market
 		SellCommand.setupContext(manager.commandCompletions)
@@ -95,11 +97,18 @@ class Main : JavaPlugin() {
 		RewardCommand.setupContext(manager.commandContexts, manager.commandCompletions)
 		manager.registerCommand(RewardCommand())
 		server.pluginManager.registerEvents(RewardListeners(), this)
+		server.pluginManager.registerEvents(DailyRewardListeners(), this)
+		rewardMenu()
 
 		// Jobs
 		JobCommand.setupContext(manager)
 		manager.registerCommand(JobCommand())
 		jobMenu()
 		server.pluginManager.registerEvents(ExperienceListener(this), this)
+
+		// Miniblocks
+		miniBlocksMenu()
+		MiniBlockCommand.setupContext(manager)
+		manager.registerCommand(MiniBlockCommand())
 	}
 }

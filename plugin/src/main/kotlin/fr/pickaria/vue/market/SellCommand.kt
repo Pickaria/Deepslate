@@ -98,7 +98,6 @@ class SellCommand : BaseCommand() {
 	}
 
 	@Default
-	@Syntax("<material> <quantity> <sell price>")
 	@CommandCompletion("@inventory @sellcount @sellprices")
 	fun onSell(
 		sender: Player,

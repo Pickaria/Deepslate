@@ -13,6 +13,7 @@ import org.bukkit.Material
 import org.bukkit.OfflinePlayer
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
+import org.bukkit.inventory.meta.ItemMeta
 import java.security.InvalidParameterException
 import kotlin.math.max
 import kotlin.math.min
@@ -115,18 +116,35 @@ internal fun buy(player: Player, material: Material, amount: Int): Int {
 	return info.totalAmount
 }
 
-internal fun giveItems(player: Player, material: Material, amountToGive: Int) {
+fun overflowStacks(material: Material, amountToGive: Int, meta: ((ItemMeta) -> Unit)? = null): List<ItemStack> {
+	val stacks = mutableListOf<ItemStack>()
 	if (material.maxStackSize == 0) {
 		throw InvalidParameterException("Material has a maxStackSize of 0.")
 	}
 	var restToGive = amountToGive
-	val item = ItemStack(material)
+	val item = ItemStack(material).apply {
+		editMeta {
+			meta?.invoke(it)
+		}
+	}
 
 	while (restToGive > 0) {
 		val amount = min(restToGive, material.maxStackSize)
-		player.give(item.asQuantity(amount))
+		stacks += item.asQuantity(amount)
 		restToGive -= material.maxStackSize
 	}
+
+	return stacks
+}
+
+@Deprecated(
+	"", ReplaceWith(
+		"player.give(*overflowStacks(material, amountToGive).toTypedArray())",
+		"fr.pickaria.shared.give"
+	)
+)
+internal fun giveItems(player: Player, material: Material, amountToGive: Int) {
+	player.give(*overflowStacks(material, amountToGive).toTypedArray())
 }
 
 /**

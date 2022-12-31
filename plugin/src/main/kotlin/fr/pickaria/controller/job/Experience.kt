@@ -3,6 +3,7 @@ package fr.pickaria.controller.job
 import fr.pickaria.Main
 import fr.pickaria.controller.job.events.JobLevelUpEvent
 import fr.pickaria.controller.potion.hasActivePotionEffect
+import fr.pickaria.controller.reward.addDailyPoint
 import fr.pickaria.model.job.Job
 import fr.pickaria.model.job.JobModel
 import fr.pickaria.model.job.LevelUpType
@@ -28,6 +29,7 @@ private val bossBarsTasks: ConcurrentHashMap<BossBar, BukkitTask> = ConcurrentHa
  */
 private fun addExperience(player: Player, job: Job, exp: Int): Pair<Int, Double>? =
 	JobModel.get(player.uniqueId, job.type)?.let {
+		player.addDailyPoint(exp)
 		val potion = PotionType.JOB_EXPERIENCE.toPotion()
 		val active = hasActivePotionEffect(potion)
 

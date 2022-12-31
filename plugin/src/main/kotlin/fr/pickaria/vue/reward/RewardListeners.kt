@@ -3,6 +3,7 @@ package fr.pickaria.vue.reward
 import fr.pickaria.controller.artefact.grantAdvancement
 import fr.pickaria.controller.economy.currency
 import fr.pickaria.controller.economy.deposit
+import fr.pickaria.controller.economy.isCurrency
 import fr.pickaria.controller.economy.silentDeposit
 import fr.pickaria.controller.reward.RewardHolder
 import fr.pickaria.model.economy.Currency
@@ -14,6 +15,7 @@ import net.kyori.adventure.text.Component
 import org.bukkit.Bukkit
 import org.bukkit.OfflinePlayer
 import org.bukkit.entity.Player
+import org.bukkit.event.Event
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.inventory.InventoryClickEvent
@@ -80,6 +82,10 @@ internal class RewardListeners : Listener {
 			if (inventory.holder is RewardHolder) {
 				currentItem?.let {
 					(whoClicked as Player) deposit it
+					if (it.isCurrency()) {
+						isCancelled = true
+						result = Event.Result.DENY
+					}
 				}
 			}
 		}

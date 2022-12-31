@@ -57,7 +57,6 @@ class BuyCommand : BaseCommand() {
 	}
 
 	@Default
-	@Syntax("<material> [quantity=1]")
 	@CommandCompletion("@selling_material @buy_amount")
 	fun onDefault(
 		sender: Player,

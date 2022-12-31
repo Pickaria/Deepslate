@@ -4,7 +4,7 @@ plugins {
 	kotlin("jvm")
 	kotlin("plugin.serialization")
 	id("com.github.johnrengelman.shadow")
-
+	id("fr.pickaria.redstone")
 }
 
 group = "fr.pickaria"
@@ -15,10 +15,14 @@ dependencies {
 	compileOnly(libs.kotlin.stdlib)
 	compileOnly(libs.kotlin.reflect)
 	compileOnly(libs.kotlinx.datetime)
+	compileOnly(libs.kotlinx.serialization.json)
 
 	compileOnly(libs.paper)
 	compileOnly(libs.vault)
 	compileOnly(libs.acf)
+	compileOnly(libs.mccoroutine.api)
+	compileOnly(libs.mccoroutine.core)
+	compileOnly(libs.towny)
 
 	compileOnly(libs.exposed.core)
 	compileOnly(libs.exposed.dao)
@@ -32,14 +36,16 @@ dependencies {
 	compileOnly(libs.kaml)
 }
 
-tasks.test {
-	useJUnitPlatform()
-}
-
 tasks.withType<KotlinCompile> {
 	kotlinOptions.jvmTarget = "17"
 }
 
-tasks.shadowJar {
-	destinationDirectory.set(file("$rootDir/server/plugins")) // Output to test server's plugins folder
+tasks {
+	shadowJar {
+		destinationDirectory.set(file("$rootDir/server/plugins")) // Output to test server's plugins folder
+	}
+
+	compileKotlin {
+		kotlinOptions.javaParameters = true
+	}
 }

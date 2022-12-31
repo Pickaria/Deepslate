@@ -1,12 +1,9 @@
 package fr.pickaria.model.home
 
 import fr.pickaria.menu.Entry
-import net.kyori.adventure.text.Component
-import org.bukkit.Material
+import org.bukkit.inventory.ItemStack
 
-internal data class HomeEntry(
-	val material: Material,
-	val title: Component,
-	val lore: MutableList<Component>,
+data class HomeEntry(
+	val itemStack: ItemStack,
 	val entry: Entry,
 )
