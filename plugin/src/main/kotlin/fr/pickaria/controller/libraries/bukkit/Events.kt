@@ -1,4 +1,4 @@
-package fr.pickaria.controller.libraries.events
+package fr.pickaria.controller.libraries.bukkit
 
 import org.bukkit.event.Event
 import org.bukkit.event.EventPriority

@@ -3,13 +3,14 @@ package fr.pickaria
 import com.github.shynixn.mccoroutine.bukkit.SuspendingJavaPlugin
 import fr.pickaria.controller.economy.initVaultCurrency
 import fr.pickaria.controller.libraries.acf.enumCompletion
+import fr.pickaria.controller.libraries.acf.initCommandManager
 import fr.pickaria.controller.libraries.acf.limitCondition
-import fr.pickaria.controller.libraries.events.registerEvents
-import fr.pickaria.controller.libraries.initCommandManager
-import fr.pickaria.controller.libraries.registerCommands
+import fr.pickaria.controller.libraries.acf.registerCommands
+import fr.pickaria.controller.libraries.bukkit.registerEvents
 import fr.pickaria.controller.potion.runnable
 import fr.pickaria.model.openDatabase
 import fr.pickaria.model.potion.PotionType
+import fr.pickaria.model.rank.rankListener
 import fr.pickaria.model.shop.ShopOffer
 import fr.pickaria.model.town.BannerType
 import fr.pickaria.vue.PingCommand
@@ -32,8 +33,8 @@ import fr.pickaria.vue.miniblocks.MiniBlockCommand
 import fr.pickaria.vue.miniblocks.miniBlocksMenu
 import fr.pickaria.vue.potion.PotionCommand
 import fr.pickaria.vue.potion.PotionListener
-import fr.pickaria.vue.premium.PremiumCommand
-import fr.pickaria.vue.premium.premiumMenu
+import fr.pickaria.vue.rank.RankCommand
+import fr.pickaria.vue.rank.rankMenu
 import fr.pickaria.vue.reforge.EnchantListeners
 import fr.pickaria.vue.reward.DailyRewardListeners
 import fr.pickaria.vue.reward.RewardCommand
@@ -83,6 +84,7 @@ class Main : SuspendingJavaPlugin() {
 		registerEvents<SmithingListeners>()
 		registerEvents<Trader>()
 		registerEvents<Wizard>()
+		rankListener()
 
 		// Command completions
 		manager.enumCompletion<BannerType>("banner_type", "Cette bannière n'existe pas.")
@@ -96,7 +98,8 @@ class Main : SuspendingJavaPlugin() {
 		MiniBlockCommand.setupContext(manager)
 		RewardCommand.setupContext(manager.commandContexts, manager.commandCompletions)
 		SellCommand.setupContext(manager.commandCompletions)
-		PremiumCommand.setupContext(manager)
+		RankCommand.setupContext(manager)
+		MoneyCommand.setupContext(manager)
 		manager.limitCondition()
 
 		// Commands
@@ -114,7 +117,7 @@ class Main : SuspendingJavaPlugin() {
 			PingCommand(),
 			PlaceShop(),
 			PotionCommand(),
-			PremiumCommand(),
+			RankCommand(),
 			RewardCommand(),
 			SellCommand(),
 		)
@@ -127,7 +130,7 @@ class Main : SuspendingJavaPlugin() {
 		ownOrdersMenu()
 		rewardMenu()
 		townMenu()
-		premiumMenu()
+		rankMenu()
 
 		// Scheduler
 		Bukkit.getScheduler().runTaskTimerAsynchronously(this, runnable, 0, 20)

@@ -1,6 +1,5 @@
 package fr.pickaria.vue.reward
 
-import fr.pickaria.controller.artefact.grantAdvancement
 import fr.pickaria.controller.economy.currency
 import fr.pickaria.controller.economy.deposit
 import fr.pickaria.controller.economy.isCurrency
@@ -11,6 +10,7 @@ import fr.pickaria.model.economy.toController
 import fr.pickaria.model.reward.rewardConfig
 import fr.pickaria.model.reward.rewardNamespace
 import fr.pickaria.shared.give
+import fr.pickaria.shared.grantAdvancement
 import net.kyori.adventure.text.Component
 import org.bukkit.Bukkit
 import org.bukkit.OfflinePlayer

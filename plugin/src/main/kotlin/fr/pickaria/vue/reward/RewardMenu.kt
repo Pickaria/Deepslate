@@ -11,6 +11,8 @@ import fr.pickaria.model.reward.toController
 import fr.pickaria.shared.GlowEnchantment
 import kotlinx.datetime.toKotlinLocalDate
 import net.kyori.adventure.text.Component
+import net.kyori.adventure.text.format.NamedTextColor
+import net.kyori.adventure.text.format.TextDecoration
 import org.bukkit.Material
 import org.bukkit.inventory.ItemFlag
 import org.bukkit.inventory.meta.BundleMeta
@@ -25,10 +27,22 @@ private val formatter = DateTimeFormatter.ofPattern("EEEE d MMMM")
 	.withLocale(Locale.FRENCH)
 
 fun rewardMenu() = menu("reward") {
-	title = Component.text("Récompenses")
+	val playerReward = opener.dailyReward
+
+	val remaining = playerReward.remainingToCollect()
+	val remainingMessage = if (remaining > 1) {
+		Component.text("($remaining restantes)")
+	} else {
+		Component.text("($remaining restante)")
+	}
+
+	title = Component.text("Récompenses", NamedTextColor.DARK_BLUE, TextDecoration.BOLD)
+		.appendSpace()
+		.append(
+			remainingMessage.color(NamedTextColor.DARK_GRAY).decoration(TextDecoration.BOLD, TextDecoration.State.FALSE)
+		)
 	rows = 4
 
-	val playerReward = opener.dailyReward
 	val field = WeekFields.of(Locale.FRANCE).dayOfWeek()
 	val today = LocalDateTime.now()
 	val firstDayOfWeek = today.with(field, 1)

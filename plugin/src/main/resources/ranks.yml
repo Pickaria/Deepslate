@@ -1,40 +1,43 @@
+owned_message: <dark_green>✔<gray> Possédé
+not_owned_message: <dark_red>✖<gray> Non possédé
+
 ranks:
   basic:
     name: <yellow>Grade Basique
-    permission: group.basic
     duration: 60 # Currently in seconds
     price: 1
     description:
-      - <dark_green>✔<gray> Prefix
+      - <dark_green>✔<gray> Prefix "[<yellow>BASIC</yellow>]"
       - <dark_green>✔<gray> Message de connexion
       - <dark_green>✔<gray> -25% de points requis sur
       - <gray>   les récompenses journalières
     material: IRON_INGOT
+    group_name: basic
 
   elite:
     name: <dark_purple>Grade Élite
-    permission: group.elite
     duration: 60 # Currently in seconds
     price: 2
     description:
-      - <dark_green>✔<gray> Prefix
+      - <dark_green>✔<gray> Prefix "[<dark_purple>ELITE</dark_purple>]"
       - <dark_green>✔<gray> Message de connexion
       - <dark_green>✔<gray> -25% de points requis sur
       - <gray>   les récompenses journalières
       - <dark_green>✔<gray> Recyclage des artefacts efficace
       - <dark_green>✔<gray> Elytra dans le lobby
     material: DIAMOND
+    group_name: elite
 
   legend:
     name: <rainbow>Grade Légende
-    permission: group.legend
     duration: 60 # Currently in seconds
     price: 3
     description:
-      - <dark_green>✔<gray> Prefix
+      - <dark_green>✔<gray> Prefix "[<rainbow>LEGENDE</rainbow>]"
       - <dark_green>✔<gray> Message de connexion
       - <dark_green>✔<gray> -25% de points requis sur
       - <gray>   les récompenses journalières
       - <dark_green>✔<gray> Recyclage des artefacts efficace
       - <dark_green>✔<gray> Elytra dans le lobby
     material: NETHERITE_INGOT
+    group_name: legend

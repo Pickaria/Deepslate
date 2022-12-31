@@ -1,6 +1,6 @@
 package fr.pickaria.model.advancements
 
-import fr.pickaria.controller.artefact.grantAdvancement
+import fr.pickaria.shared.grantAdvancement
 import org.bukkit.Bukkit
 import org.bukkit.NamespacedKey
 import org.bukkit.entity.Player

@@ -143,6 +143,8 @@ class CurrencyController(val model: Currency) {
 		"${formatter.format(amount)} ${model.namePlural}"
 	}
 
+	fun format(amount: Int): String = format(amount.toDouble())
+
 	fun message(player: Player, amount: Double) {
 		MiniMessage(model.collectMessage) {
 			"amount" to format(amount)

@@ -1,10 +1,10 @@
 package fr.pickaria.vue.reforge
 
-import fr.pickaria.controller.artefact.grantAdvancement
 import fr.pickaria.controller.reforge.*
 import fr.pickaria.model.advancements.CustomAdvancement
 import fr.pickaria.model.reforge.reforgeConfig
 import fr.pickaria.shared.GlowEnchantment
+import fr.pickaria.shared.grantAdvancement
 import org.bukkit.attribute.Attribute
 import org.bukkit.enchantments.EnchantmentOffer
 import org.bukkit.event.EventHandler

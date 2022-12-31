@@ -1,4 +1,4 @@
-package fr.pickaria.controller.libraries
+package fr.pickaria.controller.libraries.acf
 
 import co.aikar.commands.BaseCommand
 import co.aikar.commands.BukkitCommandManager

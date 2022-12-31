@@ -50,8 +50,8 @@ class RewardCommand : BaseCommand() {
 			throw ConditionFailedException(rewardConfig.cantPurchaseReward)
 		}
 
-		val totalKeys = (reward.keys * amount).toDouble()
-		val totalShards = (reward.shards * amount).toDouble()
+		val totalKeys = (reward.keys * amount)
+		val totalShards = (reward.shards * amount)
 
 		if (!sender.has(Key, totalKeys) || !sender.has(Shard, totalShards)) {
 			throw ConditionFailedException(rewardConfig.notEnoughMoney)

@@ -1,4 +1,4 @@
-package fr.pickaria.controller.libraries.events
+package fr.pickaria.controller.libraries.bukkit
 
 import org.bukkit.Bukkit
 import org.bukkit.event.Listener
