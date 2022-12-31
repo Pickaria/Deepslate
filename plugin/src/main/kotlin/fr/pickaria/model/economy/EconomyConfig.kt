@@ -1,8 +1,6 @@
 package fr.pickaria.model.economy
 
-import com.charleskorn.kaml.Yaml
-import com.charleskorn.kaml.decodeFromStream
-import fr.pickaria.model.getResourceFileStream
+import fr.pickaria.model.config
 import fr.pickaria.model.serializers.MiniMessageSerializer
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
@@ -68,4 +66,4 @@ data class EconomyConfig(
 	val defaultAccount: String,
 )
 
-val economyConfig = Yaml.default.decodeFromStream<EconomyConfig>(getResourceFileStream("economy.yml"))
+val economyConfig = config<EconomyConfig>("economy.yml")

@@ -1,8 +1,6 @@
 package fr.pickaria.model.market
 
-import com.charleskorn.kaml.Yaml
-import com.charleskorn.kaml.decodeFromStream
-import fr.pickaria.model.getResourceFileStream
+import fr.pickaria.model.config
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
@@ -16,4 +14,4 @@ data class MarketConfig(
 	val minimumPrice: Double,
 )
 
-val marketConfig = Yaml.default.decodeFromStream<MarketConfig>(getResourceFileStream("market.yml"))
+val marketConfig = config<MarketConfig>("market.yml")

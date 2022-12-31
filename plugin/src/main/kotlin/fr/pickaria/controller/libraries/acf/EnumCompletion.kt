@@ -1,14 +1,13 @@
-package fr.pickaria.controller.acf
+package fr.pickaria.controller.libraries.acf
 
+import co.aikar.commands.BukkitCommandManager
 import co.aikar.commands.ConditionFailedException
-import co.aikar.commands.PaperCommandManager
 
-inline fun <reified T : Enum<T>> enumCompletion(
-	manager: PaperCommandManager,
+inline fun <reified T : Enum<T>> BukkitCommandManager.enumCompletion(
 	completionTag: String,
 	exceptionMessage: String = "Invalid argument provided."
 ) {
-	manager.commandContexts.registerContext(T::class.java) {
+	commandContexts.registerContext(T::class.java) {
 		val arg: String = it.popFirstArg()
 
 		try {
@@ -18,7 +17,7 @@ inline fun <reified T : Enum<T>> enumCompletion(
 		}
 	}
 
-	manager.commandCompletions.registerCompletion(completionTag) {
+	commandCompletions.registerCompletion(completionTag) {
 		enumValues<T>().map { it.name.lowercase() }
 	}
 }

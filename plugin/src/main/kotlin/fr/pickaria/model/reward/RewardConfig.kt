@@ -1,8 +1,6 @@
 package fr.pickaria.model.reward
 
-import com.charleskorn.kaml.Yaml
-import com.charleskorn.kaml.decodeFromStream
-import fr.pickaria.model.getResourceFileStream
+import fr.pickaria.model.config
 import fr.pickaria.model.serializers.MiniMessageSerializer
 import fr.pickaria.model.serializers.SoundSerializer
 import kotlinx.serialization.SerialName
@@ -56,4 +54,4 @@ data class RewardConfig(
 	val defaultReward: String,
 )
 
-val rewardConfig = Yaml.default.decodeFromStream<RewardConfig>(getResourceFileStream("reward.yml"))
+val rewardConfig = config<RewardConfig>("reward.yml")

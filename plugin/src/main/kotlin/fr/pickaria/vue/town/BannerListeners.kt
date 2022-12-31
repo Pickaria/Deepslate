@@ -4,6 +4,7 @@ import com.palmergames.bukkit.towny.TownyAPI
 import com.palmergames.bukkit.towny.TownyUniverse
 import com.palmergames.bukkit.towny.command.TownCommand
 import com.palmergames.bukkit.towny.exceptions.TownyException
+import fr.pickaria.Main
 import fr.pickaria.controller.town.getTownBook
 import fr.pickaria.controller.town.isTownBanner
 import fr.pickaria.controller.town.townId
@@ -33,19 +34,15 @@ import kotlin.math.cos
 import kotlin.math.sin
 
 
-class BannerListeners(private val plugin: JavaPlugin) : Listener {
-	private fun showTitle(target: Audience, text: String, subtitle: Component?) {
-		val mainTitle: Component = Component.text(text, NamedTextColor.GOLD)
+class BannerListeners() : Listener {
+	private val plugin = JavaPlugin.getProvidingPlugin(Main::class.java)
 
-		// Creates a simple title with the default values for fade-in, stay on screen and fade-out durations
-		val title: Title = subtitle?.let { Title.title(mainTitle, it) } ?: Title.title(mainTitle, Component.text(""))
-
-		// Send the title to your audience
-		target.showTitle(title)
+	private fun Audience.showTitle(title: Component, subtitle: Component = Component.empty()) {
+		showTitle(Title.title(title, subtitle))
 	}
 
 	private fun townCreatedAnimation(location: Location, player: Player, name: Component) {
-		showTitle(player, "Ville fondée", name)
+		player.showTitle(Component.text("Ville fondée", NamedTextColor.GOLD), name)
 		player.playSound(
 			Sound.sound(
 				Key.key("ui.toast.challenge_complete"),

@@ -1,13 +1,15 @@
-package fr.pickaria.controller
+package fr.pickaria.controller.libraries
 
+import co.aikar.commands.BaseCommand
+import co.aikar.commands.BukkitCommandManager
 import co.aikar.commands.MessageType
 import co.aikar.commands.PaperCommandManager
 import org.bukkit.ChatColor
 import org.bukkit.plugin.java.JavaPlugin
 import java.util.*
 
-fun initCommandManager(plugin: JavaPlugin): PaperCommandManager {
-	val manager = PaperCommandManager(plugin)
+fun JavaPlugin.initCommandManager(): PaperCommandManager {
+	val manager = PaperCommandManager(this)
 
 	manager.enableUnstableAPI("brigadier");
 	manager.enableUnstableAPI("help")
@@ -20,4 +22,10 @@ fun initCommandManager(plugin: JavaPlugin): PaperCommandManager {
 	manager.setFormat(MessageType.INFO, ChatColor.BLUE, ChatColor.BLUE, ChatColor.BLUE)
 
 	return manager
+}
+
+fun BukkitCommandManager.registerCommands(vararg commands: BaseCommand) {
+	commands.forEach {
+		registerCommand(it, false);
+	}
 }

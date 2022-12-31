@@ -1,10 +1,12 @@
 package fr.pickaria
 
 import com.github.shynixn.mccoroutine.bukkit.SuspendingJavaPlugin
-import fr.pickaria.controller.acf.enumCompletion
-import fr.pickaria.controller.acf.limitCondition
 import fr.pickaria.controller.economy.initVaultCurrency
-import fr.pickaria.controller.initCommandManager
+import fr.pickaria.controller.libraries.acf.enumCompletion
+import fr.pickaria.controller.libraries.acf.limitCondition
+import fr.pickaria.controller.libraries.events.registerEvents
+import fr.pickaria.controller.libraries.initCommandManager
+import fr.pickaria.controller.libraries.registerCommands
 import fr.pickaria.controller.potion.runnable
 import fr.pickaria.model.openDatabase
 import fr.pickaria.model.potion.PotionType
@@ -22,12 +24,16 @@ import fr.pickaria.vue.economy.PayCommand
 import fr.pickaria.vue.home.homeMenu
 import fr.pickaria.vue.job.ExperienceListener
 import fr.pickaria.vue.job.JobCommand
+import fr.pickaria.vue.job.JobListener
 import fr.pickaria.vue.job.jobMenu
+import fr.pickaria.vue.job.jobs.*
 import fr.pickaria.vue.market.*
 import fr.pickaria.vue.miniblocks.MiniBlockCommand
 import fr.pickaria.vue.miniblocks.miniBlocksMenu
 import fr.pickaria.vue.potion.PotionCommand
 import fr.pickaria.vue.potion.PotionListener
+import fr.pickaria.vue.premium.PremiumCommand
+import fr.pickaria.vue.premium.premiumMenu
 import fr.pickaria.vue.reforge.EnchantListeners
 import fr.pickaria.vue.reward.DailyRewardListeners
 import fr.pickaria.vue.reward.RewardCommand
@@ -40,13 +46,8 @@ import fr.pickaria.vue.town.BannerCommand
 import fr.pickaria.vue.town.BannerListeners
 import fr.pickaria.vue.town.BookListeners
 import fr.pickaria.vue.town.townMenu
-import kotlinx.serialization.json.Json
 import org.bukkit.Bukkit
 
-val json = Json {
-	prettyPrint = false
-	useArrayPolymorphism = true
-}
 
 class Main : SuspendingJavaPlugin() {
 	override fun onEnable() {
@@ -54,34 +55,39 @@ class Main : SuspendingJavaPlugin() {
 		saveDefaultConfig()
 
 		enableBedrockLibrary()
-		initVaultCurrency(this)
+		initVaultCurrency()
 
-
-		val manager = initCommandManager(this)
+		val manager = initCommandManager()
 		openDatabase(dataFolder.absolutePath + "/database")
 
 		// Events
-		server.pluginManager.let {
-			it.registerEvents(ArtefactListeners(), this)
-			it.registerEvents(BannerListeners(this), this)
-			it.registerEvents(BookListeners(), this)
-			it.registerEvents(ChatFormat(), this)
-			it.registerEvents(DailyRewardListeners(), this)
-			it.registerEvents(EnchantListeners(), this)
-			it.registerEvents(ExperienceListener(this), this)
-			it.registerEvents(GrindstoneListeners(), this)
-			it.registerEvents(Motd(), this)
-			it.registerEvents(PlayerJoin(), this)
-			it.registerEvents(PotionListener(), this)
-			it.registerEvents(RewardListeners(), this)
-			it.registerEvents(ShopListeners(), this)
-			it.registerEvents(SmithingListeners(), this)
-		}
+		registerEvents<Alchemist>()
+		registerEvents<ArtefactListeners>()
+		registerEvents<BannerListeners>()
+		registerEvents<BookListeners>()
+		registerEvents<Breeder>()
+		registerEvents<ChatFormat>()
+		registerEvents<DailyRewardListeners>()
+		registerEvents<EnchantListeners>()
+		registerEvents<ExperienceListener>()
+		registerEvents<Farmer>()
+		registerEvents<GrindstoneListeners>()
+		registerEvents<Hunter>()
+		registerEvents<JobListener>()
+		registerEvents<Miner>()
+		registerEvents<Motd>()
+		registerEvents<PlayerJoin>()
+		registerEvents<PotionListener>()
+		registerEvents<RewardListeners>()
+		registerEvents<ShopListeners>()
+		registerEvents<SmithingListeners>()
+		registerEvents<Trader>()
+		registerEvents<Wizard>()
 
 		// Command completions
-		enumCompletion<BannerType>(manager, "banner_type", "Cette bannière n'existe pas.")
-		enumCompletion<PotionType>(manager, "potion_type", "Cette potion n'existe pas.")
-		enumCompletion<ShopOffer>(manager, "shop_type", "Ce magasin n'existe pas.")
+		manager.enumCompletion<BannerType>("banner_type", "Cette bannière n'existe pas.")
+		manager.enumCompletion<PotionType>("potion_type", "Cette potion n'existe pas.")
+		manager.enumCompletion<ShopOffer>("shop_type", "Ce magasin n'existe pas.")
 
 		// Command contexts
 		BuyCommand.setupContext(manager)
@@ -90,26 +96,28 @@ class Main : SuspendingJavaPlugin() {
 		MiniBlockCommand.setupContext(manager)
 		RewardCommand.setupContext(manager.commandContexts, manager.commandCompletions)
 		SellCommand.setupContext(manager.commandCompletions)
-		//TownCommand.setupContext(manager)
-		limitCondition(manager)
+		PremiumCommand.setupContext(manager)
+		manager.limitCondition()
 
 		// Commands
-		manager.registerCommand(BalanceTopCommand())
-		manager.registerCommand(BannerCommand())
-		manager.registerCommand(BuyCommand())
-		manager.registerCommand(CancelOrderCommand())
-		manager.registerCommand(FakeSellCommand())
-		manager.registerCommand(JobCommand())
-		manager.registerCommand(MarketCommand())
-		manager.registerCommand(MiniBlockCommand())
-		manager.registerCommand(MoneyCommand())
-		manager.registerCommand(PayCommand())
-		manager.registerCommand(PingCommand())
-		manager.registerCommand(PlaceShop())
-		manager.registerCommand(PotionCommand())
-		manager.registerCommand(RewardCommand())
-		manager.registerCommand(SellCommand())
-		// manager.registerCommand(TownCommand())
+		manager.registerCommands(
+			BalanceTopCommand(),
+			BannerCommand(),
+			BuyCommand(),
+			CancelOrderCommand(),
+			FakeSellCommand(),
+			JobCommand(),
+			MarketCommand(),
+			MiniBlockCommand(),
+			MoneyCommand(),
+			PayCommand(),
+			PingCommand(),
+			PlaceShop(),
+			PotionCommand(),
+			PremiumCommand(),
+			RewardCommand(),
+			SellCommand(),
+		)
 
 		// Menus
 		homeMenu()
@@ -119,6 +127,7 @@ class Main : SuspendingJavaPlugin() {
 		ownOrdersMenu()
 		rewardMenu()
 		townMenu()
+		premiumMenu()
 
 		// Scheduler
 		Bukkit.getScheduler().runTaskTimerAsynchronously(this, runnable, 0, 20)

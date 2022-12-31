@@ -1,8 +1,6 @@
 package fr.pickaria.model.miniblocks
 
-import com.charleskorn.kaml.Yaml
-import com.charleskorn.kaml.decodeFromStream
-import fr.pickaria.model.getResourceFileStream
+import fr.pickaria.model.config
 import fr.pickaria.model.serializers.UUIDSerializer
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
@@ -32,4 +30,4 @@ data class MiniBlocksConfig(
 	}
 }
 
-val miniBlocksConfig = Yaml.default.decodeFromStream<MiniBlocksConfig>(getResourceFileStream("miniblocks.yml"))
+val miniBlocksConfig = config<MiniBlocksConfig>("miniblocks.yml")

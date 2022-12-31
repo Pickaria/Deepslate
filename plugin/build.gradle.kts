@@ -24,6 +24,7 @@ dependencies {
 	compileOnly(libs.mccoroutine.api)
 	compileOnly(libs.mccoroutine.core)
 	compileOnly(libs.towny)
+	compileOnly(libs.luckperms)
 
 	compileOnly(libs.exposed.core)
 	compileOnly(libs.exposed.dao)

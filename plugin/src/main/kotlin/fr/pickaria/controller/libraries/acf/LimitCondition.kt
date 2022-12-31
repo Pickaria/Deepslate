@@ -1,10 +1,10 @@
-package fr.pickaria.controller.acf
+package fr.pickaria.controller.libraries.acf
 
+import co.aikar.commands.BukkitCommandManager
 import co.aikar.commands.ConditionFailedException
-import co.aikar.commands.PaperCommandManager
 
-fun limitCondition(manager: PaperCommandManager) {
-	manager.commandConditions.addCondition(
+fun BukkitCommandManager.limitCondition() {
+	commandConditions.addCondition(
 		Int::class.java,
 		"limits"
 	) { context, _, value ->

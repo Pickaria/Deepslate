@@ -1,8 +1,6 @@
 package fr.pickaria.model.chat
 
-import com.charleskorn.kaml.Yaml
-import com.charleskorn.kaml.decodeFromStream
-import fr.pickaria.model.getResourceFileStream
+import fr.pickaria.model.config
 import fr.pickaria.model.serializers.MiniMessageSerializer
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
@@ -21,4 +19,4 @@ data class ChatConfig(
 	val messageOfTheDay: List<String>,
 )
 
-val chatConfig = Yaml.default.decodeFromStream<ChatConfig>(getResourceFileStream("chat.yml"))
+val chatConfig = config<ChatConfig>("chat.yml")

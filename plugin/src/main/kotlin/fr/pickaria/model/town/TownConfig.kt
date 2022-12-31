@@ -1,8 +1,6 @@
 package fr.pickaria.model.town
 
-import com.charleskorn.kaml.Yaml
-import com.charleskorn.kaml.decodeFromStream
-import fr.pickaria.model.getResourceFileStream
+import fr.pickaria.model.config
 import fr.pickaria.model.serializers.MiniMessageSerializer
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
@@ -81,4 +79,4 @@ data class TownConfig(
 	val kickSuccess: String,
 )
 
-val townConfig = Yaml.default.decodeFromStream<TownConfig>(getResourceFileStream("town.yml"))
+val townConfig = config<TownConfig>("town.yml")

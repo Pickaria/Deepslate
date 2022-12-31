@@ -1,5 +1,7 @@
 package fr.pickaria.model
 
+import com.charleskorn.kaml.Yaml
+import com.charleskorn.kaml.decodeFromStream
 import fr.pickaria.Main
 import org.bukkit.plugin.java.JavaPlugin
 import java.io.File
@@ -22,3 +24,5 @@ fun getResourceFileStream(filename: String): FileInputStream {
 
 	return customConfigFile.inputStream()
 }
+
+inline fun <reified T> config(filename: String) = Yaml.default.decodeFromStream<T>(getResourceFileStream(filename))

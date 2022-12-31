@@ -1,4 +1,4 @@
-package fr.pickaria.controller.acf
+package fr.pickaria.controller.libraries.acf
 
 import co.aikar.commands.InvalidCommandArgument
 import fr.pickaria.model.economy.economyConfig

@@ -1,8 +1,6 @@
 package fr.pickaria.model.reforge
 
-import com.charleskorn.kaml.Yaml
-import com.charleskorn.kaml.decodeFromStream
-import fr.pickaria.model.getResourceFileStream
+import fr.pickaria.model.config
 import fr.pickaria.model.serializers.SoundSerializer
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
@@ -37,4 +35,4 @@ data class ReforgeConfig(
 	}
 }
 
-val reforgeConfig = Yaml.default.decodeFromStream<ReforgeConfig>(getResourceFileStream("reforge.yml"))
+val reforgeConfig = config<ReforgeConfig>("reforge.yml")
