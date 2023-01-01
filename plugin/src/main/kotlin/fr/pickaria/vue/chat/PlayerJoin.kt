@@ -2,9 +2,6 @@ package fr.pickaria.vue.chat
 
 import fr.pickaria.model.chat.chatConfig
 import fr.pickaria.shared.updateDisplayName
-import net.kyori.adventure.text.Component
-import net.kyori.adventure.text.format.NamedTextColor
-import net.kyori.adventure.text.format.TextDecoration
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.player.PlayerAdvancementDoneEvent
@@ -24,12 +21,7 @@ internal class PlayerJoin : Listener {
 				joinMessage(chatConfig.join.append(player.displayName()))
 			}
 
-			val header = Component.text("Pickaria", NamedTextColor.GOLD, TextDecoration.BOLD)
-				.append(Component.newline())
-				.append(Component.text("PLAY.PICKARIA.FR", NamedTextColor.WHITE, TextDecoration.BOLD))
-				.append(Component.newline())
-
-			player.sendPlayerListHeader(header)
+			player.updateTabHeaderAndFooter()
 		}
 	}
 

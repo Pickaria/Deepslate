@@ -4,6 +4,9 @@ import co.aikar.commands.*
 import co.aikar.commands.annotation.*
 import fr.pickaria.controller.economy.has
 import fr.pickaria.controller.economy.withdraw
+import fr.pickaria.controller.libraries.datetime.autoFormat
+import fr.pickaria.controller.libraries.luckperms.displayName
+import fr.pickaria.controller.libraries.luckperms.getGroup
 import fr.pickaria.controller.libraries.luckperms.luckPermsUser
 import fr.pickaria.controller.libraries.luckperms.save
 import fr.pickaria.controller.rank.calculateRankUpgradePrice
@@ -17,8 +20,12 @@ import net.kyori.adventure.text.format.NamedTextColor
 import net.kyori.adventure.text.format.TextDecoration
 import net.luckperms.api.model.data.DataMutateResult
 import net.luckperms.api.node.Node
+import net.luckperms.api.node.NodeType
 import org.bukkit.entity.Player
+import java.util.*
 import java.util.concurrent.TimeUnit
+import java.util.stream.Collectors
+import kotlin.time.toKotlinDuration
 
 
 @CommandAlias("ranks")
@@ -50,7 +57,7 @@ class RankCommand : BaseCommand() {
 			throw ConditionFailedException("Vous avez déjà ce grade ou un grade supérieur à celui-ci.")
 		}
 
-		val node = Node.builder(rank.permission).expiry(rank.duration, TimeUnit.SECONDS).build()
+		val node = Node.builder(rank.permission).expiry(rank.duration.inWholeSeconds, TimeUnit.SECONDS).build()
 		val user = player.luckPermsUser
 
 		when (user.data().add(node)) {
@@ -60,10 +67,8 @@ class RankCommand : BaseCommand() {
 				if (player.withdraw(Shard, price).transactionSuccess()) {
 					user.save()
 					player.sendMessage(
-						Component.text("Vous avez désormais le grade", NamedTextColor.GRAY)
-							.appendSpace()
-							.append(rank.name)
-							.append(Component.text(".", NamedTextColor.GRAY))
+						Component.text("Vous avez désormais le grade", NamedTextColor.GRAY).appendSpace()
+							.append(rank.name).append(Component.text(".", NamedTextColor.GRAY))
 					)
 				}
 			}
@@ -87,20 +92,32 @@ class RankCommand : BaseCommand() {
 	fun onList(player: Player) {
 		val user = player.luckPermsUser
 
-		val groups = user.getInheritedGroups(user.queryOptions).mapNotNull { group ->
-			group.displayName?.let {
-				Component.text(" ⇒ ", NamedTextColor.GRAY)
-					.append(MiniMessage(it).message)
-					.asComponent()
-			}
-		}.reduce { acc, component ->
-			acc.appendNewline().append(component)
-		}
+		val groups = user.getNodes(NodeType.INHERITANCE).stream()
+			.map {
+				getGroup(it.groupName)?.let { group ->
+					val expires = it.expiryDuration?.let { expiry ->
+						val formatted = expiry.toKotlinDuration().autoFormat()
 
-		val message =
-			Component.text("Vos grades :", NamedTextColor.GOLD, TextDecoration.BOLD)
-				.appendNewline()
-				.append(groups.decoration(TextDecoration.BOLD, TextDecoration.State.FALSE))
+						Component.text("Expire dans")
+							.appendSpace()
+							.append(Component.text(formatted))
+					} ?: Component.text("À vie")
+
+					MiniMessage("<gray> ⇒ <group> <expires>") {
+						"group" to group.displayName()
+						"expires" to expires
+					}.message
+				}
+			}
+			.collect(Collectors.toSet())
+			.reduce { acc, component ->
+				acc.appendNewline().append(component)
+			}
+
+		val message = Component.text("Vos grades :", NamedTextColor.GOLD, TextDecoration.BOLD).appendNewline()
+			.append(groups.decoration(TextDecoration.BOLD, TextDecoration.State.FALSE))
+
 		player.sendMessage(message)
+
 	}
 }

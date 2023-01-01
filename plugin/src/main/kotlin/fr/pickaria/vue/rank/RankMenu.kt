@@ -1,6 +1,7 @@
 package fr.pickaria.vue.rank
 
 import fr.pickaria.controller.home.addToHome
+import fr.pickaria.controller.libraries.datetime.autoFormat
 import fr.pickaria.controller.libraries.luckperms.displayName
 import fr.pickaria.controller.libraries.luckperms.getGroup
 import fr.pickaria.controller.libraries.luckperms.luckPermsUser
@@ -59,9 +60,22 @@ fun rankMenu() = menu("ranks") {
 					}
 				}
 
+				val adjustedPrice = opener.calculateRankUpgradePrice(rank)
+
+				val price = if (adjustedPrice != rank.price) {
+					MiniMessage("<st><price></st> <adjusted>") {
+						"price" to Shard.toController().format(rank.price)
+						"adjusted" to Shard.toController().format(adjustedPrice)
+					}.message
+				} else {
+					Component.text(Shard.toController().format(adjustedPrice))
+				}
+
 				keyValues {
-					"Prix" to Shard.toController().format(opener.calculateRankUpgradePrice(rank))
-					"Durée" to "${rank.duration} secondes"
+					if (!owns) {
+						"Prix" to price
+					}
+					"Durée" to rank.duration.autoFormat()
 				}
 			}
 

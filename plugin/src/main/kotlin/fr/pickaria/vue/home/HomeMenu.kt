@@ -3,12 +3,12 @@ package fr.pickaria.vue.home
 import fr.pickaria.DEFAULT_MENU
 import fr.pickaria.controller.economy.balance
 import fr.pickaria.controller.home.homeEntries
+import fr.pickaria.controller.libraries.datetime.autoFormat
 import fr.pickaria.controller.libraries.luckperms.displayName
 import fr.pickaria.controller.libraries.luckperms.group
 import fr.pickaria.menu.*
 import fr.pickaria.model.economy.Shard
 import fr.pickaria.model.economy.toController
-import kotlinx.datetime.toDateTimePeriod
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
 import net.kyori.adventure.text.format.TextDecoration
@@ -40,7 +40,7 @@ internal fun homeMenu() = menu(DEFAULT_MENU) {
 		}
 	}
 
-	val totalWorldTime = (opener.getStatistic(Statistic.TOTAL_WORLD_TIME) / 20).seconds.toDateTimePeriod()
+	val totalWorldTime = (opener.getStatistic(Statistic.TOTAL_WORLD_TIME) / 20).seconds
 
 	// Player head
 	item {
@@ -50,12 +50,7 @@ internal fun homeMenu() = menu(DEFAULT_MENU) {
 		lore {
 			keyValues {
 				"Grade" to (opener.group?.displayName() ?: Component.empty())
-				"Temps de jeu" to String.format(
-					"%d jours %d heures %d minutes",
-					totalWorldTime.days,
-					totalWorldTime.hours,
-					totalWorldTime.minutes,
-				);
+				"Temps de jeu" to totalWorldTime.autoFormat()
 			}
 		}
 		editMeta {

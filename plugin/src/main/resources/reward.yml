@@ -94,12 +94,13 @@ daily_reward_sound: entity.experience_orb.pickup
 reward_per_day: 1
 
 special_days:
-  12-28: epic
-  12-29: uncommon
+  01-02: redstone
 
 default_reward: common
 
 streak_rewards:
-  - redstone
+  - uncommon
+  - rare
+  - epic
 
 streak_reward_every: 7

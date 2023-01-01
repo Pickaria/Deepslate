@@ -8,6 +8,7 @@ depend:
   - Bookshelf
   - PickariaSpawner
   - Vault
+  - Votifier
 
 commands:
   menu:

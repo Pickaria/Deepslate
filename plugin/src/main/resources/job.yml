@@ -1,4 +1,4 @@
-last_payment_delay: 200 # Time between payments in milliseconds
+last_payment_delay: 0 # Time between payments in milliseconds
 max_jobs: 1
 max_level: 100
 cooldown: 1 # Time before a player can leave their job in hours

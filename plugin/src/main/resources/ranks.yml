@@ -4,7 +4,7 @@ not_owned_message: <dark_red>✖<gray> Non possédé
 ranks:
   basic:
     name: <yellow>Grade Basique
-    duration: 60 # Currently in seconds
+    duration: P1D
     price: 1
     description:
       - <dark_green>✔<gray> Prefix "[<yellow>BASIC</yellow>]"
@@ -16,7 +16,7 @@ ranks:
 
   elite:
     name: <dark_purple>Grade Élite
-    duration: 60 # Currently in seconds
+    duration: PT5M
     price: 2
     description:
       - <dark_green>✔<gray> Prefix "[<dark_purple>ELITE</dark_purple>]"
@@ -30,7 +30,7 @@ ranks:
 
   legend:
     name: <rainbow>Grade Légende
-    duration: 60 # Currently in seconds
+    duration: PT60S
     price: 3
     description:
       - <dark_green>✔<gray> Prefix "[<rainbow>LEGENDE</rainbow>]"

@@ -31,7 +31,7 @@ dependencyResolutionManagement {
 		maven("https://repo.papermc.io/repository/maven-public/") // Paper
 		maven("https://maven.quozul.dev/snapshots")
 		maven("https://repo.aikar.co/content/groups/aikar/") // ACF
-		maven("https://jitpack.io") // Vault
+		maven("https://jitpack.io") // Vault, Votifier
 		maven("https://repo.glaremasters.me/repository/towny/") // Towny
 	}
 }

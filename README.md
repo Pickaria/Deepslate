@@ -64,6 +64,16 @@ To get a local copy up and running follow these steps.
 * JDK 17
 * [IntelliJ IDEA](https://www.jetbrains.com/idea/)
 
+## Dependencies
+
+Following are the platform's dependencies required for this plugin to work:
+
+- Platform: [PaperMC](https://papermc.io/)
+- Economy: [Vault](https://www.spigotmc.org/resources/vault.34315/)
+- Permissions: [LuckPerms](https://luckperms.net/)
+- Town management: [Towny](https://github.com/TownyAdvanced/Towny)
+- Vote notifications: [NuVotifier](https://www.spigotmc.org/resources/nuvotifier.13449/)
+
 ### Working on the project
 
 <details>
@@ -108,12 +118,6 @@ To get a local copy up and running follow these steps.
 -->
 
 </details>
-
-## Dependencies
-
-- [PaperMC](https://papermc.io/)
-- [Vault](https://www.spigotmc.org/resources/vault.34315/)
-- A permission plugin (ie. [LuckPerms](https://luckperms.net/))
 
 <!-- CONTRIBUTING -->
 

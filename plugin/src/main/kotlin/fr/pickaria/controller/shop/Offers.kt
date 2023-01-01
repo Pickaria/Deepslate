@@ -30,10 +30,10 @@ fun getArtefactsOffers(): List<MerchantRecipe> = artefactConfig.artefacts.map { 
 fun getBankOffers(): List<MerchantRecipe> {
 	return listOf(
 		CurrencyBundle(Key.toController().item()) {
-			Credit to 1000
+			Credit to 10_000
 		},
 		CurrencyBundle(getAttributeItem(3)) {
-			Credit to 128
+			Credit to 3_000
 		},
 	)
 }
@@ -49,7 +49,7 @@ fun getRewardsOffers(): List<MerchantRecipe> = rewardConfig.rewards.filter { it.
 fun getPotionsOffers(): List<MerchantRecipe> = potionConfig.potions.map { (_, config) ->
 	val item = config.toController().create()
 	CurrencyBundle(item) {
-		Credit to 50
+		Credit to 10_000
 	}
 }
 
@@ -61,6 +61,6 @@ fun getTestOffers(): List<MerchantRecipe> = (0..50).map {
 
 fun getFlagOffers(): List<MerchantRecipe> = BannerType.values().map {
 	CurrencyBundle(it.item()) {
-		Credit to 100
+		Credit to 250
 	}
 }

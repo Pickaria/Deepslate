@@ -60,7 +60,7 @@ currencies:
     name_singular: 'Éclat de Pickarite'
     name_plural: 'Éclats de Pickarite'
     account: shards
-    format: '###,##0'
+    format: '###,##0.#'
     physical_currencies:
       - value: 1.0
         material: ECHO_SHARD
@@ -73,7 +73,7 @@ currencies:
     name_singular: 'Clé'
     name_plural: 'Clés'
     account: keys
-    format: '###,##0'
+    format: '###,##0.#'
     physical_currencies:
       - value: 1.0
         material: TRIPWIRE_HOOK

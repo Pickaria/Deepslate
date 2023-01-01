@@ -4,13 +4,13 @@ import fr.pickaria.controller.reward.events.DailyRewardReadyEvent
 import fr.pickaria.model.reward.*
 import kotlinx.datetime.*
 import kotlinx.datetime.TimeZone.Companion.currentSystemDefault
-import org.bukkit.entity.Player
+import org.bukkit.OfflinePlayer
 import org.jetbrains.exposed.sql.transactions.transaction
 
 /**
  * Add daily points to a player and fire an event when the daily amount is reached.
  */
-fun Player.addDailyPoint(points: Int) {
+fun OfflinePlayer.addDailyPoint(points: Int) {
 	transaction {
 		val dailyReward = DailyReward.find {
 			DailyRewards.playerUuid eq uniqueId
@@ -34,7 +34,7 @@ fun Player.addDailyPoint(points: Int) {
 	}
 }
 
-val Player.dailyReward
+val OfflinePlayer.dailyReward
 	get() = transaction {
 		DailyReward.find {
 			DailyRewards.playerUuid eq uniqueId
@@ -163,8 +163,9 @@ fun DailyReward.rewards(date: LocalDate = Clock.System.todayIn(currentSystemDefa
 	val streak = streak(date)
 
 	val streakReward = if (streak % rewardConfig.streakRewardEvery == 0) {
-		val streakNumber = streak / rewardConfig.streakRewardEvery
-		rewardConfig.rewards[rewardConfig.streakRewards[streakNumber % rewardConfig.streakRewards.size]]
+		val streakNumber = streak / rewardConfig.streakRewardEvery - 1
+		val streakReward = rewardConfig.streakRewards.getOrNull(streakNumber % rewardConfig.streakRewards.size)
+		rewardConfig.rewards[streakReward]
 	} else {
 		null
 	}

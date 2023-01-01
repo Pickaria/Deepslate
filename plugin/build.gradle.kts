@@ -11,7 +11,6 @@ group = "fr.pickaria"
 version = "1.0-SNAPSHOT"
 
 dependencies {
-	testImplementation(kotlin("test"))
 	compileOnly(libs.kotlin.stdlib)
 	compileOnly(libs.kotlin.reflect)
 	compileOnly(libs.kotlinx.datetime)
@@ -25,6 +24,7 @@ dependencies {
 	compileOnly(libs.mccoroutine.core)
 	compileOnly(libs.towny)
 	compileOnly(libs.luckperms)
+	compileOnly(libs.nuvotifier)
 
 	compileOnly(libs.exposed.core)
 	compileOnly(libs.exposed.dao)

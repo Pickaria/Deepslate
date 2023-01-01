@@ -36,10 +36,7 @@ import fr.pickaria.vue.potion.PotionListener
 import fr.pickaria.vue.rank.RankCommand
 import fr.pickaria.vue.rank.rankMenu
 import fr.pickaria.vue.reforge.EnchantListeners
-import fr.pickaria.vue.reward.DailyRewardListeners
-import fr.pickaria.vue.reward.RewardCommand
-import fr.pickaria.vue.reward.RewardListeners
-import fr.pickaria.vue.reward.rewardMenu
+import fr.pickaria.vue.reward.*
 import fr.pickaria.vue.shard.GrindstoneListeners
 import fr.pickaria.vue.shop.PlaceShop
 import fr.pickaria.vue.shop.ShopListeners
@@ -83,6 +80,7 @@ class Main : SuspendingJavaPlugin() {
 		registerEvents<ShopListeners>()
 		registerEvents<SmithingListeners>()
 		registerEvents<Trader>()
+		registerEvents<VoteListeners>()
 		registerEvents<Wizard>()
 		rankListener()
 
