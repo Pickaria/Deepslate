@@ -7,18 +7,12 @@ import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.transactions.transaction
 
-enum class OrderType {
-	BUY,
-	SELL,
-}
-
 internal object Orders : Table() {
 	val id = integer("id").autoIncrement()
 	val seller = uuid("seller")
 	val material = varchar("material", 256)
 	val price = double("price").default(0.0)
 	val amount = integer("amount").default(1)
-	val type = enumeration<OrderType>("type") // TODO: Remove type column
 
 	override val primaryKey = PrimaryKey(id)
 }
@@ -30,7 +24,6 @@ class Order private constructor(private val row: ResultRow) {
 		fun create(
 			seller: OfflinePlayer,
 			material: Material,
-			orderType: OrderType,
 			amount: Int = 1,
 			price: Double = 1.0
 		): Order? = transaction {
@@ -39,7 +32,6 @@ class Order private constructor(private val row: ResultRow) {
 				it[Orders.material] = material.name
 				it[Orders.price] = price
 				it[Orders.amount] = amount
-				it[type] = orderType
 			}.resultedValues?.firstOrNull()
 		}?.let {
 			Order(it)
@@ -68,17 +60,16 @@ class Order private constructor(private val row: ResultRow) {
 		/**
 		 * Get all specific material's orders with given type.
 		 */
-		fun get(material: Material, type: OrderType): List<Order> = transaction {
+		fun get(material: Material): List<Order> = transaction {
 			Orders.select {
 				(Orders.material eq material.name) and
-						(Orders.amount greater 0) and
-						(Orders.type eq type)
+						(Orders.amount greater 0)
 			}.map {
 				Order(it)
 			}
 		}
 
-		fun getListings(type: OrderType, limit: Int, offset: Long = 0): List<Listing> = transaction {
+		fun getListings(limit: Int, offset: Long = 0): List<Listing> = transaction {
 			val minPrice = Orders.price.min()
 			val avgPrice = Orders.price.avg()
 			val maxPrice = Orders.price.max()
@@ -87,8 +78,7 @@ class Order private constructor(private val row: ResultRow) {
 			Orders
 				.slice(Orders.material, sumAmount, minPrice, avgPrice, maxPrice)
 				.select {
-					(Orders.type eq type) and
-							(Orders.amount greater 0)
+					Orders.amount greater 0
 				}
 				.groupBy(Orders.material)
 				.limit(limit, offset)
@@ -103,36 +93,33 @@ class Order private constructor(private val row: ResultRow) {
 				}
 		}
 
-		fun count(type: OrderType): Long = transaction {
+		fun count(): Long = transaction {
 			Orders
 				.slice(Orders.material)
 				.select {
-					(Orders.type eq type) and
-							(Orders.amount greater 0)
+					Orders.amount greater 0
 				}
 				.groupBy(Orders.material)
 				.count()
 		}
 
-		fun count(type: OrderType, seller: OfflinePlayer): Long = transaction {
+		fun count(seller: OfflinePlayer): Long = transaction {
 			Orders
 				.slice(Orders.seller)
 				.select {
-					(Orders.type eq type) and
-							(Orders.seller eq seller.uniqueId) and
+					(Orders.seller eq seller.uniqueId) and
 							(Orders.amount greater 0)
 				}
 				.count()
 		}
 
-		fun getSumAmount(type: OrderType, material: Material) = transaction {
+		fun getSumAmount(material: Material) = transaction {
 			val sumAmount = Orders.amount.sum()
 
 			Orders
 				.slice(sumAmount)
 				.select {
-					(Orders.type eq type) and
-							(Orders.material eq material.name)
+					Orders.material eq material.name
 				}
 				.groupBy(Orders.material)
 				.firstOrNull()?.get(sumAmount) ?: 0
@@ -161,8 +148,7 @@ class Order private constructor(private val row: ResultRow) {
 				.slice(maxPrice, minPrice, avgPrice)
 				.select {
 					(Orders.material eq material.name) and
-							(Orders.amount greater 0) and
-							(Orders.type eq OrderType.SELL)
+							(Orders.amount greater 0)
 				}
 				.first()
 				.let {
@@ -177,8 +163,7 @@ class Order private constructor(private val row: ResultRow) {
 				.slice(column)
 				.select {
 					(Orders.material eq material.name) and
-							(Orders.amount greater 0) and
-							(Orders.type eq OrderType.SELL)
+							(Orders.amount greater 0)
 				}
 				.first()
 				.let {
@@ -190,8 +175,7 @@ class Order private constructor(private val row: ResultRow) {
 			Orders
 				.select {
 					(Orders.material eq material.name) and
-							(Orders.amount greater 0) and
-							(Orders.type eq OrderType.SELL)
+							(Orders.amount greater 0)
 				}
 				.orderBy(Orders.price, SortOrder.ASC)
 				.map { Order(it) }
@@ -203,8 +187,7 @@ class Order private constructor(private val row: ResultRow) {
 		fun getMaterials(): List<Material> = transaction {
 			Orders.slice(Orders.material)
 				.select {
-					(Orders.type eq OrderType.SELL) and
-							(Orders.amount greater 0)
+					Orders.amount greater 0
 				}
 				.groupBy(Orders.material)
 				.mapNotNull {
@@ -232,14 +215,6 @@ class Order private constructor(private val row: ResultRow) {
 		val maximumPrice: Double,
 	)
 
-	private constructor(whereClause: SqlExpressionBuilder.() -> Op<Boolean>) : this(
-		transaction {
-			Orders.select {
-				whereClause()
-			}.first()
-		}
-	)
-
 	private val whereClause = { Orders.id eq this.id }
 
 	fun delete() = transaction {
@@ -257,9 +232,6 @@ class Order private constructor(private val row: ResultRow) {
 
 	val price: Double
 		get() = row[Orders.price]
-
-	val type: OrderType
-		get() = row[Orders.type]
 
 	var amount: Int
 		get() = row[Orders.amount]

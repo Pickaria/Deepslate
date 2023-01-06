@@ -4,7 +4,6 @@ import co.aikar.commands.*
 import co.aikar.commands.annotation.*
 import fr.pickaria.controller.market.getPrices
 import fr.pickaria.model.market.Order
-import fr.pickaria.model.market.OrderType
 import fr.pickaria.model.market.marketConfig
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
@@ -62,7 +61,7 @@ class SellCommand : BaseCommand() {
 			throw ConditionFailedException("La quantité que vous avez entré est incorrecte.")
 		}
 
-		val isSelling = Order.get(material, OrderType.SELL).isNotEmpty()
+		val isSelling = Order.get(material).isNotEmpty()
 
 		val price = if (isSelling) {
 			getPrices(material).first
@@ -78,7 +77,7 @@ class SellCommand : BaseCommand() {
 	}
 
 	private fun createOrder(sender: Player, material: Material, quantity: Int, price: Double) {
-		val order = Order.create(sender, material, OrderType.SELL, quantity, price)
+		val order = Order.create(sender, material, quantity, price)
 		val item = ItemStack(material)
 
 		if (order != null) {
@@ -122,7 +121,7 @@ class SellCommand : BaseCommand() {
 		}
 
 		val price: Double = sellPrice ?: run {
-			val isSelling = Order.get(material, OrderType.SELL).isNotEmpty()
+			val isSelling = Order.get(material).isNotEmpty()
 
 			if (isSelling) {
 				getPrices(material).first

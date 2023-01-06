@@ -7,7 +7,6 @@ import co.aikar.commands.annotation.*
 import fr.pickaria.controller.market.buy
 import fr.pickaria.controller.market.giveItems
 import fr.pickaria.model.market.Order
-import fr.pickaria.model.market.OrderType
 import org.bukkit.Material
 import org.bukkit.entity.Player
 
@@ -21,7 +20,7 @@ class BuyCommand : BaseCommand() {
 				Material::class.java,
 				"must_be_selling"
 			) { _, _, material ->
-				val isNotSelling = Order.get(material, OrderType.SELL).isEmpty()
+				val isNotSelling = Order.get(material).isEmpty()
 
 				if (isNotSelling) {
 					throw ConditionFailedException("Ce matériau n'est pas en stocks.")
@@ -33,7 +32,7 @@ class BuyCommand : BaseCommand() {
 			}
 
 			manager.commandCompletions.registerCompletion("buy_amount") { context ->
-				val count = Order.get(context.getContextValue(Material::class.java), OrderType.SELL).sumOf { it.amount }
+				val count = Order.get(context.getContextValue(Material::class.java)).sumOf { it.amount }
 				listOf(1, 16, 32, 64, count).filter { it <= count }.map { it.toString() }
 			}
 		}
