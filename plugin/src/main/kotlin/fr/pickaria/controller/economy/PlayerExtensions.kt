@@ -27,13 +27,13 @@ fun sendTo(currency: Currency, sender: OfflinePlayer, recipient: OfflinePlayer, 
 		val withdrawResponse = sender.withdraw(currency, amount)
 
 		if (withdrawResponse.type == EconomyResponse.ResponseType.SUCCESS) {
-			val depositResponse = recipient.deposit(currency, withdrawResponse.amount)
+			val depositResponse = recipient.deposit(currency, amount)
 
 			if (depositResponse.type != EconomyResponse.ResponseType.SUCCESS) {
 				// Try to refund
-				val refund = sender.deposit(currency, withdrawResponse.amount)
+				val refund = sender.deposit(currency, amount)
 				if (refund.type == EconomyResponse.ResponseType.FAILURE) {
-					getLogger().severe("Can't refund player, withdrew amount: ${withdrawResponse.amount}")
+					getLogger().severe("Can't refund player, withdrew amount: $amount")
 					SendResponse.REFUND_ERROR
 				}
 

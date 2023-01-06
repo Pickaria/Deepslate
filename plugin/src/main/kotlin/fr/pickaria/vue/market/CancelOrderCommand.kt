@@ -3,7 +3,6 @@ package fr.pickaria.vue.market
 import co.aikar.commands.*
 import co.aikar.commands.annotation.*
 import fr.pickaria.controller.market.giveItems
-import fr.pickaria.menu.open
 import fr.pickaria.model.market.Order
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
@@ -38,8 +37,7 @@ class CancelOrderCommand : BaseCommand() {
 	@CommandCompletion("@ownorders")
 	fun onDefault(sender: Player, @Optional order: Order?) {
 		if (order == null) {
-			sender open "orders"
-			return
+			throw InvalidCommandArgument("Cette vente ne peut pas être annulée.")
 		}
 
 		if (order.seller != sender) {

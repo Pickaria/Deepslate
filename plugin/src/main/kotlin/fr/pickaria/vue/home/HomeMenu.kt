@@ -7,6 +7,8 @@ import fr.pickaria.controller.libraries.datetime.autoFormat
 import fr.pickaria.controller.libraries.luckperms.displayName
 import fr.pickaria.controller.libraries.luckperms.group
 import fr.pickaria.menu.*
+import fr.pickaria.model.economy.Credit
+import fr.pickaria.model.economy.Key
 import fr.pickaria.model.economy.Shard
 import fr.pickaria.model.economy.toController
 import net.kyori.adventure.text.Component
@@ -51,6 +53,9 @@ internal fun homeMenu() = menu(DEFAULT_MENU) {
 			keyValues {
 				"Grade" to (opener.group?.displayName() ?: Component.empty())
 				"Temps de jeu" to totalWorldTime.autoFormat()
+				"Crédits" to Credit.toController().format(opener.balance(Credit))
+				"Clés" to Key.toController().format(opener.balance(Key))
+				"Éclats de Pickarite" to Shard.toController().format(opener.balance(Shard))
 			}
 		}
 		editMeta {

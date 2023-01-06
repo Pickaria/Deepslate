@@ -9,6 +9,7 @@ import org.bukkit.OfflinePlayer
 import org.jetbrains.exposed.sql.and
 import org.jetbrains.exposed.sql.transactions.transaction
 import java.text.DecimalFormat
+import kotlin.math.absoluteValue
 
 class Economy(
 	private val currencyNameSingular: String,
@@ -86,7 +87,7 @@ class Economy(
 				accountName = account
 				balance = amount
 			}
-			EconomyResponse(amount, account.balance, ResponseType.SUCCESS, "")
+			EconomyResponse(amount.absoluteValue, account.balance, ResponseType.SUCCESS, "")
 		} catch (_: IllegalArgumentException) {
 			// Too many accounts (???)
 			EconomyResponse(0.0, 0.0, ResponseType.FAILURE, "Too many account for this player.")

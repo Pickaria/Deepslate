@@ -6,6 +6,7 @@ import fr.pickaria.model.economy.Credit
 import fr.pickaria.model.economy.SendResponse
 import fr.pickaria.model.market.Order
 import fr.pickaria.model.market.marketConfig
+import fr.pickaria.shared.MiniMessage
 import fr.pickaria.shared.give
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
@@ -18,20 +19,37 @@ import java.security.InvalidParameterException
 import kotlin.math.max
 import kotlin.math.min
 
-internal data class OrderInfo(
+data class OrderInfo(
 	val orders: List<Pair<Order, Int>>,
 	val totalAmount: Int,
 	val totalPrice: Double,
 )
 
-internal fun getPrices(material: Material, amount: Int): OrderInfo {
+private data class Notification(
+	var boughtAmount: Int,
+	var boughtPrice: Double,
+) {
+	operator fun plus(other: Notification): Notification =
+		Notification(boughtAmount + other.boughtAmount, boughtPrice + other.boughtPrice)
+
+	operator fun plusAssign(other: Notification) {
+		boughtAmount += other.boughtAmount
+		boughtPrice += other.boughtPrice
+	}
+}
+
+fun getPrices(material: Material, amount: Int): OrderInfo {
 	var remaining = amount
 
 	// Order to Amount to buy
-	val orders = Order.findSellOrders(material).map {
-		val value = it to max(min(remaining, it.amount), 0)
-		remaining -= it.amount
-		value
+	val orders = Order.findSellOrders(material).mapNotNull {
+		if (remaining > 0) {
+			val value = it to max(min(remaining, it.amount), 0)
+			remaining -= it.amount
+			value
+		} else {
+			null
+		}
 	}
 
 	val totalAmount = orders.sumOf { it.second }
@@ -57,9 +75,8 @@ internal fun buy(player: Player, material: Material, amount: Int): Int {
 	}
 
 	// Stores the data to notify sellers
-	val notifications: MutableMap<OfflinePlayer, Pair<Int, Double>> = mutableMapOf()
+	val notifications = mutableMapOf<OfflinePlayer, Notification>()
 
-	// FIXME: Possible item duplication
 	info.orders.forEach { (order, buyingAmount) ->
 		val price = order.price * buyingAmount
 
@@ -67,8 +84,13 @@ internal fun buy(player: Player, material: Material, amount: Int): Int {
 			SendResponse.SUCCESS -> {
 				order.amount -= buyingAmount
 
-				val notification = notifications.getOrDefault(order.seller, 0 to 0.0)
-				notifications[order.seller] = notification.first + buyingAmount to notification.second + price
+				val newNotification = Notification(buyingAmount, price)
+
+				notifications[order.seller]?.let {
+					it += newNotification
+				} ?: run {
+					notifications[order.seller] = newNotification
+				}
 
 				// Update order if it is empty
 				if (order.amount - buyingAmount <= 0) {
@@ -86,30 +108,20 @@ internal fun buy(player: Player, material: Material, amount: Int): Int {
 		}
 	}
 
-	val message = Component.text("${info.totalAmount} ", NamedTextColor.GOLD)
-		.append(Component.translatable(material.translationKey(), NamedTextColor.GOLD))
-		.append(Component.text(" acheté(s) pour ", NamedTextColor.GRAY))
-		.append(Component.text(Credit.economy.format(info.totalPrice), NamedTextColor.GOLD))
-		.append(Component.text(".", NamedTextColor.GRAY))
+	MiniMessage("<gold><amount> <material><gray> acheté(s) pour <gold><price><gray>.") {
+		"amount" to info.totalAmount
+		"material" to Component.translatable(material.translationKey())
+		"price" to Credit.economy.format(info.totalPrice)
+	}.send(player)
 
-	player.sendMessage(message)
-
-	notifications.forEach { (seller, pair) ->
-		val (buyingAmount, price) = pair
-
+	notifications.forEach { (seller, notification) ->
 		if (seller.isOnline) {
-			val message = player.displayName().color(NamedTextColor.GOLD)
-				.append(Component.text(" vous a acheté ", NamedTextColor.GRAY))
-				.append(
-					Component.text("$buyingAmount ")
-						.append(Component.translatable(material.translationKey()))
-						.color(NamedTextColor.GOLD)
-				)
-				.append(Component.text(" pour ", NamedTextColor.GRAY))
-				.append(Component.text(Credit.economy.format(price), NamedTextColor.GOLD))
-				.append(Component.text(".", NamedTextColor.GRAY))
-
-			(seller as Player).sendMessage(message)
+			MiniMessage("<gold><player><gray> vous a acheté <gold><amount> <material><gray> pour <gold><price><gray>.") {
+				"player" to player.displayName()
+				"amount" to notification.boughtAmount
+				"material" to Component.translatable(material.translationKey())
+				"price" to Credit.economy.format(notification.boughtPrice)
+			}.send(seller as Player)
 		}
 	}
 
