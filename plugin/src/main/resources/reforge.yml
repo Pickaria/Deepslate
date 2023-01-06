@@ -3,52 +3,395 @@ charged_lapis_description:
   - '<gray>Élément utilisé pour modifier'
   - '<gray>les statiques d''un objet.'
 
-minimum_attribute: -0.05
-maximum_attribute: 0.1
 enchant_sound: block.enchantment_table.use
+default_level: common
 
-rarities:
-  # For any item
-  broken:
-    name: 'Détruit'
-    color: '<dark_purple><name>'
-    attributes: -100
+levels:
   damaged:
-    name: 'Endommagé'
-    color: '<dark_red><name>'
-    attributes: -3
+    key: damaged
+    display_name: Endommagé
+    color: <dark_red><name>
+    minimum_level: 1
+    maximum_level: 2
+    minimum_attributes: 1
+    maximum_attributes: 3
+    attributes:
+      - attribute: GENERIC_MAX_HEALTH
+        random_type: INTEGER
+        minimum: -2
+        maximum: -1
+        operation: ADD_NUMBER
+      - attribute: GENERIC_KNOCKBACK_RESISTANCE
+        random_type: DOUBLE
+        minimum: -0.10
+        maximum: -0.05
+        operation: ADD_NUMBER
+        target: WEARABLE
+      - attribute: GENERIC_MOVEMENT_SPEED
+        random_type: DOUBLE
+        minimum: -0.10
+        maximum: -0.05
+        operation: ADD_SCALAR
+      - attribute: GENERIC_ATTACK_DAMAGE
+        random_type: DOUBLE
+        minimum: -0.10
+        maximum: -0.05
+        operation: ADD_SCALAR
+        target: WEAPON
+      - attribute: GENERIC_ATTACK_KNOCKBACK
+        random_type: DOUBLE
+        minimum: -0.10
+        maximum: -0.05
+        operation: ADD_SCALAR
+        target: WEAPON
+      - attribute: GENERIC_ATTACK_SPEED
+        random_type: DOUBLE
+        minimum: -0.10
+        maximum: -0.05
+        operation: ADD_SCALAR
+        target: WEAPON
+      - attribute: GENERIC_ARMOR
+        random_type: DOUBLE
+        minimum: -0.10
+        maximum: -0.05
+        operation: ADD_SCALAR
+        target: WEARABLE
+      - attribute: GENERIC_ARMOR_TOUGHNESS
+        random_type: DOUBLE
+        minimum: -0.10
+        maximum: -0.05
+        operation: ADD_SCALAR
+        target: WEARABLE
+      - attribute: GENERIC_LUCK
+        random_type: DOUBLE
+        minimum: -0.10
+        maximum: -0.05
+        operation: ADD_SCALAR
+        target: WEARABLE
+
+
   rusted:
-    name: 'Rouillé'
-    color: '<dark_gray><name>'
-    attributes: -2
-  used:
-    name: 'Usé'
-    color: '<dark_green><name>'
-    attributes: -1
+    key: rusted
+    display_name: Rouillé
+    color: <dark_gray><name>
+    minimum_level: 1
+    maximum_level: 6
+    minimum_attributes: 1
+    maximum_attributes: 2
+    attributes:
+      - attribute: GENERIC_MAX_HEALTH
+        random_type: INTEGER
+        minimum: -2
+        maximum: -1
+        operation: ADD_NUMBER
+      - attribute: GENERIC_KNOCKBACK_RESISTANCE
+        random_type: DOUBLE
+        minimum: -0.05
+        maximum: -0.02
+        operation: ADD_NUMBER
+        target: WEARABLE
+      - attribute: GENERIC_MOVEMENT_SPEED
+        random_type: DOUBLE
+        minimum: -0.05
+        maximum: -0.02
+        operation: ADD_SCALAR
+      - attribute: GENERIC_ATTACK_DAMAGE
+        random_type: DOUBLE
+        minimum: -0.05
+        maximum: -0.02
+        operation: ADD_SCALAR
+        target: WEAPON
+      - attribute: GENERIC_ATTACK_KNOCKBACK
+        random_type: DOUBLE
+        minimum: -0.05
+        maximum: -0.02
+        operation: ADD_SCALAR
+        target: WEAPON
+      - attribute: GENERIC_ATTACK_SPEED
+        random_type: DOUBLE
+        minimum: -0.05
+        maximum: -0.02
+        operation: ADD_SCALAR
+        target: WEAPON
+      - attribute: GENERIC_ARMOR
+        random_type: DOUBLE
+        minimum: -0.05
+        maximum: -0.02
+        operation: ADD_SCALAR
+        target: WEARABLE
+      - attribute: GENERIC_ARMOR_TOUGHNESS
+        random_type: DOUBLE
+        minimum: -0.05
+        maximum: -0.02
+        operation: ADD_SCALAR
+        target: WEARABLE
+      - attribute: GENERIC_LUCK
+        random_type: DOUBLE
+        minimum: -0.05
+        maximum: -0.02
+        operation: ADD_SCALAR
+        target: WEARABLE
+
   common:
-    name: 'Commun'
-    color: '<grey><name>'
-    attributes: 0 # Attributes required
-  # When the item has at least 1 custom element applied onto it
+    key: common
+    minimum_level: 0
+    maximum_level: 0
+    display_name: Commun
+    color: <grey><name>
+
   uncommon:
-    name: 'Peu commun'
-    color: '<yellow><name>'
-    attributes: 1
+    key: uncommon # Must be the same as the map's key
+    display_name: Peu commun # Display name of the level
+    color: <yellow><name>
+    minimum_level: 4 # Reforge level required, if not set, level is unobtainable, default to null
+    maximum_level: 8
+    minimum_attributes: 1 # Minimum attributes count for this level, must be > 0, defaults to 0
+    maximum_attributes: 1 # Maximum attributes count for this level, must be > minimum, defaults to 0
+    attributes: # Attributes that can be applied with this level
+      # Valid values: GENERIC_MAX_HEALTH GENERIC_KNOCKBACK_RESISTANCE
+      # GENERIC_MOVEMENT_SPEED GENERIC_ATTACK_DAMAGE GENERIC_ATTACK_KNOCKBACK
+      # GENERIC_ATTACK_SPEED GENERIC_ARMOR GENERIC_ARMOR_TOUGHNESS GENERIC_LUCK
+      - attribute: GENERIC_MAX_HEALTH
+        random_type: INTEGER
+        minimum: 1
+        maximum: 2
+        # Valid values: ADD_NUMBER ADD_SCALAR MULTIPLY_SCALAR_1
+        operation: ADD_NUMBER
+      - attribute: GENERIC_KNOCKBACK_RESISTANCE
+        random_type: DOUBLE
+        minimum: 0.05
+        maximum: 0.10
+        operation: ADD_NUMBER
+        # Possible values: ARMOR, ARMOR_FEET, ARMOR_LEGS, ARMOR_TORSO, ARMOR_HEAD, WEAPON, TOOL
+        #                  BOW, FISHING_ROD, BREAKABLE, WEARABLE, TRIDENT, CROSSBOW, VANISHABLE, ALL
+        # Defaults to ALL
+        target: WEARABLE
+      - attribute: GENERIC_MOVEMENT_SPEED
+        random_type: DOUBLE
+        minimum: 0.05
+        maximum: 0.10
+        operation: ADD_SCALAR
+      - attribute: GENERIC_ATTACK_DAMAGE
+        random_type: DOUBLE
+        minimum: 0.05
+        maximum: 0.10
+        operation: ADD_SCALAR
+        target: WEAPON
+      - attribute: GENERIC_ATTACK_KNOCKBACK
+        random_type: DOUBLE
+        minimum: 0.05
+        maximum: 0.10
+        operation: ADD_SCALAR
+        target: WEAPON
+      - attribute: GENERIC_ATTACK_SPEED
+        random_type: DOUBLE
+        minimum: 0.05
+        maximum: 0.10
+        operation: ADD_SCALAR
+        target: WEAPON
+      - attribute: GENERIC_ARMOR
+        random_type: DOUBLE
+        minimum: 0.05
+        maximum: 0.10
+        operation: ADD_SCALAR
+        target: WEARABLE
+      - attribute: GENERIC_ARMOR_TOUGHNESS
+        random_type: DOUBLE
+        minimum: 0.05
+        maximum: 0.10
+        operation: ADD_SCALAR
+        target: WEARABLE
+      - attribute: GENERIC_LUCK
+        random_type: DOUBLE
+        minimum: 0.05
+        maximum: 0.10
+        operation: ADD_SCALAR
+        target: WEARABLE
+
   rare:
-    name: 'Rare'
-    color: '<blue><name>'
-    attributes: 2
+    key: rare
+    display_name: Rare
+    color: <blue><name>
+    minimum_level: 6
+    maximum_level: 16
+    minimum_attributes: 1
+    maximum_attributes: 2
+    attributes:
+      - attribute: GENERIC_MAX_HEALTH
+        random_type: INTEGER
+        minimum: 2
+        maximum: 4
+        operation: ADD_NUMBER
+      - attribute: GENERIC_KNOCKBACK_RESISTANCE
+        random_type: DOUBLE
+        minimum: 0.10
+        maximum: 0.15
+        operation: ADD_NUMBER
+        target: WEARABLE
+      - attribute: GENERIC_MOVEMENT_SPEED
+        random_type: DOUBLE
+        minimum: 0.10
+        maximum: 0.15
+        operation: ADD_SCALAR
+      - attribute: GENERIC_ATTACK_DAMAGE
+        random_type: DOUBLE
+        minimum: 0.10
+        maximum: 0.15
+        operation: ADD_SCALAR
+        target: WEAPON
+      - attribute: GENERIC_ATTACK_KNOCKBACK
+        random_type: DOUBLE
+        minimum: 0.10
+        maximum: 0.15
+        operation: ADD_SCALAR
+        target: WEAPON
+      - attribute: GENERIC_ATTACK_SPEED
+        random_type: DOUBLE
+        minimum: 0.10
+        maximum: 0.15
+        operation: ADD_SCALAR
+        target: WEAPON
+      - attribute: GENERIC_ARMOR
+        random_type: DOUBLE
+        minimum: 0.10
+        maximum: 0.15
+        operation: ADD_SCALAR
+        target: WEARABLE
+      - attribute: GENERIC_ARMOR_TOUGHNESS
+        random_type: DOUBLE
+        minimum: 0.10
+        maximum: 0.15
+        operation: ADD_SCALAR
+        target: WEARABLE
+      - attribute: GENERIC_LUCK
+        random_type: DOUBLE
+        minimum: 0.10
+        maximum: 0.15
+        operation: ADD_SCALAR
+        target: WEARABLE
+
   epic:
-    name: 'Épique'
-    color: '<light_purple><name>'
-    attributes: 3
+    key: epic
+    display_name: Épique
+    color: <light_purple><name>
+    minimum_level: 16
+    maximum_level: 21
+    minimum_attributes: 2
+    maximum_attributes: 3
     advancement: pickaria:epic_stuff
+    attributes:
+      - attribute: GENERIC_MAX_HEALTH
+        random_type: INTEGER
+        minimum: 4
+        maximum: 6
+        operation: ADD_NUMBER
+      - attribute: GENERIC_KNOCKBACK_RESISTANCE
+        random_type: DOUBLE
+        minimum: 0.15
+        maximum: 0.20
+        operation: ADD_NUMBER
+        target: WEARABLE
+      - attribute: GENERIC_MOVEMENT_SPEED
+        random_type: DOUBLE
+        minimum: 0.15
+        maximum: 0.20
+        operation: ADD_SCALAR
+      - attribute: GENERIC_ATTACK_DAMAGE
+        random_type: DOUBLE
+        minimum: 0.15
+        maximum: 0.20
+        operation: ADD_SCALAR
+        target: WEAPON
+      - attribute: GENERIC_ATTACK_KNOCKBACK
+        random_type: DOUBLE
+        minimum: 0.15
+        maximum: 0.20
+        operation: ADD_SCALAR
+        target: WEAPON
+      - attribute: GENERIC_ATTACK_SPEED
+        random_type: DOUBLE
+        minimum: 0.15
+        maximum: 0.20
+        operation: ADD_SCALAR
+        target: WEAPON
+      - attribute: GENERIC_ARMOR
+        random_type: DOUBLE
+        minimum: 0.15
+        maximum: 0.20
+        operation: ADD_SCALAR
+        target: WEARABLE
+      - attribute: GENERIC_ARMOR_TOUGHNESS
+        random_type: DOUBLE
+        minimum: 0.15
+        maximum: 0.20
+        operation: ADD_SCALAR
+        target: WEARABLE
+      - attribute: GENERIC_LUCK
+        random_type: DOUBLE
+        minimum: 0.15
+        maximum: 0.20
+        operation: ADD_SCALAR
+        target: WEARABLE
+
   legendary:
-    name: 'Légendaire'
-    color: '<rainbow><name>'
-    attributes: 4
+    key: legendary
+    display_name: Légendaire
+    color: <rainbow><name>
+    minimum_level: 18
+    maximum_level: 64
+    minimum_attributes: 2
+    maximum_attributes: 4
     advancement: pickaria:legendary_stuff
-  mythic:
-    name: 'Mythique'
-    color: '<red><name>'
-    attributes: 5
+    attributes:
+      - attribute: GENERIC_MAX_HEALTH
+        random_type: INTEGER
+        minimum: 6
+        maximum: 8
+        operation: ADD_NUMBER
+      - attribute: GENERIC_KNOCKBACK_RESISTANCE
+        random_type: DOUBLE
+        minimum: 0.20
+        maximum: 0.25
+        operation: ADD_NUMBER
+        target: WEARABLE
+      - attribute: GENERIC_MOVEMENT_SPEED
+        random_type: DOUBLE
+        minimum: 0.20
+        maximum: 0.25
+        operation: ADD_SCALAR
+      - attribute: GENERIC_ATTACK_DAMAGE
+        random_type: DOUBLE
+        minimum: 0.20
+        maximum: 0.25
+        operation: ADD_SCALAR
+        target: WEAPON
+      - attribute: GENERIC_ATTACK_KNOCKBACK
+        random_type: DOUBLE
+        minimum: 0.20
+        maximum: 0.25
+        operation: ADD_SCALAR
+        target: WEAPON
+      - attribute: GENERIC_ATTACK_SPEED
+        random_type: DOUBLE
+        minimum: 0.20
+        maximum: 0.25
+        operation: ADD_SCALAR
+        target: WEAPON
+      - attribute: GENERIC_ARMOR
+        random_type: DOUBLE
+        minimum: 0.20
+        maximum: 0.25
+        operation: ADD_SCALAR
+        target: WEARABLE
+      - attribute: GENERIC_ARMOR_TOUGHNESS
+        random_type: DOUBLE
+        minimum: 0.20
+        maximum: 0.25
+        operation: ADD_SCALAR
+        target: WEARABLE
+      - attribute: GENERIC_LUCK
+        random_type: DOUBLE
+        minimum: 0.20
+        maximum: 0.25
+        operation: ADD_SCALAR
+        target: WEARABLE

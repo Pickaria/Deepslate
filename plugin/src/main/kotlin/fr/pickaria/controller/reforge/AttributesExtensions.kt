@@ -1,6 +1,7 @@
 package fr.pickaria.controller.reforge
 
-import fr.pickaria.model.reforge.reforgeConfig
+import fr.pickaria.model.reforge.RandomType
+import fr.pickaria.model.reforge.ReforgeAttribute
 import fr.pickaria.model.reforge.reforgeNamespace
 import org.bukkit.Material
 import org.bukkit.attribute.Attribute
@@ -9,6 +10,7 @@ import org.bukkit.enchantments.Enchantment
 import org.bukkit.entity.EntityCategory
 import org.bukkit.inventory.ItemStack
 import java.util.*
+import kotlin.math.round
 import kotlin.random.Random
 
 
@@ -65,19 +67,23 @@ fun ItemStack.updateDefaultAttributes(enchantsToAdd: Map<Enchantment, Int>? = nu
 /**
  * Add an attribute with random modifier.
  */
-fun ItemStack.addRandomAttributeModifier(attribute: Attribute) {
+fun ItemStack.addRandomAttributeModifier(attribute: ReforgeAttribute) {
 	editMeta {
-		val amount = Random.nextDouble(reforgeConfig.minimumAttribute, reforgeConfig.maximumAttribute)
+		val amount = when (attribute.randomType) {
+			RandomType.DOUBLE -> Random.nextDouble(attribute.minimum, attribute.maximum)
+			RandomType.INTEGER -> round(Random.nextDouble(attribute.minimum, attribute.maximum))
+		}
+
 		val modifier = AttributeModifier(
 			UUID.randomUUID(),
 			"custom",
 			amount,
-			AttributeModifier.Operation.ADD_SCALAR,
+			attribute.operation,
 			type.equipmentSlot
 		)
 
 		it.addAttributeModifier(
-			attribute,
+			attribute.attribute,
 			modifier
 		)
 	}
