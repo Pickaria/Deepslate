@@ -4,7 +4,7 @@ import co.aikar.commands.*
 import co.aikar.commands.annotation.*
 import fr.pickaria.controller.economy.has
 import fr.pickaria.controller.economy.withdraw
-import fr.pickaria.controller.toController
+import fr.pickaria.controller.miniblocks.toController
 import fr.pickaria.menu.open
 import fr.pickaria.model.economy.Credit
 import fr.pickaria.model.miniblocks.MiniBlock

@@ -1,7 +1,7 @@
 package fr.pickaria.vue.miniblocks
 
 import fr.pickaria.controller.home.addToHome
-import fr.pickaria.controller.toController
+import fr.pickaria.controller.miniblocks.toController
 import fr.pickaria.menu.*
 import fr.pickaria.model.economy.Credit
 import fr.pickaria.model.miniblocks.miniBlocksConfig

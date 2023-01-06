@@ -31,6 +31,7 @@ import fr.pickaria.vue.job.jobMenu
 import fr.pickaria.vue.job.jobs.*
 import fr.pickaria.vue.market.*
 import fr.pickaria.vue.miniblocks.MiniBlockCommand
+import fr.pickaria.vue.miniblocks.MiniBlockListener
 import fr.pickaria.vue.miniblocks.miniBlocksMenu
 import fr.pickaria.vue.potion.PotionCommand
 import fr.pickaria.vue.potion.PotionListener
@@ -84,6 +85,7 @@ class Main : SuspendingJavaPlugin() {
 		registerEvents<VoteListeners>()
 		registerEvents<Wizard>()
 		registerEvents<SignEdit>()
+		registerEvents<MiniBlockListener>()
 		rankListener()
 
 		// Command completions
