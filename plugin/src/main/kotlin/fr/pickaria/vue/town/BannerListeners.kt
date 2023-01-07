@@ -10,7 +10,7 @@ import fr.pickaria.controller.town.isTownBanner
 import fr.pickaria.controller.town.townId
 import fr.pickaria.model.town.flag
 import fr.pickaria.model.town.townConfig
-import fr.pickaria.model.town.townNamespace
+import fr.pickaria.shared.MiniMessage
 import fr.pickaria.shared.give
 import net.kyori.adventure.audience.Audience
 import net.kyori.adventure.key.Key
@@ -20,13 +20,12 @@ import net.kyori.adventure.text.format.NamedTextColor
 import net.kyori.adventure.title.Title
 import org.bukkit.Location
 import org.bukkit.Particle
-import org.bukkit.block.Banner
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
-import org.bukkit.event.block.BlockBreakEvent
+import org.bukkit.event.block.BlockDropItemEvent
 import org.bukkit.event.block.BlockPlaceEvent
-import org.bukkit.persistence.PersistentDataType
+import org.bukkit.inventory.meta.BannerMeta
 import org.bukkit.plugin.java.JavaPlugin
 import org.bukkit.scheduler.BukkitRunnable
 import kotlin.math.PI
@@ -34,7 +33,7 @@ import kotlin.math.cos
 import kotlin.math.sin
 
 
-class BannerListeners() : Listener {
+class BannerListeners : Listener {
 	private val plugin = JavaPlugin.getProvidingPlugin(Main::class.java)
 
 	private fun Audience.showTitle(title: Component, subtitle: Component = Component.empty()) {
@@ -77,21 +76,36 @@ class BannerListeners() : Listener {
 	}
 
 	@EventHandler
-	fun onBannerBreak(event: BlockBreakEvent) {
+	fun onBannerBreak(event: BlockDropItemEvent) {
 		with(event) {
-			block.townId?.let {
-				isCancelled = true
+			blockState.townId?.let { townId ->
+				items.find { item ->
+					item.itemStack.itemMeta is BannerMeta
+				}?.let { item ->
+					item.itemStack.townId = townId
+				}
 			}
 		}
 	}
 
-	// TODO: Cancel BlockBreakBlockEvent
-
-
 	@EventHandler
 	fun onBannerPlaced(event: BlockPlaceEvent) {
 		with(event) {
-			if (itemInHand.isTownBanner()) {
+			itemInHand.townId?.let { townId ->
+				TownyAPI.getInstance().getTown(block.location)?.let { town ->
+					if (town.uuid == townId) {
+						block.townId = townId
+
+						// TODO: Move town home block and spawn
+					} else {
+						setBuild(false)
+						isCancelled = false
+
+						MiniMessage("<red>La bannière d'une ville doit être placée dans la ville.")
+							.send(player)
+					}
+				}
+			} ?: if (itemInHand.isTownBanner()) {
 				if (!itemInHand.itemMeta.hasDisplayName()) {
 					player.sendMessage(townConfig.townNameMissing)
 					setBuild(false)
@@ -112,7 +126,15 @@ class BannerListeners() : Listener {
 				} catch (exception: TownyException) {
 					val message = exception.getMessage(player)
 					player.sendMessage(message)
-					null
+					setBuild(false)
+					isCancelled = true
+					return
+				} catch (exception: Exception) {
+					player.sendMessage(Component.text("Une erreur inconnue est survenue.", NamedTextColor.RED))
+					exception.printStackTrace()
+					setBuild(false)
+					isCancelled = true
+					return
 				}
 
 				if (town != null) {
@@ -121,19 +143,16 @@ class BannerListeners() : Listener {
 
 					townCreatedAnimation(block.location, player, itemInHand.itemMeta.displayName() ?: Component.empty())
 
-					val banner = block.state as Banner
-					banner.persistentDataContainer.set(
-						townNamespace,
-						PersistentDataType.STRING,
-						town.uuid.toString()
-					)
-					banner.update()
+					block.townId = town.uuid
 
 					val book = getTownBook(town)
 					player.give(book)
 				} else {
-					player.sendMessage("Unknown error")
+					// This should never happen
+					player.sendMessage(Component.text("La ville n'a pas été créée.", NamedTextColor.RED))
 					setBuild(false)
+					isCancelled = true
+					return
 				}
 			}
 		}
