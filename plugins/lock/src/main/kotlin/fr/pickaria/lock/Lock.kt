@@ -2,13 +2,16 @@ package fr.pickaria.lock
 
 import org.bukkit.Bukkit
 import org.bukkit.GameMode
+import org.bukkit.NamespacedKey
 import org.bukkit.block.Block
 import org.bukkit.block.Lockable
+import org.bukkit.block.TileState
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.block.BlockBreakEvent
 import org.bukkit.event.block.BlockDamageEvent
+import org.bukkit.persistence.PersistentDataType
 import java.util.*
 
 /**
@@ -20,9 +23,11 @@ import java.util.*
  *   - Only the owner can break the protection.
  *   - Trusted members can access the container, but not break the protection.
  *
- *   + checking UUIDs instead of nicknames is safer since nicknames can be changed at any time.
+ *   + checking UUIDs _and_ Nicknames is safer since nicknames can be changed at any time, so double the safety.
  */
-class Lock : Listener {
+class Lock(pluginInstance: Main) : Listener {
+    private val key = NamespacedKey(pluginInstance, "key")
+
     /**
      * Called when a player tries to punch a block.
      */
@@ -31,14 +36,15 @@ class Lock : Listener {
         with(event) {
             if (!player.isSneaking) return
             val bState = block.state // capture once
-            if (bState is Lockable) {
-                val bLockable = (bState as Lockable)
-                if (!bLockable.isLocked) {
+            player.sendMessage("$block\n\n$bState")
+            if (bState is TileState) {
+                if (isLocked(bState)) {
+                    player.sendMessage("Ce ${block.type} appartient à ${getData(bState)?.split(",")?.get(-1)}.")
+                }
+                else {
                     lock(block, player)
                     player.sendMessage("Ce ${block.type} vous appartient désormais.")
                 }
-                else
-                    player.sendMessage("Ce ${block.type} appartient à ${Bukkit.getPlayer(UUID.fromString(bLockable.lock))?.name}.")
             }
         }
     }
@@ -51,15 +57,14 @@ class Lock : Listener {
         //TODO: control thieves and bypasses (one-click break?)
         with(event) {
             val bState = block.state // capture once
-            if (bState is Lockable) {
-                if ((bState as Lockable).isLocked) {
+            if (bState is TileState) {
+                if (isLocked(bState)) {
                     if (player.gameMode == GameMode.CREATIVE || isOwner(block, player)) {
-                        player.sendMessage("Ce bloc était verrouillé.")
+                        player.sendMessage("Ce bloc n'est plus verrouillé.")
                         unlock(block)
-                        return
                     }
                     else {
-                        player.sendMessage("Vous ne pouvez pas faire ça. (propriété de ${Bukkit.getPlayer(UUID.fromString((bState as Lockable).lock))?.name}).")
+                        player.sendMessage("Vous ne pouvez pas faire ça. (propriété de ${getData(bState)?.split(",")?.get(-1)}).")
                         isCancelled = true
                     }
                 }
@@ -73,9 +78,17 @@ class Lock : Listener {
      * @param player, the owner
      */
     private fun lock(container: Block, player: Player) {
+        /*
         val bState = container.state // capture once
         (bState as Lockable).setLock(player.uniqueId.toString())
         bState.update()
+         */
+
+
+
+        if (container.state is TileState) {
+            setData(container.state as TileState, player)
+        }
     }
 
     /**
@@ -83,9 +96,33 @@ class Lock : Listener {
      * @param container, the Container to unlock
      */
     private fun unlock(container: Block) {
+        /*
         val bState = container.state // capture once
         (bState as Lockable).setLock("")
         bState.update()
+         */
+
+
+        if (container.state is TileState) {
+            (container.state as TileState).persistentDataContainer.remove(key)
+        }
+    }
+
+    private fun isLocked(container: TileState): Boolean {
+        return getData(container) != null
+    }
+
+    private fun getData(container: TileState): String? {
+        val data = container.persistentDataContainer
+        if (data.has(key, PersistentDataType.STRING)) {
+            return data.get(key, PersistentDataType.STRING)
+        }
+        return ""
+    }
+
+    private fun setData(container: TileState, player: Player) {
+        container.persistentDataContainer.set(key, PersistentDataType.STRING, player.uniqueId.toString()+","+player.name)
+        container.update()
     }
 
     /**
