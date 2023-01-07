@@ -130,9 +130,9 @@ class Main : SuspendingJavaPlugin() {
 		miniBlocksMenu()
 		orderListingMenu()
 		ownOrdersMenu()
-		rewardMenu()
 		townMenu()
 		rankMenu()
+		rewardMenu()
 
 		// Scheduler
 		Bukkit.getScheduler().runTaskTimerAsynchronously(this, runnable, 0, 20)

@@ -72,8 +72,9 @@ class RewardCommand : BaseCommand() {
 	@Description("Permet de récupérer une récompense journalière.")
 	fun onClaim(sender: Player) {
 		sender.dailyReward.let {
-			it.rewards().getOrNull(it.collected())?.let { reward ->
-				if (it.collect()) {
+			val info = it.toInfo()
+			info.nextReward?.let { reward ->
+				if (info.collect()) {
 					val item = reward.toController().create()
 					sender.give(item)
 
@@ -81,7 +82,7 @@ class RewardCommand : BaseCommand() {
 						.append(Component.text("récupérée !", NamedTextColor.GRAY))
 					sender.sendMessage(feedback)
 				} else {
-					throw ConditionFailedException("Il vous manque ${rewardConfig.dailyPointsToCollect - it.dailyPoints()} points.")
+					throw ConditionFailedException("Il vous manque ${info.remainingPointsForNextReward} points.")
 				}
 			} ?: throw ConditionFailedException("Plus aucune récompense pour aujourd'hui.")
 		}

@@ -10,6 +10,8 @@ class SignEdit : Listener {
 	@EventHandler
 	fun onPlayerClickOnSign(event: PlayerInteractEvent) {
 		with(event) {
+			// TODO: If the sign has a command on click
+			// TODO: Handle protected signs/town chunks
 			if (action == Action.RIGHT_CLICK_BLOCK) {
 				clickedBlock?.let {
 					if (it.state is Sign) {
