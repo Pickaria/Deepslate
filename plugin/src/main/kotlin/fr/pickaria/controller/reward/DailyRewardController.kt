@@ -49,8 +49,9 @@ val OfflinePlayer.dailyReward
  */
 fun DailyReward.canCollect(date: LocalDate = Clock.System.todayIn(currentSystemDefault())): Int {
 	val remainingToCollect = remainingToCollect(date)
+	val today = Clock.System.todayIn(currentSystemDefault())
 
-	return if (lastDay == date && dailyPoints(date) >= rewardConfig.dailyPointsToCollect && remainingToCollect > 0) {
+	return if (lastDay == date && date == today && (dailyPoints(date) >= rewardConfig.dailyPointsToCollect) && (remainingToCollect > 0)) {
 		remainingToCollect
 	} else {
 		0
@@ -75,16 +76,6 @@ fun DailyReward.dailyPoints(date: LocalDate = Clock.System.todayIn(currentSystem
 	if (lastCollectedDate == date) {
 		dailyPoints - (collectedToday * rewardConfig.dailyPointsToCollect)
 	} else if (lastDay == date) {
-		dailyPoints
-	} else {
-		0
-	}
-
-/**
- * Returns the amount of points before the next reward.
- */
-fun DailyReward.totalDailyPoints(date: LocalDate = Clock.System.todayIn(currentSystemDefault())): Int =
-	if (lastDay == date) {
 		dailyPoints
 	} else {
 		0
@@ -142,6 +133,11 @@ fun DailyReward.collect(): Boolean {
 	}
 }
 
+private fun DailyReward.hasStreakReward(date: LocalDate = Clock.System.todayIn(currentSystemDefault())): Boolean {
+	val streak = streak(date)
+	return streak >= rewardConfig.streakRewardEvery && streak % rewardConfig.streakRewardEvery == 0
+}
+
 /**
  * Returns the amount of rewards a player can claim a specific day.
  */
@@ -152,7 +148,7 @@ fun DailyReward.rewardCount(date: LocalDate = Clock.System.todayIn(currentSystem
 		amount++
 	}
 
-	if (streak(date) % rewardConfig.streakRewardEvery == 0) {
+	if (hasStreakReward(date)) {
 		amount++
 	}
 
@@ -162,7 +158,7 @@ fun DailyReward.rewardCount(date: LocalDate = Clock.System.todayIn(currentSystem
 fun DailyReward.rewards(date: LocalDate = Clock.System.todayIn(currentSystemDefault())): List<Reward> {
 	val streak = streak(date)
 
-	val streakReward = if (streak % rewardConfig.streakRewardEvery == 0) {
+	val streakReward = if (hasStreakReward(date)) {
 		val streakNumber = streak / rewardConfig.streakRewardEvery - 1
 		val streakReward = rewardConfig.streakRewards.getOrNull(streakNumber % rewardConfig.streakRewards.size)
 		rewardConfig.rewards[streakReward]

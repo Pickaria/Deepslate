@@ -55,9 +55,9 @@ fun rewardMenu() = menu("reward") {
 
 		val canCollect = playerReward.canCollect(date)
 		val endOfDay = day.with(LocalTime.MAX)
-		val remaining = today.until(endOfDay, ChronoUnit.HOURS)
+		val timeRemaining = today.until(endOfDay, ChronoUnit.HOURS)
 		val isCollected = playerReward.remainingToCollect(date) == 0
-		val isDayToCollect = !isCollected && remaining in 0..24
+		val isDayToCollect = !isCollected && timeRemaining in 0..24
 		val unlockIn = today.until(day.with(LocalTime.MIN), ChronoUnit.HOURS)
 
 		val collected = playerReward.collected(date)
@@ -81,7 +81,7 @@ fun rewardMenu() = menu("reward") {
 					}
 				} else {
 					keyValues {
-						"Temps restants" to "$remaining heures"
+						"Temps restants" to "$timeRemaining heures"
 						"Points collectés" to "${playerReward.dailyPoints(date)} / ${rewardConfig.dailyPointsToCollect}"
 						"Récompenses récupérées" to "$collected / ${playerReward.rewardCount(date)}"
 						"Série" to playerReward.streak(date)
@@ -95,7 +95,7 @@ fun rewardMenu() = menu("reward") {
 
 			editMeta { meta ->
 				val bundle = (meta as BundleMeta)
-				if (0 <= remaining && !isCollected) {
+				if (0 <= timeRemaining && !isCollected) {
 					rewards.drop(collected).forEach {
 						bundle.addItem(it.toController().create())
 					}
