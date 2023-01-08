@@ -1,70 +1,48 @@
 package fr.pickaria.vue.town
 
-import com.palmergames.bukkit.towny.TownyAPI
 import fr.pickaria.controller.town.isTownBook
 import fr.pickaria.controller.town.openTownBook
-import fr.pickaria.controller.town.townId
 import org.bukkit.Material
 import org.bukkit.block.Lectern
+import org.bukkit.event.Event
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.block.Action
-import org.bukkit.event.block.BlockBreakEvent
 import org.bukkit.event.player.PlayerInteractEvent
-import org.bukkit.event.player.PlayerTakeLecternBookEvent
 import org.bukkit.inventory.LecternInventory
-import java.util.*
 import org.bukkit.block.data.type.Lectern as LecternData
 
 class BookListeners : Listener {
-	@EventHandler
-	fun onPlayerTakeLecternBook(event: PlayerTakeLecternBookEvent) {
-		with(event) {
-			if (book?.isTownBook() == true) {
-				isCancelled = true
-			}
-		}
-	}
-
-	@EventHandler
-	fun onBreakLectern(event: BlockBreakEvent) {
-		with(event) {
-			if (block.type == Material.LECTERN) {
-				((block.state as Lectern).inventory as LecternInventory).book?.let {
-					if (it.isTownBook()) {
-						isCancelled = true
-					}
-				}
-			}
-		}
-	}
-
 	@EventHandler
 	fun onPlayerOpenBook(event: PlayerInteractEvent) {
 		with(event) {
 			if (action == Action.RIGHT_CLICK_BLOCK || action == Action.RIGHT_CLICK_AIR) {
 				val isLectern = clickedBlock?.type == Material.LECTERN
-				val isItemBook = item?.isTownBook() == true
 
-				val townId: UUID? = if (!isLectern && isItemBook) {
-					item?.townId
-				} else if (isLectern) {
-					clickedBlock?.let { block ->
-						if ((block.blockData as LecternData).hasBook()) {
-							val book = ((block.state as Lectern).inventory as LecternInventory).book
-							book?.townId
+				val bookItem = if (isLectern) {
+					clickedBlock?.let {
+						if (it.type == Material.LECTERN && (it.blockData as LecternData).hasBook()) {
+							((it.state as Lectern).inventory as LecternInventory).book
 						} else {
 							null
 						}
 					}
 				} else {
-					null
+					item?.let {
+						if (it.type == Material.WRITTEN_BOOK) {
+							it
+						} else {
+							null
+						}
+					}
 				}
 
-				townId?.let { id ->
-					TownyAPI.getInstance().getTown(id)?.let {
-						player.openTownBook(it)
-						isCancelled = true
+				bookItem?.let {
+					if (it.isTownBook()) {
+						setUseInteractedBlock(Event.Result.DENY)
+						setUseItemInHand(Event.Result.DENY)
+
+						player.openTownBook()
 					}
 				}
 			}

@@ -5,13 +5,11 @@ import com.palmergames.bukkit.towny.TownyUniverse
 import com.palmergames.bukkit.towny.command.TownCommand
 import com.palmergames.bukkit.towny.exceptions.TownyException
 import fr.pickaria.Main
-import fr.pickaria.controller.town.getTownBook
 import fr.pickaria.controller.town.isTownBanner
 import fr.pickaria.controller.town.townId
 import fr.pickaria.model.town.flag
 import fr.pickaria.model.town.townConfig
 import fr.pickaria.shared.MiniMessage
-import fr.pickaria.shared.give
 import net.kyori.adventure.audience.Audience
 import net.kyori.adventure.key.Key
 import net.kyori.adventure.sound.Sound
@@ -144,9 +142,6 @@ class BannerListeners : Listener {
 					townCreatedAnimation(block.location, player, itemInHand.itemMeta.displayName() ?: Component.empty())
 
 					block.townId = town.uuid
-
-					val book = getTownBook(town)
-					player.give(book)
 				} else {
 					// This should never happen
 					player.sendMessage(Component.text("La ville n'a pas été créée.", NamedTextColor.RED))

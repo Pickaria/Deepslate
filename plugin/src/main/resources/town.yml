@@ -17,6 +17,15 @@ no_permission: Vous n'avez pas le droit d'effectuer cette action.
 kicked: <red>Vous avez été expulsé de la ville <gold><town><gray>.
 kick_success: <gold><player><red> a été expulsé de la ville <gold><town><gray>.
 
+no_town: |-2
+  <b>Vagabond</b>
+
+  <gray>Vous n'avez pas encore de ville.</gray>
+
+  ⇒ <click:run_command:/menu towns><hover:show_text:'Cliquez pour voir la liste des villes'><blue><u>Rejoindre</u></blue></hover></click>
+
+  ⇒ <click:suggest_command:/town create><hover:show_text:'Cliquez pour créer une ville à votre position'><blue><u>Fonder</u></blue></hover></click>
+
 page: |-2
   <b><town-name></b>
 

@@ -32,6 +32,9 @@ data class TownConfig(
 
 	val page: String,
 
+	@SerialName("no_town")
+	val noTown: String,
+
 	val header: String,
 
 	@SerialName("town_row")

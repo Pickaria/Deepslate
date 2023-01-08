@@ -2,6 +2,7 @@ package fr.pickaria.controller.shop
 
 import fr.pickaria.controller.economy.CurrencyBundle
 import fr.pickaria.controller.reforge.getAttributeItem
+import fr.pickaria.controller.town.TownHallRegister
 import fr.pickaria.model.artefact.artefactConfig
 import fr.pickaria.model.artefact.toController
 import fr.pickaria.model.economy.Credit
@@ -59,8 +60,11 @@ fun getTestOffers(): List<MerchantRecipe> = (0..50).map {
 	}
 }
 
-fun getFlagOffers(): List<MerchantRecipe> = BannerType.values().map {
-	CurrencyBundle(it.item()) {
+fun getFlagOffers(): List<MerchantRecipe> =
+	listOf(CurrencyBundle(TownHallRegister.create()) {
 		Credit to 250
+	}) + BannerType.values().map {
+		CurrencyBundle(it.item()) {
+			Credit to 250
+		}
 	}
-}

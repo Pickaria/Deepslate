@@ -102,7 +102,7 @@ fun rewardMenu() = menu("reward") {
 					}
 				}
 
-				meta.addItemFlags(ItemFlag.HIDE_POTION_EFFECTS)
+				meta.addItemFlags(ItemFlag.HIDE_ITEM_SPECIFICS)
 
 				if (info.isCollectionDay && info.canCollectRewards > 0) {
 					meta.addEnchant(GlowEnchantment.instance, 1, true)

@@ -35,7 +35,7 @@ fun townMenu() = menu("towns") {
 
 	towns.forEachIndexed { index, town ->
 		val flag = town.flag.apply {
-			addItemFlags(ItemFlag.HIDE_ATTRIBUTES, ItemFlag.HIDE_POTION_EFFECTS)
+			addItemFlags(ItemFlag.HIDE_ATTRIBUTES, ItemFlag.HIDE_ITEM_SPECIFICS)
 		}
 
 		val registered = Instant.fromEpochMilliseconds(town.registered)
