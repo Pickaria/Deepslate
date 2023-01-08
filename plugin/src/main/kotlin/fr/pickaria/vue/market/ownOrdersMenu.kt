@@ -4,13 +4,17 @@ import fr.pickaria.controller.home.addToHome
 import fr.pickaria.menu.*
 import fr.pickaria.model.economy.Credit
 import fr.pickaria.model.market.Order
+import fr.pickaria.shared.MiniMessage
 import net.kyori.adventure.text.Component
 import org.bukkit.Material
 
 internal fun ownOrdersMenu() = menu("orders") {
-	title = Component.text("Mes ventes")
-
 	val count = Order.count(opener)
+
+	title = MiniMessage("<gold><b>Mes ventes</b> <gray>(<amount>)") {
+		"amount" to count
+	}.message
+
 	val pageSize = size - 9
 	val start = page * pageSize
 	val orders = Order.get(opener, pageSize, start.toLong())

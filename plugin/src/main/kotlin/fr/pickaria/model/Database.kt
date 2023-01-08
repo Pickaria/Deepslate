@@ -18,9 +18,12 @@ import org.jetbrains.exposed.sql.transactions.TransactionManager
 import org.jetbrains.exposed.sql.transactions.transaction
 
 fun openDatabase(path: String): Database {
-	// DB_CLOSE_DELAY: Reuse connection
-	// AUTO_SERVER: Enable automatic mixed mode
-	val database = Database.connect("jdbc:h2:$path;DB_CLOSE_DELAY=-1;AUTO_SERVER=TRUE", "org.h2.Driver")
+	val database = Database.connect(
+		url = mainConfig.databaseUrl.replace("\$path", path),
+		user = mainConfig.databaseUser,
+		password = mainConfig.databasePassword,
+		driver = mainConfig.databaseDriver,
+	)
 
 	transaction {
 		SchemaUtils.create(

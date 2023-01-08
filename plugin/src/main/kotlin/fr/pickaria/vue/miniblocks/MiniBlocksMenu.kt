@@ -6,6 +6,8 @@ import fr.pickaria.menu.*
 import fr.pickaria.model.economy.Credit
 import fr.pickaria.model.miniblocks.miniBlocksConfig
 import net.kyori.adventure.text.Component
+import net.kyori.adventure.text.format.NamedTextColor
+import net.kyori.adventure.text.format.TextDecoration
 import org.bukkit.Material
 import java.util.*
 
@@ -23,7 +25,7 @@ private val miniBlockMenuItem = miniBlocksConfig.miniBlocks.random().toControlle
 
 @OptIn(ItemBuilderUnsafe::class)
 fun miniBlocksMenu() = menu("miniblocks") {
-	title = Component.text("Mini blocs")
+	title = Component.text("Mini blocs", NamedTextColor.DARK_BLUE, TextDecoration.BOLD)
 
 	val count = miniBlocksConfig.sortedMiniBlocks.size
 	val pageSize = size - 9

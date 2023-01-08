@@ -16,18 +16,16 @@ import fr.pickaria.model.rank.rankConfig
 import fr.pickaria.shared.GlowEnchantment
 import fr.pickaria.shared.MiniMessage
 import net.kyori.adventure.text.Component
-import net.kyori.adventure.text.format.NamedTextColor
 import net.kyori.adventure.text.format.TextDecoration
 import org.bukkit.Material
 
 
 fun rankMenu() = menu("ranks") {
 	val user = opener.luckPermsUser
-	val group = getGroup(user.primaryGroup)?.displayName() ?: Component.empty()
 
-	title = Component.text("Grades premium", NamedTextColor.DARK_PURPLE, TextDecoration.BOLD)
-		.appendSpace()
-		.append(group)
+	title = MiniMessage("<dark_purple><b>Grades premium</b> <gray>(<group>)") {
+		"group" to (getGroup(user.primaryGroup)?.displayName() ?: Component.empty())
+	}.message
 	rows = 4
 
 	val count = rankConfig.ranks.size

@@ -9,6 +9,7 @@ import fr.pickaria.menu.closeItem
 import fr.pickaria.menu.fill
 import fr.pickaria.menu.menu
 import fr.pickaria.model.job.jobConfig
+import fr.pickaria.shared.MiniMessage
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
 import net.kyori.adventure.text.format.TextDecoration
@@ -23,11 +24,27 @@ private val decimalFormat = DecimalFormat("#.#").also {
 }
 
 internal fun jobMenu() = menu("job") {
-	title = Component.text("Métiers", NamedTextColor.GOLD, TextDecoration.BOLD)
-	rows = 6
-
 	val playerJobs = opener.jobs().associateBy { it.job.toJob() }
 	val activeJobs = playerJobs.filter { (_, job) -> job.active }
+	val jobMessage = when (activeJobs.size) {
+		0 -> {
+			Component.text("(Aucun métier)")
+		}
+
+		1 -> {
+			Component.text("(${activeJobs.keys.first().label})")
+		}
+
+		else -> {
+			MiniMessage("(<amount> métiers)") {
+				"amount" to activeJobs.size
+			}.message
+		}
+	}
+
+	title = Component.text("Métiers", NamedTextColor.DARK_GREEN, TextDecoration.BOLD).appendSpace()
+		.append(jobMessage.color(NamedTextColor.DARK_GRAY).decoration(TextDecoration.BOLD, TextDecoration.State.FALSE))
+	rows = 6
 
 	var x = 4 - activeJobs.size / 2
 	val y = if (activeJobs.isEmpty()) 2 else 3
