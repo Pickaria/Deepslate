@@ -1,10 +1,14 @@
 package fr.pickaria.vue.job
 
 import fr.pickaria.controller.job.events.JobAscentEvent
+import fr.pickaria.controller.job.events.JobJoinedEvent
 import fr.pickaria.controller.job.events.JobLevelUpEvent
-import fr.pickaria.model.advancements.CustomAdvancement
 import fr.pickaria.model.job.LevelUpType
 import fr.pickaria.model.job.jobConfig
+import fr.pickaria.model.reward.rewardConfig
+import fr.pickaria.model.reward.toController
+import fr.pickaria.shared.give
+import fr.pickaria.shared.grantAdvancement
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
 import net.kyori.adventure.title.Title
@@ -36,7 +40,7 @@ class JobListener : Listener {
 			val title = Title.title(mainTitle, subtitle)
 
 			player.showTitle(title)
-			CustomAdvancement.MAXIMUM_JOB_LEVEL.grant(player)
+			player.grantAdvancement(event.job.advancementMaxLevel)
 		}
 	}
 
@@ -45,16 +49,36 @@ class JobListener : Listener {
 		with(event) {
 			val label = job.label
 
-			val experienceBoost = jobConfig.ascent.experienceIncrease * ascentPoints * 100
-			val moneyBoost = jobConfig.ascent.moneyIncrease * ascentPoints * 100
+			val experienceBoost = jobConfig.ascent.experienceIncrease * ascentPointsObtained * 100
+			val moneyBoost = jobConfig.ascent.moneyIncrease * ascentPointsObtained * 100
 
 			player.playSound(player.location, Sound.ENTITY_PLAYER_LEVELUP, 1.0f, 1.0f)
 			player.sendMessage(
-				"§7Vous avez effectué une ascension et collecté §6$ascentPoints§7 points d'ascension dans le métier §6$label§7.\n" +
+				"§7Vous avez effectué une ascension et collecté §6$ascentPointsObtained§7 points d'ascension dans le métier §6$label§7.\n" +
 						"§7Vous obtenez un bonus de §6$experienceBoost%§7 d'expérience ainsi que §6$moneyBoost%§7 de revenus supplémentaires."
 			)
 
-			CustomAdvancement.ASCEND_JOB.grant(player)
+			player.grantAdvancement(job.advancementAscend)
+
+			val index = ascentPointsObtained - 1
+			if (index >= 0) {
+				jobConfig.rewards.getOrNull(index)?.let {
+					rewardConfig.rewards[it]?.toController()?.create()?.let { item ->
+						player.give(item)
+					}
+				}
+			}
+
+			rank?.advancement?.let {
+				player.grantAdvancement(it)
+			}
+		}
+	}
+
+	@EventHandler
+	fun onJobJoined(event: JobJoinedEvent) {
+		with(event) {
+			player.grantAdvancement(job.advancement)
 		}
 	}
 }

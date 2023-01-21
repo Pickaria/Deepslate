@@ -5,6 +5,7 @@ import org.bukkit.Bukkit
 import org.bukkit.NamespacedKey
 import org.bukkit.entity.Player
 
+@Deprecated("")
 enum class CustomAdvancement(private val namespace: NamespacedKey?) {
 	NINE_LIVES(NamespacedKey.fromString("pickaria:9_lives")),
 	INTEGER_LIMIT(NamespacedKey.fromString("pickaria:32bit_limit")),

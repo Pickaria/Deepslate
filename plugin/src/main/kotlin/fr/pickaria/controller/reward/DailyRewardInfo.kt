@@ -1,7 +1,6 @@
 package fr.pickaria.controller.reward
 
 import fr.pickaria.model.reward.DailyReward
-import fr.pickaria.model.reward.Reward
 import fr.pickaria.model.reward.rewardConfig
 import fr.pickaria.model.reward.toMonthDay
 import kotlinx.datetime.*
@@ -10,44 +9,92 @@ import kotlin.math.min
 
 data class DailyRewardInfo(
 	/**
-	 * Amount of collected rewards for this day.
-	 */
-	val collected: Int,
-	/**
 	 * Date of the daily reward.
 	 */
 	val date: LocalDate,
-	/**
-	 * Points collected for this day.
-	 */
-	val totalPoints: Int,
-	/**
-	 * Total amount of rewards to collect.
-	 */
-	val rewardCount: Int,
-	/**
-	 * List of all rewards to be collected.
-	 */
-	val rewards: List<Reward>,
-	/**
-	 * This is a special day.
-	 */
-	val isSpecialDay: Boolean,
-	/**
-	 * Current streak.
-	 */
-	val streak: Int,
-	/**
-	 * This day has a streak reward.
-	 */
-	val hasStreakReward: Boolean,
-	/**
-	 * Weather the streak is validated for this day.
-	 */
-	val streakValidated: Boolean,
 
 	private val dailyReward: DailyReward,
 ) {
+	/**
+	 * This is a special day.
+	 */
+	val isSpecialDay by lazy {
+		rewardConfig.specialDays.contains(date.toMonthDay())
+	}
+
+	/**
+	 * Current streak.
+	 */
+	val streak by lazy {
+		when (dailyReward.lastCollectedDate) {
+			date.minus(1, DateTimeUnit.DAY) -> dailyReward.streak
+			date -> dailyReward.streak - 1
+			else -> 0
+		}
+	}
+
+	/**
+	 * This day has a streak reward.
+	 */
+	val hasStreakReward by lazy {
+		streak >= rewardConfig.streakRewardEvery && streak % rewardConfig.streakRewardEvery == 0
+	}
+
+	/**
+	 * Amount of collected rewards for this day.
+	 */
+	val collected by lazy {
+		if (dailyReward.lastCollectedDate == date) dailyReward.collectedToday else 0
+	}
+
+	/**
+	 * Points collected for this day.
+	 */
+	val totalPoints by lazy {
+		if (dailyReward.lastDay == date) dailyReward.dailyPoints else 0
+	}
+
+	/**
+	 * Weather the streak is validated for this day.
+	 */
+	val streakValidated by lazy {
+		dailyReward.lastCollectedDate == date
+	}
+
+	/**
+	 * List of all rewards to be collected.
+	 */
+	val rewards by lazy {
+		val streakReward = if (hasStreakReward) {
+			val streakNumber = streak / rewardConfig.streakRewardEvery - 1
+			val streakReward = rewardConfig.streakRewards.getOrNull(streakNumber % rewardConfig.streakRewards.size)
+			rewardConfig.rewards[streakReward]
+		} else {
+			null
+		}
+
+		val specialReward = rewardConfig.rewards[rewardConfig.specialDays[date.toMonthDay()]]
+		val defaultReward = rewardConfig.rewards[rewardConfig.defaultReward]
+
+		(1..rewardConfig.rewardPerDay).mapNotNull {
+			defaultReward
+		} + listOfNotNull(streakReward, specialReward)
+	}
+
+	/**
+	 * Total amount of rewards to collect.
+	 */
+	val rewardCount by lazy {
+		rewards.size
+	}
+
+	/**
+	 * If the points can be collected for the last day or it must be collected for a new day.
+	 */
+	val canCollectForDate by lazy {
+		dailyReward.lastDay == date
+	}
+
 	/**
 	 * Remaining rewards to be collected.
 	 */
@@ -119,46 +166,8 @@ data class DailyRewardInfo(
  * @see DailyReward
  * @see DailyRewardInfo
  */
-fun DailyReward.toInfo(date: LocalDate = Clock.System.todayIn(TimeZone.currentSystemDefault())): DailyRewardInfo {
-	val isSpecialDay = rewardConfig.specialDays.contains(date.toMonthDay())
-	val actualStreak = when (lastCollectedDate) {
-		date.minus(1, DateTimeUnit.DAY) -> streak
-		date -> streak - 1
-		else -> 0
-	}
-	val hasStreakReward =
-		actualStreak >= rewardConfig.streakRewardEvery && actualStreak % rewardConfig.streakRewardEvery == 0
-	val collected = if (lastCollectedDate == date) collectedToday else 0
-	val totalPoints = if (lastDay == date) dailyPoints else 0
-	val streakValidated = lastCollectedDate == date
-
-	// Get all rewards
-	val streakReward = if (hasStreakReward) {
-		val streakNumber = actualStreak / rewardConfig.streakRewardEvery - 1
-		val streakReward = rewardConfig.streakRewards.getOrNull(streakNumber % rewardConfig.streakRewards.size)
-		rewardConfig.rewards[streakReward]
-	} else {
-		null
-	}
-
-	val specialReward = rewardConfig.rewards[rewardConfig.specialDays[date.toMonthDay()]]
-	val defaultReward = rewardConfig.rewards[rewardConfig.defaultReward]
-
-	val rewards = (1..rewardConfig.rewardPerDay).mapNotNull {
-		defaultReward
-	} + listOfNotNull(streakReward, specialReward)
-
-
-	return DailyRewardInfo(
-		collected = collected,
+fun DailyReward.toInfo(date: LocalDate = Clock.System.todayIn(TimeZone.currentSystemDefault())): DailyRewardInfo =
+	DailyRewardInfo(
 		date = date,
-		totalPoints = totalPoints,
-		rewardCount = rewards.size,
-		rewards = rewards,
-		isSpecialDay = isSpecialDay,
-		streak = actualStreak,
-		hasStreakReward = hasStreakReward,
-		streakValidated = streakValidated,
 		dailyReward = this,
 	)
-}

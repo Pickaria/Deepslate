@@ -15,6 +15,7 @@ levels:
     maximum_level: 2
     minimum_attributes: 1
     maximum_attributes: 3
+    advancement: pickaria:reforge/damaged
     attributes:
       - attribute: GENERIC_MAX_HEALTH
         random_type: INTEGER
@@ -69,7 +70,6 @@ levels:
         operation: ADD_SCALAR
         target: WEARABLE
 
-
   rusted:
     key: rusted
     display_name: Rouillé
@@ -78,6 +78,7 @@ levels:
     maximum_level: 6
     minimum_attributes: 1
     maximum_attributes: 2
+    advancement: pickaria:reforge/rusted
     attributes:
       - attribute: GENERIC_MAX_HEALTH
         random_type: INTEGER
@@ -137,6 +138,7 @@ levels:
     minimum_level: 0
     maximum_level: 0
     display_name: Commun
+    advancement: pickaria:reforge/common
     color: <grey><name>
 
   uncommon:
@@ -147,6 +149,7 @@ levels:
     maximum_level: 8
     minimum_attributes: 1 # Minimum attributes count for this level, must be > 0, defaults to 0
     maximum_attributes: 1 # Maximum attributes count for this level, must be > minimum, defaults to 0
+    advancement: pickaria:reforge/uncommon
     attributes: # Attributes that can be applied with this level
       # Valid values: GENERIC_MAX_HEALTH GENERIC_KNOCKBACK_RESISTANCE
       # GENERIC_MOVEMENT_SPEED GENERIC_ATTACK_DAMAGE GENERIC_ATTACK_KNOCKBACK
@@ -216,6 +219,7 @@ levels:
     maximum_level: 16
     minimum_attributes: 1
     maximum_attributes: 2
+    advancement: pickaria:reforge/rare
     attributes:
       - attribute: GENERIC_MAX_HEALTH
         random_type: INTEGER
@@ -278,7 +282,7 @@ levels:
     maximum_level: 21
     minimum_attributes: 2
     maximum_attributes: 3
-    advancement: pickaria:epic_stuff
+    advancement: pickaria:reforge/epic
     attributes:
       - attribute: GENERIC_MAX_HEALTH
         random_type: INTEGER
@@ -338,10 +342,10 @@ levels:
     display_name: Légendaire
     color: <rainbow><name>
     minimum_level: 18
-    maximum_level: 64
+    maximum_level: 32
     minimum_attributes: 2
     maximum_attributes: 4
-    advancement: pickaria:legendary_stuff
+    advancement: pickaria:reforge/legendary
     attributes:
       - attribute: GENERIC_MAX_HEALTH
         random_type: INTEGER
@@ -393,5 +397,68 @@ levels:
         random_type: DOUBLE
         minimum: 0.20
         maximum: 0.25
+        operation: ADD_SCALAR
+        target: WEARABLE
+
+  mythic:
+    key: mythic
+    display_name: Mythic
+    color: <red><name>
+    minimum_level: 30
+    maximum_level: 64
+    minimum_attributes: 3
+    maximum_attributes: 5
+    advancement: pickaria:reforge/mythic
+    attributes:
+      - attribute: GENERIC_MAX_HEALTH
+        random_type: INTEGER
+        minimum: 8
+        maximum: 10
+        operation: ADD_NUMBER
+      - attribute: GENERIC_KNOCKBACK_RESISTANCE
+        random_type: DOUBLE
+        minimum: 0.25
+        maximum: 0.30
+        operation: ADD_NUMBER
+        target: WEARABLE
+      - attribute: GENERIC_MOVEMENT_SPEED
+        random_type: DOUBLE
+        minimum: 0.25
+        maximum: 0.30
+        operation: ADD_SCALAR
+      - attribute: GENERIC_ATTACK_DAMAGE
+        random_type: DOUBLE
+        minimum: 0.25
+        maximum: 0.30
+        operation: ADD_SCALAR
+        target: WEAPON
+      - attribute: GENERIC_ATTACK_KNOCKBACK
+        random_type: DOUBLE
+        minimum: 0.25
+        maximum: 0.30
+        operation: ADD_SCALAR
+        target: WEAPON
+      - attribute: GENERIC_ATTACK_SPEED
+        random_type: DOUBLE
+        minimum: 0.25
+        maximum: 0.30
+        operation: ADD_SCALAR
+        target: WEAPON
+      - attribute: GENERIC_ARMOR
+        random_type: DOUBLE
+        minimum: 0.25
+        maximum: 0.30
+        operation: ADD_SCALAR
+        target: WEARABLE
+      - attribute: GENERIC_ARMOR_TOUGHNESS
+        random_type: DOUBLE
+        minimum: 0.25
+        maximum: 0.30
+        operation: ADD_SCALAR
+        target: WEARABLE
+      - attribute: GENERIC_LUCK
+        random_type: DOUBLE
+        minimum: 0.25
+        maximum: 0.30
         operation: ADD_SCALAR
         target: WEARABLE

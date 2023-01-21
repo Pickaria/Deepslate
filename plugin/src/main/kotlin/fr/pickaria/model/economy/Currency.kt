@@ -29,6 +29,8 @@ data class Currency(
 
 	@SerialName("physical_currencies")
 	val physicalCurrencies: List<PhysicalCurrency>,
+
+	val advancements: List<CurrencyAdvancement>? = null,
 ) {
 	@Deprecated("Prefer using the CurrencyController instead.")
 	val economy by lazy {

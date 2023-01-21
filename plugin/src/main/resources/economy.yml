@@ -50,6 +50,15 @@ currencies:
         material: NETHERITE_INGOT
       - value: 1073741824.0
         material: NETHERITE_BLOCK
+    advancements:
+      - amount: 1
+        advancement: pickaria:money/first_credit
+      - amount: 1000000
+        advancement: pickaria:money/millionaire
+      - amount: 1000000000
+        advancement: pickaria:money/billionaire
+      - amount: 2147483647
+        advancement: pickaria:money/32bit_limit
 
   shards:
     description:
@@ -64,6 +73,11 @@ currencies:
     physical_currencies:
       - value: 1.0
         material: ECHO_SHARD
+    advancements:
+      - amount: 1
+        advancement: pickaria:money/first_shard
+      - amount: 64
+        advancement: pickaria:money/64_shards
 
   keys:
     description:

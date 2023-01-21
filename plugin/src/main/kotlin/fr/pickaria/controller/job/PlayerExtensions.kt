@@ -1,11 +1,8 @@
 package fr.pickaria.controller.job
 
 import fr.pickaria.controller.job.events.JobAscentEvent
-import fr.pickaria.model.advancements.CustomAdvancement
-import fr.pickaria.model.job.Job
-import fr.pickaria.model.job.JobModel
-import fr.pickaria.model.job.JobType
-import fr.pickaria.model.job.jobConfig
+import fr.pickaria.controller.job.events.JobJoinedEvent
+import fr.pickaria.model.job.*
 import fr.pickaria.model.now
 import fr.pickaria.shared.MiniMessage
 import fr.pickaria.shared.suffix
@@ -36,7 +33,8 @@ internal infix fun Player.joinJob(jobType: JobType) {
 		active = true
 		lastUsed = now()
 	} ?: JobModel.create(uniqueId, jobType, true)
-	CustomAdvancement.JOIN_JOB.grant(this)
+
+	JobJoinedEvent(this, jobType.toJob()).callEvent()
 }
 
 /**
@@ -48,30 +46,54 @@ internal infix fun Player.leaveJob(jobType: JobType) {
 	}
 }
 
+data class PlayerRank(
+	val jobRank: JobRank?,
+	val points: Int,
+)
+
 /**
  * Get the job rank of a player.
  */
-private fun Player.getRank(): Component {
-	val ascendPoints = JobModel.get(uniqueId).sumOf { it.ascentPoints }
-	for ((points, suffix) in jobConfig.ranks) {
-		if (ascendPoints >= points) {
-			val parsedSuffix = MiniMessage(suffix).message.hoverEvent(
-				HoverEvent.showText(MiniMessage(jobConfig.rankHover) {
-					"points" to ascendPoints.toString()
-				}.message)
-			)
+private val Player.rank: PlayerRank
+	get() {
+		val ascendPoints = JobModel.get(uniqueId).sumOf { it.ascentPoints }
 
-			return parsedSuffix
+		for ((points, jobRank) in jobConfig.ranks) {
+			if (ascendPoints >= points) {
+				return PlayerRank(jobRank, ascendPoints)
+			}
 		}
+
+		return PlayerRank(null, ascendPoints)
 	}
-	return Component.empty()
-}
+
+/**
+ * Get the suffix of the player's job rank.
+ */
+private val Player.rankSuffix: Component
+	get() {
+		val ascendPoints = JobModel.get(uniqueId).sumOf { it.ascentPoints }
+
+		for ((points, jobRank) in jobConfig.ranks) {
+			if (ascendPoints >= points) {
+				jobRank.suffix?.let {
+					val hoverMessage = MiniMessage(jobConfig.rankHover) {
+						"points" to points
+					}.message
+
+					return MiniMessage(it).message.hoverEvent(HoverEvent.showText(hoverMessage))
+				}
+			}
+		}
+
+		return Component.empty()
+	}
 
 /**
  * Returns the time in minutes before the player can leave the given job.
  */
 internal fun Player.getJobCooldown(jobType: JobType): Int {
-	val previousDay = Clock.System.now() - jobConfig.cooldown.hours
+	val previousDay = Clock.System.now() - jobConfig.jobCooldown.hours
 	val job = JobModel.get(uniqueId, jobType)
 
 	return if (job == null || !job.active) {
@@ -82,26 +104,36 @@ internal fun Player.getJobCooldown(jobType: JobType): Int {
 	}
 }
 
-internal infix fun Player.ascentJob(jobType: JobType): Boolean = JobModel.get(uniqueId, jobType)?.let { job ->
+internal fun Player.ascentJob(jobType: JobType): AscentResponse = JobModel.get(uniqueId, jobType)?.let { job ->
+	val now = Clock.System.now()
+	val canAscent: Boolean = job.lastAscent?.let {
+		Clock.System.now() > it.toInstant(TimeZone.currentSystemDefault())
+			.plus(jobConfig.ascentCooldown, DateTimeUnit.HOUR)
+	} ?: true
+
+	if (!canAscent) {
+		return AscentResponse.COOLDOWN
+	}
+
 	jobType.toJob().let { config ->
 		val ascentPoints = getAscentPoints(job, config)
 		if (ascentPoints > 0) {
-			ascentJob(config, job, ascentPoints)
+
+			job.ascentPoints += ascentPoints
+			job.totalExperience += job.experience
+			job.experience = 0.0
+			job.lastAscent = now.toLocalDateTime(TimeZone.currentSystemDefault())
+
+			JobAscentEvent(this, config, ascentPoints, rank.points, rank.jobRank).callEvent()
+
 			refreshDisplayName()
-			true
+			AscentResponse.SUCCESS
 		} else {
-			false
+			AscentResponse.NOT_ENOUGH_POINTS
 		}
 	}
-} ?: false
+} ?: AscentResponse.NOT_IN_JOB
 
-private fun Player.ascentJob(config: Job, job: JobModel, ascentPoints: Int) {
-	job.ascentPoints += ascentPoints
-	job.totalExperience += job.experience
-	job.experience = 0.0
-
-	JobAscentEvent(this, config, ascentPoints).callEvent()
-}
 
 private val miniMessage = net.kyori.adventure.text.minimessage.MiniMessage.miniMessage()
 
@@ -109,7 +141,7 @@ private val miniMessage = net.kyori.adventure.text.minimessage.MiniMessage.miniM
  * Refreshes the player's display name with their job rank.
  */
 internal fun Player.refreshDisplayName() {
-	suffix = miniMessage.serialize(getRank())
+	suffix = miniMessage.serialize(rankSuffix)
 	updateDisplayName()
 }
 

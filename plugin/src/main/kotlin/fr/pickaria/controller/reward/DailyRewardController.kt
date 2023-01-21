@@ -27,7 +27,7 @@ fun OfflinePlayer.addDailyPoint(points: Int) {
 		val today = Clock.System.todayIn(currentSystemDefault())
 		val previousCanCollect = info.canCollectRewards > 0
 
-		if (info.isCollectionDay) {
+		if (info.canCollectForDate) {
 			dailyReward.dailyPoints += points
 		} else {
 			dailyReward.dailyPoints = points

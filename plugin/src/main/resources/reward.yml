@@ -9,11 +9,11 @@ rewards:
       - '<gray>Conteneur de récompenses communes.'
     type: common
     purchasable: true
-    #advancement: pickaria:reward
+    advancement: pickaria:reward/common
 
   uncommon:
     loot_table: pickaria:reward/uncommon
-    material: YELLOW_SHULKER_BOX
+    material: LIGHT_BLUE_SHULKER_BOX
     name: '<yellow>Récompense peu commune'
     keys: 10
     shards: 0
@@ -21,6 +21,59 @@ rewards:
       - '<gray>Conteneur de récompenses peu communes.'
     type: uncommon
     purchasable: true
+    advancement: pickaria:reward/uncommon
+
+  rare:
+    loot_table: pickaria:reward/rare
+    material: LIME_SHULKER_BOX
+    name: '<yellow>Récompense rare'
+    keys: 24
+    shards: 0
+    description:
+      - '<gray>Conteneur de récompenses rares.'
+    type: rare
+    purchasable: true
+    advancement: pickaria:reward/rare
+
+  epic:
+    loot_table: pickaria:reward/epic
+    material: PURPLE_SHULKER_BOX
+    name: '<yellow>Récompense épique'
+    keys: 26
+    shards: 1
+    description:
+      - '<gray>Conteneur de récompenses épiques.'
+    type: epic
+    purchasable: true
+    advancement: pickaria:reward/epic
+
+  legendary:
+    loot_table: pickaria:reward/legendary
+    material: YELLOW_SHULKER_BOX
+    name: '<yellow>Récompense légendaire'
+    keys: 48
+    shards: 2
+    description:
+      - '<gray>Conteneur de récompenses légendaires.'
+    type: legendary
+    purchasable: true
+    advancement: pickaria:reward/legendary
+
+  mythic:
+    loot_table: pickaria:reward/mythic
+    material: RED_SHULKER_BOX
+    name: '<yellow>Récompense mythique'
+    keys: 60
+    shards: 3
+    description:
+      - '<gray>Conteneur de récompenses mythiques.'
+    type: mythic
+    purchasable: true
+    advancement: pickaria:reward/mythic
+
+  ###################
+  # SPECIAL REWARDS #
+  ###################
 
   ocean:
     loot_table: pickaria:reward/0608-ocean
@@ -136,5 +189,7 @@ streak_rewards:
   - uncommon
   - rare
   - epic
+  - legendary
+  - mythic
 
 streak_reward_every: 7

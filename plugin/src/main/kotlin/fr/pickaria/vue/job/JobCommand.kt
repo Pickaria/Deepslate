@@ -4,10 +4,7 @@ import co.aikar.commands.*
 import co.aikar.commands.annotation.*
 import fr.pickaria.controller.job.*
 import fr.pickaria.menu.open
-import fr.pickaria.model.job.Job
-import fr.pickaria.model.job.JobModel
-import fr.pickaria.model.job.JobType
-import fr.pickaria.model.job.jobConfig
+import fr.pickaria.model.job.*
 import org.bukkit.entity.Player
 
 @CommandAlias("job|jobs")
@@ -101,8 +98,20 @@ class JobCommand : BaseCommand() {
 	@CommandCompletion("@ownjobs")
 	@Description("Réalise une ascenssion dans le métier indiqué.")
 	fun onAscent(sender: Player, job: Job) {
-		if (!(sender ascentJob job.type)) {
-			throw ConditionFailedException("Vous ne pouvez pas effectuer une ascension pour le métier ${job.label}.")
+		when (sender.ascentJob(job.type)) {
+			AscentResponse.NOT_IN_JOB -> {
+				throw ConditionFailedException("Vous n'exercez actuellement pas le métier ${job.label}.")
+			}
+
+			AscentResponse.NOT_ENOUGH_POINTS -> {
+				throw ConditionFailedException("Vous n'avez pas assez de points pour effectuer une ascension.")
+			}
+
+			AscentResponse.COOLDOWN -> {
+				throw ConditionFailedException("L'ascension ne peut être réalisée que toutes les 8 heures.")
+			}
+
+			else -> {}
 		}
 	}
 

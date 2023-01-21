@@ -1,12 +1,10 @@
 package fr.pickaria.vue.reforge
 
 import fr.pickaria.controller.reforge.*
-import fr.pickaria.model.advancements.CustomAdvancement
 import fr.pickaria.model.reforge.reforgeConfig
 import fr.pickaria.shared.GlowEnchantment
 import fr.pickaria.shared.grantAdvancement
 import org.bukkit.GameMode
-import org.bukkit.attribute.Attribute
 import org.bukkit.enchantments.EnchantmentOffer
 import org.bukkit.enchantments.EnchantmentTarget
 import org.bukkit.event.EventHandler
@@ -20,21 +18,6 @@ import kotlin.math.min
 import kotlin.random.Random
 
 class EnchantListeners : Listener {
-	companion object {
-		private val AUTHORIZED_ATTRIBUTES = listOf(
-			Attribute.GENERIC_MAX_HEALTH,
-			Attribute.GENERIC_FOLLOW_RANGE,
-			Attribute.GENERIC_KNOCKBACK_RESISTANCE,
-			Attribute.GENERIC_MOVEMENT_SPEED,
-			Attribute.GENERIC_ATTACK_DAMAGE,
-			Attribute.GENERIC_ATTACK_KNOCKBACK,
-			Attribute.GENERIC_ATTACK_SPEED,
-			Attribute.GENERIC_ARMOR,
-			Attribute.GENERIC_ARMOR_TOUGHNESS,
-			Attribute.GENERIC_LUCK,
-		)
-	}
-
 	@EventHandler
 	fun onEnchantItem(event: EnchantItemEvent) {
 		with(event) {
@@ -76,7 +59,6 @@ class EnchantListeners : Listener {
 					item.artefactRarity = level
 
 					enchanter.playSound(reforgeConfig.enchantSound)
-					CustomAdvancement.FIRST_REFORGE.grant(enchanter)
 				}
 			}
 
