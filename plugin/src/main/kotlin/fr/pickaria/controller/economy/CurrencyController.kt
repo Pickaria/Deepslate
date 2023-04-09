@@ -131,6 +131,16 @@ class CurrencyController(val model: Currency) {
 		return itemStack
 	}
 
+	fun item(totalValue: Double): ItemStack {
+		val items = items(totalValue)
+
+		return if (items.size > 1) {
+			bundle(totalValue, items)
+		} else {
+			items.first()
+		}
+	}
+
 	private val formatter = DecimalFormat(model.format).apply {
 		decimalFormatSymbols = decimalFormatSymbols.apply {
 			groupingSeparator = ' '

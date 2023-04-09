@@ -2,12 +2,9 @@ package fr.pickaria.model
 
 import com.charleskorn.kaml.Yaml
 import com.charleskorn.kaml.decodeFromStream
-import fr.pickaria.Main
-import org.bukkit.plugin.java.JavaPlugin
+import fr.pickaria.plugin
 import java.io.File
 import java.io.FileInputStream
-
-private val plugin = JavaPlugin.getProvidingPlugin(Main::class.java)
 
 /**
  * Used to retrieve a resource file.

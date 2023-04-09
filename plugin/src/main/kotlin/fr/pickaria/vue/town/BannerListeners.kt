@@ -4,11 +4,11 @@ import com.palmergames.bukkit.towny.TownyAPI
 import com.palmergames.bukkit.towny.TownyUniverse
 import com.palmergames.bukkit.towny.command.TownCommand
 import com.palmergames.bukkit.towny.exceptions.TownyException
-import fr.pickaria.Main
 import fr.pickaria.controller.town.isTownBanner
 import fr.pickaria.controller.town.townId
 import fr.pickaria.model.town.flag
 import fr.pickaria.model.town.townConfig
+import fr.pickaria.plugin
 import fr.pickaria.shared.MiniMessage
 import net.kyori.adventure.audience.Audience
 import net.kyori.adventure.key.Key
@@ -24,7 +24,6 @@ import org.bukkit.event.Listener
 import org.bukkit.event.block.BlockDropItemEvent
 import org.bukkit.event.block.BlockPlaceEvent
 import org.bukkit.inventory.meta.BannerMeta
-import org.bukkit.plugin.java.JavaPlugin
 import org.bukkit.scheduler.BukkitRunnable
 import kotlin.math.PI
 import kotlin.math.cos
@@ -32,8 +31,6 @@ import kotlin.math.sin
 
 
 class BannerListeners : Listener {
-	private val plugin = JavaPlugin.getProvidingPlugin(Main::class.java)
-
 	private fun Audience.showTitle(title: Component, subtitle: Component = Component.empty()) {
 		showTitle(Title.title(title, subtitle))
 	}

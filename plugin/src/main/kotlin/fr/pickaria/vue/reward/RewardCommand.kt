@@ -68,6 +68,14 @@ class RewardCommand : BaseCommand() {
 		}
 	}
 
+	@CommandCompletion("@reward")
+	@CommandPermission("pickaria.admin.command.givereward")
+	@Subcommand("give")
+	fun onGive(sender: Player, reward: Reward, @Default("1") amount: Int) {
+		val itemStack = reward.toController().create(amount)
+		sender.give(itemStack)
+	}
+
 	@Subcommand("claim")
 	@Description("Permet de récupérer une récompense journalière.")
 	fun onClaim(sender: Player) {

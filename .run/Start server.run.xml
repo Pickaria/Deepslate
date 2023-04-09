@@ -1,11 +1,11 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="Start server" type="JarApplication">
     <option name="JAR_PATH" value="$PROJECT_DIR$/server/server.jar" />
-    <option name="VM_PARAMETERS" value="-Xmx2G -ea" />
+    <option name="VM_PARAMETERS" value="-Xmx8G -ea -XX:HotswapAgent=fatjar" />
     <option name="PROGRAM_PARAMETERS" value="nogui" />
     <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/server" />
     <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="true" />
-    <option name="ALTERNATIVE_JRE_PATH" value="temurin-17" />
+    <option name="ALTERNATIVE_JRE_PATH" value="jbr-17" />
     <method v="2">
       <option name="Gradle.BeforeRunTask" enabled="true" tasks="shadowJar" externalProjectPath="$PROJECT_DIR$" vmOptions="" scriptParameters="" />
     </method>

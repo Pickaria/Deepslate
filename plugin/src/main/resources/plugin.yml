@@ -9,6 +9,7 @@ depend:
   - PickariaSpawner
   - Vault
   - Votifier
+  - Towny
 
 commands:
   menu:

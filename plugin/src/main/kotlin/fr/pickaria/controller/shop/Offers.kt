@@ -30,7 +30,7 @@ fun getArtefactsOffers(): List<MerchantRecipe> = artefactConfig.artefacts.map { 
 
 fun getBankOffers(): List<MerchantRecipe> {
 	return listOf(
-		CurrencyBundle(Key.toController().item()) {
+		CurrencyBundle(Key.toController().item(1.0)) {
 			Credit to 10_000
 		},
 		CurrencyBundle(getAttributeItem(3)) {

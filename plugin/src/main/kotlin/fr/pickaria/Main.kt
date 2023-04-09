@@ -47,11 +47,16 @@ import fr.pickaria.vue.town.BannerListeners
 import fr.pickaria.vue.town.BookListeners
 import fr.pickaria.vue.town.townMenu
 import org.bukkit.Bukkit
+import org.bukkit.plugin.java.JavaPlugin
 
+lateinit var plugin: JavaPlugin
 
 class Main : SuspendingJavaPlugin() {
 	override fun onEnable() {
 		super.onEnable()
+
+		plugin = this
+
 		saveDefaultConfig()
 
 		enableBedrockLibrary()

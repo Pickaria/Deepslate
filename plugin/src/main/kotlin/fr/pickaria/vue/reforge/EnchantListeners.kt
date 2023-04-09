@@ -43,9 +43,11 @@ class EnchantListeners : Listener {
 						Random.nextInt(minAttributes, maxAttributes)
 					} - 1
 
-					val attributes = level.attributes.filter { attribute ->
+					val validAttributes = level.attributes.filter { attribute ->
 						attribute.target.includes(item)
-					}.shuffled().slice(0..attributeCount)
+					}
+					val sliceMax = min(validAttributes.size - 1, attributeCount)
+					val attributes = validAttributes.shuffled().slice(0..sliceMax)
 
 					for (attribute in attributes) {
 						item.addRandomAttributeModifier(attribute)
@@ -82,8 +84,8 @@ class EnchantListeners : Listener {
 				if (it.isAttributeItem()) {
 					isCancelled = false
 
-					val base =
-						(Random.nextInt(1, 8) + floor(enchantmentBonus / 2.0) + Random.nextInt(0, enchantmentBonus))
+					val bonus = if (enchantmentBonus > 0) Random.nextInt(0, enchantmentBonus) else 0
+					val base = (Random.nextInt(1, 8) + floor(enchantmentBonus / 2.0) + bonus)
 					val top = floor(max(base / 3, 1.0))
 					val middle = floor((base / 2) / 3 + 1)
 					val bottom = floor(max(base, enchantmentBonus * 2.0))

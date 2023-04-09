@@ -12,6 +12,7 @@ import fr.pickaria.model.economy.Currency
 import fr.pickaria.model.economy.economyConfig
 import fr.pickaria.model.economy.toController
 import fr.pickaria.shared.MiniMessage
+import fr.pickaria.shared.give
 import org.bukkit.entity.Player
 
 @CommandAlias("money|bal|balance")
@@ -36,5 +37,7 @@ class MoneyCommand : BaseCommand() {
 		MiniMessage(economyConfig.balanceMessage) {
 			"balance" to currency.toController().format(player.balance(currency))
 		}.send(player)
+
+		player.give(currency.toController().bundle(1.0))
 	}
 }
