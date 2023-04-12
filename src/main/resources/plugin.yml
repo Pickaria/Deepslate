@@ -5,15 +5,9 @@ main: fr.pickaria.Main
 author: Quozul
 description: The main plugin of Pickaria.
 depend:
-  - Bookshelf
   - PickariaSpawner
 softdepend:
   - Vault
-
-commands:
-  menu:
-    usage: /menu
-    description: Ouvre le menu du serveur.
 
 permissions:
   pickaria.messages.join:
