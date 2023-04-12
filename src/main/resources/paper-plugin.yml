@@ -1,0 +1,19 @@
+name: Deepslate
+version: 1.0
+api-version: 1.19
+main: fr.pickaria.Main
+author: Quozul
+description: The main plugin of Pickaria.
+loader: fr.pickaria.Loader
+
+dependencies:
+  - name: PickariaSpawner
+    required: true
+    bootstrap: false
+  - name: Vault
+    required: true
+    bootstrap: false
+
+load-after:
+  - name: PickariaSpawner
+    bootstrap: false
