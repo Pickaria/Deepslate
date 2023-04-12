@@ -5,7 +5,6 @@ main: fr.pickaria.Main
 author: Quozul
 description: The main plugin of Pickaria.
 depend:
-  - Bookshelf
   - PickariaSpawner
 softdepend:
   - Vault
