@@ -20,7 +20,7 @@ repositories {
 }
 
 dependencies {
-	implementation("org.jetbrains.kotlin:kotlin-stdlib:1.8.20")
+	compileOnly("org.jetbrains.kotlin:kotlin-stdlib:1.8.20")
 	compileOnly("org.jetbrains.kotlin:kotlin-reflect:1.8.20")
 	compileOnly("org.jetbrains.kotlinx:kotlinx-datetime:0.4.0")
 	compileOnly("org.jetbrains.kotlinx:kotlinx-serialization-json:1.5.0")
@@ -35,7 +35,7 @@ dependencies {
 	compileOnly("org.jetbrains.exposed:exposed-jdbc:0.41.1")
 	compileOnly("org.jetbrains.exposed:exposed-kotlin-datetime:0.41.1")
 	compileOnly("com.h2database:h2:2.1.214")
-	compileOnly("fr.pickaria:bedrock:1.0.18-SNAPSHOT")
+	compileOnly("fr.pickaria:bedrock:1.0.19-SNAPSHOT")
 	compileOnly("fr.pickaria:spawner:1.0.8-SNAPSHOT")
 	compileOnly("com.charleskorn.kaml:kaml:0.53.0")
 }
