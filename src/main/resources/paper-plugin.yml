@@ -10,6 +10,9 @@ dependencies:
   - name: PickariaSpawner
     required: true
     bootstrap: false
+  - name: Vault
+    required: true
+    bootstrap: false
 
 load-after:
   - name: PickariaSpawner

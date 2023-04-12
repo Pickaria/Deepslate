@@ -9,11 +9,6 @@ depend:
 softdepend:
   - Vault
 
-commands:
-  menu:
-    usage: /menu
-    description: Ouvre le menu du serveur.
-
 permissions:
   pickaria.messages.join:
     description: Allow the join message to be visible.

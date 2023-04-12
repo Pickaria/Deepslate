@@ -1,5 +1,3 @@
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
-
 plugins {
 	id("java")
 	kotlin("jvm") version "1.8.20"
@@ -29,7 +27,7 @@ dependencies {
 	implementation("org.jetbrains.kotlin:kotlin-reflect:1.8.20")
 	implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.4.0")
 	implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.5.0")
-	implementation("co.aikar:acf-paper:0.5.1-SNAPSHOT")
+	compileOnly("co.aikar:acf-paper:0.5.1-SNAPSHOT")
 	implementation("com.github.shynixn.mccoroutine:mccoroutine-bukkit-api:2.11.0")
 	implementation("com.github.shynixn.mccoroutine:mccoroutine-bukkit-core:2.11.0")
 	implementation("org.jetbrains.exposed:exposed-core:0.41.1")
@@ -41,12 +39,9 @@ dependencies {
 	implementation("com.charleskorn.kaml:kaml:0.53.0")
 }
 
-tasks.withType<KotlinCompile> {
-	kotlinOptions.jvmTarget = "17"
-}
-
 tasks {
 	compileKotlin {
+		kotlinOptions.jvmTarget = "17"
 		kotlinOptions.javaParameters = true
 	}
 
