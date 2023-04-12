@@ -1,37 +1,33 @@
 package fr.pickaria.model.town
 
-import com.palmergames.bukkit.towny.`object`.Town
-import com.palmergames.bukkit.towny.`object`.metadata.StringDataField
-import kotlinx.serialization.cbor.Cbor
-import kotlinx.serialization.decodeFromByteArray
-import kotlinx.serialization.encodeToByteArray
-import org.bukkit.Material
+import fr.pickaria.model.now
 import org.bukkit.inventory.ItemStack
-import org.bukkit.inventory.meta.BannerMeta
-import java.util.*
+import org.jetbrains.exposed.dao.IntEntity
+import org.jetbrains.exposed.dao.IntEntityClass
+import org.jetbrains.exposed.dao.id.EntityID
+import org.jetbrains.exposed.dao.id.IntIdTable
+import org.jetbrains.exposed.sql.kotlin.datetime.datetime
 
-private fun ByteArray.toBase64(): String = String(Base64.getEncoder().encode(this))
-private fun String.fromBase64(): ByteArray = Base64.getDecoder().decode(this)
+object Towns : IntIdTable() {
+	val name = varchar("name", 32)
+	val flag = binary("flag", 2048)
+	val createdAt = datetime("created_at").clientDefault { now() }
+	val isOpen = bool("is_open").default(false)
+}
+
+class Town(id: EntityID<Int>) : IntEntity(id) {
+	companion object : IntEntityClass<Town>(Towns)
+
+	var name by Towns.name
+	var rawFlag by Towns.flag
+	var isOpen by Towns.isOpen
+	val createdAt by Towns.createdAt
+
+	val members by Resident referrersOn Residents.town
+}
 
 var Town.flag: ItemStack
-	get() {
-		val metadata = getMetadata("flag", StringDataField::class.java) ?: return ItemStack(Material.WHITE_BANNER)
-		val decoded = Cbor.decodeFromByteArray<Flag>(metadata.value.fromBase64())
-
-		return ItemStack(decoded.material).apply {
-			editMeta { meta ->
-				(meta as BannerMeta).patterns = decoded.patterns.map { pattern -> pattern.toPattern() }
-			}
-		}
-	}
+	get() = ItemStack.deserializeBytes(rawFlag)
 	set(value) {
-		val patterns = (value.itemMeta as BannerMeta).patterns.map {
-			SerializedPattern(it.color, it.pattern)
-		}
-
-		val flag = Cbor.encodeToByteArray(Flag(value.type, patterns))
-		val flagData = StringDataField("flag", flag.toBase64())
-
-		addMetaData(flagData)
-		save()
+		rawFlag = value.serializeAsBytes()
 	}

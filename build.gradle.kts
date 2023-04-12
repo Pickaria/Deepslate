@@ -14,15 +14,12 @@ repositories {
 	maven("https://maven.quozul.dev/snapshots")
 	maven("https://repo.aikar.co/content/groups/aikar/") // ACF
 	maven("https://jitpack.io") // Vault
-	maven("https://repo.glaremasters.me/repository/towny/") // Towny
 }
 
 dependencies {
 	compileOnly("io.papermc.paper:paper-api:1.19.4-R0.1-SNAPSHOT")
-	compileOnly("com.palmergames.bukkit.towny:towny:0.99.0.0")
 	compileOnly("com.github.MilkBowl:VaultAPI:1.7.1")
 	compileOnly("fr.pickaria:spawner:1.0.8-SNAPSHOT")
-	compileOnly("com.palmergames.bukkit.towny:towny:0.99.0.0")
 	compileOnly("net.luckperms:api:5.4")
 	compileOnly("com.github.NuVotifier:NuVotifier:2.7.2")
 

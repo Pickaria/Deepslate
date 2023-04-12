@@ -71,7 +71,6 @@ Following are the platform's dependencies required for this plugin to work:
 - Platform: [PaperMC](https://papermc.io/)
 - Economy: [Vault](https://www.spigotmc.org/resources/vault.34315/)
 - Permissions: [LuckPerms](https://luckperms.net/)
-- Town management: [Towny](https://github.com/TownyAdvanced/Towny)
 - Vote notifications: [NuVotifier](https://www.spigotmc.org/resources/nuvotifier.13449/)
 
 ### Working on the project

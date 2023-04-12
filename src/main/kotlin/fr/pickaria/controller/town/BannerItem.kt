@@ -62,15 +62,9 @@ var ItemStack.townId: UUID?
 		}
 	}
 
-var Block.townId: UUID?
+var Block.townId: Int?
 	get() = if (type.isBanner) {
-		(state as Banner).persistentDataContainer.get(
-			townNamespace, PersistentDataType.STRING
-		)?.let {
-			UUID.fromString(
-				it
-			)
-		}
+		(state as Banner).persistentDataContainer.get(townNamespace, PersistentDataType.INTEGER)
 	} else {
 		null
 	}
@@ -78,9 +72,7 @@ var Block.townId: UUID?
 		if (type.isBanner) {
 			val banner = state as Banner
 			value?.let {
-				banner.persistentDataContainer.set(
-					townNamespace, PersistentDataType.STRING, it.toString()
-				)
+				banner.persistentDataContainer.set(townNamespace, PersistentDataType.INTEGER, it)
 			} ?: banner.persistentDataContainer.remove(townNamespace)
 			banner.update()
 		}

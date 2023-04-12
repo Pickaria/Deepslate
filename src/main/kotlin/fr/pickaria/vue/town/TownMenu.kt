@@ -1,13 +1,10 @@
 package fr.pickaria.vue.town
 
-import com.palmergames.bukkit.towny.TownyAPI
 import fr.pickaria.controller.home.addToHome
 import fr.pickaria.menu.*
+import fr.pickaria.model.town.Town
 import fr.pickaria.model.town.flag
-import kotlinx.datetime.Instant
-import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toJavaLocalDateTime
-import kotlinx.datetime.toLocalDateTime
 import net.kyori.adventure.text.Component
 import org.bukkit.Material
 import org.bukkit.inventory.ItemFlag
@@ -20,8 +17,7 @@ import kotlin.math.ceil
 fun townMenu() = menu("towns") {
 	title = Component.text("Villes")
 
-	val towny = TownyAPI.getInstance()
-	val count = towny.towns.size
+	val count = Town.count()
 
 	rows = (ceil(count / 9.0).toInt())
 		.inc()
@@ -30,7 +26,7 @@ fun townMenu() = menu("towns") {
 
 	val pageSize = (size - 9).coerceAtLeast(9)
 	val start = page * pageSize
-	val towns = towny.towns.slice(start until (start + pageSize).coerceAtMost(count))
+	val towns = Town.all().limit(pageSize, start.toLong())
 	val maxPage = (count - 1) / pageSize
 
 	towns.forEachIndexed { index, town ->
@@ -38,9 +34,7 @@ fun townMenu() = menu("towns") {
 			addItemFlags(ItemFlag.HIDE_ATTRIBUTES, ItemFlag.HIDE_ITEM_SPECIFICS)
 		}
 
-		val registered = Instant.fromEpochMilliseconds(town.registered)
-			.toLocalDateTime(TimeZone.currentSystemDefault())
-			.toJavaLocalDateTime()
+		val registered = town.createdAt.toJavaLocalDateTime()
 
 		val formatted = DateTimeFormatter
 			.ofLocalizedDate(FormatStyle.FULL)
@@ -59,7 +53,7 @@ fun townMenu() = menu("towns") {
 			lore {
 				keyValues {
 //					"Solde" to Credit.economy.format(town.account.holdingBalance)
-					"Résidents" to town.numResidents
+					"Résidents" to town.members.count()
 					"Date de création" to formatted
 				}
 
@@ -74,7 +68,7 @@ fun townMenu() = menu("towns") {
 
 	previousPage()
 	closeItem()
-	nextPage(maxPage)
+	nextPage(maxPage.toInt())
 }.addToHome(Material.WHITE_BANNER, Component.text("Villes")) {
 	description {
 		-"Répertoire des villes du serveur."

@@ -1,17 +1,17 @@
 package fr.pickaria.controller.town
 
-import com.palmergames.bukkit.towny.TownyAPI
-import com.palmergames.bukkit.towny.exceptions.NotRegisteredException
-import com.palmergames.bukkit.towny.`object`.Resident
-import com.palmergames.bukkit.towny.`object`.Town
+import fr.pickaria.model.town.Resident
+import fr.pickaria.model.town.Residents
+import fr.pickaria.model.town.Town
 import org.bukkit.entity.Player
+import org.jetbrains.exposed.sql.transactions.transaction
 
 val Player.resident: Resident?
-	get() = TownyAPI.getInstance().getResident(this)
+	get() = transaction {
+		Resident.find {
+			Residents.playerUuid eq this@resident.uniqueId
+		}.firstOrNull()
+	}
 
 val Player.town: Town?
-	get() = try {
-		resident?.town
-	} catch (_: NotRegisteredException) {
-		null
-	}
+	get() = resident?.town

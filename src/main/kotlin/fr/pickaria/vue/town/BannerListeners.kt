@@ -1,15 +1,12 @@
 package fr.pickaria.vue.town
 
-import com.palmergames.bukkit.towny.TownyAPI
-import com.palmergames.bukkit.towny.TownyUniverse
-import com.palmergames.bukkit.towny.command.TownCommand
-import com.palmergames.bukkit.towny.exceptions.TownyException
 import fr.pickaria.controller.town.isTownBanner
 import fr.pickaria.controller.town.townId
+import fr.pickaria.model.town.Resident
+import fr.pickaria.model.town.Town
 import fr.pickaria.model.town.flag
 import fr.pickaria.model.town.townConfig
 import fr.pickaria.plugin
-import fr.pickaria.shared.MiniMessage
 import net.kyori.adventure.audience.Audience
 import net.kyori.adventure.key.Key
 import net.kyori.adventure.sound.Sound
@@ -25,6 +22,7 @@ import org.bukkit.event.block.BlockDropItemEvent
 import org.bukkit.event.block.BlockPlaceEvent
 import org.bukkit.inventory.meta.BannerMeta
 import org.bukkit.scheduler.BukkitRunnable
+import org.jetbrains.exposed.sql.transactions.transaction
 import kotlin.math.PI
 import kotlin.math.cos
 import kotlin.math.sin
@@ -86,21 +84,7 @@ class BannerListeners : Listener {
 	@EventHandler
 	fun onBannerPlaced(event: BlockPlaceEvent) {
 		with(event) {
-			itemInHand.townId?.let { townId ->
-				TownyAPI.getInstance().getTown(block.location)?.let { town ->
-					if (town.uuid == townId) {
-						block.townId = townId
-
-						// TODO: Move town home block and spawn
-					} else {
-						setBuild(false)
-						isCancelled = false
-
-						MiniMessage("<red>La bannière d'une ville doit être placée dans la ville.")
-							.send(player)
-					}
-				}
-			} ?: if (itemInHand.isTownBanner()) {
+			if (itemInHand.isTownBanner()) {
 				if (!itemInHand.itemMeta.hasDisplayName()) {
 					player.sendMessage(townConfig.townNameMissing)
 					setBuild(false)
@@ -109,44 +93,23 @@ class BannerListeners : Listener {
 
 				val displayName = itemInHand.itemMeta.displayName
 
-				val town = try {
-					TownCommand.newTown(
-						player,
-						displayName,
-						TownyUniverse.getInstance().getResident(player.uniqueId),
-						true
-					)
+				val town = transaction {
+					val town = Town.new {
+						name = displayName
+						flag = itemInHand
+					}
 
-					TownyAPI.getInstance().getTown(displayName)
-				} catch (exception: TownyException) {
-					val message = exception.getMessage(player)
-					player.sendMessage(message)
-					setBuild(false)
-					isCancelled = true
-					return
-				} catch (exception: Exception) {
-					player.sendMessage(Component.text("Une erreur inconnue est survenue.", NamedTextColor.RED))
-					exception.printStackTrace()
-					setBuild(false)
-					isCancelled = true
-					return
+					Resident.new {
+						this.town = town
+						playerUuid = player.uniqueId
+					}
+
+					town
 				}
 
-				if (town != null) {
-					town.flag = itemInHand
-					town.save()
+				townCreatedAnimation(block.location, player, itemInHand.itemMeta.displayName() ?: Component.empty())
 
-					townCreatedAnimation(block.location, player, itemInHand.itemMeta.displayName() ?: Component.empty())
-
-					block.townId = town.uuid
-				} else {
-					// This should never happen
-					player.sendMessage(Component.text("La ville n'a pas été créée.", NamedTextColor.RED))
-					setBuild(false)
-					isCancelled = true
-					return
-				}
-			} else {
+				block.townId = town.id.value
 			}
 		}
 	}

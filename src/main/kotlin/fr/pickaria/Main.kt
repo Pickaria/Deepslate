@@ -14,7 +14,6 @@ import fr.pickaria.model.rank.rankListener
 import fr.pickaria.model.shop.ShopOffer
 import fr.pickaria.model.town.BannerType
 import fr.pickaria.vue.PingCommand
-import fr.pickaria.vue.SignEdit
 import fr.pickaria.vue.artefact.ArtefactListeners
 import fr.pickaria.vue.artefact.SmithingListeners
 import fr.pickaria.vue.chat.ChatFormat
@@ -89,7 +88,6 @@ class Main : SuspendingJavaPlugin() {
 		registerEvents<Trader>()
 		registerEvents<VoteListeners>()
 		registerEvents<Wizard>()
-		registerEvents<SignEdit>()
 		registerEvents<MiniBlockListener>()
 		rankListener()
 

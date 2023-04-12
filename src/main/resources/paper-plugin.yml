@@ -13,12 +13,17 @@ dependencies:
   - name: Vault
     required: true
     bootstrap: false
-  - name: Towny
+  - name: Votifier
+    required: true
+    bootstrap: false
+  - name: LuckPerms
     required: true
     bootstrap: false
 
 load-after:
   - name: PickariaSpawner
     bootstrap: false
-  - name: Towny
+  - name: Votifier
+    bootstrap: false
+  - name: LuckPerms
     bootstrap: false
