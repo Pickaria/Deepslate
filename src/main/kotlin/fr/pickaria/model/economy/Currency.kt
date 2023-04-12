@@ -6,7 +6,6 @@ import fr.pickaria.model.serializers.SoundSerializer
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import net.kyori.adventure.sound.Sound
-import java.util.*
 
 @Serializable
 data class Currency(

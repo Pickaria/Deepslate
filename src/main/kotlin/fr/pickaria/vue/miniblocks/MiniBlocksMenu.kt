@@ -9,7 +9,6 @@ import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
 import net.kyori.adventure.text.format.TextDecoration
 import org.bukkit.Material
-import java.util.*
 
 private val miniBlockMenuItem = miniBlocksConfig.miniBlocks.random().toController().create().apply {
 	editMeta {
