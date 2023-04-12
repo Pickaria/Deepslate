@@ -4,27 +4,21 @@ api-version: 1.19
 main: fr.pickaria.Main
 author: Quozul
 description: The main plugin of Pickaria.
+loader: fr.pickaria.Loader
+
 dependencies:
-  - name: Bookshelf
-    required: true
-    bootstrap: false
   - name: PickariaSpawner
     required: true
     bootstrap: false
   - name: Vault
     required: true
     bootstrap: false
-  - name: Votifier
-    required: true
-    bootstrap: false
   - name: Towny
     required: true
     bootstrap: false
-  - name: LuckPerms
-    required: true
-    bootstrap: false
+
 load-after:
-  - name: Bookshelf
+  - name: PickariaSpawner
     bootstrap: false
-  - name: LuckPerms
+  - name: Towny
     bootstrap: false

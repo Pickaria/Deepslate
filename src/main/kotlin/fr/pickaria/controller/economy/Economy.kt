@@ -105,6 +105,7 @@ class Economy(
 
 	// Bank methods
 
+	@Deprecated("Deprecated in Java")
 	override fun createBank(name: String?, player: String?): EconomyResponse =
 		EconomyResponse(0.0, 0.0, ResponseType.NOT_IMPLEMENTED, "We do not support bank accounts!")
 

@@ -146,6 +146,7 @@ class BannerListeners : Listener {
 					isCancelled = true
 					return
 				}
+			} else {
 			}
 		}
 	}

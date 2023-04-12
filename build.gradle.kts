@@ -1,53 +1,73 @@
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
-
 plugins {
-	kotlin("jvm")
-	kotlin("plugin.serialization")
-	id("com.github.johnrengelman.shadow")
-	id("fr.pickaria.redstone")
+	id("java")
+	kotlin("jvm") version "1.8.20"
+	kotlin("plugin.serialization") version "1.8.20"
 }
 
 group = "fr.pickaria"
 version = "1.0-SNAPSHOT"
 
-dependencies {
-	compileOnly(libs.kotlin.stdlib)
-	compileOnly(libs.kotlin.reflect)
-	compileOnly(libs.kotlinx.datetime)
-	compileOnly(libs.kotlinx.serialization.json)
-	compileOnly(libs.kotlinx.serialization.cbor)
-
-	compileOnly(libs.paper)
-	compileOnly(libs.vault)
-	compileOnly(libs.acf)
-	compileOnly(libs.mccoroutine.api)
-	compileOnly(libs.mccoroutine.core)
-	compileOnly(libs.towny)
-	compileOnly(libs.luckperms)
-	compileOnly(libs.nuvotifier)
-
-	compileOnly(libs.exposed.core)
-	compileOnly(libs.exposed.dao)
-	compileOnly(libs.exposed.jdbc)
-	compileOnly(libs.exposed.kotlin.datetime)
-	compileOnly(libs.h2)
-
-	compileOnly(libs.pickaria.spawner)
-	compileOnly(libs.pickaria.bedrock)
-
-	compileOnly(libs.kaml)
+repositories {
+	mavenCentral()
+	maven("https://oss.sonatype.org/content/groups/public/")
+	maven("https://repo.papermc.io/repository/maven-public/") // Paper
+	maven("https://maven.quozul.dev/snapshots")
+	maven("https://repo.aikar.co/content/groups/aikar/") // ACF
+	maven("https://jitpack.io") // Vault
+	maven("https://repo.glaremasters.me/repository/towny/") // Towny
 }
 
-tasks.withType<KotlinCompile> {
-	kotlinOptions.jvmTarget = "17"
+dependencies {
+	compileOnly("io.papermc.paper:paper-api:1.19.4-R0.1-SNAPSHOT")
+	compileOnly("com.palmergames.bukkit.towny:towny:0.99.0.0")
+	compileOnly("com.github.MilkBowl:VaultAPI:1.7.1")
+	compileOnly("fr.pickaria:spawner:1.0.8-SNAPSHOT")
+	compileOnly("com.palmergames.bukkit.towny:towny:0.99.0.0")
+	compileOnly("net.luckperms:api:5.4")
+	compileOnly("com.github.NuVotifier:NuVotifier:2.7.2")
+
+	implementation("org.jetbrains.kotlin:kotlin-stdlib:1.8.20")
+	implementation("org.jetbrains.kotlin:kotlin-reflect:1.8.20")
+	implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.4.0")
+	implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.5.0")
+	implementation("org.jetbrains.kotlinx:kotlinx-serialization-cbor:1.5.0")
+	compileOnly("co.aikar:acf-paper:0.5.1-SNAPSHOT")
+	implementation("com.github.shynixn.mccoroutine:mccoroutine-bukkit-api:2.11.0")
+	implementation("com.github.shynixn.mccoroutine:mccoroutine-bukkit-core:2.11.0")
+	implementation("org.jetbrains.exposed:exposed-core:0.41.1")
+	implementation("org.jetbrains.exposed:exposed-dao:0.41.1")
+	implementation("org.jetbrains.exposed:exposed-jdbc:0.41.1")
+	implementation("org.jetbrains.exposed:exposed-kotlin-datetime:0.41.1")
+	implementation("com.h2database:h2:2.1.214")
+	implementation("fr.pickaria:bedrock:1.0.19-SNAPSHOT")
+	implementation("com.charleskorn.kaml:kaml:0.53.0")
 }
 
 tasks {
-	shadowJar {
-		destinationDirectory.set(file("$rootDir/server/plugins")) // Output to test server's plugins folder
+	compileKotlin {
+		kotlinOptions.jvmTarget = "17"
+		kotlinOptions.javaParameters = true
 	}
 
-	compileKotlin {
-		kotlinOptions.javaParameters = true
+	jar {
+		duplicatesStrategy = DuplicatesStrategy.INCLUDE
+
+		destinationDirectory.set(file("server/plugins"))
+
+		manifest {
+			attributes["Main-Class"] = "fr.pickaria.MainKt"
+		}
+
+		from(configurations.runtimeClasspath.get().map { zipTree(it) })
+	}
+}
+
+val targetJavaVersion = 17
+java {
+	val javaVersion = JavaVersion.toVersion(targetJavaVersion)
+	sourceCompatibility = javaVersion
+	targetCompatibility = javaVersion
+	if (JavaVersion.current() < javaVersion) {
+		toolchain.languageVersion.set(JavaLanguageVersion.of(targetJavaVersion))
 	}
 }
