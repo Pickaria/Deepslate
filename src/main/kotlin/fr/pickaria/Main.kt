@@ -31,6 +31,7 @@ import fr.pickaria.vue.shard.GrindstoneListeners
 import fr.pickaria.vue.shop.PlaceShop
 import fr.pickaria.vue.shop.ShopListeners
 import fr.pickaria.vue.teleport.RandomTeleport
+import fr.pickaria.vue.teleport.SpawnTeleport
 import org.bukkit.Bukkit
 import org.bukkit.plugin.java.JavaPlugin
 
@@ -88,6 +89,7 @@ class Main : SuspendingJavaPlugin() {
 
 		// teleport
 		manager.registerCommand(RandomTeleport(this))
+		manager.registerCommand(SpawnTeleport(this))
 
 		orderListingMenu()
 		ownOrdersMenu()

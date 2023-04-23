@@ -42,50 +42,23 @@ import kotlin.math.log2
 import kotlin.math.sin
 import kotlin.random.Random
 
-@CommandAlias("randomteleport|rtp|tpr")
-@CommandPermission("pickaria.command.randomteleport")
-class RandomTeleport(private val plugin: JavaPlugin) : BaseCommand() {
+@CommandAlias("spawn")
+@CommandPermission("pickaria.command.spawnteleport")
+class SpawnTeleport(private val plugin: JavaPlugin) : BaseCommand() {
 
     companion object {
 
-         private val TAG = "HAS_TP_ONGOING"
+        private val TAG = "HAS_TP_ONGOING"
 
-
-        private val EXCLUDED_BLOCKS = setOf(
-            // Oceans
-            Biome.OCEAN,
-            Biome.COLD_OCEAN,
-            Biome.DEEP_OCEAN,
-            Biome.DEEP_COLD_OCEAN,
-            Biome.DEEP_FROZEN_OCEAN,
-            Biome.DEEP_LUKEWARM_OCEAN,
-            Biome.FROZEN_OCEAN,
-            Biome.LUKEWARM_OCEAN,
-            Biome.WARM_OCEAN,
-
-            // Rivers
-            Biome.RIVER,
-            Biome.FROZEN_RIVER,
-
-            // Powder snow biomes
-//			Biome.SNOWY_SLOPES,
-//			Biome.GROVE,
-        )
-
-        private val EXCLUDED_MATERIALS = setOf(
-            Material.MAGMA_BLOCK,
-            Material.CACTUS,
-            Material.POWDER_SNOW,
-        )
     }
 
     // https://github.com/aikar/commands/wiki/Using-ACF
     // https://github.com/aikar/commands/wiki/Locales
     @Default
-    @Description("Vous téléporte aléatoirement autour du spawn.")
-    fun onDefault(player: Player, @Default("1000") maxRadius: UInt) {
-        val location = getRandomLocation(player, maxRadius.toInt())
-        val cost = log2(maxRadius.toDouble()) * teleportConfig.rtpMultiplier
+    @Description("Vous téléporte au spawn.")
+    fun onDefault(player: Player) {
+
+        val cost = log2(500.0) * teleportConfig.rtpMultiplier
 
         val now = Clock.System.now()
             .plus(teleportConfig.delayBetweenTeleports, DateTimeUnit.SECOND)
@@ -111,7 +84,7 @@ class RandomTeleport(private val plugin: JavaPlugin) : BaseCommand() {
 
         if (!containsTaskTag) {
 //            println("cantp")
-            if(canTeleport) {
+            if (canTeleport) {
                 if (player.has(Credit, cost)) {
                     player.sendMessage(teleportConfig.messageBeforeTeleport)
                     MiniMessage("<gray>La téléportation vous a couté <gold><amount><gray>.") {
@@ -121,7 +94,7 @@ class RandomTeleport(private val plugin: JavaPlugin) : BaseCommand() {
 
                     Bukkit.getScheduler().runTaskLater(plugin, Runnable {
                         player.withdraw(Credit, cost)
-                        player.teleport(location)
+                        player.teleport(player.world.spawnLocation)
                         // println("tp")
 //                        println(player.scoreboardTags)
                         val remove = player.scoreboardTags.remove(TAG)
@@ -140,7 +113,7 @@ class RandomTeleport(private val plugin: JavaPlugin) : BaseCommand() {
                 } else {
                     player.sendMessage(economyConfig.notEnoughMoney)
                 }
-            }else{
+            } else {
 //                println(player.scoreboardTags)
 //                val remove = player.scoreboardTags.remove(TAG)
 //                println(remove)
@@ -152,23 +125,6 @@ class RandomTeleport(private val plugin: JavaPlugin) : BaseCommand() {
         }
     }
 
-    private fun getRandomLocation(sender: Player, maxRadius: Int): Location {
-        var tries = 0
-        var x: Double
-        var z: Double
-        var location: Location
-
-        do {
-            val random = Random.nextDouble() * 2 - 1
-            x = cos(random) * maxRadius
-            z = sin(random) * maxRadius
-            location = Location(sender.world, x, 0.0, z)
-            location.y = sender.world.getHighestBlockYAt(location).toDouble()
-        } while (tries++ < 10 && (EXCLUDED_BLOCKS.contains(sender.world.getBiome(location)) || !location.block.type.isSolid || EXCLUDED_MATERIALS.contains(location.block.type)))
-
-        location.y += 1.0
-
-        return location
-    }
 }
+
 

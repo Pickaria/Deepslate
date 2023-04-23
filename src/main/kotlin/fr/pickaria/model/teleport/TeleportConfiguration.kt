@@ -16,6 +16,11 @@ data class TeleportConfiguration(
 
     @SerialName("message_before_teleports")
     val messageBeforeTeleport: String,
+
+    @SerialName("rtp_multiplier")
+    val rtpMultiplier: Int,
+    @SerialName("spawn_multiplier")
+    val spawnMultiplier: Int,
 )
 
 val teleportConfig = Yaml.default.decodeFromStream<TeleportConfiguration>(getResourceFileStream("teleport.yml"))
