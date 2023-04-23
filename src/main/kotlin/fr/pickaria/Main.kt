@@ -30,7 +30,9 @@ import fr.pickaria.vue.reward.rewardMenu
 import fr.pickaria.vue.shard.GrindstoneListeners
 import fr.pickaria.vue.shop.PlaceShop
 import fr.pickaria.vue.shop.ShopListeners
+import fr.pickaria.vue.teleport.RandomTeleport
 import org.bukkit.Bukkit
+import org.bukkit.plugin.java.JavaPlugin
 
 class Main : SuspendingJavaPlugin() {
 	override fun onEnable() {
@@ -83,6 +85,9 @@ class Main : SuspendingJavaPlugin() {
 		manager.registerCommand(CancelOrderCommand())
 		manager.registerCommand(MarketCommand())
 		manager.registerCommand(FakeSellCommand())
+
+		// teleport
+		manager.registerCommand(RandomTeleport(this))
 
 		orderListingMenu()
 		ownOrdersMenu()

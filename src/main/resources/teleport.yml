@@ -1,0 +1,5 @@
+delay_between_teleports: 20
+
+delay_before_teleports: 6
+message_before_teleports: "<gray>Téléportation dans 6 secondes<gray>."
+
