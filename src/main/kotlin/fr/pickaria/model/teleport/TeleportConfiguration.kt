@@ -17,8 +17,18 @@ data class TeleportConfiguration(
     @SerialName("message_before_teleports")
     val messageBeforeTeleport: String,
 
+    @SerialName("home_registeration_confirm")
+    val homeRegisterationConfirm: String,
+
+    @SerialName("home_deletion_confirm")
+    val homeDeletionConfirm: String,
+
+    @SerialName("home_replace_confirm")
+    val homeReplaceConfirm: String,
+
     @SerialName("rtp_multiplier")
     val rtpMultiplier: Int,
+
     @SerialName("spawn_multiplier")
     val spawnMultiplier: Int,
 )

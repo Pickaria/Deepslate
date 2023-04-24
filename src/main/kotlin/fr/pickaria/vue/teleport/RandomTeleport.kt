@@ -42,7 +42,7 @@ import kotlin.math.log2
 import kotlin.math.sin
 import kotlin.random.Random
 
-@CommandAlias("randomteleport|rtp|tpr")
+@CommandAlias("rand&omteleport|rtp|tpr")
 @CommandPermission("pickaria.command.randomteleport")
 class RandomTeleport(private val plugin: JavaPlugin) : BaseCommand() {
 
@@ -128,12 +128,12 @@ class RandomTeleport(private val plugin: JavaPlugin) : BaseCommand() {
 //                        println(remove)
                     }, 120L)
                     transaction {
-                        history?.let {
-                            it.lastTeleport = now
-                        } ?: run {
-                            History.new {
-                                playerUuid = player.uniqueId
-                                lastTeleport = now
+                                    history?.let {
+                                        it.lastTeleport = now
+                                    } ?: run {
+                                        History.new {
+                                            playerUuid = player.uniqueId
+                                             lastTeleport = now
                             }
                         }
                     }

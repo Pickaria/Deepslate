@@ -4,6 +4,7 @@ import com.github.shynixn.mccoroutine.bukkit.SuspendingJavaPlugin
 import fr.pickaria.controller.initCommandManager
 import fr.pickaria.controller.potion.runnable
 import fr.pickaria.model.openDatabase
+import fr.pickaria.model.teleport.Home
 import fr.pickaria.vue.PingCommand
 import fr.pickaria.vue.artefact.ArtefactListeners
 import fr.pickaria.vue.artefact.SmithingListeners
@@ -30,7 +31,9 @@ import fr.pickaria.vue.reward.rewardMenu
 import fr.pickaria.vue.shard.GrindstoneListeners
 import fr.pickaria.vue.shop.PlaceShop
 import fr.pickaria.vue.shop.ShopListeners
+import fr.pickaria.vue.teleport.HomeTeleport
 import fr.pickaria.vue.teleport.RandomTeleport
+import fr.pickaria.vue.teleport.SetHome
 import fr.pickaria.vue.teleport.SpawnTeleport
 import org.bukkit.Bukkit
 import org.bukkit.plugin.java.JavaPlugin
@@ -90,6 +93,8 @@ class Main : SuspendingJavaPlugin() {
 		// teleport
 		manager.registerCommand(RandomTeleport(this))
 		manager.registerCommand(SpawnTeleport(this))
+		manager.registerCommand(SetHome(this))
+		manager.registerCommand(HomeTeleport(this))
 
 		orderListingMenu()
 		ownOrdersMenu()
