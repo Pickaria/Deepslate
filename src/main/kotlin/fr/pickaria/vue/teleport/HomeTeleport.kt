@@ -2,15 +2,23 @@ package fr.pickaria.vue.teleport
 
 import co.aikar.commands.BaseCommand
 import co.aikar.commands.ConditionFailedException
+import co.aikar.commands.InvalidCommandArgument
+import co.aikar.commands.PaperCommandManager
 import co.aikar.commands.annotation.CommandAlias
+import co.aikar.commands.annotation.CommandCompletion
 import co.aikar.commands.annotation.CommandPermission
 import co.aikar.commands.annotation.Default
 import co.aikar.commands.annotation.Description
 import fr.pickaria.controller.economy.has
 import fr.pickaria.controller.economy.withdraw
+import fr.pickaria.controller.job.jobCount
 import fr.pickaria.model.economy.Credit
 import fr.pickaria.model.economy.economyConfig
+import fr.pickaria.model.job.Job
+import fr.pickaria.model.job.JobModel
+import fr.pickaria.model.job.JobType
 import fr.pickaria.model.teleport.*
+import fr.pickaria.model.teleport.Homes.homeName
 import fr.pickaria.model.teleport.Homes.locationX
 import fr.pickaria.model.teleport.Homes.locationY
 import fr.pickaria.model.teleport.Homes.locationZ
@@ -26,6 +34,9 @@ import org.bukkit.plugin.java.JavaPlugin
 import org.h2.value.ValueVarchar
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.times
+import org.jetbrains.exposed.sql.and
+import org.jetbrains.exposed.sql.select
+import org.jetbrains.exposed.sql.selectAll
 import org.jetbrains.exposed.sql.transactions.transaction
 import java.util.concurrent.locks.Condition
 import kotlin.math.log2
@@ -37,20 +48,43 @@ class HomeTeleport(private val plugin: JavaPlugin) : BaseCommand() {
 
     companion object {
 
+        fun homeFind(player: Player, name: String) = transaction {
+            Home.find {
+                (Homes.playerUuid eq player.uniqueId) and (Homes.homeName eq name)
+
+            }.firstOrNull()
+
+        }
+
+        fun setupContext(manager: PaperCommandManager) {
+            manager.commandContexts.registerContext(Home::class.java) {
+                val arg: String = it.popFirstArg()
+
+                homeFind(it.player, arg)
+            }
+
+            manager.commandCompletions.registerCompletion("ownhome") { context ->
+                transaction {
+                    Home.find { (Homes.playerUuid eq context.player.uniqueId) and (Homes.homeName like "${context.input}%") }
+                        .map { it.homeName }
+                }
+            }
+
+        }
+
         private val TAG = "HAS_TP_ONGOING"
 
     }
 
     @Default
+    @CommandCompletion("@ownhome")
     @Description("Vous téléporte aléatoirement autour du spawn.")
-    fun onDefault(player: Player, @Default("home")name: String) {
+    fun onDefault(player: Player, @Default("home") name: String) {
 
-        val now = Clock.System.now()
-            .plus(teleportConfig.delayBetweenTeleports, DateTimeUnit.SECOND)
+        val now = Clock.System.now().plus(teleportConfig.delayBetweenTeleports, DateTimeUnit.SECOND)
             .toLocalDateTime(TimeZone.currentSystemDefault())
 
-        val tpTime = Clock.System.now()
-            .toLocalDateTime(TimeZone.currentSystemDefault())
+        val tpTime = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault())
 
         val history = transaction {
             History.find {
@@ -66,6 +100,9 @@ class HomeTeleport(private val plugin: JavaPlugin) : BaseCommand() {
             it.lastTeleport < tpTime
         } ?: true
 
+        if (homeFind(player, name) == null) {
+            throw ConditionFailedException("Cette résidence n'existe pas.")
+        }
         if (!containsTaskTag) {
             if (canTeleport) {
                 if (player.has(Credit, cost)) {
@@ -77,7 +114,7 @@ class HomeTeleport(private val plugin: JavaPlugin) : BaseCommand() {
 
                     Bukkit.getScheduler().runTaskLater(plugin, Runnable {
                         player.withdraw(Credit, cost)
-                        var homeLocation = getHomeLocation(player)
+                        var homeLocation = getHomeLocation(player, name)
                         player.teleport(homeLocation)
                         val remove = player.scoreboardTags.remove(TAG)
                     }, 120L)
@@ -103,26 +140,16 @@ class HomeTeleport(private val plugin: JavaPlugin) : BaseCommand() {
         }
     }
 
-    private fun getHomeLocation(sender: Player): Location {
-        var newLocation: Location
+    private fun getHomeLocation(player: Player, name: String): Location {
 
-        val home = transaction {
-            Home.find {
-                Homes.playerUuid eq sender.uniqueId
-            }.firstOrNull()
-        }
 
-        var newLocationX = home?.let{
-            it.locationX.toDouble()
-        }
-        var newLocationY = home?.let{
-            it.locationY.toDouble()
-        }
-        var newLocationZ = home?.let{
-            it.locationZ.toDouble()
-        }
+        val home = homeFind(player, name)
 
-        newLocation = Location(sender.world, newLocationX!!, newLocationY!!, newLocationZ!!)
-        return newLocation
+        val newLocationX = home?.locationX?.toDouble()
+        val newLocationY = home?.locationY?.toDouble()
+        val newLocationZ = home?.locationZ?.toDouble()
+        val world = home?.world?.let { Bukkit.getWorld(it) }
+
+        return Location(world, newLocationX!!, newLocationY!!, newLocationZ!!).add(0.5, 0.0, 0.5)
     }
 }

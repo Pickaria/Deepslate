@@ -26,11 +26,17 @@ data class TeleportConfiguration(
     @SerialName("home_replace_confirm")
     val homeReplaceConfirm: String,
 
+    @SerialName("home_already_exist")
+    val homeAlreadyExist: String,
+
     @SerialName("rtp_multiplier")
     val rtpMultiplier: Int,
 
     @SerialName("spawn_multiplier")
     val spawnMultiplier: Int,
+
+    @SerialName("home_limit")
+    val homeLimit: Int,
 )
 
 val teleportConfig = Yaml.default.decodeFromStream<TeleportConfiguration>(getResourceFileStream("teleport.yml"))

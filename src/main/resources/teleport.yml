@@ -6,4 +6,6 @@ message_before_teleports: "Téléportation dans 6 secondes."
 home_registeration_confirm: "Home crée."
 home_deletion_confirm: "Home supprimé."
 home_replace_confirm: "Home remplacé."
+home_already_exist: "Ce home existe déjà"
+home_limit: 3
 

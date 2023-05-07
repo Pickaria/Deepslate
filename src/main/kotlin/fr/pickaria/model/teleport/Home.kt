@@ -8,12 +8,15 @@ import org.jetbrains.exposed.sql.stringLiteral
 import org.jetbrains.exposed.sql.stringParam
 
 object Homes : IntIdTable() { // DSL: https://github.com/JetBrains/Exposed/wiki/DSL
-    val playerUuid = uuid("player_uuid").uniqueIndex()
+    val playerUuid = uuid("player_uuid")
     val homeName = varchar("home_name", 9)
-    val world = varchar("world", 20)
+    val world = uuid("world")
     val locationX = integer("location_x")
     val locationY = integer("location_y")
     val locationZ = integer("location_z")
+    init {
+        index(true, playerUuid, homeName)
+    }
 }
 
 class Home(id: EntityID<Int>) : IntEntity(id) { // DAO: https://github.com/JetBrains/Exposed/wiki/DAO

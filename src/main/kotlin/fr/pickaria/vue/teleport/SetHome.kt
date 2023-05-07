@@ -17,6 +17,7 @@ import org.bukkit.entity.Player
 import org.bukkit.plugin.java.JavaPlugin
 import org.h2.value.ValueVarchar
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
+import org.jetbrains.exposed.sql.and
 import org.jetbrains.exposed.sql.transactions.transaction
 import java.util.concurrent.locks.Condition
 
@@ -57,7 +58,7 @@ class SetHome(private val plugin: JavaPlugin) : BaseCommand() {
             Material.POWDER_SNOW,
             Material.WATER,
 
-        )
+            )
     }
 
     @Default
@@ -68,16 +69,11 @@ class SetHome(private val plugin: JavaPlugin) : BaseCommand() {
 
         val home = transaction {
             Home.find {
-                Homes.playerUuid eq player.uniqueId
+                (Homes.playerUuid eq player.uniqueId) and (Homes.homeName eq name)
+
             }.firstOrNull()
         }
 
-
-        val homeExist = home?.let{
-            println(it.homeName)
-            println(name)
-            it.homeName == name
-        }?: true
 
         val homeSafe = EXCLUDED_BLOCKS.contains(player.location.world.getBiome(location))
 
@@ -88,28 +84,29 @@ class SetHome(private val plugin: JavaPlugin) : BaseCommand() {
         // println(player.world.name)
         // println(player.location.world.getBiome(player.location))
 
-        if(!homeSafe){
+        //if(!homeSafe){
 //            println(homeExist)
-
+        if (home == null) {
             transaction {
-                home?.let {
-                    it.homeName = name
-                } ?: run {
-                    Home.new {
-                        playerUuid = player.uniqueId
-                        homeName = name
-                        world = player.world.name
-                        locationX = location.blockX
-                        locationY = location.blockY
-                        locationZ = location.blockZ
-                    }
+                Home.new {
+                    playerUuid = player.uniqueId
+                    homeName = name
+                    world = player.world.uid
+                    locationX = location.blockX
+                    locationY = location.blockY
+                    locationZ = location.blockZ
                 }
             }
             player.sendMessage(teleportConfig.homeRegisterationConfirm)
         }else{
-//            println(homeSafe)
-            throw ConditionFailedException("Vous ne pouvez pas créer de home ici.")
+            player.sendMessage("wola t con")
         }
 
+//        }else{
+//            println(homeSafe)
+//            throw ConditionFailedException("Vous ne pouvez pas créer de home ici.")
+//        }
 
-}}
+
+    }
+}

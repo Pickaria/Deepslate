@@ -91,6 +91,7 @@ class Main : SuspendingJavaPlugin() {
 		manager.registerCommand(FakeSellCommand())
 
 		// teleport
+		HomeTeleport.setupContext(manager)
 		manager.registerCommand(RandomTeleport(this))
 		manager.registerCommand(SpawnTeleport(this))
 		manager.registerCommand(SetHome(this))
