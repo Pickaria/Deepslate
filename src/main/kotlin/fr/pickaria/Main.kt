@@ -47,10 +47,13 @@ import fr.pickaria.vue.town.BookListeners
 import fr.pickaria.vue.town.townMenu
 import org.bukkit.Bukkit
 import org.bukkit.plugin.java.JavaPlugin
+import org.jetbrains.exposed.sql.Database
 
 lateinit var plugin: JavaPlugin
 
 class Main : SuspendingJavaPlugin() {
+	lateinit var database: Database
+
 	override fun onEnable() {
 		super.onEnable()
 
@@ -62,7 +65,7 @@ class Main : SuspendingJavaPlugin() {
 		initVaultCurrency()
 
 		val manager = initCommandManager()
-		openDatabase(dataFolder.absolutePath + "/database")
+		database = openDatabase(dataFolder.absolutePath + "/database")
 
 		// Events
 		registerEvents<Alchemist>()

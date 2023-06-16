@@ -65,24 +65,37 @@ internal class RewardListeners : Listener {
 					reward.lootTable.fillInventory(inventory, Random(), lootContext)
 					inventory.contents = inventory.contents.map { it ->
 						it?.let {
-							if (it.isCurrency()) {
-								player.sendMessage("is currency")
+							if (it.isCurrency(true)) {
 								it.currency?.model?.account?.let { account ->
-									player.sendMessage(account)
 									when (account) {
 										"keys" -> {
-											val amount = kotlin.random.Random.nextDouble(1.0, reward.keys.toDouble())
-											Key.toController().item(amount)
+											if (reward.keys > 0) {
+												val amount =
+													kotlin.random.Random.nextDouble(1.0, reward.keys.toDouble())
+												Key.toController().item(amount)
+											} else {
+												null
+											}
 										}
 
 										"shards" -> {
-											val amount = kotlin.random.Random.nextDouble(1.0, reward.shards.toDouble())
-											Shard.toController().item(amount)
+											if (reward.shards > 0) {
+												val amount =
+													kotlin.random.Random.nextDouble(1.0, reward.shards.toDouble())
+												Shard.toController().item(amount)
+											} else {
+												null
+											}
 										}
 
 										else -> {
-											val amount = kotlin.random.Random.nextDouble(1.0, reward.keys * 10_000.0)
-											Credit.toController().item(amount)
+											if (reward.keys > 0) {
+												val amount =
+													kotlin.random.Random.nextDouble(1.0, reward.keys * 10_000.0)
+												Credit.toController().item(amount)
+											} else {
+												null
+											}
 										}
 									}
 								}
