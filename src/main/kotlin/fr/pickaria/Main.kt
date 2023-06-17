@@ -22,13 +22,14 @@ import fr.pickaria.vue.chat.PlayerJoin
 import fr.pickaria.vue.economy.BalanceTopCommand
 import fr.pickaria.vue.economy.MoneyCommand
 import fr.pickaria.vue.economy.PayCommand
-import fr.pickaria.vue.home.homeMenu
 import fr.pickaria.vue.job.ExperienceListener
 import fr.pickaria.vue.job.JobCommand
 import fr.pickaria.vue.job.JobListener
 import fr.pickaria.vue.job.jobMenu
 import fr.pickaria.vue.job.jobs.*
 import fr.pickaria.vue.market.*
+import fr.pickaria.vue.menu.MenuCommand
+import fr.pickaria.vue.menu.homeMenu
 import fr.pickaria.vue.miniblocks.MiniBlockCommand
 import fr.pickaria.vue.miniblocks.MiniBlockListener
 import fr.pickaria.vue.miniblocks.miniBlocksMenu
@@ -52,7 +53,7 @@ import org.jetbrains.exposed.sql.Database
 lateinit var plugin: JavaPlugin
 
 class Main : SuspendingJavaPlugin() {
-	lateinit var database: Database
+	private lateinit var database: Database
 
 	override fun onEnable() {
 		super.onEnable()
@@ -128,6 +129,7 @@ class Main : SuspendingJavaPlugin() {
 			RankCommand(),
 			RewardCommand(),
 			SellCommand(),
+			MenuCommand(manager),
 		)
 
 		// Menus

@@ -1,4 +1,4 @@
-package fr.pickaria.vue.home
+package fr.pickaria.vue.menu
 
 import fr.pickaria.controller.home.addToHome
 import fr.pickaria.menu.closeItem

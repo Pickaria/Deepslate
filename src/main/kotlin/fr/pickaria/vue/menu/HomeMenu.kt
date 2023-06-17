@@ -1,4 +1,4 @@
-package fr.pickaria.vue.home
+package fr.pickaria.vue.menu
 
 import fr.pickaria.DEFAULT_MENU
 import fr.pickaria.controller.economy.balance
