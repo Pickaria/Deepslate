@@ -111,6 +111,10 @@ class BannerListeners : Listener {
 
 				block.townId = town.id.value
 			}
+
+			itemInHand.townId?.let {
+				block.townId = it
+			}
 		}
 	}
 }
