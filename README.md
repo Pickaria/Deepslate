@@ -26,17 +26,17 @@
   <ol>
     <li>
       <a href="#about-the-project">About The Project</a>
-      <ul>
-        <li><a href="#built-with">Built With</a></li>
-      </ul>
     </li>
     <li>
       <a href="#getting-started">Getting Started</a>
       <ul>
         <li><a href="#prerequisites">Prerequisites</a></li>
-        <li><a href="#installation">Compiling</a></li>
       </ul>
     </li>
+    <li><a href="#dependencies">Dependencies</a></li>
+      <ul>
+        <li><a href="#working-on-the-project">Working on the project</a></li>
+      </ul>
     <li><a href="#contributing">Contributing</a></li>
     <li><a href="#contact">Contact</a></li>
   </ol>
@@ -63,6 +63,16 @@ To get a local copy up and running follow these steps.
 * [Gradle](https://gradle.org/)
 * JDK 17
 * [IntelliJ IDEA](https://www.jetbrains.com/idea/)
+* Add GitHub Credentials to Gradle configuration
+
+## Dependencies
+
+Following are the platform's dependencies required for this plugin to work:
+
+- Platform: [PaperMC](https://papermc.io/)
+- Economy: [Vault](https://www.spigotmc.org/resources/vault.34315/)
+- Permissions: [LuckPerms](https://luckperms.net/)
+- Vote notifications: [NuVotifier](https://www.spigotmc.org/resources/nuvotifier.13449/)
 
 ## Dependencies
 
@@ -76,15 +86,29 @@ Following are the platform's dependencies required for this plugin to work:
 ### Working on the project
 
 <details>
+<summary>Add GitHub Credentials</summary>
+
+1. Create credentials
+   Follow the guide here
+   on [Managing your personal access tokens](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens).
+2. Add these to the file `~/.gradle/gradle.properties`
+    ```properties
+    gpr.user = YourGitHubUsername
+    gpr.key = github_pat_***  # Replace this with the token previously generated
+    ```
+
+</details>
+
+<details>
   <summary>Using IntelliJ IDEA</summary>
 
 1. Clone the repository
    ```sh
    # Using HTTPS
-   git clone https://github.com/Pickaria/plugin-collection.git
+   git clone https://github.com/Pickaria/Deepslate.git
    
    # Using SSH (recommended)
-   git clone git@github.com:Pickaria/plugin-collection.git
+   git clone git@github.com:Pickaria/Deepslate.git
    ```
    If using SSH, remember to [add an SSH key](https://github.com/settings/keys) on your GitHub profile.
 

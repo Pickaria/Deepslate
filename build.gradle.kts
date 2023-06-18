@@ -9,12 +9,28 @@ version = "1.0-SNAPSHOT"
 
 repositories {
 	mavenCentral()
-	mavenLocal()
 	maven("https://oss.sonatype.org/content/groups/public/")
 	maven("https://repo.papermc.io/repository/maven-public/") // Paper
-//	maven("https://maven.quozul.dev/snapshots")
 	maven("https://repo.aikar.co/content/groups/aikar/") // ACF
 	maven("https://jitpack.io") // Vault
+
+	maven {
+		url = uri("https://maven.pkg.github.com/Pickaria/Bedrock")
+
+		credentials {
+			username = project.findProperty("gpr.user") as String? ?: System.getenv("USERNAME")
+			password = project.findProperty("gpr.key") as String? ?: System.getenv("TOKEN")
+		}
+	}
+
+	maven {
+		url = uri("https://maven.pkg.github.com/Pickaria/Spawner")
+
+		credentials {
+			username = project.findProperty("gpr.user") as String? ?: System.getenv("USERNAME")
+			password = project.findProperty("gpr.key") as String? ?: System.getenv("TOKEN")
+		}
+	}
 }
 
 dependencies {
