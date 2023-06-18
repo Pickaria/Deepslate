@@ -39,7 +39,7 @@ class BalanceTopCommand : BaseCommand() {
 		) { index, account ->
 			{
 				"position" to (index + 1 + pageStart)
-				"player" to (player.name ?: "N/A")
+				"player" to player.name
 				"balance" to Credit.economy.format(account.balance)
 			}
 		}

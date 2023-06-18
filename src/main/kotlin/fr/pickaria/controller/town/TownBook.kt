@@ -8,11 +8,12 @@ import net.kyori.adventure.text.Component
 import org.bukkit.Material
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
+import org.jetbrains.exposed.sql.transactions.transaction
 
 fun ItemStack.isTownBook() = type == Material.WRITTEN_BOOK && itemMeta.persistentDataContainer.has(bookNamespace)
 
 fun Player.openTownBook() {
-	val book = town?.let {
+	val book = transaction { town }?.let {
 		Book.builder()
 			.pages(Component.text(it.name))
 			.build()

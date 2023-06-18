@@ -4,22 +4,63 @@ import fr.pickaria.model.economy.Credit
 import fr.pickaria.model.job.Job
 import fr.pickaria.model.job.JobModel
 import fr.pickaria.model.job.jobConfig
+import fr.pickaria.plugin
 import net.kyori.adventure.text.Component
 import net.milkbowl.vault.economy.EconomyResponse
 import org.bukkit.Bukkit.getLogger
 import org.bukkit.Sound
 import org.bukkit.entity.Player
+import org.bukkit.metadata.MetadataValue
+import org.bukkit.plugin.Plugin
+import org.bukkit.plugin.java.JavaPlugin
 import kotlin.math.pow
 
-private val lastPayment = mutableMapOf<Player, Long>()
+private data class LastPaymentMetadata(private val value: Long, private val plugin: JavaPlugin) : MetadataValue {
+	override fun value(): Any = value
+
+	override fun asInt(): Int = value.toInt()
+
+	override fun asFloat(): Float = value.toFloat()
+
+	override fun asDouble(): Double = value.toDouble()
+
+	override fun asLong(): Long = value
+
+	override fun asShort(): Short = value.toShort()
+
+	override fun asByte(): Byte = value.toByte()
+
+	override fun asBoolean(): Boolean {
+		TODO("Not yet implemented")
+	}
+
+	override fun asString(): String = value.toString()
+
+	override fun getOwningPlugin(): Plugin = plugin
+
+	override fun invalidate() {
+		TODO("Not yet implemented")
+	}
+}
+
+private var Player.lastPayment: Long
+	get() {
+		for (metadata in getMetadata("lastPayment")) {
+			return metadata.asLong()
+		}
+		return 0
+	}
+	set(value) {
+		setMetadata("lastPayment", LastPaymentMetadata(value, plugin))
+	}
 
 private fun jobPayPlayer(player: Player, amount: Double): Boolean {
 	val now = System.currentTimeMillis() // This uses 32 bit, alert for future us
 
-	if (now - (lastPayment[player] ?: 0L) < jobConfig.lastPaymentDelay) {
+	if (now - (player.lastPayment) < jobConfig.lastPaymentDelay) {
 		return false
 	}
-	lastPayment[player] = now
+	player.lastPayment = now
 
 	return if (Credit.economy.depositPlayer(player, amount).type === EconomyResponse.ResponseType.SUCCESS) {
 		player.sendActionBar(Component.text("§6+ ${Credit.economy.format(amount)}"))

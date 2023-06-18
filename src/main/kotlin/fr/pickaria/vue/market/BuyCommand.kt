@@ -5,8 +5,9 @@ import co.aikar.commands.ConditionFailedException
 import co.aikar.commands.PaperCommandManager
 import co.aikar.commands.annotation.*
 import fr.pickaria.controller.market.buy
-import fr.pickaria.controller.market.giveItems
+import fr.pickaria.controller.market.overflowStacks
 import fr.pickaria.model.market.Order
+import fr.pickaria.shared.give
 import org.bukkit.Material
 import org.bukkit.entity.Player
 
@@ -46,6 +47,8 @@ class BuyCommand : BaseCommand() {
 		@Default("1") @Conditions("limits:min=1") quantity: Int
 	) {
 		val boughtAmount = buy(sender, material, quantity)
-		giveItems(sender, material, boughtAmount)
+		overflowStacks(material, boughtAmount).forEach {
+			sender.give(it)
+		}
 	}
 }

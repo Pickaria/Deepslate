@@ -2,8 +2,9 @@ package fr.pickaria.vue.market
 
 import co.aikar.commands.*
 import co.aikar.commands.annotation.*
-import fr.pickaria.controller.market.giveItems
+import fr.pickaria.controller.market.overflowStacks
 import fr.pickaria.model.market.Order
+import fr.pickaria.shared.give
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
 import org.bukkit.entity.Player
@@ -45,7 +46,9 @@ class CancelOrderCommand : BaseCommand() {
 		}
 
 		if (order.delete() >= 1) {
-			giveItems(sender, order.material, order.amount)
+			overflowStacks(order.material, order.amount).forEach {
+				sender.give(it)
+			}
 			val message = Component.text("Ordre supprimé avec succès.", NamedTextColor.GRAY)
 			sender.sendMessage(message)
 		} else {

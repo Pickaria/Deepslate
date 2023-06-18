@@ -7,7 +7,6 @@ import fr.pickaria.model.economy.SendResponse
 import fr.pickaria.model.market.Order
 import fr.pickaria.model.market.marketConfig
 import fr.pickaria.shared.MiniMessage
-import fr.pickaria.shared.give
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
 import org.bukkit.Material
@@ -147,16 +146,6 @@ fun overflowStacks(material: Material, amountToGive: Int, meta: ((ItemMeta) -> U
 	}
 
 	return stacks
-}
-
-@Deprecated(
-	"", ReplaceWith(
-		"player.give(*overflowStacks(material, amountToGive).toTypedArray())",
-		"fr.pickaria.shared.give"
-	)
-)
-internal fun giveItems(player: Player, material: Material, amountToGive: Int) {
-	player.give(*overflowStacks(material, amountToGive).toTypedArray())
 }
 
 /**
