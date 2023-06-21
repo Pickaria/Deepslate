@@ -105,7 +105,7 @@ class TpyesCommand(private val plugin: JavaPlugin) : BaseCommand() {
 
                     Bukkit.getScheduler().runTaskLater(plugin, Runnable {
                         recipient.teleport(sender)
-                        sender.removeMetadata(TAG,plugin)
+                        recipient.removeMetadata(TAG,plugin)
                         println("tp")
                     }, 120L)
                     transaction {

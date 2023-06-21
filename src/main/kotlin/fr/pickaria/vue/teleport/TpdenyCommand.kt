@@ -74,8 +74,8 @@ class TpdenyCommand(private val plugin: JavaPlugin) : BaseCommand() {
            val recipient: Player = returnMetaDataTpa(plugin,TargetTpa,sender)
             if (sender.hasMetadata(TargetTpa)) {
                 print("TP REQUEST IS TRUE")
-                sender.removeMetadata(SenderTpa,plugin)
-                recipient.removeMetadata(TargetTpa,plugin)
+                recipient.removeMetadata(SenderTpa,plugin)
+                sender.removeMetadata(TargetTpa,plugin)
                     MiniMessage("<red><player> à refusé votre demande de téléportation<red>"){"player" to sender.name}.send(recipient)
                     MiniMessage("<gray>Téléportation refusé<gray>.").send(sender)
             } else {

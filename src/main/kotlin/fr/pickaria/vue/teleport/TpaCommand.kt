@@ -64,25 +64,24 @@ class TpaCommand(private val plugin: JavaPlugin) : BaseCommand()  {
             it.lastTeleport < tpTime
         } ?: true
 
-        if (!sender.hasMetadata(TAG)) {
-            if (recipient != sender) {
+        if (recipient != sender) {
+            if (!sender.hasMetadata(TAG)) {
                 println("cantp")
                 if (canTeleport) {
                     MiniMessage("<gray>Demande de téléportation envoyé<gray>.").send(sender)
                     MiniMessage("<gold><player> demande à se téléporter à vous<gold>"){ "player" to sender.name}.send(recipient)
                     createMetaDataTpa(plugin,sender,recipient)
                     createMetaDataTpTag(plugin,sender)
-
                     println(recipient.name)
                     print(metadataList)
                 } else {
                     throw ConditionFailedException("Patientez avant de vous téléporter de nouveau.")
                 }
             } else {
-                throw ConditionFailedException("vous ne pouvez pas vous téléporter sur vous même")
+                throw ConditionFailedException("Une téléportation est déjà en cours")
             }
         } else {
-            throw ConditionFailedException("Une téléportation est déjà en cours")
+            throw ConditionFailedException("vous ne pouvez pas vous téléporter sur vous même")
         }
     }
 }
