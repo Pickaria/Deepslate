@@ -8,6 +8,7 @@ import co.aikar.commands.annotation.CommandPermission
 import co.aikar.commands.annotation.Default
 import co.aikar.commands.annotation.Description
 import co.aikar.commands.annotation.Optional
+import createMetaDataTpTag
 import fr.pickaria.controller.economy.balance
 import fr.pickaria.controller.economy.has
 import fr.pickaria.controller.economy.withdraw
@@ -58,7 +59,7 @@ class SpawnTeleport(private val plugin: JavaPlugin) : BaseCommand() {
     @Description("Vous téléporte au spawn.")
     fun onDefault(player: Player) {
 
-        val cost = log2(500.0) * teleportConfig.rtpMultiplier
+        val cost = log2(0.0) * teleportConfig.rtpMultiplier
 
         val now = Clock.System.now()
             .plus(teleportConfig.delayBetweenTeleports, DateTimeUnit.SECOND)
@@ -82,7 +83,7 @@ class SpawnTeleport(private val plugin: JavaPlugin) : BaseCommand() {
             it.lastTeleport < tpTime
         } ?: true
 
-        if (!containsTaskTag) {
+        if (!player.hasMetadata(TAG)) {
 //            println("cantp")
             if (canTeleport) {
                 if (player.has(Credit, cost)) {
@@ -91,15 +92,13 @@ class SpawnTeleport(private val plugin: JavaPlugin) : BaseCommand() {
                         "amount" to Credit.economy.format(cost)
                     }.send(player)
 
-                    player.addScoreboardTag(TAG)
-
+                    createMetaDataTpTag(plugin,player)
                     Bukkit.getScheduler().runTaskLater(plugin, Runnable {
                         player.withdraw(Credit, cost)
                         player.teleport(player.world.spawnLocation)
+                        player.removeMetadata(TAG,plugin)
                         // println("tp")
 //                        println(player.scoreboardTags)
-                        val remove = player.scoreboardTags.remove(TAG)
-//                        println(remove)
                     }, 120L)
                     transaction {
                         history?.let {
@@ -111,6 +110,7 @@ class SpawnTeleport(private val plugin: JavaPlugin) : BaseCommand() {
                             }
                         }
                     }
+
                 } else {
                     player.sendMessage(economyConfig.notEnoughMoney)
                 }

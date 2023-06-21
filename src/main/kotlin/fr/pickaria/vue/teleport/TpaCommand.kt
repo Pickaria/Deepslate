@@ -3,49 +3,23 @@ package fr.pickaria.vue.teleport
 import co.aikar.commands.BaseCommand
 import co.aikar.commands.ConditionFailedException
 import co.aikar.commands.annotation.CommandAlias
-import co.aikar.commands.annotation.CommandCompletion
 import co.aikar.commands.annotation.CommandPermission
 import co.aikar.commands.annotation.Default
 import co.aikar.commands.annotation.Description
-import co.aikar.commands.annotation.Optional
 import co.aikar.commands.bukkit.contexts.OnlinePlayer
-import fr.pickaria.controller.economy.balance
-import fr.pickaria.controller.economy.has
-import fr.pickaria.controller.economy.withdraw
-import fr.pickaria.model.economy.Credit
-import fr.pickaria.model.economy.economyConfig
+import createMetaDataTpTag
+import createMetaDataTpa
 import fr.pickaria.model.teleport.Histories
 import fr.pickaria.model.teleport.History
-import fr.pickaria.model.teleport.TeleportConfiguration
 import fr.pickaria.model.teleport.teleportConfig
 import fr.pickaria.shared.MiniMessage
-import kotlinx.coroutines.delay
 import kotlinx.datetime.*
 import kotlinx.datetime.TimeZone
-import org.bukkit.Bukkit
-import org.bukkit.Location
-import org.bukkit.Material
-import org.bukkit.block.Biome
 import org.bukkit.entity.Player
-import org.bukkit.metadata.FixedMetadataValue
-import org.bukkit.metadata.LazyMetadataValue
 import org.bukkit.metadata.MetadataValue
-import org.bukkit.metadata.MetadataValueAdapter
 import org.bukkit.plugin.java.JavaPlugin
-import org.bukkit.scheduler.BukkitRunnable
-import org.bukkit.scheduler.BukkitTask
-import org.h2.util.Task
 import org.jetbrains.exposed.sql.transactions.transaction
 import java.util.*
-import java.util.concurrent.Executors
-import java.util.concurrent.TimeUnit
-import java.util.logging.Handler
-import kotlin.concurrent.schedule
-import kotlin.math.cos
-import kotlin.math.log10
-import kotlin.math.log2
-import kotlin.math.sin
-import kotlin.random.Random
 
 @CommandAlias("tpa")
 @CommandPermission("pickaria.command.TpaCommand")
@@ -66,8 +40,6 @@ class TpaCommand(private val plugin: JavaPlugin) : BaseCommand()  {
 
         val recipient = onlinePlayer.player as Player
 
-        val senderName = FixedMetadataValue((plugin), sender.name)
-        val recipientName = FixedMetadataValue((plugin), recipient.name)
 
 
         val now = Clock.System.now()
@@ -85,8 +57,6 @@ class TpaCommand(private val plugin: JavaPlugin) : BaseCommand()  {
             }.firstOrNull()
         }
 
-        val containsTaskTag = sender.scoreboardTags.contains(TAG)
-
         val canTeleport = history?.let {
 //            println(now)
 //            println(tpTime)
@@ -94,29 +64,24 @@ class TpaCommand(private val plugin: JavaPlugin) : BaseCommand()  {
             it.lastTeleport < tpTime
         } ?: true
 
-        if (!containsTaskTag) {
+        if (!sender.hasMetadata(TAG)) {
             if (recipient != sender) {
                 println("cantp")
                 if (canTeleport) {
                     MiniMessage("<gray>Demande de téléportation envoyé<gray>.").send(sender)
                     MiniMessage("<gold><player> demande à se téléporter à vous<gold>"){ "player" to sender.name}.send(recipient)
-                    sender.addScoreboardTag(TAG)
-                    recipient.setMetadata(recipient.name,senderName)
-                    sender.setMetadata(sender.name,recipientName)
+                    createMetaDataTpa(plugin,sender,recipient)
+                    createMetaDataTpTag(plugin,sender)
+
                     println(recipient.name)
                     print(metadataList)
                 } else {
-                    // println(player.scoreboardTags)
-                    //val remove = player.scoreboardTags.remove(TAG)
-                    // println(remove)
                     throw ConditionFailedException("Patientez avant de vous téléporter de nouveau.")
                 }
             } else {
                 throw ConditionFailedException("vous ne pouvez pas vous téléporter sur vous même")
             }
         } else {
-            val remove = sender.scoreboardTags.remove(TAG)
-            println(remove)
             throw ConditionFailedException("Une téléportation est déjà en cours")
         }
     }

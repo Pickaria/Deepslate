@@ -8,6 +8,7 @@ import co.aikar.commands.annotation.CommandPermission
 import co.aikar.commands.annotation.Default
 import co.aikar.commands.annotation.Description
 import co.aikar.commands.annotation.Optional
+import createMetaDataTpTag
 import fr.pickaria.controller.economy.balance
 import fr.pickaria.controller.economy.has
 import fr.pickaria.controller.economy.withdraw
@@ -109,7 +110,7 @@ class RandomTeleport(private val plugin: JavaPlugin) : BaseCommand() {
             it.lastTeleport < tpTime
         } ?: true
 
-        if (!containsTaskTag) {
+        if (!player.hasMetadata(TAG)) {
 //            println("cantp")
             if(canTeleport) {
                 if (player.has(Credit, cost)) {
@@ -117,13 +118,14 @@ class RandomTeleport(private val plugin: JavaPlugin) : BaseCommand() {
                     MiniMessage("<gray>La téléportation vous a couté <gold><amount><gray>.") {
                         "amount" to Credit.economy.format(cost)
                     }.send(player)
-                    player.addScoreboardTag(TAG)
+                    createMetaDataTpTag(plugin,player)
 
                     Bukkit.getScheduler().runTaskLater(plugin, Runnable {
                         player.withdraw(Credit, cost)
                         player.teleport(location)
                         // println("tp")
 //                        println(player.scoreboardTags)
+                        player.removeMetadata(TAG,plugin)
                         val remove = player.scoreboardTags.remove(TAG)
 //                        println(remove)
                     }, 120L)

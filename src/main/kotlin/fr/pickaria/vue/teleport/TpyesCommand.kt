@@ -3,46 +3,24 @@ package fr.pickaria.vue.teleport
 import co.aikar.commands.BaseCommand
 import co.aikar.commands.ConditionFailedException
 import co.aikar.commands.annotation.CommandAlias
-import co.aikar.commands.annotation.CommandCompletion
 import co.aikar.commands.annotation.CommandPermission
 import co.aikar.commands.annotation.Default
 import co.aikar.commands.annotation.Description
-import co.aikar.commands.annotation.Optional
-import co.aikar.commands.bukkit.contexts.OnlinePlayer
-import fr.pickaria.controller.economy.balance
-import fr.pickaria.controller.economy.has
-import fr.pickaria.controller.economy.withdraw
-import fr.pickaria.model.economy.Credit
-import fr.pickaria.model.economy.economyConfig
+import createMetaDataTpTag
 import fr.pickaria.model.teleport.Histories
 import fr.pickaria.model.teleport.History
-import fr.pickaria.model.teleport.TeleportConfiguration
 import fr.pickaria.model.teleport.teleportConfig
 import fr.pickaria.shared.MiniMessage
-import kotlinx.coroutines.delay
 import kotlinx.datetime.*
 import kotlinx.datetime.TimeZone
 import org.bukkit.Bukkit
-import org.bukkit.Location
 import org.bukkit.Material
 import org.bukkit.block.Biome
 import org.bukkit.entity.Player
-import org.bukkit.metadata.MetadataValue
 import org.bukkit.plugin.java.JavaPlugin
-import org.bukkit.scheduler.BukkitRunnable
-import org.bukkit.scheduler.BukkitTask
-import org.h2.util.Task
 import org.jetbrains.exposed.sql.transactions.transaction
+import returnMetaDataTpa
 import java.util.*
-import java.util.concurrent.Executors
-import java.util.concurrent.TimeUnit
-import java.util.logging.Handler
-import kotlin.concurrent.schedule
-import kotlin.math.cos
-import kotlin.math.log10
-import kotlin.math.log2
-import kotlin.math.sin
-import kotlin.random.Random
 
 @CommandAlias("tpyes|tpy|tpaccept")
 @CommandPermission("pickaria.command.TpyesCommand")
@@ -87,8 +65,10 @@ class TpyesCommand(private val plugin: JavaPlugin) : BaseCommand() {
     @Description("accepte une demande de téléportation")
     fun onDefault(sender: Player) {
 
+        val TargetTpa = "targetTpa" //recipient
+        val SenderTpa = "senderTpa" //sender
 
-        val recipient = returnMetaData(sender)
+        val recipient = returnMetaDataTpa(plugin,TargetTpa,sender)
 
 
         val now = Clock.System.now()
@@ -104,9 +84,6 @@ class TpyesCommand(private val plugin: JavaPlugin) : BaseCommand() {
             }.firstOrNull()
         }
 
-
-        val containsTaskTag = recipient.scoreboardTags.contains(TAG)
-
         val canTeleport = history?.let {
 //            println(now)
 //            println(tpTime)
@@ -115,23 +92,21 @@ class TpyesCommand(private val plugin: JavaPlugin) : BaseCommand() {
         } ?: true
 
         if (sender is Player) {
-            val recipient: Player = returnMetaData(sender)
-            if (sender.hasMetadata(sender.name)) {
-                sender.removeMetadata(sender.name,plugin)
+            val recipient: Player = returnMetaDataTpa(plugin,TargetTpa,sender)
+            if (sender.hasMetadata(TargetTpa)) {
+                sender.removeMetadata(TargetTpa,plugin)
+                recipient.removeMetadata(SenderTpa,plugin)
                 print("TP REQUEST IS TRUE")
                 if (canTeleport) {
                     MiniMessage("<gold><player> à accepté votre demande de téléportation<gold>"){"player" to sender.name}.send(recipient)
                     recipient.sendMessage(teleportConfig.messageBeforeTeleport)
                     MiniMessage("<gray>Téléportation acceptée<gray>.").send(sender)
-
-                    recipient.addScoreboardTag(TAG)
+                    createMetaDataTpTag(plugin,sender)
 
                     Bukkit.getScheduler().runTaskLater(plugin, Runnable {
                         recipient.teleport(sender)
+                        sender.removeMetadata(TAG,plugin)
                         println("tp")
-                        println(recipient.scoreboardTags)
-                        val remove = recipient.scoreboardTags.remove(TAG)
-                        println(remove)
                     }, 120L)
                     transaction {
                         history?.let {
@@ -144,29 +119,14 @@ class TpyesCommand(private val plugin: JavaPlugin) : BaseCommand() {
                         }
                     }
                 } else {
-                    // println(player.scoreboardTags)
-                    //val remove = player.scoreboardTags.remove(TAG)
-                    // println(remove)
                     throw ConditionFailedException("Erreur")
                 }
             } else {
-                throw ConditionFailedException("TP REQUEST IS FALSE")
+                throw ConditionFailedException("Aucune demande de téléportation en cours")
             }
         }else{
-            throw ConditionFailedException("Aucune demande de téléportation en cours")
+            throw ConditionFailedException("Erreur")
         }
-    }
-    fun returnMetaData(sender: Player): Player {
-        try {
-            val metadataList: List<MetadataValue>? = sender.getMetadata(sender.name)
-            val requestSenderValue: MetadataValue = metadataList!![0]
-            val requestSender: String = requestSenderValue.asString()
-            val recipient: Player = Bukkit.getPlayerExact(requestSender)!!
-            return recipient
-        } catch (e: Exception){
-            throw ConditionFailedException("Aucune demande de téléportation n'est en cours")
-        }
-
     }
     }
 

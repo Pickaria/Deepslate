@@ -36,14 +36,21 @@ import org.bukkit.Bukkit
 import org.bukkit.plugin.java.JavaPlugin
 
 class Main : SuspendingJavaPlugin() {
+
+
 	override fun onEnable() {
 		super.onEnable()
 		saveDefaultConfig()
+
+
 
 		enableBedrockLibrary()
 
 		val manager = initCommandManager(this)
 		manager.registerCommand(PingCommand())
+
+		//clear scoreboardTag
+
 
 		// Chat
 		server.pluginManager.let {

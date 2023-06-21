@@ -9,6 +9,7 @@ import co.aikar.commands.annotation.CommandCompletion
 import co.aikar.commands.annotation.CommandPermission
 import co.aikar.commands.annotation.Default
 import co.aikar.commands.annotation.Description
+import createMetaDataTpTag
 import fr.pickaria.controller.economy.has
 import fr.pickaria.controller.economy.withdraw
 import fr.pickaria.controller.job.jobCount
@@ -103,21 +104,19 @@ class HomeTeleport(private val plugin: JavaPlugin) : BaseCommand() {
         if (homeFind(player, name) == null) {
             throw ConditionFailedException("Cette résidence n'existe pas.")
         }
-        if (!containsTaskTag) {
+        if (!player.hasMetadata(TAG)) {
             if (canTeleport) {
                 if (player.has(Credit, cost)) {
                     player.sendMessage(teleportConfig.messageBeforeTeleport)
                     MiniMessage("<gray>La téléportation vous a couté <gold><amount><gray>.") {
                         "amount" to Credit.economy.format(cost)
                     }.send(player)
-                    player.addScoreboardTag(TAG)
 
+                    createMetaDataTpTag(plugin,player)
                     Bukkit.getScheduler().runTaskLater(plugin, Runnable {
                         player.withdraw(Credit, cost)
                         var homeLocation = getHomeLocation(player, name)
-                        player.teleport(homeLocation)
-                        val remove = player.scoreboardTags.remove(TAG)
-                    }, 120L)
+                        player.teleport(homeLocation) }, 120L)
                     transaction {
                         history?.let {
                             it.lastTeleport = now
