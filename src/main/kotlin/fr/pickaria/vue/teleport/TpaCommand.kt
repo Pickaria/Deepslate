@@ -8,6 +8,7 @@ import co.aikar.commands.annotation.CommandPermission
 import co.aikar.commands.annotation.Default
 import co.aikar.commands.annotation.Description
 import co.aikar.commands.annotation.Optional
+import co.aikar.commands.bukkit.contexts.OnlinePlayer
 import fr.pickaria.controller.economy.balance
 import fr.pickaria.controller.economy.has
 import fr.pickaria.controller.economy.withdraw
@@ -26,6 +27,10 @@ import org.bukkit.Location
 import org.bukkit.Material
 import org.bukkit.block.Biome
 import org.bukkit.entity.Player
+import org.bukkit.metadata.FixedMetadataValue
+import org.bukkit.metadata.LazyMetadataValue
+import org.bukkit.metadata.MetadataValue
+import org.bukkit.metadata.MetadataValueAdapter
 import org.bukkit.plugin.java.JavaPlugin
 import org.bukkit.scheduler.BukkitRunnable
 import org.bukkit.scheduler.BukkitTask
@@ -42,38 +47,45 @@ import kotlin.math.log2
 import kotlin.math.sin
 import kotlin.random.Random
 
-@CommandAlias("spawn")
-@CommandPermission("pickaria.command.spawnteleport")
-class SpawnTeleport(private val plugin: JavaPlugin) : BaseCommand() {
+@CommandAlias("tpa")
+@CommandPermission("pickaria.command.TpaCommand")
+class TpaCommand(private val plugin: JavaPlugin) : BaseCommand()  {
 
     companion object {
-
         private val TAG = "HAS_TP_ONGOING"
-
     }
+
+
 
     // https://github.com/aikar/commands/wiki/Using-ACF
     // https://github.com/aikar/commands/wiki/Locales
-    @Default
-    @Description("Vous téléporte au spawn.")
-    fun onDefault(player: Player) {
 
-        val cost = log2(500.0) * teleportConfig.rtpMultiplier
+    @Default
+    @Description("Envoie une demande de teleportation à quelqu'un.")
+    fun onDefault(sender: Player, onlinePlayer: OnlinePlayer) {
+
+        val recipient = onlinePlayer.player as Player
+
+        val senderName = FixedMetadataValue((plugin), sender.name)
+        val recipientName = FixedMetadataValue((plugin), recipient.name)
+
 
         val now = Clock.System.now()
             .plus(teleportConfig.delayBetweenTeleports, DateTimeUnit.SECOND)
             .toLocalDateTime(TimeZone.currentSystemDefault())
+
+        val metadataList: List<MetadataValue>? = recipient.getMetadata(recipient.name)
 
         val tpTime = Clock.System.now()
             .toLocalDateTime(TimeZone.currentSystemDefault())
 
         val history = transaction {
             History.find {
-                Histories.playerUuid eq player.uniqueId
+                Histories.playerUuid eq sender.uniqueId
             }.firstOrNull()
         }
 
-        val containsTaskTag = player.scoreboardTags.contains(TAG)
+        val containsTaskTag = sender.scoreboardTags.contains(TAG)
 
         val canTeleport = history?.let {
 //            println(now)
@@ -83,49 +95,32 @@ class SpawnTeleport(private val plugin: JavaPlugin) : BaseCommand() {
         } ?: true
 
         if (!containsTaskTag) {
-//            println("cantp")
-            if (canTeleport) {
-                if (player.has(Credit, cost)) {
-                    player.sendMessage(teleportConfig.messageBeforeTeleport)
-                    MiniMessage("<gray>La téléportation vous a couté <gold><amount><gray>.") {
-                        "amount" to Credit.economy.format(cost)
-                    }.send(player)
-
-                    player.addScoreboardTag(TAG)
-
-                    Bukkit.getScheduler().runTaskLater(plugin, Runnable {
-                        player.withdraw(Credit, cost)
-                        player.teleport(player.world.spawnLocation)
-                        // println("tp")
-//                        println(player.scoreboardTags)
-                        val remove = player.scoreboardTags.remove(TAG)
-//                        println(remove)
-                    }, 120L)
-                    transaction {
-                        history?.let {
-                            it.lastTeleport = now
-                        } ?: run {
-                            History.new {
-                                playerUuid = player.uniqueId
-                                lastTeleport = now
-                            }
-                        }
-                    }
+            if (recipient != sender) {
+                println("cantp")
+                if (canTeleport) {
+                    MiniMessage("<gray>Demande de téléportation envoyé<gray>.").send(sender)
+                    MiniMessage("<gold><player> demande à se téléporter à vous<gold>"){ "player" to sender.name}.send(recipient)
+                    sender.addScoreboardTag(TAG)
+                    recipient.setMetadata(recipient.name,senderName)
+                    sender.setMetadata(sender.name,recipientName)
+                    println(recipient.name)
+                    print(metadataList)
                 } else {
-                    player.sendMessage(economyConfig.notEnoughMoney)
+                    // println(player.scoreboardTags)
+                    //val remove = player.scoreboardTags.remove(TAG)
+                    // println(remove)
+                    throw ConditionFailedException("Patientez avant de vous téléporter de nouveau.")
                 }
             } else {
-//                println(player.scoreboardTags)
-//                val remove = player.scoreboardTags.remove(TAG)
-//                println(remove)
-                throw ConditionFailedException("Patientez avant de vous téléporter de nouveau.")
-
+                throw ConditionFailedException("vous ne pouvez pas vous téléporter sur vous même")
             }
         } else {
+            val remove = sender.scoreboardTags.remove(TAG)
+            println(remove)
             throw ConditionFailedException("Une téléportation est déjà en cours")
         }
     }
-
 }
+
 
 
