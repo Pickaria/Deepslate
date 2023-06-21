@@ -79,7 +79,7 @@ class HomeTeleport(private val plugin: JavaPlugin) : BaseCommand() {
     @Default
     @CommandCompletion("@ownhome")
     @Description("Vous téléporte aléatoirement autour du spawn.")
-    fun onDefault(player: Player, home: Home) {
+    fun onDefault(player: Player, @Default("home") name: String) {
 
         val now = Clock.System.now().plus(teleportConfig.delayBetweenTeleports, DateTimeUnit.SECOND)
             .toLocalDateTime(TimeZone.currentSystemDefault())

@@ -90,7 +90,6 @@ class SpawnTeleport(private val plugin: JavaPlugin) : BaseCommand() {
                     MiniMessage("<gray>La téléportation vous a couté <gold><amount><gray>.") {
                         "amount" to Credit.economy.format(cost)
                     }.send(player)
-
                     player.addScoreboardTag(TAG)
 
                     Bukkit.getScheduler().runTaskLater(plugin, Runnable {
