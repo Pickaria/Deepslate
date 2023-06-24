@@ -4,6 +4,7 @@ import com.github.shynixn.mccoroutine.bukkit.SuspendingJavaPlugin
 import fr.pickaria.controller.initCommandManager
 import fr.pickaria.controller.potion.runnable
 import fr.pickaria.model.openDatabase
+import fr.pickaria.server.HelloWorldServer
 import fr.pickaria.vue.PingCommand
 import fr.pickaria.vue.artefact.ArtefactListeners
 import fr.pickaria.vue.artefact.SmithingListeners
@@ -110,5 +111,9 @@ class Main : SuspendingJavaPlugin() {
 		miniBlocksMenu()
 		MiniBlockCommand.setupContext(manager)
 		manager.registerCommand(MiniBlockCommand())
+
+		val port = System.getenv("PORT")?.toInt() ?: 50051
+		val server = HelloWorldServer(port)
+		server.start()
 	}
 }

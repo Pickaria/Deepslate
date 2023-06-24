@@ -2,14 +2,25 @@ plugins {
 	id("java")
 	kotlin("jvm") version "1.8.20"
 	kotlin("plugin.serialization") version "1.8.20"
+	id("com.google.protobuf") version "0.9.3"
 }
 
 group = "fr.pickaria"
 version = "1.0-SNAPSHOT"
 
+ext["grpcVersion"] = "1.54.1"
+ext["grpcKotlinVersion"] = "1.3.0" // CURRENT_GRPC_KOTLIN_VERSION
+ext["protobufVersion"] = "3.22.3"
+ext["coroutinesVersion"] = "1.7.0"
+
+allprojects {
+	repositories {
+		mavenCentral()
+		google()
+	}
+}
+
 repositories {
-	mavenCentral()
-	maven("https://oss.sonatype.org/content/groups/public/")
 	maven("https://repo.papermc.io/repository/maven-public/") // Paper
 	maven("https://repo.aikar.co/content/groups/aikar/") // ACF
 	maven("https://jitpack.io") // Vault
@@ -35,10 +46,12 @@ repositories {
 }
 
 dependencies {
+	implementation(project(":protos"))
+
 	compileOnly("io.papermc.paper:paper-api:1.20.1-R0.1-SNAPSHOT")
 	compileOnly("com.palmergames.bukkit.towny:towny:0.99.0.0")
 	compileOnly("com.github.MilkBowl:VaultAPI:1.7.1")
-	compileOnly("fr.pickaria:spawner:1.0.9-SNAPSHOT")
+	compileOnly("fr.pickaria:spawner:1.0.10-SNAPSHOT")
 	compileOnly("co.aikar:acf-paper:0.5.1-SNAPSHOT")
 
 	implementation("org.jetbrains.kotlin:kotlin-stdlib:1.8.20")
@@ -54,6 +67,7 @@ dependencies {
 	implementation("com.h2database:h2:2.1.214")
 	implementation("fr.pickaria:bedrock:1.0.20-SNAPSHOT")
 	implementation("com.charleskorn.kaml:kaml:0.53.0")
+	runtimeOnly("io.grpc:grpc-netty:${rootProject.ext["grpcVersion"]}")
 }
 
 tasks {
