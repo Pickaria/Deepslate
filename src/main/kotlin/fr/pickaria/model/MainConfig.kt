@@ -2,6 +2,8 @@ package fr.pickaria.model
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import org.bukkit.Bukkit
+import org.bukkit.WorldCreator
 
 @Serializable
 data class MainConfig(
@@ -19,6 +21,15 @@ data class MainConfig(
 
 	@SerialName("database_driver")
 	val databaseDriver: String,
-)
+
+	@SerialName("lobby_world_name")
+	val lobbyWorldName: String,
+
+	@SerialName("overworld_name")
+	val overworldName: String,
+) {
+	val lobbyWorld = Bukkit.getWorld(lobbyWorldName) ?: WorldCreator(lobbyWorldName).createWorld()
+	val overworldWorld = Bukkit.getWorld(overworldName) ?: WorldCreator(overworldName).createWorld()
+}
 
 val mainConfig = config<MainConfig>("config.yml", false)

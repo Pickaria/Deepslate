@@ -8,3 +8,5 @@ database_url: 'jdbc:h2:$path;DB_CLOSE_DELAY=-1;AUTO_SERVER=TRUE'
 database_user: ''
 database_password: ''
 database_driver: 'org.h2.Driver'
+lobby_world_name: lobby
+overworld_name: world

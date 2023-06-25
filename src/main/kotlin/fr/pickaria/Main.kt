@@ -27,6 +27,8 @@ import fr.pickaria.vue.job.JobCommand
 import fr.pickaria.vue.job.JobListener
 import fr.pickaria.vue.job.jobMenu
 import fr.pickaria.vue.job.jobs.*
+import fr.pickaria.vue.lobby.LobbyCommand
+import fr.pickaria.vue.lobby.LobbyListeners
 import fr.pickaria.vue.market.*
 import fr.pickaria.vue.menu.MenuCommand
 import fr.pickaria.vue.menu.homeMenu
@@ -93,6 +95,7 @@ class Main : SuspendingJavaPlugin() {
 		registerEvents<VoteListeners>()
 		registerEvents<Wizard>()
 		registerEvents<MiniBlockListener>()
+		registerEvents<LobbyListeners>()
 		rankListener()
 
 		// Command completions
@@ -122,6 +125,7 @@ class Main : SuspendingJavaPlugin() {
 			RewardCommand(manager),
 			SellCommand(manager),
 			MenuCommand(manager),
+			LobbyCommand(),
 		)
 
 		// Menus
