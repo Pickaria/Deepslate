@@ -1,6 +1,7 @@
 package fr.pickaria.vue.menu
 
 import co.aikar.commands.BaseCommand
+import co.aikar.commands.ConditionFailedException
 import co.aikar.commands.PaperCommandManager
 import co.aikar.commands.annotation.CommandAlias
 import co.aikar.commands.annotation.CommandCompletion
@@ -21,7 +22,17 @@ class MenuCommand(commandManager: PaperCommandManager) : BaseCommand() {
 
 	@Default
 	@CommandCompletion("@menus")
-	fun onDefault(player: Player, @Optional subMenu: String?) {
-		player.open(subMenu ?: DEFAULT_MENU)
+	fun onDefault(sender: Player, @Optional menu: String?, @Optional page: Int?) {
+		val subMenu = menu ?: DEFAULT_MENU
+
+		val opened = if (page != null) {
+			sender.open(subMenu, page)
+		} else {
+			sender open (subMenu)
+		}
+
+		if (!opened) {
+			throw ConditionFailedException("Ce menu n'existe pas.")
+		}
 	}
 }

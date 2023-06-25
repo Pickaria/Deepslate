@@ -87,6 +87,9 @@ fun rewardMenu() = menu("reward") {
 							"Série" to info.streak
 						}
 					}
+					if (info.remainingRewards > 0) {
+						leftClick = "Clic-gauche pour récupérer la récompense"
+					}
 				}
 			}
 

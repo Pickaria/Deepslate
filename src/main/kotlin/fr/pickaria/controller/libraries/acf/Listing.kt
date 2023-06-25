@@ -31,17 +31,17 @@ fun <T> listing(
 
 	val component = Component.text()
 		.append(
-			+MiniMessage(header) {
+			MiniMessage(header) {
 				"page" to (page + 1)
 				"max" to (maxPage + 1)
-			}
+			}.toComponent()
 		)
 
 	entities.forEachIndexed { index, town ->
 		component
 			.append(Component.newline())
 			.append(
-				+MiniMessage(row, builder(index, town))
+				MiniMessage(row, builder(index, town)).toComponent()
 			)
 	}
 
@@ -49,10 +49,10 @@ fun <T> listing(
 		component
 			.append(Component.newline())
 			.append(
-				+MiniMessage(footer) {
+				MiniMessage(footer) {
 					"next-page" to Tag.styling(ClickEvent.runCommand("/$command ${page + 1}"))
 					"page" to (page + 1)
-				}
+				}.toComponent()
 			)
 	}
 

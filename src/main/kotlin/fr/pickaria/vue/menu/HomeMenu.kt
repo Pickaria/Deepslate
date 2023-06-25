@@ -63,6 +63,18 @@ internal fun homeMenu() = menu(DEFAULT_MENU) {
 		}
 	}
 
+	item {
+		position = 4 to 1
+		material = Material.COMPASS
+		title = Component.text("Lobby")
+
+		lore {
+			leftClick = "Clic-gauche pour aller au lobby"
+		}
+
+		leftClick = Result.CLOSE to "/lobby"
+	}
+
 	val bundle = Shard.toController().bundle(opener.balance(Shard))
 
 	item {
