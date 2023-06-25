@@ -10,8 +10,6 @@ import org.bukkit.plugin.java.JavaPlugin
 
 fun JavaPlugin.rankListener() = subscribeToLuckPerms<NodeMutateEvent> {
 	if (isUser) {
-		getPlayer((target as User).uniqueId)?.let {
-			it.updateDisplayName()
-		}
+		getPlayer((target as User).uniqueId)?.updateDisplayName()
 	}
 }

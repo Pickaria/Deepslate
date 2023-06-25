@@ -17,20 +17,18 @@ import org.bukkit.entity.Player
 
 @CommandAlias("miniblock")
 @CommandPermission("pickaria.command.miniblocks")
-class MiniBlockCommand : BaseCommand() {
-	companion object {
-		fun setupContext(manager: PaperCommandManager) {
-			manager.commandContexts.registerContext(MiniBlock::class.java) { context ->
-				Material.getMaterial(context.popFirstArg().uppercase())?.let { material ->
-					miniBlocksConfig.miniBlocks.find {
-						it.material == material
-					}
-				} ?: throw InvalidCommandArgument("Mini bloc non trouvé.")
-			}
+class MiniBlockCommand(manager: PaperCommandManager) : BaseCommand() {
+	init {
+		manager.commandContexts.registerContext(MiniBlock::class.java) { context ->
+			Material.getMaterial(context.popFirstArg().uppercase())?.let { material ->
+				miniBlocksConfig.miniBlocks.find {
+					it.material == material
+				}
+			} ?: throw InvalidCommandArgument("Mini bloc non trouvé.")
+		}
 
-			manager.commandCompletions.registerCompletion("miniblocks") {
-				miniBlocksConfig.miniBlocks.map { it.material.name.lowercase() }
-			}
+		manager.commandCompletions.registerCompletion("miniblocks") {
+			miniBlocksConfig.miniBlocks.map { it.material.name.lowercase() }
 		}
 	}
 

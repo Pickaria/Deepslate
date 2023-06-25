@@ -14,28 +14,26 @@ import org.bukkit.entity.Player
 @CommandAlias("buy")
 @CommandPermission("pickaria.command.buy")
 @Description("Achète une quantité de matériaux.")
-class BuyCommand : BaseCommand() {
-	companion object {
-		fun setupContext(manager: PaperCommandManager) {
-			manager.commandConditions.addCondition(
-				Material::class.java,
-				"must_be_selling"
-			) { _, _, material ->
-				val isNotSelling = Order.get(material).isEmpty()
+class BuyCommand(manager: PaperCommandManager) : BaseCommand() {
+	init {
+		manager.commandConditions.addCondition(
+			Material::class.java,
+			"must_be_selling"
+		) { _, _, material ->
+			val isNotSelling = Order.get(material).isEmpty()
 
-				if (isNotSelling) {
-					throw ConditionFailedException("Ce matériau n'est pas en stocks.")
-				}
+			if (isNotSelling) {
+				throw ConditionFailedException("Ce matériau n'est pas en stocks.")
 			}
+		}
 
-			manager.commandCompletions.registerCompletion("selling_material") { context ->
-				Order.getMaterials().map { it.name.lowercase() }.filter { it.startsWith(context.input) }
-			}
+		manager.commandCompletions.registerCompletion("selling_material") { context ->
+			Order.getMaterials().map { it.name.lowercase() }.filter { it.startsWith(context.input) }
+		}
 
-			manager.commandCompletions.registerCompletion("buy_amount") { context ->
-				val count = Order.get(context.getContextValue(Material::class.java)).sumOf { it.amount }
-				listOf(1, 16, 32, 64, count).filter { it <= count }.map { it.toString() }
-			}
+		manager.commandCompletions.registerCompletion("buy_amount") { context ->
+			val count = Order.get(context.getContextValue(Material::class.java)).sumOf { it.amount }
+			listOf(1, 16, 32, 64, count).filter { it <= count }.map { it.toString() }
 		}
 	}
 

@@ -9,34 +9,32 @@ import org.bukkit.entity.Player
 
 @CommandAlias("job|jobs")
 @CommandPermission("pickaria.command.job")
-class JobCommand : BaseCommand() {
-	companion object {
-		fun setupContext(manager: PaperCommandManager) {
-			manager.commandContexts.registerContext(Job::class.java) {
-				val arg: String = it.popFirstArg()
+class JobCommand(manager: PaperCommandManager) : BaseCommand() {
+	init {
+		manager.commandContexts.registerContext(Job::class.java) {
+			val arg: String = it.popFirstArg()
 
-				try {
-					JobType.valueOf(arg.uppercase()).toJob()
-				} catch (_: IllegalArgumentException) {
-					throw InvalidCommandArgument("Job of type '$arg' does not exists.")
-				}
+			try {
+				JobType.valueOf(arg.uppercase()).toJob()
+			} catch (_: IllegalArgumentException) {
+				throw InvalidCommandArgument("Job of type '$arg' does not exists.")
 			}
+		}
 
-			manager.commandCompletions.registerCompletion("jobtype") {
-				JobType.values().map { it.name.lowercase() }
-			}
+		manager.commandCompletions.registerCompletion("jobtype") {
+			JobType.values().map { it.name.lowercase() }
+		}
 
-			manager.commandCompletions.registerCompletion("ownjobs") { context ->
-				JobModel.get(context.player.uniqueId)
-					.filter { it.active }
-					.map { it.job.name.lowercase() }
-					.filter { it.startsWith(context.input) }
-			}
+		manager.commandCompletions.registerCompletion("ownjobs") { context ->
+			JobModel.get(context.player.uniqueId)
+				.filter { it.active }
+				.map { it.job.name.lowercase() }
+				.filter { it.startsWith(context.input) }
+		}
 
-			manager.commandConditions.addCondition("must_have_job") {
-				if (it.issuer.player.jobCount() == 0) {
-					throw ConditionFailedException("Vous n'exercez actuellement pas de métier.")
-				}
+		manager.commandConditions.addCondition("must_have_job") {
+			if (it.issuer.player.jobCount() == 0) {
+				throw ConditionFailedException("Vous n'exercez actuellement pas de métier.")
 			}
 		}
 	}

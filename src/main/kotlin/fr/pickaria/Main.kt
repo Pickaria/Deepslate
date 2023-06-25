@@ -101,34 +101,26 @@ class Main : SuspendingJavaPlugin() {
 		manager.enumCompletion<ShopOffer>("shop_type", "Ce magasin n'existe pas.")
 
 		// Command contexts
-		BuyCommand.setupContext(manager)
-		CancelOrderCommand.setupContext(manager.commandContexts, manager.commandCompletions)
-		JobCommand.setupContext(manager)
-		MiniBlockCommand.setupContext(manager)
-		RewardCommand.setupContext(manager.commandContexts, manager.commandCompletions)
-		SellCommand.setupContext(manager.commandCompletions)
-		RankCommand.setupContext(manager)
-		MoneyCommand.setupContext(manager)
 		manager.limitCondition()
 
 		// Commands
 		manager.registerCommands(
 			BalanceTopCommand(),
 			BannerCommand(),
-			BuyCommand(),
-			CancelOrderCommand(),
+			BuyCommand(manager),
+			CancelOrderCommand(manager),
 			FakeSellCommand(),
-			JobCommand(),
+			JobCommand(manager),
 			MarketCommand(),
-			MiniBlockCommand(),
-			MoneyCommand(),
+			MiniBlockCommand(manager),
+			MoneyCommand(manager),
 			PayCommand(),
 			PingCommand(),
 			PlaceShop(),
 			PotionCommand(),
-			RankCommand(),
-			RewardCommand(),
-			SellCommand(),
+			RankCommand(manager),
+			RewardCommand(manager),
+			SellCommand(manager),
 			MenuCommand(manager),
 		)
 

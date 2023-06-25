@@ -21,20 +21,15 @@ import java.util.*
 
 @CommandAlias("reward")
 @CommandPermission("pickaria.command.reward")
-class RewardCommand : BaseCommand() {
-	companion object {
-		fun setupContext(
-			commandContexts: CommandContexts<BukkitCommandExecutionContext>,
-			commandCompletions: CommandCompletions<BukkitCommandCompletionContext>
-		) {
-			commandContexts.registerContext(Reward::class.java) {
-				val arg = it.popFirstArg()
-				rewardConfig.rewards[arg] ?: throw InvalidCommandArgument("Potion of type '$arg' does not exists.")
-			}
+class RewardCommand(manager: PaperCommandManager) : BaseCommand() {
+	init {
+		manager.commandContexts.registerContext(Reward::class.java) {
+			val arg = it.popFirstArg()
+			rewardConfig.rewards[arg] ?: throw InvalidCommandArgument("Potion of type '$arg' does not exists.")
+		}
 
-			commandCompletions.registerCompletion("reward") {
-				rewardConfig.rewards.keys
-			}
+		manager.commandCompletions.registerCompletion("reward") {
+			rewardConfig.rewards.keys
 		}
 	}
 

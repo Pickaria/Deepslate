@@ -17,17 +17,15 @@ import org.bukkit.entity.Player
 
 @CommandAlias("money|bal|balance")
 @CommandPermission("pickaria.command.balance")
-class MoneyCommand : BaseCommand() {
-	companion object {
-		fun setupContext(manager: PaperCommandManager) {
-			manager.commandContexts.registerContext(Currency::class.java) {
-				val arg = it.popFirstArg()
-				economyConfig.currencies[arg] ?: throw InvalidCommandArgument("Le compte '$arg' n'existe pas.")
-			}
+class MoneyCommand(manager: PaperCommandManager) : BaseCommand() {
+	init {
+		manager.commandContexts.registerContext(Currency::class.java) {
+			val arg = it.popFirstArg()
+			economyConfig.currencies[arg] ?: throw InvalidCommandArgument("Le compte '$arg' n'existe pas.")
+		}
 
-			manager.commandCompletions.registerCompletion("currencies") {
-				economyConfig.currencies.keys
-			}
+		manager.commandCompletions.registerCompletion("currencies") {
+			economyConfig.currencies.keys
 		}
 	}
 

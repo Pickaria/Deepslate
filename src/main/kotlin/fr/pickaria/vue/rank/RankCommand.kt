@@ -31,17 +31,15 @@ import kotlin.time.toKotlinDuration
 @CommandAlias("ranks")
 @CommandPermission("pickaria.command.ranks")
 @Description("Gestion des grades premium.")
-class RankCommand : BaseCommand() {
-	companion object {
-		fun setupContext(manager: PaperCommandManager) {
-			manager.commandContexts.registerContext(Rank::class.java) {
-				val arg = it.popFirstArg()
-				rankConfig.ranks[arg] ?: throw InvalidCommandArgument("Rank of type '$arg' does not exists.")
-			}
+class RankCommand(manager: PaperCommandManager) : BaseCommand() {
+	init {
+		manager.commandContexts.registerContext(Rank::class.java) {
+			val arg = it.popFirstArg()
+			rankConfig.ranks[arg] ?: throw InvalidCommandArgument("Rank of type '$arg' does not exists.")
+		}
 
-			manager.commandCompletions.registerCompletion("ranks") {
-				rankConfig.ranks.keys
-			}
+		manager.commandCompletions.registerCompletion("ranks") {
+			rankConfig.ranks.keys
 		}
 	}
 

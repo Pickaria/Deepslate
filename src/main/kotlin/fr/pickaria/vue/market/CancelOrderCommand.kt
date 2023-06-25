@@ -12,25 +12,20 @@ import org.bukkit.entity.Player
 @CommandAlias("cancel")
 @CommandPermission("pickaria.commands.cancel")
 @Description("Ouvre le menu ou annule une vente.")
-class CancelOrderCommand : BaseCommand() {
-	companion object {
-		fun setupContext(
-			commandContexts: CommandContexts<BukkitCommandExecutionContext>,
-			commandCompletions: CommandCompletions<BukkitCommandCompletionContext>
-		) {
-			commandContexts.registerContext(Order::class.java) {
-				val arg: String = it.popFirstArg()
+class CancelOrderCommand(manager: PaperCommandManager) : BaseCommand() {
+	init {
+		manager.commandContexts.registerContext(Order::class.java) {
+			val arg: String = it.popFirstArg()
 
-				try {
-					Order.get(arg.toInt())
-				} catch (_: IllegalArgumentException) {
-					throw InvalidCommandArgument("Order '$arg' not found.")
-				}
+			try {
+				Order.get(arg.toInt())
+			} catch (_: IllegalArgumentException) {
+				throw InvalidCommandArgument("Order '$arg' not found.")
 			}
+		}
 
-			commandCompletions.registerCompletion("ownorders") { context ->
-				Order.get(context.player).map { it.id.toString() }
-			}
+		manager.commandCompletions.registerCompletion("ownorders") { context ->
+			Order.get(context.player).map { it.id.toString() }
 		}
 	}
 
