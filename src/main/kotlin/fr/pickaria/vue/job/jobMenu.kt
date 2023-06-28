@@ -38,7 +38,7 @@ internal fun jobMenu() = menu("job") {
 		else -> {
 			MiniMessage("(<amount> métiers)") {
 				"amount" to activeJobs.size
-			}.message
+			}.toComponent()
 		}
 	}
 

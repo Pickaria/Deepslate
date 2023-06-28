@@ -25,7 +25,7 @@ fun rankMenu() = menu("ranks") {
 
 	title = MiniMessage("<dark_purple><b>Grades premium</b> <gray>(<group>)") {
 		"group" to (getGroup(user.primaryGroup)?.displayName() ?: Component.empty())
-	}.message
+	}.toComponent()
 	rows = 4
 
 	val count = rankConfig.ranks.size
@@ -51,7 +51,7 @@ fun rankMenu() = menu("ranks") {
 					-""
 
 					rank.description.forEach {
-						-MiniMessage(it).message.decoration(
+						-MiniMessage(it).toComponent().decoration(
 							TextDecoration.ITALIC,
 							TextDecoration.State.FALSE
 						)
@@ -64,7 +64,7 @@ fun rankMenu() = menu("ranks") {
 					MiniMessage("<st><price></st> <adjusted>") {
 						"price" to Shard.toController().format(rank.price)
 						"adjusted" to Shard.toController().format(adjustedPrice)
-					}.message
+					}.toComponent()
 				} else {
 					Component.text(Shard.toController().format(adjustedPrice))
 				}

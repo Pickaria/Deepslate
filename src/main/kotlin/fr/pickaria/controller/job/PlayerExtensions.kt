@@ -79,9 +79,9 @@ private val Player.rankSuffix: Component
 				jobRank.suffix?.let {
 					val hoverMessage = MiniMessage(jobConfig.rankHover) {
 						"points" to points
-					}.message
+					}.toComponent()
 
-					return MiniMessage(it).message.hoverEvent(HoverEvent.showText(hoverMessage))
+					return MiniMessage(it).toComponent().hoverEvent(HoverEvent.showText(hoverMessage))
 				}
 			}
 		}

@@ -18,7 +18,7 @@ fun Player.openTownBook() {
 			.pages(Component.text(it.name))
 			.build()
 	} ?: Book.builder()
-		.pages(MiniMessage(townConfig.noTown).message)
+		.pages(MiniMessage(townConfig.noTown).toComponent())
 		.build()
 
 	openBook(book)

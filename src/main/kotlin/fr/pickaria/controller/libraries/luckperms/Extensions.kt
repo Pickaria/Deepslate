@@ -19,7 +19,7 @@ fun User.save() {
 }
 
 fun Group.displayName() = displayName?.let {
-	MiniMessage(it).message
+	MiniMessage(it).toComponent()
 } ?: Component.text(name)
 
 fun getGroup(name: String) = luckPermsProvider.groupManager.getGroup(name)

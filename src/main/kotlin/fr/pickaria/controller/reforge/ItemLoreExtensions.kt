@@ -60,13 +60,13 @@ fun ItemStack.updateLore(): ItemStack {
 			"name" to displayName
 				.decoration(TextDecoration.ITALIC, TextDecoration.State.FALSE)
 				.decorate(TextDecoration.BOLD)
-		}.message
+		}.toComponent()
 
 		it.displayName(newDisplayName)
 
 		val newLore: MutableList<Component?> = mutableListOf(
 			Component.empty(),
-			MiniMessage(rarity.color) { "name" to rarity.displayName }.message.decoration(
+			MiniMessage(rarity.color) { "name" to rarity.displayName }.toComponent().decoration(
 				TextDecoration.ITALIC,
 				TextDecoration.State.FALSE
 			),

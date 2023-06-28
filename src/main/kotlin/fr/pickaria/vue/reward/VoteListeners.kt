@@ -24,13 +24,13 @@ class VoteListeners : Listener {
 
 				MiniMessage("<gray>Merci du soutien ! Pour te remercier, tu as obtenu <gold><amount> Points Quotidien</gold>.") {
 					"amount" to 20
-				}.message
+				}.toComponent()
 			} else {
 				offlinePlayer.deposit(Key, 0.2)
 
 				MiniMessage("<gray>Merci du soutien ! Pour te remercier, tu as obtenu <gold><amount> Fragments de Clé</gold>.") {
 					"amount" to 2
-				}.message
+				}.toComponent()
 			}
 
 			offlinePlayer.player?.sendMessage(message)

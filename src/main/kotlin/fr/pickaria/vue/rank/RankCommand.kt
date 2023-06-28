@@ -104,7 +104,7 @@ class RankCommand(manager: PaperCommandManager) : BaseCommand() {
 					MiniMessage("<gray> ⇒ <group> <expires>") {
 						"group" to group.displayName()
 						"expires" to expires
-					}.message
+					}.toComponent()
 				}
 			}
 			.collect(Collectors.toSet())

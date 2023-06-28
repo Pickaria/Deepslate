@@ -56,7 +56,7 @@ class CurrencyController(val model: Currency) {
 				val line = model.description.map {
 					MiniMessage(it) {
 						"value" to format(physicalCurrency.value)
-					}.message.decoration(TextDecoration.ITALIC, TextDecoration.State.FALSE)
+					}.toComponent().decoration(TextDecoration.ITALIC, TextDecoration.State.FALSE)
 				}
 
 				meta.lore(line)
@@ -83,7 +83,7 @@ class CurrencyController(val model: Currency) {
 
 			val line = MiniMessage(economyConfig.bundleDescription) {
 				"value" to this@CurrencyController.format(totalValue)
-			}.message.decoration(TextDecoration.ITALIC, TextDecoration.State.FALSE)
+			}.toComponent().decoration(TextDecoration.ITALIC, TextDecoration.State.FALSE)
 
 			meta.lore(listOf(line))
 
@@ -119,7 +119,7 @@ class CurrencyController(val model: Currency) {
 			val line = model.description.map {
 				MiniMessage(it) {
 					"value" to format(value)
-				}.message.decoration(TextDecoration.ITALIC, TextDecoration.State.FALSE)
+				}.toComponent().decoration(TextDecoration.ITALIC, TextDecoration.State.FALSE)
 			}
 
 			meta.lore(line)

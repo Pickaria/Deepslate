@@ -13,7 +13,7 @@ internal fun ownOrdersMenu() = menu("orders") {
 
 	title = MiniMessage("<gold><b>Mes ventes</b> <gray>(<amount>)") {
 		"amount" to count
-	}.message
+	}.toComponent()
 
 	val pageSize = size - 9
 	val start = page * pageSize
