@@ -5,7 +5,7 @@ import org.bukkit.event.Cancellable
 import org.bukkit.event.Event
 import org.bukkit.event.HandlerList
 
-class DailyRewardReadyEvent internal constructor(
+class DailyRewardReadyEvent(
 	val offlinePlayer: OfflinePlayer,
 	val points: Int,
 ) : Event(), Cancellable {

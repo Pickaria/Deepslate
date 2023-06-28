@@ -7,7 +7,7 @@ import org.bukkit.event.Cancellable
 import org.bukkit.event.Event
 import org.bukkit.event.HandlerList
 
-class JobAscentEvent internal constructor(
+class JobAscentEvent(
 	val player: Player,
 	val job: Job,
 	/**
