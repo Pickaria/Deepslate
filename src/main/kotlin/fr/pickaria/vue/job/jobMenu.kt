@@ -27,19 +27,13 @@ internal fun jobMenu() = menu("job") {
 	val playerJobs = opener.jobs().associateBy { it.job.toJob() }
 	val activeJobs = playerJobs.filter { (_, job) -> job.active }
 	val jobMessage = when (activeJobs.size) {
-		0 -> {
-			Component.text("(Aucun métier)")
-		}
+		0 -> Component.text("(Aucun métier)")
 
-		1 -> {
-			Component.text("(${activeJobs.keys.first().label})")
-		}
+		1 -> Component.text("(${activeJobs.keys.first().label})")
 
-		else -> {
-			MiniMessage("(<amount> métiers)") {
-				"amount" to activeJobs.size
-			}.toComponent()
-		}
+		else -> MiniMessage("(<amount> métiers)") {
+			"amount" to activeJobs.size
+		}.toComponent()
 	}
 
 	title = Component.text("Métiers", NamedTextColor.DARK_GREEN, TextDecoration.BOLD).appendSpace()

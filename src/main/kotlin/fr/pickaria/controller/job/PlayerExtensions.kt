@@ -46,7 +46,7 @@ internal infix fun Player.leaveJob(jobType: JobType) {
 	}
 }
 
-data class PlayerRank(
+private data class PlayerRank(
 	val jobRank: JobRank?,
 	val points: Int,
 )

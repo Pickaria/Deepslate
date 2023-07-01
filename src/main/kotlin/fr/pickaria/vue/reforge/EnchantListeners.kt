@@ -85,7 +85,7 @@ class EnchantListeners : Listener {
 					isCancelled = false
 
 					val bonus = if (enchantmentBonus > 0) Random.nextInt(0, enchantmentBonus) else 0
-					val base = (Random.nextInt(1, 8) + floor(enchantmentBonus / 2.0) + bonus)
+					val base = Random.nextInt(1, 8) + floor(enchantmentBonus / 2.0) + bonus
 					val top = floor(max(base / 3, 1.0))
 					val middle = floor((base / 2) / 3 + 1)
 					val bottom = floor(max(base, enchantmentBonus * 2.0))

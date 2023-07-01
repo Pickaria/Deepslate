@@ -28,7 +28,7 @@ class MenuCommand(commandManager: PaperCommandManager) : BaseCommand() {
 		val opened = if (page != null) {
 			sender.open(subMenu, page)
 		} else {
-			sender open (subMenu)
+			sender.open(subMenu)
 		}
 
 		if (!opened) {

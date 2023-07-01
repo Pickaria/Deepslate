@@ -30,17 +30,13 @@ private data class LastPaymentMetadata(private val value: Long, private val plug
 
 	override fun asByte(): Byte = value.toByte()
 
-	override fun asBoolean(): Boolean {
-		TODO("Not yet implemented")
-	}
+	override fun asBoolean(): Boolean = false
 
 	override fun asString(): String = value.toString()
 
 	override fun getOwningPlugin(): Plugin = plugin
 
-	override fun invalidate() {
-		TODO("Not yet implemented")
-	}
+	override fun invalidate() = Unit
 }
 
 private var Player.lastPayment: Long
@@ -57,7 +53,7 @@ private var Player.lastPayment: Long
 private fun jobPayPlayer(player: Player, amount: Double): Boolean {
 	val now = System.currentTimeMillis() // This uses 32 bit, alert for future us
 
-	if (now - (player.lastPayment) < jobConfig.lastPaymentDelay) {
+	if (now - player.lastPayment < jobConfig.lastPaymentDelay) {
 		return false
 	}
 	player.lastPayment = now

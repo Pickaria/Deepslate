@@ -5,11 +5,18 @@ import fr.pickaria.model.economy.BankAccounts
 import net.milkbowl.vault.economy.AbstractEconomy
 import net.milkbowl.vault.economy.EconomyResponse
 import net.milkbowl.vault.economy.EconomyResponse.ResponseType
+import org.bukkit.Bukkit
 import org.bukkit.OfflinePlayer
 import org.jetbrains.exposed.sql.and
 import org.jetbrains.exposed.sql.transactions.transaction
 import java.text.DecimalFormat
 import kotlin.math.absoluteValue
+
+/**
+ * Gets the offline player corresponding to the given name.
+ */
+private fun getOfflinePlayer(playerName: String) =
+	Bukkit.getOfflinePlayerIfCached(playerName) ?: Bukkit.getOfflinePlayer(playerName)
 
 class Economy(
 	private val currencyNameSingular: String,
