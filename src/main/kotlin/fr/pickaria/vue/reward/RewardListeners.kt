@@ -69,30 +69,36 @@ internal class RewardListeners : Listener {
 								it.currency?.model?.account?.let { account ->
 									when (account) {
 										"keys" -> {
-											if (reward.keys > 0) {
+											if (reward.keys > 1) {
 												val amount =
 													kotlin.random.Random.nextDouble(1.0, reward.keys.toDouble())
 												Key.toController().item(amount)
+											} else if (reward.keys == 1) {
+												Key.toController().item(1.0)
 											} else {
 												null
 											}
 										}
 
 										"shards" -> {
-											if (reward.shards > 0) {
+											if (reward.shards > 1) {
 												val amount =
 													kotlin.random.Random.nextDouble(1.0, reward.shards.toDouble())
 												Shard.toController().item(amount)
+											} else if (reward.shards == 1) {
+												Shard.toController().item(1.0)
 											} else {
 												null
 											}
 										}
 
 										else -> {
-											if (reward.keys > 0) {
+											if (reward.keys > 1) {
 												val amount =
-													kotlin.random.Random.nextDouble(1.0, reward.keys * 10_000.0)
+													kotlin.random.Random.nextDouble(1.0, reward.keys * 1000.0)
 												Credit.toController().item(amount)
+											} else if (reward.keys == 1) {
+												Credit.toController().item(1.0 * 1000.0)
 											} else {
 												null
 											}
