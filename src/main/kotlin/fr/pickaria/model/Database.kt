@@ -4,6 +4,11 @@ import fr.pickaria.model.economy.BankAccounts
 import fr.pickaria.model.job.Jobs
 import fr.pickaria.model.market.Orders
 import fr.pickaria.model.reward.DailyRewards
+import fr.pickaria.model.town.Residents
+import fr.pickaria.model.town.Towns
+import kotlinx.datetime.Clock
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.toLocalDateTime
 import org.bukkit.Bukkit
 import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.SchemaUtils
@@ -15,21 +20,24 @@ import org.jetbrains.exposed.sql.transactions.TransactionManager
 import org.jetbrains.exposed.sql.transactions.transaction
 
 fun openDatabase(path: String): Database {
-	// DB_CLOSE_DELAY: Reuse connection
-	// AUTO_SERVER: Enable automatic mixed mode
-	val database = Database.connect("jdbc:h2:$path;DB_CLOSE_DELAY=-1;AUTO_SERVER=TRUE", "org.h2.Driver")
+	val database = Database.connect(
+		url = mainConfig.databaseUrl.replace("\$path", path),
+		user = mainConfig.databaseUser,
+		password = mainConfig.databasePassword,
+		driver = mainConfig.databaseDriver,
+	)
 
 	transaction {
 		SchemaUtils.create(
-			BankAccounts, Jobs, Orders, DailyRewards
+			BankAccounts, Jobs, Orders, DailyRewards, Towns, Residents
 		)
 	}
 
 	transaction {
 		SchemaUtils.statementsRequiredToActualizeScheme(
-			BankAccounts, Jobs, Orders, DailyRewards
+			BankAccounts, Jobs, Orders, DailyRewards, Towns, Residents
 		) + SchemaUtils.addMissingColumnsStatements(
-			BankAccounts, Jobs, Orders, DailyRewards
+			BankAccounts, Jobs, Orders, DailyRewards, Towns, Residents
 		)
 	}.forEach {
 		transaction {
@@ -53,3 +61,5 @@ object BukkitLogger : SqlLogger {
 		Bukkit.getLogger().info("SQL: ${context.expandArgs(transaction)}")
 	}
 }
+
+fun now() = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault())

@@ -15,13 +15,13 @@ import org.bukkit.persistence.PersistentDataType
  * Checks if the ItemStack is a valid currency.
  * The item must be enchanted, have an account name and a value.
  */
-fun ItemStack.isCurrency(): Boolean =
+fun ItemStack.isCurrency(unsafe: Boolean = false): Boolean =
 	itemMeta?.let {
 		val hasCurrency = with(it.persistentDataContainer) {
 			has(currencyNamespace, PersistentDataType.STRING) && has(valueNamespace, PersistentDataType.DOUBLE)
 		}
 		val isCurrency = currency != null
-		val isEnchanted = it.hasEnchants() && it.enchants.contains(GlowEnchantment.instance)
+		val isEnchanted = unsafe || it.hasEnchants() && it.enchants.contains(GlowEnchantment.instance)
 		hasCurrency && isEnchanted && isCurrency
 	} ?: false
 

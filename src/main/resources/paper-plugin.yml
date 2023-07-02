@@ -16,6 +16,14 @@ dependencies:
       required: true
       join-classpath: true
       load: BEFORE
+    Votifier:
+      required: true
+      join-classpath: true
+      load: BEFORE
+    LuckPerms:
+      required: true
+      join-classpath: true
+      load: BEFORE
 
   server:
     PickariaSpawner:
@@ -23,6 +31,14 @@ dependencies:
       join-classpath: true
       load: BEFORE
     Vault:
+      required: true
+      join-classpath: true
+      load: BEFORE
+    Votifier:
+      required: true
+      join-classpath: true
+      load: BEFORE
+    LuckPerms:
       required: true
       join-classpath: true
       load: BEFORE

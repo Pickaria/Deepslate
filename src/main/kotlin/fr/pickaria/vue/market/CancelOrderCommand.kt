@@ -2,9 +2,9 @@ package fr.pickaria.vue.market
 
 import co.aikar.commands.*
 import co.aikar.commands.annotation.*
-import fr.pickaria.controller.market.giveItems
-import fr.pickaria.menu.open
+import fr.pickaria.controller.market.overflowStacks
 import fr.pickaria.model.market.Order
+import fr.pickaria.shared.give
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
 import org.bukkit.entity.Player
@@ -12,25 +12,20 @@ import org.bukkit.entity.Player
 @CommandAlias("cancel")
 @CommandPermission("pickaria.commands.cancel")
 @Description("Ouvre le menu ou annule une vente.")
-class CancelOrderCommand : BaseCommand() {
-	companion object {
-		fun setupContext(
-			commandContexts: CommandContexts<BukkitCommandExecutionContext>,
-			commandCompletions: CommandCompletions<BukkitCommandCompletionContext>
-		) {
-			commandContexts.registerContext(Order::class.java) {
-				val arg: String = it.popFirstArg()
+class CancelOrderCommand(manager: PaperCommandManager) : BaseCommand() {
+	init {
+		manager.commandContexts.registerContext(Order::class.java) {
+			val arg: String = it.popFirstArg()
 
-				try {
-					Order.get(arg.toInt())
-				} catch (_: IllegalArgumentException) {
-					throw InvalidCommandArgument("Order '$arg' not found.")
-				}
+			try {
+				Order.get(arg.toInt())
+			} catch (_: IllegalArgumentException) {
+				throw InvalidCommandArgument("Order '$arg' not found.")
 			}
+		}
 
-			commandCompletions.registerCompletion("ownorders") { context ->
-				Order.get(context.player).map { it.id.toString() }
-			}
+		manager.commandCompletions.registerCompletion("ownorders") { context ->
+			Order.get(context.player).map { it.id.toString() }
 		}
 	}
 
@@ -38,8 +33,7 @@ class CancelOrderCommand : BaseCommand() {
 	@CommandCompletion("@ownorders")
 	fun onDefault(sender: Player, @Optional order: Order?) {
 		if (order == null) {
-			sender open "orders"
-			return
+			throw InvalidCommandArgument("Cette vente ne peut pas être annulée.")
 		}
 
 		if (order.seller != sender) {
@@ -47,7 +41,9 @@ class CancelOrderCommand : BaseCommand() {
 		}
 
 		if (order.delete() >= 1) {
-			giveItems(sender, order.material, order.amount)
+			overflowStacks(order.material, order.amount).forEach {
+				sender.give(it)
+			}
 			val message = Component.text("Ordre supprimé avec succès.", NamedTextColor.GRAY)
 			sender.sendMessage(message)
 		} else {

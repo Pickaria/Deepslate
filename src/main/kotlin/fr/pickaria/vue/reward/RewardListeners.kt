@@ -1,18 +1,19 @@
 package fr.pickaria.vue.reward
 
-import fr.pickaria.controller.artefact.grantAdvancement
 import fr.pickaria.controller.economy.currency
 import fr.pickaria.controller.economy.deposit
 import fr.pickaria.controller.economy.isCurrency
 import fr.pickaria.controller.economy.silentDeposit
 import fr.pickaria.controller.reward.RewardHolder
+import fr.pickaria.model.economy.*
 import fr.pickaria.model.economy.Currency
-import fr.pickaria.model.economy.toController
 import fr.pickaria.model.reward.rewardConfig
 import fr.pickaria.model.reward.rewardNamespace
 import fr.pickaria.shared.give
+import fr.pickaria.shared.grantAdvancement
 import net.kyori.adventure.text.Component
 import org.bukkit.Bukkit
+import org.bukkit.NamespacedKey
 import org.bukkit.OfflinePlayer
 import org.bukkit.entity.Player
 import org.bukkit.event.Event
@@ -28,6 +29,8 @@ import org.bukkit.potion.PotionEffectType
 import java.util.*
 
 internal class RewardListeners : Listener {
+	private val rewardMoneyNamespaceKey = NamespacedKey.fromString("pickaria:money_reward")!!
+
 	@EventHandler
 	fun onRewardOpen(event: PlayerInteractEvent) {
 		with(event) {
@@ -60,6 +63,53 @@ internal class RewardListeners : Listener {
 						.build()
 
 					reward.lootTable.fillInventory(inventory, Random(), lootContext)
+					inventory.contents = inventory.contents.map { it ->
+						it?.let {
+							if (it.isCurrency(true)) {
+								it.currency?.model?.account?.let { account ->
+									when (account) {
+										"keys" -> {
+											if (reward.keys > 1) {
+												val amount =
+													kotlin.random.Random.nextDouble(1.0, reward.keys.toDouble())
+												Key.toController().item(amount)
+											} else if (reward.keys == 1) {
+												Key.toController().item(1.0)
+											} else {
+												null
+											}
+										}
+
+										"shards" -> {
+											if (reward.shards > 1) {
+												val amount =
+													kotlin.random.Random.nextDouble(1.0, reward.shards.toDouble())
+												Shard.toController().item(amount)
+											} else if (reward.shards == 1) {
+												Shard.toController().item(1.0)
+											} else {
+												null
+											}
+										}
+
+										else -> {
+											if (reward.keys > 1) {
+												val amount =
+													kotlin.random.Random.nextDouble(1.0, reward.keys * 1000.0)
+												Credit.toController().item(amount)
+											} else if (reward.keys == 1) {
+												Credit.toController().item(1.0 * 1000.0)
+											} else {
+												null
+											}
+										}
+									}
+								}
+							} else {
+								it
+							}
+						}
+					}.toTypedArray()
 
 					player.playSound(rewardConfig.rewardOpenSound)
 					player.openInventory(inventory)

@@ -1,6 +1,5 @@
 package fr.pickaria.controller.job
 
-import fr.pickaria.Main
 import fr.pickaria.controller.job.events.JobLevelUpEvent
 import fr.pickaria.controller.potion.hasActivePotionEffect
 import fr.pickaria.controller.reward.addDailyPoint
@@ -9,12 +8,12 @@ import fr.pickaria.model.job.JobModel
 import fr.pickaria.model.job.LevelUpType
 import fr.pickaria.model.job.jobConfig
 import fr.pickaria.model.potion.PotionType
+import fr.pickaria.plugin
 import org.bukkit.Bukkit
 import org.bukkit.boss.BarColor
 import org.bukkit.boss.BarStyle
 import org.bukkit.boss.BossBar
 import org.bukkit.entity.Player
-import org.bukkit.plugin.java.JavaPlugin
 import org.bukkit.scheduler.BukkitRunnable
 import org.bukkit.scheduler.BukkitTask
 import java.util.concurrent.ConcurrentHashMap
@@ -62,8 +61,6 @@ private fun addExperience(player: Player, job: Job, exp: Int): Pair<Int, Double>
 
 		(newLevel to it.experience + experienceIncrease)
 	}
-
-private val plugin = JavaPlugin.getProvidingPlugin(Main::class.java)
 
 /**
  * Adds experience and displays a boss bar with information.

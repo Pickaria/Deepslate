@@ -16,18 +16,24 @@ fun OfflinePlayer.withdraw(currency: Currency, amount: Double): EconomyResponse 
 fun OfflinePlayer.deposit(currency: Currency, amount: Double): EconomyResponse =
 	currency.economy.depositPlayer(this, amount)
 
+fun OfflinePlayer.has(currency: Currency, amount: Int): Boolean = has(currency, amount.toDouble())
+
+fun OfflinePlayer.withdraw(currency: Currency, amount: Int): EconomyResponse = withdraw(currency, amount.toDouble())
+
+fun OfflinePlayer.deposit(currency: Currency, amount: Int): EconomyResponse = deposit(currency, amount.toDouble())
+
 fun sendTo(currency: Currency, sender: OfflinePlayer, recipient: OfflinePlayer, amount: Double): SendResponse =
 	if (sender.has(currency, amount)) {
 		val withdrawResponse = sender.withdraw(currency, amount)
 
 		if (withdrawResponse.type == EconomyResponse.ResponseType.SUCCESS) {
-			val depositResponse = recipient.deposit(currency, withdrawResponse.amount)
+			val depositResponse = recipient.deposit(currency, amount)
 
 			if (depositResponse.type != EconomyResponse.ResponseType.SUCCESS) {
 				// Try to refund
-				val refund = sender.deposit(currency, withdrawResponse.amount)
+				val refund = sender.deposit(currency, amount)
 				if (refund.type == EconomyResponse.ResponseType.FAILURE) {
-					getLogger().severe("Can't refund player, withdrew amount: ${withdrawResponse.amount}")
+					getLogger().severe("Can't refund player, withdrew amount: $amount")
 					SendResponse.REFUND_ERROR
 				}
 

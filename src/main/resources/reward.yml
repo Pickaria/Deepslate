@@ -1,6 +1,6 @@
 rewards:
   common:
-    loot_table: pickaria:rewards/common
+    loot_table: pickaria:reward/common
     material: WHITE_SHULKER_BOX
     name: '<white>Récompense commune'
     keys: 1
@@ -9,11 +9,11 @@ rewards:
       - '<gray>Conteneur de récompenses communes.'
     type: common
     purchasable: true
-    advancement: pickaria:reward
+    advancement: pickaria:reward/common
 
   uncommon:
-    loot_table: pickaria:rewards/uncommon
-    material: YELLOW_SHULKER_BOX
+    loot_table: pickaria:reward/uncommon
+    material: LIGHT_BLUE_SHULKER_BOX
     name: '<yellow>Récompense peu commune'
     keys: 10
     shards: 0
@@ -21,68 +21,155 @@ rewards:
       - '<gray>Conteneur de récompenses peu communes.'
     type: uncommon
     purchasable: true
+    advancement: pickaria:reward/uncommon
 
   rare:
-    loot_table: pickaria:rewards/rare
-    material: CYAN_SHULKER_BOX
-    name: '<aqua>Récompense rare'
-    keys: 20
-    shards: 1
+    loot_table: pickaria:reward/rare
+    material: LIME_SHULKER_BOX
+    name: '<yellow>Récompense rare'
+    keys: 24
+    shards: 0
     description:
       - '<gray>Conteneur de récompenses rares.'
-      - '<gray>Peut contenir des Éclats de Pickarite.'
     type: rare
     purchasable: true
+    advancement: pickaria:reward/rare
 
   epic:
-    type: epic
-    loot_table: pickaria:rewards/epic
+    loot_table: pickaria:reward/epic
     material: PURPLE_SHULKER_BOX
-    name: '<dark_purple>Récompense épique'
+    name: '<yellow>Récompense épique'
+    keys: 26
+    shards: 1
+    description:
+      - '<gray>Conteneur de récompenses épiques.'
+    type: epic
+    purchasable: true
+    advancement: pickaria:reward/epic
 
-  redstone:
-    type: redstone
-    loot_table: pickaria:rewards/redstone
+  legendary:
+    loot_table: pickaria:reward/legendary
+    material: YELLOW_SHULKER_BOX
+    name: '<yellow>Récompense légendaire'
+    keys: 48
+    shards: 2
+    description:
+      - '<gray>Conteneur de récompenses légendaires.'
+    type: legendary
+    purchasable: true
+    advancement: pickaria:reward/legendary
+
+  mythic:
+    loot_table: pickaria:reward/mythic
     material: RED_SHULKER_BOX
-    name: '<red>Récompense de redstone'
-    purchasable: true
-    keys: 5
-    shards: 0
+    name: '<yellow>Récompense mythique'
+    keys: 60
+    shards: 3
     description:
-      - '<gray>Conteneur de récompenses pour les redstoneurs.'
+      - '<gray>Conteneur de récompenses mythiques.'
+    type: mythic
+    purchasable: true
+    advancement: pickaria:reward/mythic
 
-  plants:
-    type: plants
-    loot_table: pickaria:rewards/plants
-    material: GREEN_SHULKER_BOX
-    name: '<green>Récompense de plantes'
-    purchasable: true
-    keys: 5
+  ###################
+  # SPECIAL REWARDS #
+  ###################
+
+  ocean:
+    loot_table: pickaria:reward/0608-ocean
+    material: BLUE_SHULKER_BOX
+    name: '<dark_blue>Journée mondiale de l''océan'
+    keys: 10
     shards: 0
     description:
-      - '<gray>Conteneur de récompenses pour les fermiers.'
+      - '<gray>Conteneur de récompenses spécial.'
+      - '<gray>Récompense spéciale du 8 juin.'
+    type: ocean
+    purchasable: true
+
+  halloween:
+    loot_table: pickaria:reward/1031-halloween
+    material: RED_SHULKER_BOX
+    name: '<red>Halloween'
+    keys: 10
+    shards: 0
+    description:
+      - '<gray>Conteneur de récompenses spécial.'
+      - '<gray>Récompense spéciale du 31 octobre.'
+    type: halloween
+    purchasable: true
+
+  valentines:
+    loot_table: pickaria:reward/0214-valentines
+    material: RED_SHULKER_BOX
+    name: '<red>Saint valentin'
+    keys: 10
+    shards: 0
+    description:
+      - '<gray>Conteneur de récompenses spécial.'
+      - '<gray>Récompense spéciale du 14 février.'
+    type: valentines
+    purchasable: true
+
+  water:
+    loot_table: pickaria:reward/0322-water
+    material: LIGHT_BLUE_SHULKER_BOX
+    name: '<blue>Journée mondiale de l''eau'
+    keys: 10
+    shards: 0
+    description:
+      - '<gray>Conteneur de récompenses spécial.'
+      - '<gray>Récompense spéciale du 22 mars.'
+    type: water
+    purchasable: true
+
+  april:
+    loot_table: pickaria:reward/0401-april
+    material: LIGHT_BLUE_SHULKER_BOX
+    name: '<blue>1er avril'
+    keys: 10
+    shards: 0
+    description:
+      - '<gray>Conteneur de récompenses spécial.'
+      - '<gray>Récompense spéciale du 1er avril.'
+    type: april
+    purchasable: true
+
+  bee:
+    loot_table: pickaria:reward/0420-bee
+    material: YELLOW_SHULKER_BOX
+    name: '<yellow>Journée mondiale des abeilles'
+    keys: 10
+    shards: 0
+    description:
+      - '<gray>Conteneur de récompenses spécial.'
+      - '<gray>Récompense spéciale du 20 avril.'
+    type: bee
+    purchasable: true
 
   music:
-    type: music
-    loot_table: pickaria:rewards/music
-    material: BLUE_SHULKER_BOX
-    name: '<blue>Récompense de musiques'
-    purchasable: true
-    keys: 5
+    loot_table: pickaria:reward/0621-music
+    material: PURPLE_SHULKER_BOX
+    name: '<dark_purple>Fête de la musique'
+    keys: 10
     shards: 0
     description:
-      - '<gray>Conteneur de récompenses pour les musiciens.'
-
-  test:
-    type: test
-    loot_table: pickaria:rewards/test
-    material: BLACK_SHULKER_BOX
-    name: '<aqua>TEST'
+      - '<gray>Conteneur de récompenses spécial.'
+      - '<gray>Récompense spéciale du 21 juin.'
+    type: music
     purchasable: true
-    keys: 64
-    shards: 64
+
+  bamboo:
+    loot_table: pickaria:reward/0918-bamboo
+    material: GREEN_SHULKER_BOX
+    name: '<green>Journée mondiale du bambou'
+    keys: 10
+    shards: 0
     description:
-      - '<aqua>TEST.'
+      - '<gray>Conteneur de récompenses spécial.'
+      - '<gray>Récompense spéciale du 18 septembre.'
+    type: bamboo
+    purchasable: true
 
 not_enough_money: 'Vous n''avez pas assez d''argent pour acheter cette récompense.'
 cant_purchase_reward: 'Cette récompense ne peut pas être achetée.'
@@ -94,12 +181,15 @@ daily_reward_sound: entity.experience_orb.pickup
 reward_per_day: 1
 
 special_days:
-  12-28: epic
-  12-29: uncommon
+  01-02: redstone
 
 default_reward: common
 
 streak_rewards:
-  - redstone
+  - uncommon
+  - rare
+  - epic
+  - legendary
+  - mythic
 
 streak_reward_every: 7

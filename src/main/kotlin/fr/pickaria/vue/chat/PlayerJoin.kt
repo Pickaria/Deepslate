@@ -16,9 +16,12 @@ internal class PlayerJoin : Listener {
 
 			if (!player.hasPermission("pickaria.messages.join")) {
 				joinMessage(null)
+				// TODO: Log join message to admin players
 			} else {
 				joinMessage(chatConfig.join.append(player.displayName()))
 			}
+
+			player.updateTabHeaderAndFooter()
 		}
 	}
 
@@ -29,6 +32,7 @@ internal class PlayerJoin : Listener {
 
 			if (!player.hasPermission("pickaria.messages.quit")) {
 				quitMessage(null)
+				// TODO: Log join message to admin players
 			} else {
 				quitMessage(chatConfig.quit.append(player.displayName()))
 			}

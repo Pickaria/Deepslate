@@ -5,8 +5,6 @@ chat_format: '<gray> » <white>' # The display name including prefix will be app
 join: '<gray>[</gray><gold>+</gold><gray>]</gray> <white>' # The display name will be appended after
 quit: '<gray>[</gray><red>-</red><gray>]</gray> <white>'
 
-#§r                §k||§r §6§lPickaria§r §f—§7 §7$time §k||§r§r
-#        §7Semi-RP §f|§7 Towny §f|§7 Economy §f|§7 Jobs
 motd:
   - '<reset>                     <obfuscated>||</obfuscated> <gold><bold>Pickaria</bold></gold> <white>-<gray> <time> <obfuscated>||</obfuscated>'
   - '<gradient:#5e4fa2:#f79459:red>███████████████████████████████</gradient>'

@@ -1,8 +1,6 @@
 package fr.pickaria.model.job
 
-import com.charleskorn.kaml.Yaml
-import com.charleskorn.kaml.decodeFromStream
-import fr.pickaria.model.getResourceFileStream
+import fr.pickaria.model.config
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
@@ -10,16 +8,26 @@ import kotlinx.serialization.Serializable
 data class JobConfig(
 	@SerialName("last_payment_delay")
 	val lastPaymentDelay: Long,
+
 	@SerialName("max_jobs")
 	val maxJobs: Int,
+
 	@SerialName("max_level")
 	val maxLevel: Int,
-	val cooldown: Long,
-	val ascent: AscentConfig,
+
 	@SerialName("rank_hover")
 	val rankHover: String,
+
+	@SerialName("ascent_cooldown")
+	val ascentCooldown: Int,
+
+	@SerialName("job_cooldown")
+	val jobCooldown: Long,
+	
+	val ascent: AscentConfig,
 	val jobs: Map<String, Job>,
-	val ranks: Map<Int, String>,
+	val ranks: Map<Int, JobRank>,
+	val rewards: List<String>,
 )
 
-val jobConfig = Yaml.default.decodeFromStream<JobConfig>(getResourceFileStream("job.yml"))
+val jobConfig = config<JobConfig>("job.yml")

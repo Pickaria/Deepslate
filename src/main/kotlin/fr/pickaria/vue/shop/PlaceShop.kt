@@ -11,29 +11,8 @@ import org.bukkit.entity.Player
 @CommandAlias("placeshop|createshop")
 @CommandPermission("pickaria.admin.command.placeshop")
 class PlaceShop : BaseCommand() {
-	companion object {
-		fun setupContext(
-			commandContexts: CommandContexts<BukkitCommandExecutionContext>,
-			commandCompletions: CommandCompletions<BukkitCommandCompletionContext>
-		) {
-			commandContexts.registerContext(ShopOffer::class.java) {
-				val arg: String = it.popFirstArg()
-
-				try {
-					ShopOffer.valueOf(arg.uppercase())
-				} catch (_: IllegalArgumentException) {
-					throw InvalidCommandArgument("Shop of type '$arg' does not exists.")
-				}
-			}
-
-			commandCompletions.registerCompletion("shoptype") {
-				ShopOffer.values().map { it.name.lowercase() }
-			}
-		}
-	}
-
 	@Default
-	@CommandCompletion("@shoptype")
+	@CommandCompletion("@shop_type")
 	fun onCommand(sender: Player, @Optional type: ShopOffer?) {
 		if (type == null) {
 			shopConfig.villagers.forEach {

@@ -13,8 +13,16 @@ object AdvancementSerializer : KSerializer<Advancement> {
 	override val descriptor = PrimitiveSerialDescriptor("Advancement", PrimitiveKind.STRING)
 
 	override fun deserialize(decoder: Decoder): Advancement {
-		val key = NamespacedKey.fromString(decoder.decodeString())!!
-		return Bukkit.getAdvancement(key)!!
+		val key = try {
+			NamespacedKey.fromString(decoder.decodeString())!!
+		} catch (_: NullPointerException) {
+			throw RuntimeException("Cannot decode namespaced key")
+		}
+		return try {
+			Bukkit.getAdvancement(key)!!
+		} catch (_: NullPointerException) {
+			throw RuntimeException("Advancement ${key.asString()} not found")
+		}
 	}
 
 	override fun serialize(encoder: Encoder, value: Advancement) {

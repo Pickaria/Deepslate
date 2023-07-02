@@ -1,0 +1,12 @@
+override_other_config_file: false
+
+# See https://github.com/JetBrains/Exposed/wiki/DataBase-and-DataSource for more information about supported databases
+# DB_CLOSE_DELAY: Reuse connection
+# AUTO_SERVER: Enable automatic mixed mode
+# '$path' is replaced with a path in plugin's data folder
+database_url: 'jdbc:h2:$path;DB_CLOSE_DELAY=-1;AUTO_SERVER=TRUE'
+database_user: ''
+database_password: ''
+database_driver: 'org.h2.Driver'
+lobby_world_name: lobby
+overworld_name: world

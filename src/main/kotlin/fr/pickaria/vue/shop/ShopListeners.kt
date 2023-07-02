@@ -2,7 +2,6 @@ package fr.pickaria.vue.shop
 
 import fr.pickaria.controller.economy.*
 import fr.pickaria.menu.open
-import fr.pickaria.model.advancements.CustomAdvancement
 import fr.pickaria.model.shop.menuNamespace
 import fr.pickaria.model.shop.shopConfig
 import fr.pickaria.spawner.event.*
@@ -43,6 +42,7 @@ internal class ShopListeners : Listener {
 			val hasAll = player.hasAll(selectedRecipe.ingredients)
 
 			inventory.removeCurrencies()
+			player.updateInventory()
 
 			if (hasAll) {
 				// Force set the item into the trade view
@@ -71,8 +71,6 @@ internal class ShopListeners : Listener {
 					if (response.type == EconomyResponse.ResponseType.SUCCESS) {
 						inventory.removeItem(trade.result)
 						inventory.clear()
-						player.updateInventory()
-						CustomAdvancement.VILLAGER_BUY.grant(player)
 					}
 				}
 
