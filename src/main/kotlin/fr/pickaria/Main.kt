@@ -106,7 +106,6 @@ class Main : SuspendingJavaPlugin() {
 
 		// Command contexts
 		manager.limitCondition()
-		HomeTeleport.setupContext(manager)
 
 		// Commands
 		manager.registerCommands(
@@ -127,11 +126,11 @@ class Main : SuspendingJavaPlugin() {
 			RewardCommand(manager),
 			SellCommand(manager),
 			MenuCommand(manager),
-			LobbyCommand(),
+			LobbyCommand(this),
 			RandomTeleport(this),
 			SpawnTeleport(this),
 			SetHome(this),
-			HomeTeleport(this),
+			HomeTeleport(this, manager),
 			TpaCommand(this),
 			TpyesCommand(this),
 			TpdenyCommand(this),
