@@ -1,8 +1,8 @@
 package fr.pickaria.controller.reforge
 
 import fr.pickaria.controller.artefact.artefact
-import fr.pickaria.controller.artefact.isArtefact
-import fr.pickaria.model.reforge.Rarity
+import fr.pickaria.model.reforge.ReforgeLevel
+import fr.pickaria.model.reforge.rarityNamespace
 import fr.pickaria.model.reforge.reforgeConfig
 import fr.pickaria.shared.MiniMessage
 import net.kyori.adventure.text.Component
@@ -15,6 +15,7 @@ import org.bukkit.attribute.AttributeModifier
 import org.bukkit.inventory.EquipmentSlot
 import org.bukkit.inventory.ItemFlag
 import org.bukkit.inventory.ItemStack
+import org.bukkit.persistence.PersistentDataType
 import java.text.DecimalFormat
 
 
@@ -25,37 +26,14 @@ private val percentFormatter = DecimalFormat("#.##%").apply { positivePrefix = "
 /**
  * Returns the rarity corresponding to the ItemStack.
  */
-val ItemStack.artefactRarity: Rarity
-	get() {
-		val level = getRarityLevel()
-		for (rarity in reforgeConfig.sortedRarities) {
-			if (rarity.attributes <= level) {
-				return rarity
-			}
-		}
-		return reforgeConfig.lowestRarity
-	}
-
-/**
- * Sums the amount of all attribute modifiers.
- */
-private fun ItemStack.getRarityLevel(): Int {
-	var attributeLevel = if (isArtefact()) 1 else 0
-	var hasCustomAttributes = false
-
-	itemMeta.attributeModifiers?.forEach { _, modifier ->
-		if (modifier.name == "custom") {
-			attributeLevel += if (modifier.amount >= 0.0) 1 else -1
-			hasCustomAttributes = true
+var ItemStack.artefactRarity: ReforgeLevel
+	get() = reforgeConfig.levels[itemMeta.persistentDataContainer.get(rarityNamespace, PersistentDataType.STRING)]
+		?: reforgeConfig.levels[reforgeConfig.defaultLevel]!!
+	set(value) {
+		editMeta {
+			it.persistentDataContainer.set(rarityNamespace, PersistentDataType.STRING, value.key)
 		}
 	}
-
-	if (hasCustomAttributes && attributeLevel == 0) {
-		attributeLevel = 1
-	}
-
-	return attributeLevel
-}
 
 /**
  * Updates the display name and the lore of the ItemStack to better correspond to the item's rarity.
@@ -82,13 +60,13 @@ fun ItemStack.updateLore(): ItemStack {
 			"name" to displayName
 				.decoration(TextDecoration.ITALIC, TextDecoration.State.FALSE)
 				.decorate(TextDecoration.BOLD)
-		}.message
+		}.toComponent()
 
 		it.displayName(newDisplayName)
 
 		val newLore: MutableList<Component?> = mutableListOf(
 			Component.empty(),
-			MiniMessage(rarity.color) { "name" to rarity.name }.message.decoration(
+			MiniMessage(rarity.color) { "name" to rarity.displayName }.toComponent().decoration(
 				TextDecoration.ITALIC,
 				TextDecoration.State.FALSE
 			),

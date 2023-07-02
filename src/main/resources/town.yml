@@ -1,0 +1,53 @@
+banner_price: 100.0
+town_name_missing: <red>Veuillez entrer un nom de ville.
+town_name_exist: <red>Une ville avec ce nom existe déjà.
+already_in_town: Vous êtes déjà dans une ville.
+town_not_created: <red>La ville n'a pas pu être créée.
+town_empty_deleted: <gray>La ville <gold><town></gold> a été désertée et est donc tombée en ruine.
+withdraw_success: <gray>Vous avez récupéré <gold><amount></gold> de la banque de la ville.
+deposit_success: <gray>Vous avez déposé <gold><amount></gold> dans la banque de la ville.
+joined_town: <gray>Vous avez rejoint la ville <gold><town></gold>.
+left_town: <gray>Vous avez quitté la ville <gold><town></gold>.
+not_in_town: Vous n'êtes pas dans une ville.
+invite_received: >-2
+  <gold><player></gold> <gray>vous a invité à rejoindre la ville <gold><town></gold>.
+  <newline>Faites <gold><command>/town join <town></command></gold> pour rejoindre la ville.
+invite_sent: Vous avez invité <player> à rejoindre la ville <town>.
+no_permission: Vous n'avez pas le droit d'effectuer cette action.
+kicked: <red>Vous avez été expulsé de la ville <gold><town><gray>.
+kick_success: <gold><player><red> a été expulsé de la ville <gold><town><gray>.
+
+no_town: |-2
+  <b>Vagabond</b>
+
+  <gray>Vous n'avez pas encore de ville.</gray>
+
+  ⇒ <click:run_command:/menu towns><hover:show_text:'Cliquez pour voir la liste des villes'><blue><u>Rejoindre</u></blue></hover></click>
+
+  ⇒ <click:suggest_command:/town create><hover:show_text:'Cliquez pour créer une ville à votre position'><blue><u>Fonder</u></blue></hover></click>
+
+page: |-2
+  <b><town-name></b>
+
+  ⇒ <hover:show_text:'Actions de la ville'><blue><u>Actions</u></blue></hover>
+
+  ⇒ <hover:show_text:'Liste des résidents'><blue><u>Résidents</u></blue></hover>
+
+  ⇒ <hover:show_text:'Situation bancaire de la ville'><blue><u>Banque</u></blue></hover>
+
+  ⇒ <hover:show_text:'Actions sur les territoires de la ville'><blue><u>Territoire</u></blue></hover>
+
+  ⇒ <hover:show_text:'Actions à la mairie'><blue><u>Mairie</u></blue></hover>
+
+# /town list messages
+header: '<gold>==== Villes (<page>/<max>) ===='
+town_row: '<white><position>. <gray><town>'
+resident_row: '<white><position>. <gray><resident>, <rank>'
+town_footer: '<gray>Tapez <gold><next-page>/town list <page></next-page></gold> pour lire la page suivante.'
+resident_footer: '<gray>Tapez <gold><next-page>/town residents <page></next-page></gold> pour lire la page suivante.'
+
+town_info: |-2
+  <gray>Ville : <gold><town></gold>
+   <gold>Solde :<gray> <balance>
+   <gold>Résidents :<gray> <residents>
+   <gold>Date de création :<gray> <creation>

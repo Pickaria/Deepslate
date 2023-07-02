@@ -1,14 +1,14 @@
 package fr.pickaria.vue.miniblocks
 
 import fr.pickaria.controller.home.addToHome
-import fr.pickaria.controller.toController
+import fr.pickaria.controller.miniblocks.toController
 import fr.pickaria.menu.*
 import fr.pickaria.model.economy.Credit
-import fr.pickaria.model.economy.toController
 import fr.pickaria.model.miniblocks.miniBlocksConfig
 import net.kyori.adventure.text.Component
+import net.kyori.adventure.text.format.NamedTextColor
+import net.kyori.adventure.text.format.TextDecoration
 import org.bukkit.Material
-import java.util.*
 
 private val miniBlockMenuItem = miniBlocksConfig.miniBlocks.random().toController().create().apply {
 	editMeta {
@@ -24,7 +24,7 @@ private val miniBlockMenuItem = miniBlocksConfig.miniBlocks.random().toControlle
 
 @OptIn(ItemBuilderUnsafe::class)
 fun miniBlocksMenu() = menu("miniblocks") {
-	title = Component.text("Mini blocs")
+	title = Component.text("Mini blocs", NamedTextColor.DARK_BLUE, TextDecoration.BOLD)
 
 	val count = miniBlocksConfig.sortedMiniBlocks.size
 	val pageSize = size - 9
@@ -43,7 +43,7 @@ fun miniBlocksMenu() = menu("miniblocks") {
 			lore {
 				keyValues {
 					"Bloc" to Component.translatable(miniBlock.material.translationKey()).asComponent()
-					"Prix unitaire" to Credit.toController().format(miniBlock.price ?: miniBlocksConfig.defaultPrice)
+					"Prix unitaire" to Credit.economy.format(miniBlock.price ?: miniBlocksConfig.defaultPrice)
 				}
 				leftClick = "Clic-gauche pour acheter"
 			}

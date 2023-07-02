@@ -1,7 +1,8 @@
 last_payment_delay: 200 # Time between payments in milliseconds
 max_jobs: 1
 max_level: 100
-cooldown: 1 # Time before a player can leave their job in hours
+job_cooldown: 1 # Time before a player can leave their job in hours
+ascent_cooldown: 8 # Time between ascent in hours
 
 # At level 100, the player can claim 5 ascent points, thus getting 5% more experience and 0.05% more money
 ascent:
@@ -12,16 +13,42 @@ ascent:
   experience_increase: 0.01 # For each ascent point claimed, the player will have an experience boost of 1%
   money_increase: 0.001 # Same but for money reward
 
+# Rewards every `point_every`
+rewards:
+  - common # At level 50
+  - uncommon # At level 60
+  - rare # ...
+  - epic
+  - legendary
+  - mythic # At level 100
 
 ranks:
-  384: '<gray>[<dark_purple>X<gray>]'
-  192: '<gray>[<dark_red>S<gray>]'
-  96: '<gray>[<gold>A<gray>]'
-  48: '<gray>[<gold>B<gray>]'
-  24: '<gray>[<green>C<gray>]'
-  12: '<gray>[<dark_green>D<gray>]'
-  6: '<gray>[<gray>E<gray>]'
-  1: '<gray>[<white>F<gray>]'
+  384:
+    suffix: '<gray>[<dark_purple>X<gray>]'
+    advancement: pickaria:job/x_tier
+  192:
+    suffix: '<gray>[<dark_red>S<gray>]'
+    advancement: pickaria:job/s_tier
+  96:
+    suffix: '<gray>[<gold>A<gray>]'
+    advancement: pickaria:job/a_tier
+  48:
+    suffix: '<gray>[<gold>B<gray>]'
+    advancement: pickaria:job/b_tier
+  24:
+    suffix: '<gray>[<green>C<gray>]'
+    advancement: pickaria:job/c_tier
+  12:
+    suffix: '<gray>[<dark_green>D<gray>]'
+    advancement: pickaria:job/d_tier
+  9:
+    advancement: pickaria:job/9_lives
+  6:
+    suffix: '<gray>[<gray>E<gray>]'
+    advancement: pickaria:job/e_tier
+  1:
+    suffix: '<gray>[<white>F<gray>]'
+    advancement: pickaria:job/f_tier
 
 rank_hover: '<points> point(s) d''ascension'
 
@@ -37,6 +64,9 @@ jobs:
     revenue_increase: 1.05 # Default value
     start_experience: 25 # Default value
     type: MINER
+    advancement: pickaria:job/miner
+    advancement_ascend: pickaria:job/miner_ascend
+    advancement_max_level: pickaria:job/miner_max
 
   hunter:
     label: "Chasseur"
@@ -48,6 +78,9 @@ jobs:
     revenue_increase: 1.04
     start_experience: 30
     type: HUNTER
+    advancement: pickaria:job/hunter
+    advancement_ascend: pickaria:job/hunter_ascend
+    advancement_max_level: pickaria:job/hunter_max
 
   farmer:
     label: "Fermier"
@@ -59,6 +92,9 @@ jobs:
     revenue_increase: 1.03
     start_experience: 25
     type: FARMER
+    advancement: pickaria:job/farmer
+    advancement_ascend: pickaria:job/farmer_ascend
+    advancement_max_level: pickaria:job/farmer_max
 
   breeder:
     label: "Éleveur"
@@ -70,6 +106,9 @@ jobs:
     revenue_increase: 1.04
     start_experience: 25
     type: BREEDER
+    advancement: pickaria:job/breeder
+    advancement_ascend: pickaria:job/breeder_ascend
+    advancement_max_level: pickaria:job/breeder_max
 
   alchemist:
     label: "Alchimiste"
@@ -81,6 +120,9 @@ jobs:
     revenue_increase: 1.03
     start_experience: 25
     type: ALCHEMIST
+    advancement: pickaria:job/alchemist
+    advancement_ascend: pickaria:job/alchemist_ascend
+    advancement_max_level: pickaria:job/alchemist_max
 
   wizard:
     label: "Enchanteur"
@@ -92,6 +134,9 @@ jobs:
     revenue_increase: 1.05
     start_experience: 25
     type: WIZARD
+    advancement: pickaria:job/wizard
+    advancement_ascend: pickaria:job/wizard_ascend
+    advancement_max_level: pickaria:job/wizard_max
 
   trader:
     label: "Commerçant"
@@ -103,3 +148,6 @@ jobs:
     revenue_increase: 1.04
     start_experience: 25
     type: TRADER
+    advancement: pickaria:job/trader
+    advancement_ascend: pickaria:job/trader_ascend
+    advancement_max_level: pickaria:job/trader_max

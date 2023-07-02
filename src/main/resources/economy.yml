@@ -19,6 +19,7 @@ header: '<gold>==== Baltop (<page>/<max>) ===='
 row: '<white><position>. <gray><player>, <balance>'
 footer: '<gray>Tapez <gold><next-page>/baltop <page></next-page></gold> pour lire la page suivante.'
 
+default_account: 'credits'
 vault_currency: 'credits'
 bundle_description: '<gray>Sacoche d''une valeur de <gold><value></gold>.'
 
@@ -49,6 +50,15 @@ currencies:
         material: NETHERITE_INGOT
       - value: 1073741824.0
         material: NETHERITE_BLOCK
+    advancements:
+      - amount: 1
+        advancement: pickaria:money/first_credit
+      - amount: 1000000
+        advancement: pickaria:money/millionaire
+      - amount: 1000000000
+        advancement: pickaria:money/billionaire
+      - amount: 2147483647
+        advancement: pickaria:money/32bit_limit
 
   shards:
     description:
@@ -59,10 +69,15 @@ currencies:
     name_singular: 'Éclat de Pickarite'
     name_plural: 'Éclats de Pickarite'
     account: shards
-    format: '###,##0'
+    format: '###,##0.#'
     physical_currencies:
       - value: 1.0
         material: ECHO_SHARD
+    advancements:
+      - amount: 1
+        advancement: pickaria:money/first_shard
+      - amount: 64
+        advancement: pickaria:money/64_shards
 
   keys:
     description:
@@ -72,7 +87,7 @@ currencies:
     name_singular: 'Clé'
     name_plural: 'Clés'
     account: keys
-    format: '###,##0'
+    format: '###,##0.#'
     physical_currencies:
       - value: 1.0
         material: TRIPWIRE_HOOK

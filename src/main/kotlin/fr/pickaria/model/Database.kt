@@ -6,6 +6,11 @@ import fr.pickaria.model.market.Orders
 import fr.pickaria.model.reward.DailyRewards
 import fr.pickaria.model.teleport.Histories
 import fr.pickaria.model.teleport.Homes
+import fr.pickaria.model.town.Residents
+import fr.pickaria.model.town.Towns
+import kotlinx.datetime.Clock
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.toLocalDateTime
 import org.bukkit.Bukkit
 import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.SchemaUtils
@@ -17,21 +22,24 @@ import org.jetbrains.exposed.sql.transactions.TransactionManager
 import org.jetbrains.exposed.sql.transactions.transaction
 
 fun openDatabase(path: String): Database {
-	// DB_CLOSE_DELAY: Reuse connection
-	// AUTO_SERVER: Enable automatic mixed mode
-	val database = Database.connect("jdbc:h2:$path;DB_CLOSE_DELAY=-1;AUTO_SERVER=TRUE", "org.h2.Driver")
+	val database = Database.connect(
+		url = mainConfig.databaseUrl.replace("\$path", path),
+		user = mainConfig.databaseUser,
+		password = mainConfig.databasePassword,
+		driver = mainConfig.databaseDriver,
+	)
 
 	transaction {
 		SchemaUtils.create(
-			BankAccounts, Jobs, Orders, DailyRewards, Histories, Homes
+			BankAccounts, Jobs, Orders, DailyRewards, Towns, Residents, Histories, Homes
 		)
 	}
 
 	transaction {
 		SchemaUtils.statementsRequiredToActualizeScheme(
-			BankAccounts, Jobs, Orders, DailyRewards, Histories, Homes
+			BankAccounts, Jobs, Orders, DailyRewards, Towns, Residents, Histories, Homes
 		) + SchemaUtils.addMissingColumnsStatements(
-			BankAccounts, Jobs, Orders, DailyRewards, Histories, Homes
+			BankAccounts, Jobs, Orders, DailyRewards, Towns, Residents, Histories, Homes
 		)
 	}.forEach {
 		transaction {
@@ -55,3 +63,5 @@ object BukkitLogger : SqlLogger {
 		Bukkit.getLogger().info("SQL: ${context.expandArgs(transaction)}")
 	}
 }
+
+fun now() = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault())

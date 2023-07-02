@@ -1,76 +1,24 @@
 package fr.pickaria.model.economy
 
-import org.jetbrains.exposed.sql.*
-import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
-import org.jetbrains.exposed.sql.transactions.transaction
-import java.util.*
+import org.jetbrains.exposed.dao.IntEntity
+import org.jetbrains.exposed.dao.IntEntityClass
+import org.jetbrains.exposed.dao.id.EntityID
+import org.jetbrains.exposed.dao.id.IntIdTable
 
-internal const val DEFAULT_ACCOUNT = "default"
-
-internal object BankAccounts : Table() {
+object BankAccounts : IntIdTable() {
 	val playerUuid = uuid("player_uuid")
-	val accountName = varchar("account_name", 16).default(DEFAULT_ACCOUNT)
+	val accountName = varchar("account_name", 16).default(economyConfig.defaultAccount)
 	val balance = double("balance").default(0.0)
 
-	override val primaryKey = PrimaryKey(playerUuid, accountName)
+	init {
+		index(true, playerUuid, accountName)
+	}
 }
 
-class BankAccount(private val row: ResultRow) {
-	companion object {
-		fun create(playerId: UUID, account: String = DEFAULT_ACCOUNT, amount: Double = 0.0) = transaction {
-			BankAccounts.insert {
-				it[playerUuid] = playerId
-				it[accountName] = account
-				it[balance] = amount
-			}.resultedValues?.firstOrNull()
-		}?.let { BankAccount(it) }
+class BankAccount(id: EntityID<Int>) : IntEntity(id) {
+	companion object : IntEntityClass<BankAccount>(BankAccounts)
 
-		fun get(playerId: UUID, account: String = DEFAULT_ACCOUNT) = transaction {
-			BankAccounts.select {
-				(BankAccounts.playerUuid eq playerId) and (BankAccounts.accountName eq account)
-			}.firstOrNull()
-		}?.let { BankAccount(it) }
-
-		// Case-specific functions
-		fun top(page: Int = 0, account: String = DEFAULT_ACCOUNT, limit: Int = 8): List<BankAccount> = transaction {
-			val offset = (page * limit).toLong()
-
-			BankAccounts.select { BankAccounts.accountName eq account }
-				.orderBy(BankAccounts.balance, SortOrder.DESC)
-				.limit(limit, offset)
-				.map {
-					BankAccount(it)
-				}
-		}
-
-		fun count(account: String = DEFAULT_ACCOUNT): Long = transaction {
-			BankAccounts.select { BankAccounts.accountName eq account }
-				.count()
-		}
-
-		fun getAccounts(playerId: UUID) = transaction {
-			BankAccounts
-				.slice(BankAccounts.accountName)
-				.select {
-					(BankAccounts.playerUuid eq playerId)
-				}.map { it[BankAccounts.accountName] }
-		}
-	}
-
-	private val whereClause =
-		{ (BankAccounts.playerUuid eq this.playerUuid) and (BankAccounts.accountName eq this.accountName) }
-
-	val playerUuid: UUID
-		get() = row[BankAccounts.playerUuid]
-
-	val accountName: String
-		get() = row[BankAccounts.accountName]
-
-	var balance: Double
-		get() = row[BankAccounts.balance]
-		set(value) = transaction {
-			BankAccounts.update({ whereClause() }) {
-				it[balance] = value
-			}
-		}
+	var playerUuid by BankAccounts.playerUuid
+	var accountName by BankAccounts.accountName
+	var balance by BankAccounts.balance
 }

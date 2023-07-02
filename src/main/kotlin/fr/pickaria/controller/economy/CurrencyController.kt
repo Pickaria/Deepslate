@@ -56,7 +56,7 @@ class CurrencyController(val model: Currency) {
 				val line = model.description.map {
 					MiniMessage(it) {
 						"value" to format(physicalCurrency.value)
-					}.message.decoration(TextDecoration.ITALIC, TextDecoration.State.FALSE)
+					}.toComponent().decoration(TextDecoration.ITALIC, TextDecoration.State.FALSE)
 				}
 
 				meta.lore(line)
@@ -83,14 +83,14 @@ class CurrencyController(val model: Currency) {
 
 			val line = MiniMessage(economyConfig.bundleDescription) {
 				"value" to this@CurrencyController.format(totalValue)
-			}.message.decoration(TextDecoration.ITALIC, TextDecoration.State.FALSE)
+			}.toComponent().decoration(TextDecoration.ITALIC, TextDecoration.State.FALSE)
 
 			meta.lore(listOf(line))
 
 			meta.persistentDataContainer.set(currencyNamespace, PersistentDataType.STRING, model.account)
 			meta.persistentDataContainer.set(valueNamespace, PersistentDataType.DOUBLE, totalValue)
 
-			meta.addItemFlags(ItemFlag.HIDE_POTION_EFFECTS)
+			meta.addItemFlags(ItemFlag.HIDE_ITEM_SPECIFICS)
 
 			items.forEach {
 				(meta as BundleMeta).addItem(it)
@@ -119,7 +119,7 @@ class CurrencyController(val model: Currency) {
 			val line = model.description.map {
 				MiniMessage(it) {
 					"value" to format(value)
-				}.message.decoration(TextDecoration.ITALIC, TextDecoration.State.FALSE)
+				}.toComponent().decoration(TextDecoration.ITALIC, TextDecoration.State.FALSE)
 			}
 
 			meta.lore(line)
@@ -129,6 +129,16 @@ class CurrencyController(val model: Currency) {
 		}
 
 		return itemStack
+	}
+
+	fun item(totalValue: Double): ItemStack {
+		val items = items(totalValue)
+
+		return if (items.size > 1) {
+			bundle(totalValue, items)
+		} else {
+			items.first()
+		}
 	}
 
 	private val formatter = DecimalFormat(model.format).apply {
@@ -142,6 +152,8 @@ class CurrencyController(val model: Currency) {
 	} else {
 		"${formatter.format(amount)} ${model.namePlural}"
 	}
+
+	fun format(amount: Int): String = format(amount.toDouble())
 
 	fun message(player: Player, amount: Double) {
 		MiniMessage(model.collectMessage) {

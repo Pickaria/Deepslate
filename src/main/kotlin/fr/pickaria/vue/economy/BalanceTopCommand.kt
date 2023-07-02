@@ -5,14 +5,10 @@ import co.aikar.commands.InvalidCommandArgument
 import co.aikar.commands.annotation.CommandAlias
 import co.aikar.commands.annotation.CommandPermission
 import co.aikar.commands.annotation.Default
-import fr.pickaria.model.economy.BankAccount
+import fr.pickaria.controller.libraries.acf.listing
 import fr.pickaria.model.economy.Credit
+import fr.pickaria.model.economy.LegacyBankAccount
 import fr.pickaria.model.economy.economyConfig
-import fr.pickaria.shared.MiniMessage
-import net.kyori.adventure.text.Component
-import net.kyori.adventure.text.event.ClickEvent
-import net.kyori.adventure.text.minimessage.tag.Tag
-import org.bukkit.Bukkit
 import org.bukkit.command.CommandSender
 
 @CommandAlias("baltop|balancetop")
@@ -29,45 +25,23 @@ class BalanceTopCommand : BaseCommand() {
 		}
 
 		val pageStart = page * PAGE_SIZE
-		val top = BankAccount.top(page, limit = PAGE_SIZE)
-		val count = BankAccount.count()
-		val maxPage = count / PAGE_SIZE
+		val top = LegacyBankAccount.top(page, limit = PAGE_SIZE)
+		val count = LegacyBankAccount.count()
 
-		if (top.isEmpty()) {
-			throw InvalidCommandArgument(economyConfig.notMuchPages)
-		}
-
-		val component = Component.text()
-			.append(
-				+MiniMessage(economyConfig.header) {
-					"page" to (page + 1)
-					"max" to (maxPage + 1)
-				}
-			)
-
-		top.forEachIndexed { index, account ->
-			val player = Bukkit.getOfflinePlayer(account.playerUuid)
-
-			component
-				.append(Component.newline())
-				.append(
-					+MiniMessage(economyConfig.row) {
-						"position" to (index + 1 + pageStart)
-						"player" to (player.name ?: "N/A")
-						"balance" to Credit.economy.format(account.balance)
-					}
-				)
-		}
-
-		if (count > pageStart + PAGE_SIZE) {
-			component
-				.append(Component.newline())
-				.append(
-					+MiniMessage(economyConfig.footer) {
-						"next-page" to Tag.styling(ClickEvent.runCommand("/baltop ${page + 1}"))
-						"page" to (page + 1)
-					}
-				)
+		val component = listing(
+			economyConfig.header,
+			economyConfig.row,
+			economyConfig.footer,
+			"/baltop",
+			page,
+			top,
+			count
+		) { index, account ->
+			{
+				"position" to (index + 1 + pageStart)
+				"player" to player.name
+				"balance" to Credit.economy.format(account.balance)
+			}
 		}
 
 		player.sendMessage(component)

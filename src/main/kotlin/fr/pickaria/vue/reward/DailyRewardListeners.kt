@@ -9,8 +9,10 @@ class DailyRewardListeners : Listener {
 	@EventHandler
 	fun onDailyRewardReady(event: DailyRewardReadyEvent) {
 		with(event) {
-			player.sendMessage(rewardConfig.dailyRewardIsReady)
-			player.playSound(rewardConfig.dailyRewardSound)
+			offlinePlayer.player?.let {
+				it.sendMessage(rewardConfig.dailyRewardIsReady)
+				it.playSound(rewardConfig.dailyRewardSound)
+			}
 		}
 	}
 }

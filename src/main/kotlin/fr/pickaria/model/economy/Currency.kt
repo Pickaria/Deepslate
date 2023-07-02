@@ -6,7 +6,6 @@ import fr.pickaria.model.serializers.SoundSerializer
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import net.kyori.adventure.sound.Sound
-import java.util.*
 
 @Serializable
 data class Currency(
@@ -29,6 +28,8 @@ data class Currency(
 
 	@SerialName("physical_currencies")
 	val physicalCurrencies: List<PhysicalCurrency>,
+
+	val advancements: List<CurrencyAdvancement>? = null,
 ) {
 	@Deprecated("Prefer using the CurrencyController instead.")
 	val economy by lazy {

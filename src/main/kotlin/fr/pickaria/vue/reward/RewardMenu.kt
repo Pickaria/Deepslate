@@ -1,16 +1,18 @@
 package fr.pickaria.vue.reward
 
 import fr.pickaria.controller.home.addToHome
-import fr.pickaria.controller.reward.*
+import fr.pickaria.controller.reward.dailyReward
+import fr.pickaria.controller.reward.toInfo
 import fr.pickaria.menu.Result
 import fr.pickaria.menu.closeItem
 import fr.pickaria.menu.fill
 import fr.pickaria.menu.menu
-import fr.pickaria.model.reward.rewardConfig
 import fr.pickaria.model.reward.toController
 import fr.pickaria.shared.GlowEnchantment
 import kotlinx.datetime.toKotlinLocalDate
 import net.kyori.adventure.text.Component
+import net.kyori.adventure.text.format.NamedTextColor
+import net.kyori.adventure.text.format.TextDecoration
 import org.bukkit.Material
 import org.bukkit.inventory.ItemFlag
 import org.bukkit.inventory.meta.BundleMeta
@@ -25,10 +27,22 @@ private val formatter = DateTimeFormatter.ofPattern("EEEE d MMMM")
 	.withLocale(Locale.FRENCH)
 
 fun rewardMenu() = menu("reward") {
-	title = Component.text("Récompenses")
+	val playerReward = opener.dailyReward
+
+	val remaining = playerReward.toInfo().remainingRewards
+	val remainingMessage = if (remaining > 1) {
+		Component.text("($remaining restantes)")
+	} else {
+		Component.text("($remaining restante)")
+	}
+
+	title = Component.text("Récompenses", NamedTextColor.DARK_BLUE, TextDecoration.BOLD)
+		.appendSpace()
+		.append(
+			remainingMessage.color(NamedTextColor.DARK_GRAY).decoration(TextDecoration.BOLD, TextDecoration.State.FALSE)
+		)
 	rows = 4
 
-	val playerReward = opener.dailyReward
 	val field = WeekFields.of(Locale.FRANCE).dayOfWeek()
 	val today = LocalDateTime.now()
 	val firstDayOfWeek = today.with(field, 1)
@@ -39,22 +53,19 @@ fun rewardMenu() = menu("reward") {
 		val dayOfWeek = formatter.format(day)
 			.replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString() }
 
-		val canCollect = playerReward.canCollect(date)
+		// Time info
 		val endOfDay = day.with(LocalTime.MAX)
-		val remaining = today.until(endOfDay, ChronoUnit.HOURS)
-		val isCollected = playerReward.remainingToCollect(date) == 0
-		val isDayToCollect = !isCollected && remaining in 0..24
+		val timeRemaining = today.until(endOfDay, ChronoUnit.HOURS)
 		val unlockIn = today.until(day.with(LocalTime.MIN), ChronoUnit.HOURS)
 
-		val collected = playerReward.collected(date)
-		val rewards = playerReward.rewards(date)
+		val info = playerReward.toInfo(date)
 
 		item {
 			position = x + 1 to 1
 			title = Component.text(dayOfWeek)
 			material = Material.BUNDLE
 			lore {
-				if (!isDayToCollect) {
+				if (!info.isCollectionDay) {
 					description {
 						if (0 > unlockIn) {
 							-"Cette récompense ne peut plus être récupérée."
@@ -67,29 +78,36 @@ fun rewardMenu() = menu("reward") {
 					}
 				} else {
 					keyValues {
-						"Temps restants" to "$remaining heures"
-						"Points collectés" to "${playerReward.dailyPoints(date)} / ${rewardConfig.dailyPointsToCollect}"
-						"Récompenses récupérées" to "$collected / ${playerReward.rewardCount(date)}"
-						"Série" to playerReward.streak(date)
+						"Temps restants" to "$timeRemaining heures"
+						"Points collectés" to "${info.totalPoints} / ${info.pointsForNextReward}"
+						"Récompenses récupérées" to "${info.collected} / ${info.rewardCount}"
+						if (info.streakValidated) {
+							"Série" to "${info.streak} (validé)"
+						} else {
+							"Série" to info.streak
+						}
+					}
+					if (info.remainingRewards > 0) {
+						leftClick = "Clic-gauche pour récupérer la récompense"
 					}
 				}
 			}
 
-			if (canCollect > 0) {
+			if (info.isCollectionDay) {
 				leftClick = Result.CLOSE to "/reward claim"
 			}
 
 			editMeta { meta ->
 				val bundle = (meta as BundleMeta)
-				if (0 <= remaining && !isCollected) {
-					rewards.drop(collected).forEach {
+				if (0 <= timeRemaining && info.remainingRewards > 0) {
+					info.rewards.drop(info.collected).forEach {
 						bundle.addItem(it.toController().create())
 					}
 				}
 
-				meta.addItemFlags(ItemFlag.HIDE_POTION_EFFECTS)
+				meta.addItemFlags(ItemFlag.HIDE_ITEM_SPECIFICS)
 
-				if (canCollect > 0) {
+				if (info.isCollectionDay && info.canCollectRewards > 0) {
 					meta.addEnchant(GlowEnchantment.instance, 1, true)
 				}
 			}

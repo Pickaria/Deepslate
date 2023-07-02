@@ -1,4 +1,4 @@
-package fr.pickaria.controller
+package fr.pickaria.controller.miniblocks
 
 import com.destroystokyo.paper.profile.ProfileProperty
 import fr.pickaria.model.miniblocks.MiniBlock
@@ -14,8 +14,10 @@ class MiniBlockController(val model: MiniBlock) {
 	fun create(amount: Int = 1) = ItemStack(Material.PLAYER_HEAD, amount).apply {
 		editMeta {
 			val profile = Bukkit.createProfile(miniBlocksConfig.uuid)
-			val property = ProfileProperty("textures", model.texture)
-			profile.setProperty(property)
+
+			profile.setProperty(ProfileProperty("textures", model.texture))
+			profile.setProperty(ProfileProperty("material", model.material.translationKey()))
+
 			(it as SkullMeta).playerProfile = profile
 			it.displayName(
 				Component.translatable(model.material.translationKey())

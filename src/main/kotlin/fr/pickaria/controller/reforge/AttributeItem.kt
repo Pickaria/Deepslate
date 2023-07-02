@@ -25,7 +25,7 @@ fun getAttributeItem(amount: Int = 1): ItemStack {
 		)
 
 		val description = reforgeConfig.chargedLapisDescription.map { line ->
-			MiniMessage(line).message.decoration(TextDecoration.ITALIC, TextDecoration.State.FALSE)
+			MiniMessage(line).toComponent().decoration(TextDecoration.ITALIC, TextDecoration.State.FALSE)
 		}
 
 		it.lore(description)

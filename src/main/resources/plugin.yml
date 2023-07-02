@@ -6,7 +6,7 @@ author: Quozul
 description: The main plugin of Pickaria.
 depend:
   - PickariaSpawner
-softdepend:
+  - Votifier
   - Vault
 
 permissions:

@@ -15,7 +15,7 @@ class RewardController(val model: Reward) {
 				meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES, ItemFlag.HIDE_ENCHANTS)
 				meta.displayName(model.name.decoration(TextDecoration.ITALIC, TextDecoration.State.FALSE))
 				val description = model.description.map {
-					MiniMessage(it).message.decoration(TextDecoration.ITALIC, TextDecoration.State.FALSE)
+					MiniMessage(it).toComponent().decoration(TextDecoration.ITALIC, TextDecoration.State.FALSE)
 				}
 				meta.lore(description)
 				meta.persistentDataContainer.set(rewardNamespace, PersistentDataType.STRING, model.type)
