@@ -7,7 +7,7 @@ import org.bukkit.event.Cancellable
 import org.bukkit.event.Event
 import org.bukkit.event.HandlerList
 
-class JobLevelUpEvent internal constructor(
+class JobLevelUpEvent(
 	val player: Player,
 	val type: LevelUpType,
 	val job: Job,

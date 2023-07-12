@@ -2,10 +2,9 @@ package fr.pickaria.vue.miniblocks
 
 import fr.pickaria.controller.economy.has
 import fr.pickaria.controller.market.getMenuItems
-import fr.pickaria.controller.toController
+import fr.pickaria.controller.miniblocks.toController
 import fr.pickaria.menu.*
 import fr.pickaria.model.economy.Credit
-import fr.pickaria.model.economy.toController
 import fr.pickaria.model.miniblocks.MiniBlock
 import fr.pickaria.model.miniblocks.miniBlocksConfig
 import net.kyori.adventure.text.Component
@@ -21,7 +20,7 @@ internal fun miniBlockBuyMenu(miniBlock: MiniBlock) = menu {
 	rows = 4
 
 	val unitPrice = miniBlock.price ?: miniBlocksConfig.defaultPrice
-	val formattedUnitPrice = Credit.toController().format(unitPrice)
+	val formattedUnitPrice = Credit.economy.format(unitPrice)
 
 	getMenuItems(Material.PLAYER_HEAD, 64).forEach { (amount, x) ->
 		val stack = miniBlock.toController().create(amount)
@@ -40,7 +39,7 @@ internal fun miniBlockBuyMenu(miniBlock: MiniBlock) = menu {
 					leftClick = "Clic-gauche pour acheter $amount"
 					keyValues {
 						"Prix unitaire" to formattedUnitPrice
-						"Prix total" to Credit.toController().format(totalPrice)
+						"Prix total" to Credit.economy.format(totalPrice)
 					}
 				}
 
@@ -54,7 +53,7 @@ internal fun miniBlockBuyMenu(miniBlock: MiniBlock) = menu {
 						-"d'argent pour acheter ceci."
 					}
 					keyValues {
-						"Prix total" to Credit.toController().format(totalPrice)
+						"Prix total" to Credit.economy.format(totalPrice)
 					}
 				}
 			}

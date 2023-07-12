@@ -16,7 +16,7 @@ import org.bukkit.persistence.PersistentDataType
 class ArtefactController(val model: Artefact) {
 	private val fullDescription by lazy {
 		listOf(model.label.decoration(TextDecoration.ITALIC, TextDecoration.State.FALSE)) + model.description.map {
-			MiniMessage(it).message.decoration(TextDecoration.ITALIC, TextDecoration.State.FALSE)
+			MiniMessage(it).toComponent().decoration(TextDecoration.ITALIC, TextDecoration.State.FALSE)
 		}
 	}
 

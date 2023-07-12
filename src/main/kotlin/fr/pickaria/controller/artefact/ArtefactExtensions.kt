@@ -39,3 +39,15 @@ fun ItemStack.setArtefact(artefact: Artefact): ItemStack {
 
 	return this
 }
+
+/**
+ * Removes an artefact from the ItemStack.
+ */
+fun ItemStack.removeArtefact(): ItemStack {
+	editMeta {
+		it.removeEnchant(GlowEnchantment.instance)
+		it.persistentDataContainer.remove(artefactNamespace)
+	}
+
+	return this
+}

@@ -45,6 +45,7 @@ class Hunter : Listener {
 		EntityType.PILLAGER to Pair(0.25, 2),
 		EntityType.VINDICATOR to Pair(0.25, 2),
 		EntityType.EVOKER to Pair(0.25, 2),
+		EntityType.ILLUSIONER to Pair(0.25, 5),
 
 		// Level 3 mobs
 		EntityType.PIGLIN_BRUTE to Pair(0.3, 5),
@@ -52,6 +53,7 @@ class Hunter : Listener {
 		EntityType.GHAST to Pair(0.3, 5),
 		EntityType.VEX to Pair(0.3, 5),
 		EntityType.RAVAGER to Pair(0.3, 5),
+		EntityType.WARDEN to Pair(0.3, 5),
 
 		// Level 4 mobs
 		EntityType.WITHER to Pair(3.0, 50),

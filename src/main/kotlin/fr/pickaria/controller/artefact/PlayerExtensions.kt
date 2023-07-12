@@ -1,7 +1,6 @@
 package fr.pickaria.controller.artefact
 
 import fr.pickaria.model.artefact.ArtefactType
-import org.bukkit.advancement.Advancement
 import org.bukkit.entity.Player
 
 /**
@@ -27,11 +26,4 @@ internal fun Player.isWearingArtefact(artefact: ArtefactType): Boolean {
 	}
 
 	return false
-}
-
-fun Player.grantAdvancement(advancement: Advancement) {
-	val progress = getAdvancementProgress(advancement)
-	progress.remainingCriteria.forEach {
-		progress.awardCriteria(it)
-	}
 }

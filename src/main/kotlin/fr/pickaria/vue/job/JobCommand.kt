@@ -4,42 +4,37 @@ import co.aikar.commands.*
 import co.aikar.commands.annotation.*
 import fr.pickaria.controller.job.*
 import fr.pickaria.menu.open
-import fr.pickaria.model.job.Job
-import fr.pickaria.model.job.JobModel
-import fr.pickaria.model.job.JobType
-import fr.pickaria.model.job.jobConfig
+import fr.pickaria.model.job.*
 import org.bukkit.entity.Player
 
 @CommandAlias("job|jobs")
 @CommandPermission("pickaria.command.job")
-class JobCommand : BaseCommand() {
-	companion object {
-		fun setupContext(manager: PaperCommandManager) {
-			manager.commandContexts.registerContext(Job::class.java) {
-				val arg: String = it.popFirstArg()
+class JobCommand(manager: PaperCommandManager) : BaseCommand() {
+	init {
+		manager.commandContexts.registerContext(Job::class.java) {
+			val arg: String = it.popFirstArg()
 
-				try {
-					JobType.valueOf(arg.uppercase()).toJob()
-				} catch (_: IllegalArgumentException) {
-					throw InvalidCommandArgument("Job of type '$arg' does not exists.")
-				}
+			try {
+				JobType.valueOf(arg.uppercase()).toJob()
+			} catch (_: IllegalArgumentException) {
+				throw InvalidCommandArgument("Job of type '$arg' does not exists.")
 			}
+		}
 
-			manager.commandCompletions.registerCompletion("jobtype") {
-				JobType.values().map { it.name.lowercase() }
-			}
+		manager.commandCompletions.registerCompletion("jobtype") {
+			JobType.values().map { it.name.lowercase() }
+		}
 
-			manager.commandCompletions.registerCompletion("ownjobs") { context ->
-				JobModel.get(context.player.uniqueId)
-					.filter { it.active }
-					.map { it.job.name.lowercase() }
-					.filter { it.startsWith(context.input) }
-			}
+		manager.commandCompletions.registerCompletion("ownjobs") { context ->
+			JobModel.get(context.player.uniqueId)
+				.filter { it.active }
+				.map { it.job.name.lowercase() }
+				.filter { it.startsWith(context.input) }
+		}
 
-			manager.commandConditions.addCondition("must_have_job") {
-				if (it.issuer.player.jobCount() == 0) {
-					throw ConditionFailedException("Vous n'exercez actuellement pas de métier.")
-				}
+		manager.commandConditions.addCondition("must_have_job") {
+			if (it.issuer.player.jobCount() == 0) {
+				throw ConditionFailedException("Vous n'exercez actuellement pas de métier.")
 			}
 		}
 	}
@@ -101,8 +96,20 @@ class JobCommand : BaseCommand() {
 	@CommandCompletion("@ownjobs")
 	@Description("Réalise une ascenssion dans le métier indiqué.")
 	fun onAscent(sender: Player, job: Job) {
-		if (!(sender ascentJob job.type)) {
-			throw ConditionFailedException("Vous ne pouvez pas effectuer une ascension pour le métier ${job.label}.")
+		when (sender.ascentJob(job.type)) {
+			AscentResponse.NOT_IN_JOB -> {
+				throw ConditionFailedException("Vous n'exercez actuellement pas le métier ${job.label}.")
+			}
+
+			AscentResponse.NOT_ENOUGH_POINTS -> {
+				throw ConditionFailedException("Vous n'avez pas assez de points pour effectuer une ascension.")
+			}
+
+			AscentResponse.COOLDOWN -> {
+				throw ConditionFailedException("L'ascension ne peut être réalisée que toutes les 8 heures.")
+			}
+
+			else -> {}
 		}
 	}
 

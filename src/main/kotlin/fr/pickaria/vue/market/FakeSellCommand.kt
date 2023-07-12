@@ -6,7 +6,6 @@ import co.aikar.commands.annotation.CommandPermission
 import co.aikar.commands.annotation.Default
 import co.aikar.commands.annotation.Description
 import fr.pickaria.model.market.Order
-import fr.pickaria.model.market.OrderType
 import org.bukkit.Material
 import org.bukkit.entity.Player
 import kotlin.random.Random
@@ -38,7 +37,7 @@ class FakeSellCommand : BaseCommand() {
 					0
 				}
 				val price = Random.nextDouble(1.0, 100.0) * rarity
-				Order.create(sender, material, OrderType.SELL, quantity, price)
+				Order.create(sender, material, quantity, price)
 			}
 		}
 

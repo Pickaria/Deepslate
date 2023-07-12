@@ -9,7 +9,6 @@ import fr.pickaria.menu.fill
 import fr.pickaria.menu.menu
 import fr.pickaria.model.economy.Credit
 import fr.pickaria.model.market.Order
-import fr.pickaria.model.market.OrderType
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
 import net.kyori.adventure.text.format.TextDecoration
@@ -23,7 +22,7 @@ internal fun buyMenu(material: Material) = menu {
 	rows = 4
 
 	val unitPrice = Credit.economy.format(Order.getPrices(material).first)
-	val stocks = Order.getSumAmount(OrderType.SELL, material)
+	val stocks = Order.getSumAmount(material)
 
 	getMenuItems(material, stocks).forEach { (amount, x) ->
 		val info = getPrices(material, amount)

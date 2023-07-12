@@ -1,8 +1,6 @@
 package fr.pickaria.model.artefact
 
-import com.charleskorn.kaml.Yaml
-import com.charleskorn.kaml.decodeFromStream
-import fr.pickaria.model.getResourceFileStream
+import fr.pickaria.model.config
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
@@ -13,4 +11,4 @@ data class ArtefactConfig(
 	val artefacts: Map<String, Artefact>,
 )
 
-val artefactConfig = Yaml.default.decodeFromStream<ArtefactConfig>(getResourceFileStream("artefact.yml"))
+val artefactConfig = config<ArtefactConfig>("artefact.yml")

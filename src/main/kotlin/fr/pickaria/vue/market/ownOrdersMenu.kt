@@ -4,26 +4,23 @@ import fr.pickaria.controller.home.addToHome
 import fr.pickaria.menu.*
 import fr.pickaria.model.economy.Credit
 import fr.pickaria.model.market.Order
-import fr.pickaria.model.market.OrderType
+import fr.pickaria.shared.MiniMessage
 import net.kyori.adventure.text.Component
 import org.bukkit.Material
 
 internal fun ownOrdersMenu() = menu("orders") {
-	title = Component.text("Mes ventes")
+	val count = Order.count(opener)
 
-	val count = Order.count(OrderType.SELL, opener)
+	title = MiniMessage("<gold><b>Mes ventes</b> <gray>(<amount>)") {
+		"amount" to count
+	}.toComponent()
+
 	val pageSize = size - 9
 	val start = page * pageSize
 	val orders = Order.get(opener, pageSize, start.toLong())
 	val maxPage = (count - 1) / pageSize
 
 	orders.forEachIndexed { index, order ->
-		val orderType = if (order.type == OrderType.SELL) {
-			"vendre"
-		} else {
-			"achat"
-		}
-
 		item {
 			slot = index
 			material = order.material
@@ -31,7 +28,6 @@ internal fun ownOrdersMenu() = menu("orders") {
 			lore {
 				keyValues {
 					"Identifiant" to order.id
-					"Type d'ordre" to orderType
 					"Quantité en vente" to order.amount
 					"Prix de vente" to Credit.economy.format(order.price)
 				}

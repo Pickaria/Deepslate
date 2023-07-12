@@ -19,7 +19,7 @@ internal class Motd : Listener {
 		val time = String.format("%02d:%02d", hours, minutes)
 		val motd = MiniMessage(chatConfig.messageOfTheDay.joinToString("<newline>")) {
 			"time" to time
-		}.message
+		}.toComponent()
 		event.motd(motd)
 	}
 }

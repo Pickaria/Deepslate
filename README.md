@@ -73,6 +73,7 @@ Following are the platform's dependencies required for this plugin to work:
 - Economy: [Vault](https://www.spigotmc.org/resources/vault.34315/)
 - Permissions: [LuckPerms](https://luckperms.net/)
 - Vote notifications: [NuVotifier](https://www.spigotmc.org/resources/nuvotifier.13449/)
+- Custom "Spawner" plugin: [Spawner](https://github.com/Pickaria/Spawner/releases/latest)
 
 ### Working on the project
 

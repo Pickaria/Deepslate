@@ -53,7 +53,7 @@ class PotionController(val model: Potion) {
 		potion.color = potionColor
 		potion.persistentDataContainer.set(potionNamespace, PersistentDataType.STRING, model.type.name)
 		potion.addEnchant(GlowEnchantment.instance, 1, true)
-		potion.addItemFlags(ItemFlag.HIDE_POTION_EFFECTS)
+		potion.addItemFlags(ItemFlag.HIDE_ITEM_SPECIFICS)
 
 		potion.displayName(model.label)
 		potion.lore(lore)

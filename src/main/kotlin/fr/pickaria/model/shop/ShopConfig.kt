@@ -1,8 +1,6 @@
 package fr.pickaria.model.shop
 
-import com.charleskorn.kaml.Yaml
-import com.charleskorn.kaml.decodeFromStream
-import fr.pickaria.model.getResourceFileStream
+import fr.pickaria.model.config
 import fr.pickaria.model.serializers.SoundSerializer
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
@@ -40,4 +38,4 @@ data class ShopConfig(
 	val villagers: Map<String, VillagerConfig>,
 )
 
-val shopConfig = Yaml.default.decodeFromStream<ShopConfig>(getResourceFileStream("shop.yml"))
+val shopConfig = config<ShopConfig>("shop.yml")

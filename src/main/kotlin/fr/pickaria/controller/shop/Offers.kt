@@ -2,6 +2,7 @@ package fr.pickaria.controller.shop
 
 import fr.pickaria.controller.economy.CurrencyBundle
 import fr.pickaria.controller.reforge.getAttributeItem
+import fr.pickaria.controller.town.TownHallRegister
 import fr.pickaria.model.artefact.artefactConfig
 import fr.pickaria.model.artefact.toController
 import fr.pickaria.model.economy.Credit
@@ -12,6 +13,7 @@ import fr.pickaria.model.potion.potionConfig
 import fr.pickaria.model.potion.toController
 import fr.pickaria.model.reward.rewardConfig
 import fr.pickaria.model.reward.toController
+import fr.pickaria.model.town.BannerType
 import org.bukkit.Material
 import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.MerchantRecipe
@@ -28,11 +30,11 @@ fun getArtefactsOffers(): List<MerchantRecipe> = artefactConfig.artefacts.map { 
 
 fun getBankOffers(): List<MerchantRecipe> {
 	return listOf(
-		CurrencyBundle(Key.toController().item()) {
-			Credit to 1000
+		CurrencyBundle(Key.toController().item(1.0)) {
+			Credit to 10_000
 		},
 		CurrencyBundle(getAttributeItem(3)) {
-			Credit to 128
+			Credit to 3_000
 		},
 	)
 }
@@ -48,7 +50,7 @@ fun getRewardsOffers(): List<MerchantRecipe> = rewardConfig.rewards.filter { it.
 fun getPotionsOffers(): List<MerchantRecipe> = potionConfig.potions.map { (_, config) ->
 	val item = config.toController().create()
 	CurrencyBundle(item) {
-		Credit to 50
+		Credit to 10_000
 	}
 }
 
@@ -57,3 +59,12 @@ fun getTestOffers(): List<MerchantRecipe> = (0..50).map {
 		Credit to Random.nextDouble(0.0, 68_719_476_736.99)
 	}
 }
+
+fun getFlagOffers(): List<MerchantRecipe> =
+	listOf(CurrencyBundle(TownHallRegister.create()) {
+		Credit to 250
+	}) + BannerType.values().map {
+		CurrencyBundle(it.item()) {
+			Credit to 250
+		}
+	}
