@@ -1,0 +1,55 @@
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "fr.pickaria.list_players";
+option java_outer_classname = "ListPlayersProto";
+option objc_class_prefix = "HLW";
+
+package list_players;
+
+message Player {
+  string name = 1;
+}
+
+message TopTime {
+  string player = 1;
+  uint32 time = 2;
+}
+
+service ListPlayerService {
+  rpc ListPlayer (ListPlayerRequest) returns (ListPlayerResponse) {}
+  rpc Whisper (WhisperRequest) returns (WhisperResponse) {}
+  rpc GetMoney (GetMoneyRequest) returns (GetMoneyResponse) {}
+  rpc GetTopTime (GetTopTimeRequest) returns (GetTopTimeResponse) {}
+}
+
+message ListPlayerRequest {}
+
+message ListPlayerResponse {
+  repeated Player players = 1;
+}
+
+message WhisperRequest {
+  string player = 1;
+  string message = 2;
+}
+
+message WhisperResponse {
+  bool ok = 1;
+}
+
+message GetMoneyRequest {
+  string player = 1;
+  string currency = 2;
+}
+
+message GetMoneyResponse {
+  double amount = 1;
+}
+
+message GetTopTimeRequest {}
+
+message GetTopTimeResponse {
+  repeated TopTime times = 1;
+  sint32 total_time = 2;
+}

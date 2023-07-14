@@ -13,7 +13,7 @@ import fr.pickaria.model.potion.PotionType
 import fr.pickaria.model.rank.rankListener
 import fr.pickaria.model.shop.ShopOffer
 import fr.pickaria.model.town.BannerType
-import fr.pickaria.server.HelloWorldServer
+import fr.pickaria.server.GrpcServer
 import fr.pickaria.vue.PingCommand
 import fr.pickaria.vue.artefact.ArtefactListeners
 import fr.pickaria.vue.artefact.SmithingListeners
@@ -140,7 +140,7 @@ class Main : SuspendingJavaPlugin() {
 		rewardMenu()
 
 		val port = System.getenv("PORT")?.toInt() ?: 50051
-		val server = HelloWorldServer(port)
+		val server = GrpcServer(port)
 		server.start()
 
 		// Scheduler
