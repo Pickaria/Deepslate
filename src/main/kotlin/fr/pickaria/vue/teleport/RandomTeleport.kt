@@ -1,44 +1,18 @@
 package fr.pickaria.vue.teleport
 
 import co.aikar.commands.BaseCommand
-import co.aikar.commands.ConditionFailedException
-import co.aikar.commands.annotation.CommandAlias
-import co.aikar.commands.annotation.CommandCompletion
-import co.aikar.commands.annotation.CommandPermission
-import co.aikar.commands.annotation.Default
-import co.aikar.commands.annotation.Description
-import co.aikar.commands.annotation.Optional
-import createMetaDataTpTag
-import fr.pickaria.controller.economy.balance
+import co.aikar.commands.annotation.*
 import fr.pickaria.controller.economy.has
-import fr.pickaria.controller.economy.withdraw
+import fr.pickaria.controller.teleport.teleportToLocationAfterTimeout
 import fr.pickaria.model.economy.Credit
-import fr.pickaria.model.economy.economyConfig
-import fr.pickaria.model.teleport.Histories
-import fr.pickaria.model.teleport.History
-import fr.pickaria.model.teleport.TeleportConfiguration
 import fr.pickaria.model.teleport.teleportConfig
 import fr.pickaria.shared.MiniMessage
-import kotlinx.coroutines.delay
-import kotlinx.datetime.*
-import kotlinx.datetime.TimeZone
-import org.bukkit.Bukkit
 import org.bukkit.Location
 import org.bukkit.Material
 import org.bukkit.block.Biome
 import org.bukkit.entity.Player
 import org.bukkit.plugin.java.JavaPlugin
-import org.bukkit.scheduler.BukkitRunnable
-import org.bukkit.scheduler.BukkitTask
-import org.h2.util.Task
-import org.jetbrains.exposed.sql.transactions.transaction
-import java.util.*
-import java.util.concurrent.Executors
-import java.util.concurrent.TimeUnit
-import java.util.logging.Handler
-import kotlin.concurrent.schedule
 import kotlin.math.cos
-import kotlin.math.log10
 import kotlin.math.log2
 import kotlin.math.sin
 import kotlin.random.Random
@@ -46,12 +20,7 @@ import kotlin.random.Random
 @CommandAlias("rand&omteleport|rtp|tpr")
 @CommandPermission("pickaria.command.randomteleport")
 class RandomTeleport(private val plugin: JavaPlugin) : BaseCommand() {
-
     companion object {
-
-         private val TAG = "HAS_TP_ONGOING"
-
-
         private val EXCLUDED_BLOCKS = setOf(
             // Oceans
             Biome.OCEAN,
@@ -80,77 +49,20 @@ class RandomTeleport(private val plugin: JavaPlugin) : BaseCommand() {
         )
     }
 
-    // https://github.com/aikar/commands/wiki/Using-ACF
-    // https://github.com/aikar/commands/wiki/Locales
     @Default
     @Description("Vous téléporte aléatoirement autour du spawn.")
+    @Conditions("can_teleport")
     fun onDefault(player: Player, @Default("1000") maxRadius: UInt) {
-        val location = getRandomLocation(player, maxRadius.toInt())
         val cost = log2(maxRadius.toDouble()) * teleportConfig.rtpMultiplier
 
-        val now = Clock.System.now()
-            .plus(teleportConfig.delayBetweenTeleports, DateTimeUnit.SECOND)
-            .toLocalDateTime(TimeZone.currentSystemDefault())
-
-        val tpTime = Clock.System.now()
-            .toLocalDateTime(TimeZone.currentSystemDefault())
-
-        val history = transaction {
-            History.find {
-                Histories.playerUuid eq player.uniqueId
-            }.firstOrNull()
-        }
-
-        val containsTaskTag = player.scoreboardTags.contains(TAG)
-
-        val canTeleport = history?.let {
-//            println(now)
-//            println(tpTime)
-//            println(it.lastTeleport )
-            it.lastTeleport < tpTime
-        } ?: true
-
-        if (!player.hasMetadata(TAG)) {
-//            println("cantp")
-            if(canTeleport) {
-                if (player.has(Credit, cost)) {
-                    player.sendMessage(teleportConfig.messageBeforeTeleport)
-                    MiniMessage("<gray>La téléportation vous a couté <gold><amount><gray>.") {
-                        "amount" to Credit.economy.format(cost)
-                    }.send(player)
-                    createMetaDataTpTag(plugin,player)
-
-                    Bukkit.getScheduler().runTaskLater(plugin, Runnable {
-                        player.withdraw(Credit, cost)
-                        player.teleport(location)
-                        // println("tp")
-//                        println(player.scoreboardTags)
-                        player.removeMetadata(TAG,plugin)
-                        val remove = player.scoreboardTags.remove(TAG)
-//                        println(remove)
-                    }, 120L)
-                    transaction {
-                                    history?.let {
-                                        it.lastTeleport = now
-                                    } ?: run {
-                                        History.new {
-                                            playerUuid = player.uniqueId
-                                             lastTeleport = now
-                            }
-                        }
-                    }
-                } else {
-                    player.sendMessage(economyConfig.notEnoughMoney)
-                }
-            }else{
-//                println(player.scoreboardTags)
-//                val remove = player.scoreboardTags.remove(TAG)
-//                println(remove)
-                throw ConditionFailedException("Patientez avant de vous téléporter de nouveau.")
-
-            }
+        if (player.has(Credit, cost)) {
+            val timeout = 200L // 2 seconds
+            val location = getRandomLocation(player, maxRadius.toInt())
+            player.teleportToLocationAfterTimeout(plugin, location, cost, timeout)
         } else {
-            throw ConditionFailedException("Une téléportation est déjà en cours")
+            MiniMessage("Erreur: <red>Il faut <gold><amount><gray> pour effectuer la téléportation.") {
+                "amount" to Credit.economy.format(cost)
+            }.send(player)
         }
     }
 
@@ -166,7 +78,10 @@ class RandomTeleport(private val plugin: JavaPlugin) : BaseCommand() {
             z = sin(random) * maxRadius
             location = Location(sender.world, x, 0.0, z)
             location.y = sender.world.getHighestBlockYAt(location).toDouble()
-        } while (tries++ < 10 && (EXCLUDED_BLOCKS.contains(sender.world.getBiome(location)) || !location.block.type.isSolid || EXCLUDED_MATERIALS.contains(location.block.type)))
+        } while (tries++ < 10 && (EXCLUDED_BLOCKS.contains(sender.world.getBiome(location)) || !location.block.type.isSolid || EXCLUDED_MATERIALS.contains(
+                location.block.type
+            ))
+        )
 
         location.y += 1.0
 

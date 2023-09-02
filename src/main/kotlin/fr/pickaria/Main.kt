@@ -2,10 +2,7 @@ package fr.pickaria
 
 import com.github.shynixn.mccoroutine.bukkit.SuspendingJavaPlugin
 import fr.pickaria.controller.economy.initVaultCurrency
-import fr.pickaria.controller.libraries.acf.enumCompletion
-import fr.pickaria.controller.libraries.acf.initCommandManager
-import fr.pickaria.controller.libraries.acf.limitCondition
-import fr.pickaria.controller.libraries.acf.registerCommands
+import fr.pickaria.controller.libraries.acf.*
 import fr.pickaria.controller.libraries.bukkit.registerEvents
 import fr.pickaria.controller.potion.runnable
 import fr.pickaria.model.openDatabase
@@ -56,98 +53,99 @@ import org.jetbrains.exposed.sql.Database
 lateinit var plugin: JavaPlugin
 
 class Main : SuspendingJavaPlugin() {
-	private lateinit var database: Database
+    private lateinit var database: Database
 
-	override fun onEnable() {
-		super.onEnable()
+    override fun onEnable() {
+        super.onEnable()
 
-		plugin = this
+        plugin = this
 
-		saveDefaultConfig()
+        saveDefaultConfig()
 
-		enableBedrockLibrary()
-		initVaultCurrency()
+        enableBedrockLibrary()
+        initVaultCurrency()
 
-		val manager = initCommandManager()
-		database = openDatabase(dataFolder.absolutePath + "/database")
+        val manager = initCommandManager()
+        database = openDatabase(dataFolder.absolutePath + "/database")
 
-		// Events
-		registerEvents<Alchemist>()
-		registerEvents<ArtefactListeners>()
-		registerEvents<BannerListeners>()
-		registerEvents<BookListeners>()
-		registerEvents<Breeder>()
-		registerEvents<ChatFormat>()
-		registerEvents<DailyRewardListeners>()
-		registerEvents<EnchantListeners>()
-		registerEvents<ExperienceListener>()
-		registerEvents<Farmer>()
-		registerEvents<GrindstoneListeners>()
-		registerEvents<Hunter>()
-		registerEvents<JobListener>()
-		registerEvents<Miner>()
-		registerEvents<Motd>()
-		registerEvents<PlayerJoin>()
-		registerEvents<PotionListener>()
-		registerEvents<RewardListeners>()
-		registerEvents<ShopListeners>()
-		registerEvents<SmithingListeners>()
-		registerEvents<Trader>()
-		registerEvents<VoteListeners>()
-		registerEvents<Wizard>()
-		registerEvents<MiniBlockListener>()
-		registerEvents<LobbyListeners>()
-		rankListener()
+        // Events
+        registerEvents<Alchemist>()
+        registerEvents<ArtefactListeners>()
+        registerEvents<BannerListeners>()
+        registerEvents<BookListeners>()
+        registerEvents<Breeder>()
+        registerEvents<ChatFormat>()
+        registerEvents<DailyRewardListeners>()
+        registerEvents<EnchantListeners>()
+        registerEvents<ExperienceListener>()
+        registerEvents<Farmer>()
+        registerEvents<GrindstoneListeners>()
+        registerEvents<Hunter>()
+        registerEvents<JobListener>()
+        registerEvents<Miner>()
+        registerEvents<Motd>()
+        registerEvents<PlayerJoin>()
+        registerEvents<PotionListener>()
+        registerEvents<RewardListeners>()
+        registerEvents<ShopListeners>()
+        registerEvents<SmithingListeners>()
+        registerEvents<Trader>()
+        registerEvents<VoteListeners>()
+        registerEvents<Wizard>()
+        registerEvents<MiniBlockListener>()
+        registerEvents<LobbyListeners>()
+        rankListener()
 
-		// Command completions
-		manager.enumCompletion<BannerType>("banner_type", "Cette bannière n'existe pas.")
-		manager.enumCompletion<PotionType>("potion_type", "Cette potion n'existe pas.")
-		manager.enumCompletion<ShopOffer>("shop_type", "Ce magasin n'existe pas.")
+        // Command completions
+        manager.enumCompletion<BannerType>("banner_type", "Cette bannière n'existe pas.")
+        manager.enumCompletion<PotionType>("potion_type", "Cette potion n'existe pas.")
+        manager.enumCompletion<ShopOffer>("shop_type", "Ce magasin n'existe pas.")
 
-		// Command contexts
-		manager.limitCondition()
+        // Command contexts
+        manager.limitCondition()
+        manager.teleportCondition()
 
-		// Commands
-		manager.registerCommands(
-			BalanceTopCommand(),
-			BannerCommand(),
-			BuyCommand(manager),
-			CancelOrderCommand(manager),
-			FakeSellCommand(),
-			JobCommand(manager),
-			MarketCommand(),
-			MiniBlockCommand(manager),
-			MoneyCommand(manager),
-			PayCommand(),
-			PingCommand(),
-			PlaceShop(),
-			PotionCommand(),
-			RankCommand(manager),
-			RewardCommand(manager),
-			SellCommand(manager),
-			MenuCommand(manager),
-			LobbyCommand(this),
-			RandomTeleport(this),
-			SpawnTeleport(this),
-			SetHome(this),
-			HomeTeleport(this, manager),
-			TpaCommand(this),
-			TpyesCommand(this),
-			TpdenyCommand(this),
-			TpcancelCommand(this),
-		)
+        // Commands
+        manager.registerCommands(
+            BalanceTopCommand(),
+            BannerCommand(),
+            BuyCommand(manager),
+            CancelOrderCommand(manager),
+            FakeSellCommand(),
+            JobCommand(manager),
+            MarketCommand(),
+            MiniBlockCommand(manager),
+            MoneyCommand(manager),
+            PayCommand(),
+            PingCommand(),
+            PlaceShop(),
+            PotionCommand(),
+            RankCommand(manager),
+            RewardCommand(manager),
+            SellCommand(manager),
+            MenuCommand(manager),
+            LobbyCommand(this),
+            RandomTeleport(this),
+            SpawnTeleport(this),
+            SetHome(this),
+            HomeTeleport(this, manager),
+            TpaCommand(this),
+            TpyesCommand(this),
+            TpdenyCommand(this),
+            TpcancelCommand(this),
+        )
 
-		// Menus
-		homeMenu()
-		jobMenu()
-		miniBlocksMenu()
-		orderListingMenu()
-		ownOrdersMenu()
-		townMenu()
-		rankMenu()
-		rewardMenu()
+        // Menus
+        homeMenu()
+        jobMenu()
+        miniBlocksMenu()
+        orderListingMenu()
+        ownOrdersMenu()
+        townMenu()
+        rankMenu()
+        rewardMenu()
 
-		// Scheduler
-		Bukkit.getScheduler().runTaskTimerAsynchronously(this, runnable, 0, 20)
-	}
+        // Scheduler
+        Bukkit.getScheduler().runTaskTimerAsynchronously(this, runnable, 0, 20)
+    }
 }
