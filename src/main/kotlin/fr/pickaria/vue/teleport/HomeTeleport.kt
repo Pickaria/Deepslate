@@ -1,6 +1,7 @@
 package fr.pickaria.vue.teleport
 
 import co.aikar.commands.BaseCommand
+import co.aikar.commands.CommandHelp
 import co.aikar.commands.ConditionFailedException
 import co.aikar.commands.PaperCommandManager
 import co.aikar.commands.annotation.*
@@ -10,6 +11,7 @@ import fr.pickaria.controller.teleport.teleportToLocationAfterTimeout
 import fr.pickaria.model.economy.Credit
 import fr.pickaria.model.teleport.Home
 import fr.pickaria.model.teleport.Homes
+import fr.pickaria.model.teleport.teleportConfig
 import fr.pickaria.shared.MiniMessage
 import org.bukkit.Bukkit
 import org.bukkit.Location
@@ -39,10 +41,10 @@ class HomeTeleport(private val plugin: JavaPlugin, manager: PaperCommandManager)
         }
     }
 
-    @Default
     @CommandCompletion("@ownhome")
     @Description("Vous téléporte à la résidence choisie ou la résidence par défaut.")
     @Conditions("can_teleport")
+    @Subcommand("teleport|tp")
     fun onDefault(player: Player, @Optional home: Home?) {
         home?.let {
             val cost = 10.0 // TODO: Add to config
@@ -55,7 +57,48 @@ class HomeTeleport(private val plugin: JavaPlugin, manager: PaperCommandManager)
                     "amount" to Credit.economy.format(cost)
                 }.send(player)
             }
-        } ?: throw ConditionFailedException("Cette résidence n'existe pas.")
+        } ?: throw ConditionFailedException("Aucune résidence avec ce nom trouvée.")
+    }
+
+    @Subcommand("set")
+    @CommandAlias("sethome")
+    @Description("Créer une résidence.")
+    fun onCreate(player: Player, @Default("home") name: String) {
+        homeFind(player, name)?.let {
+            throw ConditionFailedException("Une résidence avec ce nom existe déjà, si vous souhaitez la modifier, supprimez-la avant de la recréer.")
+        }
+
+        val location = player.location
+
+        transaction {
+            Home.new {
+                playerUuid = player.uniqueId
+                homeName = name
+                world = player.world.uid
+                locationX = location.blockX
+                locationY = location.blockY
+                locationZ = location.blockZ
+            }
+        }
+
+        player.sendMessage(teleportConfig.homeRegistrationConfirm)
+    }
+
+    @Subcommand("delete")
+    @CommandAlias("delhome")
+    @Description("Supprime une résidence.")
+    @CommandCompletion("@ownhome")
+    fun onDelete(sender: Player, home: Home?) {
+        home?.let {
+            transaction { it.delete() }
+            sender.sendMessage(teleportConfig.homeDeletionConfirm)
+        } ?: throw ConditionFailedException("Aucune résidence avec ce nom trouvée.")
+    }
+
+    @HelpCommand
+    @Default
+    fun doHelp(help: CommandHelp) {
+        help.showHelp()
     }
 
     private fun getHomeLocation(player: Player, name: String): Location {

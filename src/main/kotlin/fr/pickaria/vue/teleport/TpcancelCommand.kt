@@ -24,7 +24,6 @@ class TpcancelCommand(private val plugin: JavaPlugin) : BaseCommand() {
             sender.cancelTeleport(plugin)
             MiniMessage("<gray>Téléportation annulée.").send(sender)
         } else {
-
             sender.getTeleportRequest()?.let {
                 if (sender == it.recipient) {
                     throw ConditionFailedException("Vous ne pouvez pas annuler une demande reçue, refusez-la plutôt.")

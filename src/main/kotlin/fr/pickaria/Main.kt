@@ -127,7 +127,6 @@ class Main : SuspendingJavaPlugin() {
             LobbyCommand(this),
             RandomTeleport(this),
             SpawnTeleport(this),
-            SetHome(this),
             HomeTeleport(this, manager),
             TpaCommand(this),
             TpyesCommand(this),
