@@ -64,7 +64,7 @@ fun Player.getTeleportCooldown(): TeleportCooldown? {
 }
 
 fun Player.canTeleport(delayBetweenTeleports: Int): Boolean = getTeleportCooldown()?.let {
-    val nextTeleportationTime = Clock.System.now().plus(delayBetweenTeleports, DateTimeUnit.SECOND)
+    val nextTeleportationTime = Clock.System.now().minus(delayBetweenTeleports, DateTimeUnit.SECOND)
         .toLocalDateTime(TimeZone.currentSystemDefault())
     it.lastTeleportation < nextTeleportationTime
 } ?: true

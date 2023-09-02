@@ -41,7 +41,7 @@ class HomeTeleport(private val plugin: JavaPlugin, manager: PaperCommandManager)
 
     @Default
     @CommandCompletion("@ownhome")
-    @Description("Vous à la résidence choisie ou la résidence par défaut.")
+    @Description("Vous téléporte à la résidence choisie ou la résidence par défaut.")
     @Conditions("can_teleport")
     fun onDefault(player: Player, @Optional home: Home?) {
         home?.let {

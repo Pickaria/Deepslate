@@ -17,7 +17,7 @@ import kotlin.math.log2
 import kotlin.math.sin
 import kotlin.random.Random
 
-@CommandAlias("rand&omteleport|rtp|tpr")
+@CommandAlias("randomteleport|rtp|tpr")
 @CommandPermission("pickaria.command.randomteleport")
 class RandomTeleport(private val plugin: JavaPlugin) : BaseCommand() {
     companion object {
