@@ -10,6 +10,7 @@ import fr.pickaria.controller.teleport.getHomeNames
 import fr.pickaria.controller.teleport.homeCount
 import fr.pickaria.controller.teleport.teleportToLocationAfterTimeout
 import fr.pickaria.model.economy.Credit
+import fr.pickaria.model.mainConfig
 import fr.pickaria.model.teleport.Home
 import fr.pickaria.model.teleport.Homes
 import fr.pickaria.model.teleport.teleportConfig
@@ -63,8 +64,12 @@ class HomeTeleport(private val plugin: JavaPlugin, manager: PaperCommandManager)
 
     @Subcommand("set")
     @CommandAlias("sethome")
-    @Description("Créer une résidence.")
+    @Description("Créer une résidence à votre position actuelle.")
     fun onCreate(player: Player, @Default("home") name: String) {
+        if (player.world == mainConfig.lobbyWorld) {
+            throw ConditionFailedException("Cette commande ne peut pas être exécutée ici.")
+        }
+
         if (player.homeCount() >= teleportConfig.homeLimit) { // TODO: Use permission for home limit
             throw ConditionFailedException("Vous possédez trop de résidences.")
         }

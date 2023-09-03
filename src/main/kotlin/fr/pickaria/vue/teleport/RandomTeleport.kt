@@ -1,10 +1,12 @@
 package fr.pickaria.vue.teleport
 
 import co.aikar.commands.BaseCommand
+import co.aikar.commands.ConditionFailedException
 import co.aikar.commands.annotation.*
 import fr.pickaria.controller.economy.has
 import fr.pickaria.controller.teleport.teleportToLocationAfterTimeout
 import fr.pickaria.model.economy.Credit
+import fr.pickaria.model.mainConfig
 import fr.pickaria.model.teleport.teleportConfig
 import fr.pickaria.shared.MiniMessage
 import org.bukkit.Location
@@ -50,14 +52,21 @@ class RandomTeleport(private val plugin: JavaPlugin) : BaseCommand() {
     }
 
     @Default
-    @Description("Vous téléporte aléatoirement autour du spawn.")
+    @Description("Vous téléporte aléatoirement autour du spawn. À utiliser avec précautions.")
     @Conditions("can_teleport")
     fun onDefault(player: Player, @Default("1000") maxRadius: UInt) {
+        if (player.world == mainConfig.lobbyWorld) {
+            throw ConditionFailedException("Cette commande ne peut pas être exécutée ici.")
+        }
         val cost = log2(maxRadius.toDouble()) * teleportConfig.rtpMultiplier
 
         if (player.has(Credit, cost)) {
-            val timeout = 200L // 2 seconds
             val location = getRandomLocation(player, maxRadius.toInt())
+            if (location.world == mainConfig.lobbyWorld) {
+                throw ConditionFailedException("Cette commande ne peut pas être exécutée ici.")
+            }
+
+            val timeout = 200L // 2 seconds
             player.teleportToLocationAfterTimeout(plugin, location, cost, timeout)
         } else {
             MiniMessage("Erreur: <red>Il faut <gold><amount><gray> pour effectuer la téléportation.") {

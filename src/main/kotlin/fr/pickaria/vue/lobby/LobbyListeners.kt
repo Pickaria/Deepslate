@@ -69,7 +69,7 @@ class LobbyListeners : Listener {
     @EventHandler
     fun onEntityDamage(event: EntityDamageEvent) {
         with(event) {
-            if (entity.world == mainConfig.lobbyWorld) {
+            if (event.cause != EntityDamageEvent.DamageCause.VOID && entity.world == mainConfig.lobbyWorld) {
                 isCancelled = true
             }
         }
