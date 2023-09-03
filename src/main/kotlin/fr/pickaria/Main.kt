@@ -36,7 +36,6 @@ import fr.pickaria.vue.potion.PotionCommand
 import fr.pickaria.vue.potion.PotionListener
 import fr.pickaria.vue.rank.RankCommand
 import fr.pickaria.vue.rank.rankMenu
-import fr.pickaria.vue.rank.rankPrefixes
 import fr.pickaria.vue.reforge.EnchantListeners
 import fr.pickaria.vue.reward.*
 import fr.pickaria.vue.shard.GrindstoneListeners
@@ -145,7 +144,6 @@ class Main : SuspendingJavaPlugin() {
         townMenu()
         rankMenu()
         rewardMenu()
-        rankPrefixes()
 
         // Scheduler
         Bukkit.getScheduler().runTaskTimerAsynchronously(this, runnable, 0, 20)
