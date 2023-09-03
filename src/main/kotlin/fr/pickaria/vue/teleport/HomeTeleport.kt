@@ -7,6 +7,7 @@ import co.aikar.commands.PaperCommandManager
 import co.aikar.commands.annotation.*
 import fr.pickaria.controller.economy.has
 import fr.pickaria.controller.teleport.getHomeNames
+import fr.pickaria.controller.teleport.homeCount
 import fr.pickaria.controller.teleport.teleportToLocationAfterTimeout
 import fr.pickaria.model.economy.Credit
 import fr.pickaria.model.teleport.Home
@@ -64,21 +65,29 @@ class HomeTeleport(private val plugin: JavaPlugin, manager: PaperCommandManager)
     @CommandAlias("sethome")
     @Description("Créer une résidence.")
     fun onCreate(player: Player, @Default("home") name: String) {
+        if (player.homeCount() >= teleportConfig.homeLimit) { // TODO: Use permission for home limit
+            throw ConditionFailedException("Vous possédez trop de résidences.")
+        }
+
         homeFind(player, name)?.let {
             throw ConditionFailedException("Une résidence avec ce nom existe déjà, si vous souhaitez la modifier, supprimez-la avant de la recréer.")
         }
 
         val location = player.location
 
-        transaction {
-            Home.new {
-                playerUuid = player.uniqueId
-                homeName = name
-                world = player.world.uid
-                locationX = location.blockX
-                locationY = location.blockY
-                locationZ = location.blockZ
+        try {
+            transaction {
+                Home.new {
+                    playerUuid = player.uniqueId
+                    homeName = name
+                    world = player.world.uid
+                    locationX = location.blockX
+                    locationY = location.blockY
+                    locationZ = location.blockZ
+                }
             }
+        } catch (_: Exception) {
+            throw ConditionFailedException("Une erreur est survenue lors de l'enregistrement de la résidence. Essayez avec un autre nom.")
         }
 
         player.sendMessage(teleportConfig.homeRegistrationConfirm)

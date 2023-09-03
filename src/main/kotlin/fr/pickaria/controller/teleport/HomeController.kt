@@ -10,3 +10,8 @@ fun Player.getHomeNames(startsWith: String) =
     transaction {
         Home.find { (Homes.playerUuid eq uniqueId) and (Homes.homeName like "${startsWith}%") }.map { it.homeName }
     }
+
+fun Player.homeCount() =
+    transaction {
+        Home.find { (Homes.playerUuid eq uniqueId) }.count()
+    }
