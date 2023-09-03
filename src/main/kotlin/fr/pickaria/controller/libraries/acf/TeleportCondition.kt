@@ -14,7 +14,7 @@ fun BukkitCommandManager.teleportCondition() {
         }
 
         if (!player.canTeleport(teleportConfig.delayBetweenTeleports)) {
-            throw ConditionFailedException("Veuillez attendre avant votre prochaine téléportation")
+            throw ConditionFailedException("Veuillez attendre avant votre prochaine téléportation.")
         }
     }
 }

@@ -2,7 +2,7 @@ delay_between_teleports: 20
 delay_before_teleports: 6
 rtp_multiplier: 100
 spawn_multiplier: 20
-message_before_teleports: "<gray>Téléportation dans <gold><time><gray> secondes."
+message_before_teleports: "<gray>Téléportation dans <gold><time> secondes<gray>. Ne bougez pas.<newline><gold><click:run_command:/tpcancel>[Annuler la téléportation]</click>"
 home_registration_confirm: "Résidence enregistrée."
 home_deletion_confirm: "Résidence supprimée."
 home_limit: 3

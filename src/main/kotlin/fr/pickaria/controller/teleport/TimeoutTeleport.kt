@@ -73,12 +73,10 @@ private fun Player.getTimeoutTeleport(): TimeoutTeleport? {
     return null
 }
 
-fun Player.cancelTeleport(plugin: JavaPlugin): Boolean {
-    return getTimeoutTeleport()?.let {
-        it.cancel()
-        removeMetadata(KEY, plugin)
-        true
-    } ?: false
+fun Player.cancelTeleport(plugin: JavaPlugin) = getTimeoutTeleport()?.let {
+    it.cancel()
+    removeMetadata(KEY, plugin)
+    MiniMessage("<gray>Téléportation annulée.").send(this)
 }
 
 fun Player.teleportToLocationAfterTimeout(

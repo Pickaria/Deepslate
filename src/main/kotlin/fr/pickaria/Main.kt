@@ -94,6 +94,7 @@ class Main : SuspendingJavaPlugin() {
         registerEvents<Wizard>()
         registerEvents<MiniBlockListener>()
         registerEvents<LobbyListeners>()
+        registerEvents<CancelTeleportOnMove>(this)
         rankListener()
 
         // Command completions

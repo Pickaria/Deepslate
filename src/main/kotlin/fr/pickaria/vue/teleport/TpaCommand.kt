@@ -18,6 +18,10 @@ class TpaCommand(private val plugin: JavaPlugin) : BaseCommand() {
     @Description("Envoie une demande de teleportation à quelqu'un.")
     @Conditions("can_teleport")
     fun onDefault(sender: Player, onlinePlayer: OnlinePlayer) {
+        if (sender == onlinePlayer.player) {
+            throw ConditionFailedException("Une demande a déjà été envoyée, annulez-la avant.")
+        }
+
         if (sender.hasTeleportRequest()) {
             throw ConditionFailedException("Une demande a déjà été envoyée, annulez-la avant.")
         }
@@ -34,8 +38,10 @@ class TpaCommand(private val plugin: JavaPlugin) : BaseCommand() {
 
         val teleportRequest = sender.sendTeleportRequestTo(plugin, recipient)
 
-        MiniMessage("<gray>Demande de téléportation envoyé.").send(teleportRequest.sender)
-        MiniMessage("<gold><player><gray> demande à se téléporter à vous.") {
+        MiniMessage("<gray>Demande de téléportation envoyé.<newline><gold><click:run_command:/tpcancel>[Annuler]</click>").send(
+            teleportRequest.sender
+        )
+        MiniMessage("<gold><player><gray> demande à se téléporter à vous.<newline><gold><click:run_command:/tpyes>[Accepter]</click> <click:run_command:/tpno>[Refuser]</click>") {
             "player" to teleportRequest.sender.displayName()
         }.send(teleportRequest.recipient)
     }

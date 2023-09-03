@@ -22,7 +22,6 @@ class TpcancelCommand(private val plugin: JavaPlugin) : BaseCommand() {
     fun onDefault(sender: Player) {
         if (sender.hasOnGoingTeleport()) {
             sender.cancelTeleport(plugin)
-            MiniMessage("<gray>Téléportation annulée.").send(sender)
         } else {
             sender.getTeleportRequest()?.let {
                 if (sender == it.recipient) {
