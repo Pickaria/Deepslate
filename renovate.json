@@ -1,0 +1,29 @@
+{
+  "enabled": true,
+  "dependencyDashboard": true,
+  "schedule": [
+    "before 4am on Monday"
+  ],
+  "lockFileMaintenance": {
+    "enabled": true
+  },
+  "packageRules": [
+    {
+      "matchManagers": [
+        "github-actions"
+      ],
+      "groupName": "update github actions versions",
+      "groupSlug": "chore/update-github-actions"
+    },
+    {
+      "matchManagers": [
+        "gradle"
+      ],
+      "matchPackagePatterns": [
+        "*"
+      ],
+      "groupName": "update dependencies versions",
+      "groupSlug": "chore/update-dependencies"
+    }
+  ]
+}
