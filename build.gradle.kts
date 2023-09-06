@@ -52,7 +52,7 @@ dependencies {
     implementation("org.jetbrains.exposed:exposed-kotlin-datetime:0.43.0")
     implementation("org.jetbrains.kotlin:kotlin-reflect:1.9.10")
     implementation("org.jetbrains.kotlin:kotlin-stdlib:1.9.10")
-    implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.4.0")
+    implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.4.1")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-cbor:1.5.0")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.5.0")
 }
