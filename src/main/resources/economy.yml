@@ -73,6 +73,8 @@ currencies:
     physical_currencies:
       - value: 1.0
         material: ECHO_SHARD
+      - value: 64.0
+        material: SCULK
     advancements:
       - amount: 1
         advancement: pickaria:money/first_shard

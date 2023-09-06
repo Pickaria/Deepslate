@@ -5,6 +5,7 @@ import fr.pickaria.model.economy.Credit
 import fr.pickaria.model.teleport.teleportConfig
 import fr.pickaria.shared.MiniMessage
 import org.bukkit.Bukkit
+import org.bukkit.EntityEffect
 import org.bukkit.Location
 import org.bukkit.entity.Player
 import org.bukkit.metadata.MetadataValue
@@ -99,6 +100,7 @@ fun Player.teleportToLocationAfterTimeout(
         teleport(location)
         removeMetadata(KEY, plugin)
         setLastTeleportation(plugin)
+        playEffect(EntityEffect.TELEPORT_ENDER)
 
         if (cost > 0) {
             withdraw(Credit, cost)
