@@ -12,7 +12,7 @@ repositories {
     maven("https://oss.sonatype.org/content/groups/public/")
     maven("https://repo.papermc.io/repository/maven-public/") // Paper
     maven("https://repo.aikar.co/content/groups/aikar/") // ACF
-    maven("https://jitpack.io") // Vault
+    maven("https://jitpack.io") // Vault & NoteBlockAPI
 
     maven {
         url = uri("https://maven.pkg.github.com/Pickaria/Bedrock")
@@ -40,12 +40,13 @@ dependencies {
     compileOnly("fr.pickaria:spawner:1.0.9-SNAPSHOT")
     compileOnly("io.papermc.paper:paper-api:1.20.1-R0.1-SNAPSHOT")
     compileOnly("net.luckperms:api:5.4")
+    compileOnly("com.github.koca2000:NoteBlockAPI:1.6.2")
 
     implementation("com.charleskorn.kaml:kaml:0.53.0")
     implementation("com.github.shynixn.mccoroutine:mccoroutine-bukkit-api:2.12.0")
     implementation("com.github.shynixn.mccoroutine:mccoroutine-bukkit-core:2.12.0")
     implementation("com.h2database:h2:2.2.222")
-    implementation("fr.pickaria:bedrock:1.0.21")
+    implementation("fr.pickaria:bedrock:1.0.22")
     implementation("org.jetbrains.exposed:exposed-core:0.43.0")
     implementation("org.jetbrains.exposed:exposed-dao:0.43.0")
     implementation("org.jetbrains.exposed:exposed-jdbc:0.43.0")

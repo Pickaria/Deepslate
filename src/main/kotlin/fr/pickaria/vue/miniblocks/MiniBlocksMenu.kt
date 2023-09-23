@@ -49,7 +49,7 @@ fun miniBlocksMenu() = menu("miniblocks") {
             }
 
             leftClick {
-                opener open miniBlockBuyMenu(miniBlock)
+                opener.open(miniBlockBuyMenu(miniBlock))
             }
         }
     }

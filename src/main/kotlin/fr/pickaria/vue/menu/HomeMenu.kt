@@ -66,13 +66,13 @@ internal fun homeMenu() = menu(DEFAULT_MENU) {
     item {
         position = 4 to 1
         material = Material.COMPASS
-        title = Component.text("Lobby")
+        title = Component.text("Téléportations")
 
         lore {
-            leftClick = "Clic-gauche pour aller au lobby"
+            leftClick = "Clic-gauche pour ouvrir le menu"
         }
 
-        leftClick = Result.CLOSE to "/lobby"
+        leftClick = Result.NONE to "/menu teleport"
     }
 
     val bundle = Shard.toController().bundle(opener.balance(Shard))

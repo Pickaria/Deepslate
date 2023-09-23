@@ -14,6 +14,7 @@ import fr.pickaria.vue.PingCommand
 import fr.pickaria.vue.artefact.ArtefactListeners
 import fr.pickaria.vue.artefact.SmithingListeners
 import fr.pickaria.vue.chat.ChatFormat
+import fr.pickaria.vue.chat.FirstJoin
 import fr.pickaria.vue.chat.Motd
 import fr.pickaria.vue.chat.PlayerJoin
 import fr.pickaria.vue.economy.BalanceTopCommand
@@ -50,6 +51,7 @@ import org.bukkit.Bukkit
 import org.bukkit.plugin.java.JavaPlugin
 import org.jetbrains.exposed.sql.Database
 
+
 lateinit var plugin: JavaPlugin
 
 class Main : SuspendingJavaPlugin() {
@@ -84,7 +86,7 @@ class Main : SuspendingJavaPlugin() {
         registerEvents<JobListener>()
         registerEvents<Miner>()
         registerEvents<Motd>()
-        registerEvents<PlayerJoin>()
+        registerEvents<PlayerJoin>(this)
         registerEvents<PotionListener>()
         registerEvents<RewardListeners>()
         registerEvents<ShopListeners>()
@@ -95,6 +97,7 @@ class Main : SuspendingJavaPlugin() {
         registerEvents<MiniBlockListener>()
         registerEvents<LobbyListeners>()
         registerEvents<CancelTeleportOnMove>(this)
+        registerEvents<FirstJoin>()
         rankListener()
 
         // Command completions
@@ -144,8 +147,10 @@ class Main : SuspendingJavaPlugin() {
         townMenu()
         rankMenu()
         rewardMenu()
+        teleportMenu()
 
         // Scheduler
         Bukkit.getScheduler().runTaskTimerAsynchronously(this, runnable, 0, 20)
+
     }
 }

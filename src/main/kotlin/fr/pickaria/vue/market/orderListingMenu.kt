@@ -39,10 +39,10 @@ internal fun orderListingMenu() = menu("market") {
                 rightClick = "Clic-droit pour voir les options de vente"
             }
             leftClick {
-                opener open buyMenu(order.material)
+                opener.open(buyMenu(order.material))
             }
             rightClick {
-                opener open sellMenu(order.material)
+                opener.open(sellMenu(order.material))
             }
         }
     }

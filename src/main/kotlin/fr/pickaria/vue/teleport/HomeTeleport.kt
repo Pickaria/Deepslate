@@ -17,6 +17,7 @@ import fr.pickaria.model.teleport.teleportConfig
 import fr.pickaria.shared.MiniMessage
 import org.bukkit.Bukkit
 import org.bukkit.Location
+import org.bukkit.Material
 import org.bukkit.entity.Player
 import org.bukkit.plugin.java.JavaPlugin
 import org.jetbrains.exposed.sql.and
@@ -47,6 +48,7 @@ class HomeTeleport(private val plugin: JavaPlugin, manager: PaperCommandManager)
     @Description("Vous téléporte à la résidence choisie ou la résidence par défaut.")
     @Conditions("can_teleport")
     @Subcommand("teleport|tp")
+    @Default
     fun onDefault(player: Player, @Optional home: Home?) {
         home?.let {
             val cost = 10.0 // TODO: Add to config
@@ -55,7 +57,7 @@ class HomeTeleport(private val plugin: JavaPlugin, manager: PaperCommandManager)
                 val homeLocation = getHomeLocation(player, name)
                 player.teleportToLocationAfterTimeout(plugin, homeLocation, cost)
             } else {
-                MiniMessage("Erreur: <red>Il faut <gold><amount><gray> pour effectuer la téléportation.") {
+                MiniMessage("<red>Erreur: <red>Il faut <gold><amount><red> pour effectuer la téléportation.") {
                     "amount" to Credit.economy.format(cost)
                 }.send(player)
             }
@@ -89,6 +91,7 @@ class HomeTeleport(private val plugin: JavaPlugin, manager: PaperCommandManager)
                     locationX = location.blockX
                     locationY = location.blockY
                     locationZ = location.blockZ
+                    material = getHighestMaterialFromLocation(location).name
                 }
             }
         } catch (_: Exception) {
@@ -110,7 +113,6 @@ class HomeTeleport(private val plugin: JavaPlugin, manager: PaperCommandManager)
     }
 
     @HelpCommand
-    @Default
     fun doHelp(help: CommandHelp) {
         help.showHelp()
     }
@@ -124,5 +126,16 @@ class HomeTeleport(private val plugin: JavaPlugin, manager: PaperCommandManager)
         val world = home?.world?.let { Bukkit.getWorld(it) }
 
         return Location(world, newLocationX!!, newLocationY!!, newLocationZ!!).add(0.5, 0.0, 0.5)
+    }
+
+    private fun getHighestMaterialFromLocation(location: Location): Material {
+        for (y in location.blockY downTo location.world.minHeight) {
+            location.y = y.toDouble()
+            if (!location.block.isEmpty) {
+                return location.block.type
+            }
+        }
+
+        return Material.BEDROCK
     }
 }

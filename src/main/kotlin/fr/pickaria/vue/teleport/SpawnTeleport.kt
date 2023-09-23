@@ -21,7 +21,7 @@ class SpawnTeleport(private val plugin: JavaPlugin) : BaseCommand() {
         if (player.has(Credit, cost)) {
             player.teleportToLocationAfterTimeout(plugin, player.world.spawnLocation, cost)
         } else {
-            MiniMessage("Erreur: <red>Il faut <gold><amount><red> pour effectuer la téléportation.") {
+            MiniMessage("<red>Erreur: <red>Il faut <gold><amount><red> pour effectuer la téléportation.") {
                 "amount" to Credit.economy.format(cost)
             }.send(player)
         }

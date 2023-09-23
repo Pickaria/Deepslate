@@ -24,6 +24,10 @@ dependencies:
       required: true
       join-classpath: true
       load: BEFORE
+    NoteBlockAPI:
+      required: true
+      join-classpath: true
+      load: BEFORE
 
   server:
     PickariaSpawner:
@@ -39,6 +43,10 @@ dependencies:
       join-classpath: true
       load: BEFORE
     LuckPerms:
+      required: true
+      join-classpath: true
+      load: BEFORE
+    NoteBlockAPI:
       required: true
       join-classpath: true
       load: BEFORE

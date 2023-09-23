@@ -69,7 +69,7 @@ class RandomTeleport(private val plugin: JavaPlugin) : BaseCommand() {
             val timeout = 200L // 2 seconds
             player.teleportToLocationAfterTimeout(plugin, location, cost, timeout)
         } else {
-            MiniMessage("Erreur: <red>Il faut <gold><amount><gray> pour effectuer la téléportation.") {
+            MiniMessage("<red>Erreur: <red>Il faut <gold><amount><red> pour effectuer la téléportation.") {
                 "amount" to Credit.economy.format(cost)
             }.send(player)
         }

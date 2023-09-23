@@ -12,6 +12,7 @@ object Homes : IntIdTable() {
     val locationX = integer("location_x")
     val locationY = integer("location_y")
     val locationZ = integer("location_z")
+    val material = varchar("material", 256)
 
     init {
         index(true, playerUuid, homeName)
@@ -27,4 +28,5 @@ class Home(id: EntityID<Int>) : IntEntity(id) {
     var locationX by Homes.locationX
     var locationY by Homes.locationY
     var locationZ by Homes.locationZ
+    var material by Homes.material
 }

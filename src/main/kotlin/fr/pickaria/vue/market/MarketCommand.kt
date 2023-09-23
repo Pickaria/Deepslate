@@ -12,8 +12,8 @@ import org.bukkit.entity.Player
 @CommandPermission("pickaria.command.market")
 @Description("Ouvre le marché.")
 class MarketCommand : BaseCommand() {
-	@Default
-	fun onDefault(player: Player) {
-		player open "market"
-	}
+    @Default
+    fun onDefault(player: Player) {
+        player.open("market")
+    }
 }
